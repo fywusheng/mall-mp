@@ -1,7 +1,7 @@
 <template>
   <view>
-    <view class="bottomTips" v-if="bottomTips">
-      <view class="loading" v-if="bottomTips == 'loading'">
+    <view class='bottomTips' v-if="bottomTips">
+      <view class="loading" v-if="bottomTips=='loading'">
         <text class="list"></text>
         <text class="list"></text>
         <text class="list"></text>
@@ -11,7 +11,7 @@
         <text class="list"></text>
         <text class="list"></text>
       </view>
-      <view>{{ judgeBottomTips(bottomTips) }}</view>
+      <view>{{bottomTips | judgeBottomTips}}</view>
     </view>
   </view>
 </template>
@@ -19,34 +19,42 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+
+    }
   },
   props: {
     bottomTips: {
       type: String,
-      default: "",
-    },
+      default: ''
+    }
+
   },
-  created() {},
-  methods: {
+  created() {
+
+  },
+  filters: {
     // 判断底部提示文字
     judgeBottomTips(type) {
       switch (type) {
-        case "nomore":
-          return "暂无更多内容";
-          break;
-        case "loading":
-          return "正在努力加载中...";
-          break;
-        case "more":
-          return "上拉加载更多";
-          break;
+        case 'nomore':
+          return '暂无更多内容'
+          break
+        case 'loading':
+          return '正在努力加载中...'
+          break
+        case 'more':
+          return '上拉加载更多'
+          break
         default:
-          break;
+          break
       }
-    },
+    }
   },
-};
+  methods: {
+
+  }
+}
 </script>
 
 <style lang="scss" scoped>

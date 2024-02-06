@@ -4,8 +4,7 @@
     <view class="section">
       <view class="section-header flex-h flex-c-s p-0-32">
         <image
-          class="section-header__icon"
-          mode="scaleToFill"
+          class="section-header__icon" mode="scaleToFill"
           src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-basic-info.png"
         />
         <text class="fs-44 c-black ml-16">基本信息</text>
@@ -27,8 +26,7 @@
             </text>
           </picker>
           <image
-            class="row__accessory"
-            mode="scaleToFill"
+            class="row__accessory" mode="scaleToFill"
             src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
           />
         </view>
@@ -39,25 +37,18 @@
             class="flex-1 ml-48"
             popup-title="请选择所在地区"
             :localdata="cities"
-            v-slot:default="{ data, error, options }"
+            v-slot:default="{data, error, options}"
             @change="handleCityChange"
           >
-            <view v-if="data.length > 0" class="selectValue"
-              ><text v-for="(item, index) in data" :key="index">{{
-                item.text
-              }}</text></view
-            >
-            <text
-              v-if="data.length == 0"
-              class="city fs-40 c-black flex-1 ml-48"
-              :class="{ 'c-lightgrey': data.length == 0 }"
-            >
-              请选择所在地区
-            </text>
+            <view v-if="data.length > 0" class="selectValue"><text v-for="(item,index) in data" :key="index">{{item.text}}</text></view>
+              <text v-if="data.length == 0" class="city fs-40 c-black flex-1 ml-48"
+                    :class="{ 'c-lightgrey': data.length == 0 }">
+               请选择所在地区
+              </text>
           </uni-data-picker>
           <image
             class="row__accessory"
-            mode="scaleToFill"
+             mode="scaleToFill"
             src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
           />
         </view>
@@ -72,10 +63,11 @@
         </view>
         <view class="row flex-h flex-c-s p-20-0">
           <text class="row__indicator">*</text>
-          <text class="row__label--small fs-40 c-black"> 办证机构(必填) </text>
+          <text class="row__label--small fs-40 c-black">
+            办证机构(必填)
+          </text>
           <image
-            class="row__illustration ml-12"
-            mode="scaleToFill"
+            class="row__illustration ml-12" mode="scaleToFill"
             src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-illustration.png"
           />
           <picker
@@ -91,8 +83,7 @@
             </text>
           </picker>
           <image
-            class="row__accessory"
-            mode="scaleToFill"
+            class="row__accessory" mode="scaleToFill"
             src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
           />
         </view>
@@ -101,8 +92,7 @@
     <view class="section">
       <view class="section-header flex-h flex-c-s p-0-32">
         <image
-          class="section-header__icon"
-          mode="scaleToFill"
+          class="section-header__icon" mode="scaleToFill"
           src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-contact-info.png"
         />
         <text class="fs-44 c-black ml-16">紧急联系人</text>
@@ -135,8 +125,7 @@
     <view v-if="needsMaterial" class="section">
       <view class="section-header flex-h flex-c-s p-0-32">
         <image
-          class="section-header__icon"
-          mode="scaleToFill"
+          class="section-header__icon" mode="scaleToFill"
           src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-material-info.png"
         />
         <text class="fs-44 c-black ml-16">上传证明材料</text>
@@ -149,10 +138,11 @@
         >
           <view class="row flex-h flex-c-s p-20-0">
             <text class="row__indicator">*</text>
-            <text class="row__label--small fs-40 c-black"> 材料类型 </text>
+            <text class="row__label--small fs-40 c-black">
+              材料类型
+            </text>
             <image
-              class="row__illustration ml-12"
-              mode="scaleToFill"
+              class="row__illustration ml-12" mode="scaleToFill"
               src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-illustration.png"
             />
             <picker
@@ -169,8 +159,7 @@
               </text>
             </picker>
             <image
-              class="row__accessory"
-              mode="scaleToFill"
+              class="row__accessory" mode="scaleToFill"
               src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
             />
           </view>
@@ -187,8 +176,7 @@
           <image
             v-if="item.url"
             class="photo mb-32"
-            :src="item.url"
-            mode="scaleToFill"
+            :src="item.url" mode="scaleToFill"
             @click="handlePhotoPickerClick(index)"
           />
           <view
@@ -197,8 +185,7 @@
             @click="handlePhotoPickerClick(index)"
           >
             <image
-              class="photo-picker__icon"
-              mode="scaleToFill"
+              class="photo-picker__icon" mode="scaleToFill"
               src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-select-photo.png"
             />
             <text class="photo-picker__text fs-32 c-black mt-16">
@@ -224,11 +211,11 @@
         </button>
       </view>
     </view>
-    <view style="width: 100vw; height: 336rpx"></view>
+    <view style="width: 100vw; height: 336rpx;"></view>
     <view class="footer bg-white">
       <view class="tips">
-        <text class="fs-36" style="color: #424141">我承诺</text>
-        <text class="fs-36" style="color: #0097fe">
+        <text class="fs-36" style="color: #424141;">我承诺</text>
+        <text class="fs-36" style="color: #0097FE;">
           以上填写信息为真实有效信息具有法律效益
         </text>
       </view>
@@ -253,6 +240,7 @@
 <script>
 import api from "@/apis/index.js";
 import dayjs from "dayjs";
+import { UniDataPicker } from "@dcloudio/uni-ui";
 import { validatePhoneNumber } from "@/utils/validation.js";
 export default {
   components: { UniDataPicker },
@@ -263,7 +251,7 @@ export default {
       // 城市选择器数据
       cities: [],
       // 办证机构选择器数据
-      institutions: ["中国老龄协会老年人才信息中心"],
+      institutions: ["中国老龄协会"],
       // 是否需要上传材料
       needsMaterial: false,
       // 材料类型选择器数据
@@ -475,7 +463,7 @@ export default {
 
 <style lang="scss" scoped>
 .additional-info {
-  .selectValue {
+  .selectValue{
     width: 400rpx;
     overflow: hidden;
     white-space: nowrap;

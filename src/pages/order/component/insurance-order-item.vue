@@ -5,55 +5,53 @@
         <image class="icon" :src="icon" mode="scaleToFill" />
         <text>保险</text>
       </view>
-      <view class="right" :class="{ active: item.insuStatus === 5 }">
-        {{ item.insuStatus === 5 ? "保障中" : "已失效" }}</view
-      >
+      <view class="right" :class="{active: item.insuStatus === 5}">
+        {{item.insuStatus === 5? '保障中':'已失效'}}</view>
     </view>
     <view class="cont">
-      <view class="name">{{ item.prdName }}</view>
-      <view class="time"
-        >保障期限：{{ dateFilter(item.ordStartDate) }}至{{
-          dateFilter(item.ordEndDate)
-        }}
+      <view class="name">{{item.prdName}}</view>
+      <view class="time">保障期限：{{item.ordStartDate | dateFilter}}至{{item.ordEndDate | dateFilter}}
       </view>
-      <view class="time">被保人：{{ desensitizeName(item.insureName) }}</view>
+      <view class="time">被保人：{{item.insureName | desensitizeName}}</view>
     </view>
   </view>
 </template>
 
 <script>
-import dayjs from "dayjs";
-import { desensitizeName } from "@/utils/desensitization.js";
+import dayjs from 'dayjs'
+import { desensitizeName } from '@/utils/desensitization.js'
 export default {
-  name: "insurance-order-item",
+  name: 'insurance-order-item',
   props: {
     item: {
       type: Object,
-      default: () => {},
-    },
+      default: () => { }
+    }
   },
   data() {
     return {
-      icon: "https://ggllstatic.hpgjzlinfo.com/static/life/insurance-logo.png",
-    };
+      icon: 'https://ggllstatic.hpgjzlinfo.com/static/life/insurance-logo.png'
+    }
   },
   methods: {
     toDetail(data) {
       uni.navigateTo({
-        url: `/pages/order/insurance-order-info?insuCode=${data.insuCode}`,
-      });
-    },
+        url: `/pages/order/insurance-order-info?insuCode=${data.insuCode}`
+      })
+    }
+  },
+  filters: {
     dateFilter(value) {
-      return dayjs(value).format("YYYY-MM-DD");
+      return dayjs(value).format('YYYY-MM-DD')
     },
     desensitizeName(name) {
-      return desensitizeName(name);
-    },
-  },
-};
+      return desensitizeName(name)
+    }
+  }
+}
 </script>
 
-<style lang="scss" scoped>
+<style  lang="scss" scoped>
 .insurance-order-item {
   width: 686rpx;
   height: 338rpx;

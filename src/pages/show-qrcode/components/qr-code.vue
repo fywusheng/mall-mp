@@ -3,15 +3,12 @@
     <view class="card flex-v m-32 p-32 br-16">
       <text class="title fs-40 c-white mb-32">中华人民共和国老年人证</text>
       <text class="info fs-40 c-white mb-32">
-        姓名：{{ nameFilter(info.userName) }}
+        姓名：{{ info.userName | nameFilter }}
       </text>
       <text class="info fs-36 c-white mb-32">
-        身份证：{{ idCardNumberFilter(info.idNo) }}
+        身份证：{{ info.idNo | idCardNumberFilter }}
       </text>
-      <view
-        v-if="info && info.userName"
-        class="container flex-v flex-c-s bg-white br-16 p-32"
-      >
+      <view v-if="info&&info.userName" class="container flex-v flex-c-s bg-white br-16 p-32">
         <canvas
           canvas-id="bar-code"
           id="bar-code"
@@ -36,16 +33,12 @@
         </view>
       </view>
       <view v-else class="container flex-v flex-c-s bg-white br-16 p-32">
-        <image
-          class="icon-code"
-          src="https://ggllstatic.hpgjzlinfo.com/static/show-qrcode/icon-code-bg.png"
-          mode="scaleToFill"
-        />
+        <image class="icon-code" src="https://ggllstatic.hpgjzlinfo.com/static/show-qrcode/icon-code-bg.png"  mode="scaleToFill" />
         <view class="qr-code-tip">
           <view>领取电子证照老年人证后</view>
           <view>可以使用更多功能</view>
         </view>
-        <view class="flex-h flex-c-c">
+        <view class=" flex-h flex-c-c">
           <button
             class="button fs-40 ml-16 btn-get-code"
             hover-class="none"
@@ -90,14 +83,7 @@ export default {
       info: {},
     };
   },
-  onLoad() {
-    this.handleRefreshClick();
-  },
-  onUnload() {
-    // 退出页面时销毁定时器
-    this.timer = null;
-  },
-  methods: {
+  filters: {
     // 姓名过滤器, 用于姓名脱敏
     nameFilter(value) {
       return desensitizeName(value);
@@ -106,9 +92,18 @@ export default {
     idCardNumberFilter(value) {
       return desensitizeInfo(value);
     },
-    // 立即领取
-    handleReceive() {
-      this.$emit("receiveClick");
+  },
+  onLoad() {
+    this.handleRefreshClick();
+  },
+  onUnload() {
+    // 退出页面时销毁定时器
+    this.timer = null;
+  },
+  methods: {
+    //立即领取
+    handleReceive(){
+      this.$emit('receiveClick')
     },
     /**
      * 刷新点击事件
@@ -122,7 +117,7 @@ export default {
      */
     requestData() {
       const userInfo = uni.getStorageSync("userInfo");
-      if (!userInfo.authCode) return;
+      if(!userInfo.authCode) return
       api.getQRCodeInfo({
         showsLoading: false,
         data: {
@@ -172,12 +167,12 @@ export default {
         height: 40rpx;
         line-height: 40rpx;
       }
-      .icon-code {
+      .icon-code{
         width: 220rpx;
         height: 220rpx;
         margin: 160rpx auto 32rpx;
       }
-      .qr-code-tip {
+      .qr-code-tip{
         font-size: 40rpx;
         font-family: PingFangSC-Regular, PingFang SC;
         font-weight: 400;
@@ -186,13 +181,13 @@ export default {
         text-align: center;
         margin-bottom: 40rpx;
       }
-      .btn-get-code {
+      .btn-get-code{
         width: 520rpx;
         height: 100rpx;
         line-height: 100rpx;
-        background: linear-gradient(117deg, #ff8800 0%, #ff5000 100%);
+        background: linear-gradient(117deg, #FF8800 0%, #FF5000 100%);
         border-radius: 50rpx;
-        color: #ffffff;
+        color: #FFFFFF;
         margin-bottom: 204rpx;
       }
     }

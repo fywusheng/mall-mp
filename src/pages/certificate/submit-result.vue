@@ -9,11 +9,8 @@
     <!-- #endif -->
     <view class="blank" :style="{ height: navigationBarHeight + 'px' }" />
     <view class="flex-v flex-c-s">
-      <image
-        class="result-icon mt-80"
-        mode="scaleToFill"
-        src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-submit-success.png"
-      />
+      <image class="result-icon mt-80" mode="scaleToFill"
+        src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-submit-success.png" />
       <text class="fs-50 c-primary mt-32">恭喜您</text>
       <text class="fs-50 c-primary">您的申领已提交成功</text>
       <text class="fs-40 c-grey mt-32" v-if="isForSelf">
@@ -26,69 +23,44 @@
         预计将在2个工作日内完成审核
       </text>
       <text class="fs-40 c-grey">请您耐心等待</text>
-      <button
-        class="button fs-44 c-white"
-        hover-class="none"
-        @click="handleBackToHomeClick"
-      >
-        {{ isForSelf ? "我知道了" : "返回首页" }}
+      <button class="button fs-44 c-white" hover-class="none" @click="handleBackToHomeClick">
+        {{isForSelf?'我知道了':'返回首页'}}
       </button>
       <text class="fs-36 c-primary mt-32" v-if="isForSelf">
         温馨提示：积分可以兑换各种惠老服务哦！
       </text>
     </view>
-    <view
-      class="credits-popup flex-v flex-c-c"
-      v-if="showsCreditsPopup"
-      @click="detailPoint"
-      @touchmove.stop="touchmove"
-    >
-      <image
-        class="credits-image"
-        mode="scaleToFill"
-        src="https://ggllstatic.hpgjzlinfo.com/static/family-account/image-common-credits-300.png"
-      />
-      <image
-        class="close-icon mt-32"
-        mode="scaleToFill"
+    <view class="credits-popup flex-v flex-c-c" v-if="showsCreditsPopup" @click="detailPoint"
+      @touchmove.stop="touchmove">
+      <image class="credits-image" mode="scaleToFill"
+        src="https://ggllstatic.hpgjzlinfo.com/static/family-account/image-common-credits-300.png" />
+      <image class="close-icon mt-32" mode="scaleToFill"
         src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-popup-close.png"
-        @click="showsCreditsPopup = false"
-      />
+        @click="showsCreditsPopup = false" />
     </view>
-    <modal
-      ref="confirmpop"
-      cancelText="放弃添加"
-      confirmText="立刻添加"
-      @cancel="cancel"
-      @confirm="confirm"
-    >
-      <template v-slot:text>
+    <modal ref="confirmpop" cancelText='放弃添加' confirmText='立刻添加' @cancel='cancel'
+      @confirm='confirm'>
+      <view slot="text">
         <view class="mainMin" v-if="reFale == 1">
           <view class="content">
-            <text
-              >您确定不添加赡养扶养关系吗？<text class="wen"
-                >这将会影响您在本平台享有的权益和服务</text
-              ></text
-            >
+            <text>您确定不添加赡养扶养关系吗？<text class="wen">这将会影响您在本平台享有的权益和服务</text></text>
           </view>
         </view>
         <view class="main" v-if="isForSelf && reFale != 1">
           <view class="content">
-            <text
-              >根据<text class="wen">《中华人民共和国老年人权益保障法》</text
-              >,建议您添加"赡养抚养关系",否则将会影响您在本平台享有的权益和服务。</text
-            >
+            <text>根据<text
+                class="wen">《中华人民共和国老年人权益保障法》</text>,建议您添加"赡养抚养关系",否则将会影响您在本平台享有的权益和服务。</text>
           </view>
           <text class="infor">提示：添加"赡养抚养关系"可再拿100积分</text>
         </view>
-      </template>
+      </view>
     </modal>
   </view>
 </template>
 
 <script>
-import NavigationBar from "../../components/common/navigation-bar.vue";
-import Modal from "@/components/common/modal.vue";
+import NavigationBar from '../../components/common/navigation-bar.vue'
+import Modal from '@/components/common/modal.vue'
 export default {
   components: { NavigationBar, Modal },
   data() {
@@ -98,82 +70,80 @@ export default {
       navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
       // #endif
       // #ifdef MP-ALIPAY
-      navigationBarHeight:
-        uni.getSystemInfoSync().statusBarHeight +
-        uni.getSystemInfoSync().titleBarHeight,
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
       // #endif
       // 是否为自己申领
       isForSelf: true,
       // 是否显示积分弹窗
       showsCreditsPopup: false,
       time: 3,
-      reFale: null, // 1-返回
-    };
+      reFale: null // 1-返回
+    }
   },
   onLoad() {
     // this.statrTime();
   },
   methods: {
     detailPoint() {
-      uni.navigateTo({ url: "/pages/user-center/my-points" });
+      uni.navigateTo({ url: '/pages/user-center/my-points' })
     },
     clear() {
-      clearInterval(this.timer);
+      clearInterval(this.timer)
     },
     loading() {
-      this.time--;
+      this.time--
     },
     statrTime() {
-      this.loading();
+      this.loading()
       this.timer = setInterval(() => {
         if (this.time === 1) {
-          this.clear();
-          this.showsCreditsPopup = false;
+          this.clear()
+          this.showsCreditsPopup = false
         } else {
-          this.loading();
+          this.loading()
         }
-      }, 1000);
+      }, 1000)
     },
 
     cancel() {
-      this.$refs.confirmpop.close();
-      console.log("/pages/index/index");
+      this.$refs.confirmpop.close()
+      console.log('/pages/index/index')
       uni.reLaunch({
-        url: "/pages/index/index",
-      });
+        url: '/pages/index/index'
+      })
     },
     confirm() {
-      this.$refs.confirmpop.close();
-      console.log("/pages/support/index");
+      this.$refs.confirmpop.close()
+      console.log('/pages/support/index')
       uni.navigateTo({
-        url: "/pages/support/index",
-      });
+        url: '/pages/support/index'
+      })
     },
     /**
      * 导航栏返回键的点击事件
      */
     handleNavigationBack() {
-      this.reFale = 1; // 返回
+      this.reFale = 1 // 返回
       if (this.isForSelf) {
-        this.$refs.confirmpop.open();
+        this.$refs.confirmpop.open()
       }
     },
     /**
      * 返回首页点击事件  我知道了
      */
     handleBackToHomeClick() {
-      this.reFale = 0; // 我知道了
+      this.reFale = 0 // 我知道了
       if (this.isForSelf) {
-        this.$refs.confirmpop.open();
+        this.$refs.confirmpop.open()
       } else {
         // 不会出现我给他人领取的情况  暂时留存
         uni.reLaunch({
-          url: "/pages/index/index",
-        });
+          url: '/pages/index/index'
+        })
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

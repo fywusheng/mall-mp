@@ -76,7 +76,7 @@
         <text class="add-button__text fs-40 c-primary">+ 添加</text>
       </view>
     </view>
-    <view style="width: 100vw; height: 172rpx" />
+    <view style="width: 100vw; height: 172rpx;" />
     <view class="save flex-h flex-c-c bg-white">
       <button class="button fs-44 c-white" @click="handleSaveButtonClick">
         保存

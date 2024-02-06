@@ -4,10 +4,10 @@
     <view class="card flex-v m-32 p-32 br-16">
       <text class="title fs-40 c-white mb-32">中华人民共和国老年人证</text>
       <text class="info fs-40 c-white mb-32">
-        姓名：{{ nameFilter(info.userName) }}
+        姓名：{{ info.userName | nameFilter }}
       </text>
       <text class="info fs-36 c-white mb-32">
-        身份证：{{ idCardNumberFilter(info.idNo) }}
+        身份证：{{ info.idNo | idCardNumberFilter }}
       </text>
       <view
         v-if="hasCard"
@@ -15,7 +15,7 @@
       >
         <canvas
           canvas-id="bar-code"
-          id="bar-code"
+          id="bar-code" 
           class="bar-code"
           @click="showsBarCode = true"
         />
@@ -37,16 +37,12 @@
         </view>
       </view>
       <view v-else class="container flex-v flex-c-s bg-white br-16 p-32">
-        <image
-          class="icon-code"
-          mode="scaleToFill"
-          src="https://ggllstatic.hpgjzlinfo.com/static/show-qrcode/icon-code-bg.png"
-        />
+        <image class="icon-code"  mode="scaleToFill" src="https://ggllstatic.hpgjzlinfo.com/static/show-qrcode/icon-code-bg.png" />
         <view class="qr-code-tip">
           <view>领取电子证照老年人证后</view>
           <view>可以使用更多功能</view>
         </view>
-        <view class="flex-h flex-c-c">
+        <view class=" flex-h flex-c-c">
           <button
             class="button fs-40 ml-16 btn-get-code"
             hover-class="none"
@@ -71,14 +67,14 @@
     >
       <canvas canvas-id="qr-code-big" id="qr-code-big" class="image" />
     </view>
-    <scan-or-input-popup ref="popup" :showImg="true" />
+    <scan-or-input-popup ref="popup" :showImg="true"/>
     <!-- <pop-entry-method  ref="popup" :showImg="showImg" /> -->
   </view>
 </template>
 
 <script>
 import api from "@/apis/index.js";
-import generator from "uniapp-qrcode";
+import generator from "@/utils/code-generator.js";
 import ScanOrInputPopup from "@/components/pop-entry-method/pop-entry-method.vue";
 import { desensitizeName, desensitizeInfo } from "@/utils/desensitization.js";
 export default {
@@ -101,18 +97,7 @@ export default {
       info: {},
     };
   },
-  onReady() {
-    this.handleRefreshClick();
-  },
-  onUnload() {
-    // 退出页面时销毁定时器
-    if (this.timer) {
-      console.log("执行onUnload");
-      clearInterval(this.timer);
-      this.timer = null;
-    }
-  },
-  methods: {
+  filters: {
     // 姓名过滤器, 用于姓名脱敏
     nameFilter(value) {
       return desensitizeName(value) || "";
@@ -121,6 +106,20 @@ export default {
     idCardNumberFilter(value) {
       return desensitizeInfo(value) || "";
     },
+  },
+  onReady() {
+    this.handleRefreshClick();
+  },
+  onUnload() {
+    // 退出页面时销毁定时器
+    if(this.timer){
+      console.log("执行onUnload")
+      clearInterval(this.timer)
+      this.timer = null;
+    }
+   
+  },
+  methods: {
     /**
      * 刷新点击事件
      */
@@ -132,13 +131,13 @@ export default {
      * 立即领取点击事件 2已经实名
      */
     handleGetButtonClick() {
-      // TODO  去掉立即领取 亮证区域
-      const userInfo = uni.getStorageSync("userInfo");
-      if (userInfo.crtfStas !== "2") {
-        this.$refs.popup.open("1");
-        return;
-      }
-      this.$refs.popup.open(2);
+      //TODO  去掉立即领取 亮证区域 
+      const userInfo = uni.getStorageSync('userInfo')
+      if(userInfo.crtfStas !== '2'){
+          this.$refs.popup.open('1')
+          return
+       }
+      this.$refs.popup.open(2);  
 
       // console.log('2342')
       // uni.navigateTo({
@@ -147,18 +146,18 @@ export default {
       //  uni.reLaunch({
       //       url: "/pages/certificate/identity-info",
       //     });
-
-      // this.$refs.popup.open(1);
+      
+//this.$refs.popup.open(1); 
     },
     /**
      * 请求数据   展二维码
      */
     requestData() {
       const userInfo = uni.getStorageSync("userInfo");
-      if (!userInfo.authCode) {
-        return false;
+      if(!userInfo.authCode){
+        return false
       }
-      // 展二维码
+      //展二维码
       api.getQRCodeInfo({
         showsLoading: false,
         data: {
@@ -184,7 +183,9 @@ export default {
       }, 6000);
     },
   },
-  onHide() {},
+  onHide(){
+ 
+  }
 };
 </script>
 

@@ -2,59 +2,49 @@
   <view class="pages">
     <view class="page-main">
       <view class="nav uni-nav bg-white">
-        <view
-          class="nav-item"
-          :class="currentIndex == index ? 'nav-item-act' : ''"
-          :key="index"
-          v-for="(item, index) in classList"
-          @click="taggleNav(index)"
-        >
+        <view class="nav-item"
+              :class="currentIndex == index ? 'nav-item-act' : ''"
+              :key="index"
+              v-for="(item, index) in classList"
+              @click="taggleNav(index)">
           {{ item.label }}({{ item.num }}张)
         </view>
-        <view class="nav-line" :style="style"></view>
+        <view class="nav-line"
+              :style="style"></view>
       </view>
       <view class="swiper">
-        <view class="recommend-content" v-if="list.length > 0">
-          <view
-            class="recommend-item bg-white"
-            v-for="(item, index) in list"
-            :key="index"
-            @click="handleInfoClick(item)"
-          >
+        <view class="recommend-content "
+              v-if="list.length > 0">
+          <view class="recommend-item bg-white"
+                v-for="(item,index) in list"
+                :key="index"
+                @click="handleInfoClick(item)">
             <view class="content-all-top flex-h flex-c-b">
               <view class="left flex-h flex-c-s">
                 <view class="ticket">电子发票</view>
-                <view class="status orange" v-if="item.status === '0'"
-                  >开票中</view
-                >
-                <view class="status green" v-if="item.status === '1'"
-                  >已开票</view
-                >
+                <view class="status orange" v-if="item.status === '0'">开票中</view>
+                <view class="status green" v-if="item.status === '1'">已开票</view>
               </view>
-              <view class="right">{{ dateFilter(item.applicationTime) }}</view>
+              <view class="right">{{item.applicationTime | dateFilter}}</view>
             </view>
             <view class="content-all-mid flex-h flex-c-s">
-              <view class="num">¥{{ formaterMoney(item.invoiceAmount) }}</view>
-              <image
-                class="icondetail"
-                src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-detail.png"
-                mode="scaleToFill"
-              />
+              <view class="num">¥{{item.invoiceAmount|formaterMoney}}</view>
+              <image class="icondetail"
+                     src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-detail.png"
+                     mode="scaleToFill" />
             </view>
             <view class="content-all-bot">
-              <button class="btn-menu" @click.stop="handleSendEmail(index)">
-                发送邮箱
-              </button>
+              <button class="btn" @click.stop="handleSendEmail(index)">发送邮箱</button>
             </view>
           </view>
-          <bottom-tips ref="bottomTips" :bottomTips="bottomTips"></bottom-tips>
+          <bottom-tips ref="bottomTips"
+                       :bottomTips="bottomTips"></bottom-tips>
+
         </view>
         <block v-if="list.length === 0">
           <view class="flex-v flex-c-c status-box">
-            <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/status-none2x.png"
-              mode="scaleToFill"
-            />
+            <image src="https://ggllstatic.hpgjzlinfo.com/static/common/status-none2x.png"
+                   mode="scaleToFill" />
             <view class="flex-c-c status-text">暂无发票</view>
           </view>
         </block>
@@ -63,37 +53,36 @@
         <button class="btn" @click="HandleInvoiceClick">抬头管理</button>
       </view>
     </view>
-    <input-modal
-      ref="inputModal"
-      cancelText="取消"
-      confirmText="发送"
-      @cancel="modalPopCancel"
-      @confirm="modalPopConfirm"
-      title="请确定邮箱地址"
-    >
-      <template v-slot:text>
+    <input-modal ref="inputModal"
+                 cancelText="取消"
+                 confirmText="发送"
+                 @cancel='modalPopCancel'
+                 @confirm='modalPopConfirm'
+                 title="请确定邮箱地址">
+      <view slot="text">
         <view class="mainMin">
           <view class="content">
-            <input type="text" class="email" v-model="email" placeholder=" " />
-            <image
-              class="icon"
-              @click="email = ''"
-              v-if="email"
-              src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-close.png"
-              mode="scaleToFill"
-            />
+            <input type="text"
+                   class="email"
+                   v-model="email"
+                   placeholder=" ">
+            <image class="icon"
+                   @click="email = ''"
+                   v-if="email"
+                   src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-close.png"
+                   mode="scaleToFill" />
           </view>
         </view>
-      </template>
+      </view>
     </input-modal>
   </view>
 </template>
 
 <script>
-import api from "@/apis/index.js";
-import bottomTips from "./components/bottom-tips";
-import inputModal from "./components/input-modal.vue";
-import { validateEmail, validatePhoneNumber } from "@/utils/validation.js";
+import api from '@/apis/index.js'
+import bottomTips from './components/bottom-tips'
+import inputModal from './components/input-modal.vue'
+import { validateEmail, validatePhoneNumber } from '@/utils/validation.js'
 import dayjs from "dayjs";
 export default {
   components: { bottomTips, inputModal },
@@ -104,238 +93,222 @@ export default {
       // 分类列表
       classList: [
         {
-          label: "全部",
-          num: "0",
+          label: '全部',
+          num: '0',
           invoiceFlag: null,
         },
         {
-          label: "已开票",
-          num: "0",
-          invoiceFlag: "1",
+          label: '已开票',
+          num: '0',
+          invoiceFlag: '1',
         },
         {
-          label: "开票中",
-          num: "0",
-          invoiceFlag: "0",
+          label: '开票中',
+          num: '0',
+          invoiceFlag: '0',
         },
       ],
       // 数据列表
       list: [],
-      // 当前页码列表的tab页下标
+      //当前页码列表的tab页下标
       currentIndex: 0,
       // 每页条数
       pageSize: 10,
       // 页码
       pageNum: 1,
 
-      // 提示信息
-      bottomTips: "",
 
-      // 邮箱
-      email: "",
+      // 提示信息
+      bottomTips: '',
+
+      //邮箱
+      email: '',
       // 当前选中的发票index
-      ticketIndex: -1,
-    };
+      ticketIndex:-1,
+    }
   },
   mounted() {
     // this.$refs.inputModal.open()
   },
   onLoad(e) {
-    this.userInfo = uni.getStorageSync("userInfo");
-    this.getInvoiceNum();
-    this.getInvoiceList(this.currentIndex);
+    this.userInfo = uni.getStorageSync('userInfo')
+    this.getInvoiceNum()
+    this.getInvoiceList(this.currentIndex)
   },
   // 下拉刷新
   onPullDownRefresh() {
-    console.log("下拉刷新");
-    this.pageNum = 1;
+    console.log('下拉刷新')
+    this.pageNum = 1
     // this.nomore = false
-    this.getInvoiceList(this.currentIndex);
+    this.getInvoiceList(this.currentIndex)
   },
   // 上拉加载
   onReachBottom() {
-    console.log("上拉加载");
-    this.getInvoiceList(this.currentIndex);
+    console.log('上拉加载')
+    this.getInvoiceList(this.currentIndex)
   },
   methods: {
     // 点击发送邮箱
-    handleSendEmail(index) {
+    handleSendEmail(index){
       // 当前选中的发票index
-      this.ticketIndex = index;
-      this.$refs.inputModal.open();
-      this.email = this.list[index].payeeEmail;
-    },
-    formaterMoney(v) {
-      return (v / 100).toFixed(2);
-    },
-    // 日期过滤器, 用于格式化日期
-    dateFilter(value) {
-      var time = new Date(Number(value));
-      function add0(m) {
-        return m < 10 ? "0" + m : m;
-      }
-      var y = time.getFullYear();
-      var m = time.getMonth() + 1;
-      var d = time.getDate();
-      var h = time.getHours();
-      var mm = time.getMinutes();
-      var s = time.getSeconds();
-      return y + "-" + add0(m) + "-" + add0(d);
+      this.ticketIndex = index
+      this.$refs.inputModal.open()
+      this.email = this.list[index].payeeEmail
     },
     // 点击发送按钮
     modalPopConfirm() {
       if (!this.email) {
-        this.$uni.showToast("请填写邮箱");
-        return false;
+        this.$uni.showToast('请填写邮箱')
+        return false
       }
       if (!validateEmail(this.email)) {
-        this.$uni.showToast("邮箱格式不正确");
-        return false;
+        this.$uni.showToast('邮箱格式不正确')
+        return false
       }
       api.sendMailbox({
-        data: {
-          pdfUrl: this.list[this.ticketIndex].pdfUrl,
-          mailBox: this.email,
+        data:{
+          pdfUrl:this.list[this.ticketIndex].pdfUrl,
+          mailBox:this.email,
         },
-        showsLoading: true,
-        success: (res) => {
-          this.$uni.showToast("发送成功");
-          this.$refs.inputModal.close();
-        },
-      });
+        showsLoading:true,
+        success:(res)=>{
+        this.$uni.showToast("发送成功")
+          this.$refs.inputModal.close()
+        }
+      })
     },
     // 点击取消按钮
     modalPopCancel() {
-      this.$refs.inputModal.close();
+      this.$refs.inputModal.close()
     },
     /**
      * 获取发票数量
      */
     getInvoiceNum() {
-      this.list = [];
+      this.list = []
       api.getInvoiceNum({
         data: {
           uactId: this.userInfo.uactId,
         },
         showsLoading: true,
         success: (res) => {
-          console.log("票数量:", res);
+          console.log('票数量:', res)
           this.classList.map((item, index) => {
-            if (item.label === "全部") {
-              item.num = res.totalNum;
-            } else if (item.label === "已开票") {
-              item.num = res.invoicePass;
-            } else if (item.label === "开票中") {
-              item.num = res.invoiceProcessOn;
+            if (item.label === '全部') {
+              item.num = res.totalNum
+            } else if (item.label === '已开票') {
+              item.num = res.invoicePass
+            } else if (item.label === '开票中') {
+              item.num = res.invoiceProcessOn
             }
-          });
+          })
         },
-      });
+      })
     },
-    // 下拉刷新函数
+    //下拉刷新函数
     refreshList(index) {
-      console.log(this.classList[index].serviceId);
+      console.log(this.classList[index].serviceId)
       const data = {
         orgOfficeTypeFirstClass: this.serviceId,
         orgOfficeTypeSecondClass: this.classList[index].serviceId,
         pageSize: this.pageSize,
         pageNum: this.pageNum,
-      };
-      console.log("接口参数：", data);
+      }
+      console.log('接口参数：', data)
       api.getOfficeByTypeWithPage({
         data,
         success: (res) => {
           if (res.list && res.list.length > 0) {
-            const arry = [];
+            let arry = []
             res.list.map((items, indexs) => {
-              const obj = items;
-              obj["score"] = items.score;
+              let obj = items
+              obj['score'] = items.score
               if (items.orgOfficeInfoDetail) {
                 // console.err("items.orgOfficeInfoDetail:",items.orgOfficeInfoDetail)
                 const area = JSON.parse(
-                  items.orgOfficeInfoDetail.replace(/\s/g, " ")
-                );
+                  items.orgOfficeInfoDetail.replace(/\s/g, ' ')
+                )
                 // console.log("area:",area)
-                obj["hospital_level"] = area.hospital_level
+                obj['hospital_level'] = area.hospital_level
                   ? area.hospital_level
-                  : "";
-                obj["hospital_clinic"] = area.hospital_clinic
+                  : ''
+                obj['hospital_clinic'] = area.hospital_clinic
                   ? area.hospital_clinic
-                  : "";
-                obj["scenic_service_rank"] = area.scenic_service_rank;
-                obj["scenic_service_opentime"] = area.scenic_service_opentime;
-                obj["scenic_service_intro"] = area.scenic_service_intro
+                  : ''
+                obj['scenic_service_rank'] = area.scenic_service_rank
+                obj['scenic_service_opentime'] = area.scenic_service_opentime
+                obj['scenic_service_intro'] = area.scenic_service_intro
                   ? area.scenic_service_intro
-                  : area.hospital_intro;
+                  : area.hospital_intro
                 if (area.social_service_photos) {
-                  obj["social_service_photos"] =
-                    area.social_service_photos.split(",")[0];
+                  obj['social_service_photos'] =
+                    area.social_service_photos.split(',')[0]
                 }
               }
               // console.log('item:', obj)
-              arry.push(obj);
-            });
-            this.list = arry;
-            this.pageNum = this.pageNum + 1;
-            this.nomore = false;
+              arry.push(obj)
+            })
+            this.list = arry
+            this.pageNum = this.pageNum + 1
+            this.nomore = false
           } else {
-            this.list = [];
-            this.nomore = true;
+            this.list = []
+            this.nomore = true
           }
-          uni.stopPullDownRefresh();
+          uni.stopPullDownRefresh()
 
           //
         },
         fail: (err) => {
-          uni.showToast(err.message);
-          uni.stopPullDownRefresh();
+          uni.showToast(err.message)
+          uni.stopPullDownRefresh()
         },
-      });
+      })
     },
 
-    // 加载数据接口（分页接口）
+    //加载数据接口（分页接口）
     getInvoiceList(index) {
       const data = {
         uactId: this.userInfo.uactId,
         invoiceFlag: this.classList[index].invoiceFlag,
         pageSize: this.pageSize,
         pageNum: this.pageNum,
-      };
+      }
       // this.bottomTips = 'loading'
       api.getInvoiceList({
         data,
         showsLoading: true,
         success: (res) => {
-          console.log("加载数据：", res);
+          console.log('加载数据：', res)
           if (res.list && res.list.length > 0) {
             res.list.map((items, indexs) => {
-              this.list.push(items);
-            });
-            this.pageNum = this.pageNum + 1;
-            this.nomore = false;
+              this.list.push(items)
+            })
+            this.pageNum = this.pageNum + 1
+            this.nomore = false
           } else {
             // this.bottomTips = 'nomore'
-            this.nomore = true;
+            this.nomore = true
           }
-          console.log("加载结束：", this.pageNum);
+          console.log('加载结束：', this.pageNum)
           //
         },
-      });
+      })
     },
 
     // 点击导航切换swiper
     taggleNav(val) {
-      this.currentIndex = val;
-      this.pageNum = 1;
-      this.list = [];
-      this.getInvoiceList(this.currentIndex);
+      this.currentIndex = val
+      this.pageNum = 1
+      this.list = []
+      this.getInvoiceList(this.currentIndex)
     },
     /**
      * 点击查看详情
      */
     handleInfoClick(item) {
       uni.navigateTo({
-        url: "/pages/supermarket/invoice-info?invoiceId=" + item.invoiceId,
+         url: '/pages/supermarket/invoice-info?invoiceId='+item.invoiceId
       });
     },
     /**
@@ -344,10 +317,31 @@ export default {
     HandleInvoiceClick(item) {
       uni.navigateTo({
         url: `/pages/supermarket/company-list?select=0`,
-      });
+      })
     },
   },
-};
+  onShow() {},
+  onUnload() {},
+  watch: {},
+  computed: {},
+  filters: {
+    formaterMoney(v) {
+      return (v/100).toFixed(2)
+    },
+    // 日期过滤器, 用于格式化日期
+    dateFilter(value) {
+     var time = new Date(Number(value));
+      function add0(m) { return m < 10 ? '0' + m : m }
+      var y = time.getFullYear();
+      var m = time.getMonth() + 1;
+      var d = time.getDate();
+      var h = time.getHours();
+      var mm = time.getMinutes();
+      var s = time.getSeconds();
+      return y + '-' + add0(m) + '-' + add0(d) ;
+    },
+  },
+}
 </script>
 
 <style lang="scss" scoped>
@@ -378,7 +372,7 @@ export default {
         font-weight: bold;
         position: relative;
         &::after {
-          content: "";
+          content: '';
           display: block;
           position: absolute;
           left: 50%;
@@ -390,14 +384,14 @@ export default {
           border-radius: 5rpx;
         }
       }
-      // .nav-line {
-      // position: absolute;
-      // bottom: 0;
-      // height: 10rpx;
-      // border-radius: 10rpx;
-      // background-color: #ff711a;
-      // transition: left 0.3s ease;
-      // }
+      .nav-line {
+        // position: absolute;
+        // bottom: 0;
+        // height: 10rpx;
+        // border-radius: 10rpx;
+        // background-color: #ff711a;
+        // transition: left 0.3s ease;
+      }
     }
     .swiper {
       position: relative;
@@ -465,7 +459,7 @@ export default {
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            .btn-menu {
+            .btn {
               width: 230rpx;
               height: 72rpx;
               background: #ffffff;
@@ -479,7 +473,7 @@ export default {
         }
       }
       .status-box {
-        background-color: #f5f5f5;
+        background-color: #F5F5F5;
         padding-top: 300rpx;
         image {
           width: 440rpx;

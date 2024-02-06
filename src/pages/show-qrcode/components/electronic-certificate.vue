@@ -2,8 +2,7 @@
   <view class="electronic-certificate">
     <view class="front-side m-32">
       <image
-        class="national-emblem"
-        mode="scaleToFill"
+        class="national-emblem" mode="scaleToFill"
         src="https://ggllstatic.hpgjzlinfo.com/static/show-qrcode/icon-certificate-national-emblem.png"
       />
       <text class="title fs-36">中华人民共和国老年人证</text>
@@ -13,7 +12,7 @@
       <text class="name-value fs-20 c-black">{{ info.name }}</text>
       <text class="birthday-title fs-20">出生日期</text>
       <text class="birthday-value fs-20 c-black">
-        {{ dateFilter(info.birthday) }}
+        {{ info.birthday | dateFilter }}
       </text>
       <text class="id-card-number-title fs-20">公民身份号码</text>
       <text class="id-card-number-value fs-20 c-black">{{ info.psnNo }}</text>
@@ -27,7 +26,7 @@
       <text class="blood-type-value fs-20 c-black">{{ info.blood }}</text>
       <text class="card-number-title fs-16">编号</text>
       <text class="card-number-value fs-16 c-black">{{ cardNumber }}</text>
-      <image class="avatar" :src="avatar" mode="scaleToFill" />
+      <image class="avatar" :src="avatar"   mode="scaleToFill"/>
     </view>
     <view class="back-side m-32">
       <text class="contact-title fs-20">紧急联系人</text>
@@ -47,11 +46,11 @@
       </text>
       <text class="date-title fs-20">发证日期</text>
       <text class="date-value fs-20 c-black">
-        {{ dateFilter(info.licenceDate) }}
+        {{ info.licenceDate | dateFilter }}
       </text>
       <text class="remark-value fs-20 c-black">{{ info.memo }}</text>
       <text class="copyright fs-16">
-        中国老龄协会老年人才信息中心&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;制
+        中国老龄协会&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;制
       </text>
       <canvas canvas-id="qr-code" id="qr-code" class="qr-code" />
     </view>
@@ -86,23 +85,21 @@ export default {
       actionSheetItems: [],
     };
   },
-  onLoad() {
-    this.requestData();
-  },
-  methods: {
+  filters: {
     // 日期过滤器, 用于格式化日期
     dateFilter(value) {
       return dayjs(value).format("YYYY年MM月DD日");
     },
+  },
+  onLoad() {
+    this.requestData();
+  },
+  methods: {
     /**
      * 证件管理点击事件
      */
     handleManageButtonClick() {
-      this.actionSheetItems = [
-        "证照信息变更",
-        "更改绑定手机号",
-        "添加赡养扶养人关系",
-      ];
+      this.actionSheetItems = ["证照信息变更", "更改绑定手机号", "添加赡养扶养人关系"];
       this.$refs.actionSheet.open();
     },
     /**

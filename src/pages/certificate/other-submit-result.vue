@@ -1,22 +1,23 @@
 <template>
   <view class="submit-result">
     <!-- #ifdef MP-ALIPAY -->
-    <navigation-bar />
+    <navigation-bar  />
     <!-- #endif -->
-    <!-- #ifdef MP-WEIXIN -->
-    <navigation-bar :shows-back-button="true" title="申请结果" />
+     <!-- #ifdef MP-WEIXIN -->
+    <navigation-bar :shows-back-button="true"   title="申请结果"/>
     <!-- #endif -->
 
     <view class="blank" :style="{ height: navigationBarHeight + 'px' }" />
     <view class="flex-v flex-c-s">
       <image
-        class="result-icon mt-80"
-        mode="scaleToFill"
+        class="result-icon mt-80" mode="scaleToFill"
         src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-submit-success.png"
       />
       <text class="fs-50 c-primary mt-32">恭喜您</text>
       <text class="fs-50 c-primary">您的申领已提交成功</text>
-      <text class="fs-40 c-grey mt-32"> 预计将在2个工作日内完成审核 </text>
+      <text class="fs-40 c-grey mt-32">
+        预计将在2个工作日内完成审核
+      </text>
       <text class="fs-40 c-grey">请您耐心等待</text>
       <button
         class="button fs-44 c-white"
@@ -25,6 +26,7 @@
       >
         返回首页
       </button>
+
     </view>
   </view>
 </template>
@@ -36,14 +38,12 @@ export default {
   data() {
     return {
       // 导航栏高度
-      // #ifdef MP-WEIXIN
+      //#ifdef MP-WEIXIN
       navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-      // #endif
-      // #ifdef MP-ALIPAY
-      navigationBarHeight:
-        uni.getSystemInfoSync().statusBarHeight +
-        uni.getSystemInfoSync().titleBarHeight,
-      // #endif
+      //#endif
+      //#ifdef MP-ALIPAY
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
+       //#endif
       // 是否为自己申领
       isForSelf: false,
       // 是否显示积分弹窗

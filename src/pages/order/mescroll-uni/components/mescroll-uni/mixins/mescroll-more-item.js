@@ -4,11 +4,11 @@
 const MescrollMoreItemMixin = {
 	// 支付宝小程序不支持props的mixin,需写在具体的页面中
 	// #ifndef MP-ALIPAY || MP-DINGTALK
-	props: {
+	props:{
 		i: Number, // 每个tab页的专属下标
 		index: { // 当前tab的下标
 			type: Number,
-			default() {
+			default(){
 				return 0
 			}
 		}
@@ -16,51 +16,51 @@ const MescrollMoreItemMixin = {
 	// #endif
 	data() {
 		return {
-			downOption: {
-				auto: false // 不自动加载
+			downOption:{
+				auto:false // 不自动加载
 			},
-			upOption: {
-				auto: false // 不自动加载
+			upOption:{
+				auto:false // 不自动加载
 			},
 			isInit: false // 当前tab是否已初始化
 		}
 	},
-	watch: {
+	watch:{
 		// 监听下标的变化
-		index(val) {
+		index(val){
 			if (this.i === val && !this.isInit) this.mescrollTrigger()
 		}
 	},
 	methods: {
 		// 以ref的方式初始化mescroll对象 (兼容字节跳动小程序)
 		mescrollInitByRef() {
-			if (!this.mescroll || !this.mescroll.resetUpScroll) {
+			if(!this.mescroll || !this.mescroll.resetUpScroll){
 				// 字节跳动小程序编辑器不支持一个页面存在相同的ref, 多mescroll的ref需动态生成, 格式为'mescrollRef下标'
-				const mescrollRef = this.$refs.mescrollRef || this.$refs['mescrollRef' + this.i]
-				if (mescrollRef) this.mescroll = mescrollRef.mescroll
+				let mescrollRef = this.$refs.mescrollRef || this.$refs['mescrollRef'+this.i];
+				if(mescrollRef) this.mescroll = mescrollRef.mescroll
 			}
 		},
 		// mescroll组件初始化的回调,可获取到mescroll对象 (覆盖mescroll-mixins.js的mescrollInit, 为了标记isInit)
 		mescrollInit(mescroll) {
-			this.mescroll = mescroll
-			this.mescrollInitByRef && this.mescrollInitByRef() // 兼容字节跳动小程序
+			this.mescroll = mescroll;
+			this.mescrollInitByRef && this.mescrollInitByRef(); // 兼容字节跳动小程序
 			// 自动加载当前tab的数据
-			if (this.i === this.index) {
+			if(this.i === this.index){
 				this.mescrollTrigger()
 			}
 		},
 		// 主动触发加载
-		mescrollTrigger() {
-			this.isInit = true // 标记为true
+		mescrollTrigger(){
+			this.isInit = true; // 标记为true
 			if (this.mescroll) {
 				if (this.mescroll.optDown.use) {
-					this.mescroll.triggerDownScroll()
-				} else {
-					this.mescroll.triggerUpScroll()
+					this.mescroll.triggerDownScroll();
+				} else{
+					this.mescroll.triggerUpScroll();
 				}
 			}
 		}
 	}
 }
 
-export default MescrollMoreItemMixin
+export default MescrollMoreItemMixin;

@@ -2,52 +2,38 @@
   <view class="bank-card-picker">
     <!-- 导航栏 -->
     <!-- #ifdef MP-ALIPAY -->
-    <navigation-bar :alpha="1">
-      <template v-slot:title1>
-        <view
-          class="navigation-bar flex-h flex-c-s"
-          :style="{ height: '44px' }"
-        >
+    <navigation-bar  :alpha="1">
+      <view slot="title1">
+         <view class="navigation-bar flex-h flex-c-s"  :style="{height: '44px'}">
           <!-- <view class="back-icon"></view>
           <image class="icon-desc"
           @click="handleHomeBack"
                  src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-index.png"
                  mode="scaleToFill" /> -->
-
-          <text class="navigation-bar__title fs-44 c-black flex-1">{{
-            title
-          }}</text>
+                
+          <text class="navigation-bar__title fs-44 c-black flex-1">{{title}}</text>
         </view>
-      </template>
+      </view>
     </navigation-bar>
     <!-- #endif -->
     <!-- #ifdef MP-WEIXIN -->
-    <navigation-bar :alpha="1">
-      <template v-slot:title1>
-        <view
-          class="navigation-bar flex-h flex-c-s"
-          :style="{ height: '44px' }"
-        >
-          <image
-            class="back-icon"
-            @click="handleNavBack"
-            src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-arrow-left.png"
-            mode="scaleToFill"
-          />
-          <text class="navigation-bar__title fs-44 c-black flex-1">{{
-            title
-          }}</text>
+    <navigation-bar  :alpha="1" >
+        <view slot="title1">
+        <view class="navigation-bar flex-h flex-c-s"  :style="{height: '44px'}">
+          <image class="back-icon"
+          @click="handleNavBack"
+                 src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-arrow-left.png"
+                 mode="scaleToFill" />
+          <text class="navigation-bar__title fs-44 c-black flex-1">{{title}}</text>
+          
         </view>
-      </template>
+      </view>
     </navigation-bar>
     <!-- #endif -->
     <view class="blank" :style="{ height: navigationBarHeight + 'px' }" />
 
     <view class="search-panel">
-      <image
-        class="icon-search"
-        src="https://ggllstatic.hpgjzlinfo.com/static/pay/icon-search.png"
-      />
+      <image class="icon-search" src="https://ggllstatic.hpgjzlinfo.com/static/pay/icon-search.png" />
       <input class="search-input" placeholder="请输入银行名称" />
       <text class="search-txt">搜索</text>
     </view>
@@ -77,19 +63,12 @@
           :key="cityIndex"
           @click="handleCityClick(city)"
         >
-          <image
-            class="icon-bank"
-            src="https://ggllstatic.hpgjzlinfo.com/static/pay/icon-search.png"
-          />
+          <image class="icon-bank" src="https://ggllstatic.hpgjzlinfo.com/static/pay/icon-search.png" />
           <text class="row__text fs-36 c-black">{{ city.name }}</text>
         </view>
       </view>
     </scroll-view>
-    <view
-      class="index-list flex-v flex-c-c"
-      v-if="!searchResult"
-      :style="{ top: navigationBarHeight + 60 + 'px' }"
-    >
+    <view class="index-list flex-v flex-c-c" v-if="!searchResult" :style="{top: navigationBarHeight +60+'px'}">
       <text
         v-for="(item, index) in indexes"
         class="item fs-32 animated"
@@ -116,7 +95,7 @@ export default {
       navigationBarHeight: statusBarHeight + 44,
       // 列表高度
       scrollViewHeight: windowHeight - statusBarHeight - 44,
-      title: "一键绑卡",
+      title: '一键绑卡',
       // 滚动到顶部的视图
       viewToScroll: "",
       // 每个 section 的高度
@@ -134,12 +113,12 @@ export default {
         location: null,
         recent: uni.getStorageSync("citySearchHistories") || [],
         hot: [
-          { name: "北京市", code: "110100" },
-          { name: "上海市", code: "310100" },
-          { name: "厦门市", code: "350200" },
-          { name: "深圳市", code: "440300" },
-          { name: "杭州市", code: "330100" },
-          { name: "成都市", code: "510100" },
+          { name: "北京市",code: "110100" },
+          { name: "上海市" ,code:"310100"},
+          { name: "厦门市" ,code:"350200"},
+          { name: "深圳市" ,code:"440300"},
+          { name: "杭州市" ,code:"330100"},
+          { name: "成都市" ,code:"510100"},
         ],
         list: [],
       },
@@ -160,7 +139,7 @@ export default {
     this.requestData();
   },
   methods: {
-    // 返回上一页
+      // 返回上一页
     handleNavBack() {
       uni.navigateBack();
     },
@@ -231,18 +210,18 @@ export default {
       if (
         timestamp - this.scrollTimestamp < 100 ||
         timestamp - this.clickTimestamp < 500
-      ) {
+      )
         return;
-      }
       this.scrollTimestamp = timestamp;
 
       const scrollTop = e.detail.scrollTop;
       const scrollHeight = e.detail.scrollHeight;
-      const scrollViewHeight = uni.getSystemInfoSync().windowHeight - 128;
-      // uni.upx2px(128);
+      const scrollViewHeight =
+        uni.getSystemInfoSync().windowHeight - 128
+        // uni.upx2px(128);
       if (scrollTop < 0 || scrollTop > scrollHeight - scrollViewHeight) return;
 
-      console.log(scrollTop);
+      console.log(scrollTop)
       const index = this.heights.findIndex(
         (value, index, array) =>
           value <= scrollTop && scrollTop < array[index + 1]
@@ -267,7 +246,9 @@ export default {
             },
           });
         },
-        fail: (err) => {},
+        fail:(err)=>{
+
+        }
       });
     },
     /**
@@ -308,8 +289,12 @@ export default {
           .createSelectorQuery()
           .selectAll(".section")
           .boundingClientRect((rects) => {
-            this.heights = rects.map((item) => item.top - 128);
-            console.log(this.heights, uni.upx2px(128));
+            this.heights = rects.map(
+              (item) =>
+                item.top - 128
+            );
+            console.log(this.heights, uni.upx2px(128))
+            
           })
           .exec();
       }, 0);
@@ -320,12 +305,12 @@ export default {
 
 <style lang="scss" scoped>
 .bank-card-picker {
-  .navigation-bar {
+  .navigation-bar{
     box-sizing: border-box;
     padding-left: 24rpx;
     width: 100vw;
     height: 100%;
-    .back-icon {
+    .back-icon{
       flex-shrink: 0;
       width: 44rpx;
       height: 44rpx;
@@ -333,7 +318,7 @@ export default {
       position: relative;
       z-index: 10;
     }
-    .icon-desc {
+    .icon-desc{
       flex-shrink: 0;
       // width: 40rpx;
       // height: 40rpx;
@@ -341,28 +326,28 @@ export default {
       position: relative;
       z-index: 10;
     }
-    .desc {
+    .desc{
       color: #666666;
     }
-    .navigation-bar__title {
+    .navigation-bar__title{
       position: absolute;
       left: 0;
       right: 0;
       text-align: center;
     }
-    .navigation-bar__complete {
+    .navigation-bar__complete{
       position: absolute;
       right: 36rpx;
     }
   }
-  .search-panel {
+  .search-panel{
     width: 100%;
     height: 120rpx;
     display: flex;
     align-items: center;
     position: relative;
     padding: 0 16rpx 0 32rpx;
-    .search-input {
+    .search-input{
       width: 592rpx;
       height: 88rpx;
       padding-left: 96rpx;
@@ -370,16 +355,16 @@ export default {
       border-radius: 44rpx;
       font-size: 40rpx;
       box-sizing: border-box;
-      background: #f5f5f5;
+      background: #F5F5F5;
     }
-    .icon-search {
+    .icon-search{
       width: 40rpx;
       height: 40rpx;
       position: absolute;
       top: 40rpx;
       left: 64rpx;
     }
-    .search-txt {
+    .search-txt{
       font-size: 40rpx;
       color: #333333;
       margin-left: 22rpx;
@@ -398,7 +383,7 @@ export default {
       &-header {
         height: 60rpx;
         color: #999999;
-        background: #eeeeee;
+        background: #EEEEEE;
       }
     }
     .items {
@@ -424,7 +409,7 @@ export default {
     .row {
       height: 88rpx;
       border-bottom: 2rpx solid $uni-bg-color-grey;
-      .icon-bank {
+      .icon-bank{
         width: 46rpx;
         height: 46rpx;
         margin-right: 14rpx;

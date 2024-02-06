@@ -1,89 +1,87 @@
 <template>
   <view class="pages">
     <view class="status">
-      <view
-        v-for="(i, index) in statusList"
-        :key="i.id"
-        :class="{ active: activeIndex === index, 'status-label': true }"
-        @click="handleItemClick(index, i)"
-        >{{ i.label }}</view
-      >
+      <view v-for="(i, index) in statusList" :key="i.id"
+        :class="{active: activeIndex === index,'status-label':true}"
+        @click="handleItemClick(index, i)">{{i.label}}</view>
     </view>
     <view class="top-tip">
-      <view class="left"> i </view>
+      <view class="left">
+        i
+      </view>
       <view class="right">
         新的订单将会在第二天查询并展示，如有疑问请
         <text class="call-phone" @click="callPhone">联系客服</text>
       </view>
     </view>
 
-    <view class="insurance-list" v-if="list.length > 0">
+    <view class="insurance-list" v-if="list.length>0">
       <view v-for="item in list" class="item" :key="item.id">
         <insurance-order-item :item="item"></insurance-order-item>
       </view>
     </view>
     <view class="status-box flex-v flex-c-s" v-if="list.length === 0">
-      <image
-        class="icon-img"
+      <image class="icon-img"
         src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/no-order.png"
-        mode="scaleToFill"
-      />
+        mode="scaleToFill" />
       <view>您还没有相关订单</view>
     </view>
   </view>
 </template>
 
 <script>
-import dayjs from "dayjs";
-import InsuranceOrderItem from "./insurance-order-item.vue";
+import dayjs from 'dayjs'
+import InsuranceOrderItem from './insurance-order-item.vue'
 export default {
-  name: "insurance-order",
+  name: 'insurance-order',
   components: { InsuranceOrderItem },
   props: {
     list: {
       type: Array,
-      default: () => [],
-    },
+      default: () => []
+    }
   },
   data() {
     return {
       activeIndex: 0,
-      dialogContent: "",
-      icon: "https://ggllstatic.hpgjzlinfo.com/static/life/warning-circle.png",
+      dialogContent: '',
+      icon: 'https://ggllstatic.hpgjzlinfo.com/static/life/warning-circle.png',
       statusList: [
-        { id: null, label: "全部" },
-        { id: 5, label: "保障中" },
-        { id: 7, label: "已失效" },
-      ],
-    };
+        { id: null, label: '全部' },
+        { id: 5, label: '保障中' },
+        { id: 7, label: '已失效' }
+      ]
+    }
   },
   methods: {
-    formaterMoney(v) {
-      return Number(v).toFixed(2);
-    },
-    dateFilter(value) {
-      return dayjs(value).format("YYYY-MM-DD HH:mm");
-    },
     // 客服电话
     callPhone() {
       uni.makePhoneCall({
-        phoneNumber: "4009686660",
-      });
+        phoneNumber: '4009686660'
+      })
     },
     toDetail(data) {
       uni.navigateTo({
-        url: `/sub-pages/me/order-detail/main?id=${data.orderId}&popUpType=1`,
-      });
+        url: `/sub-pages/me/order-detail/main?id=${data.orderId}&popUpType=1`
+      })
     },
     handleItemClick(index, i) {
-      this.activeIndex = index;
-      this.$emit("resetOptions", i.id);
-    },
+      this.activeIndex = index
+      this.$emit('resetOptions', i.id)
+    }
   },
-};
+  filters: {
+    formaterMoney(v) {
+      return Number(v).toFixed(2)
+    },
+    dateFilter(value) {
+      return dayjs(value).format('YYYY-MM-DD HH:mm')
+    }
+  }
+}
 </script>
 
-<style lang="scss" scoped>
+<style  lang="scss" scoped>
 .pages {
   background-color: #f2f2f2;
   position: relative;

@@ -6,13 +6,13 @@ const MescrollMoreMixin = {
 		return {
 			tabIndex: 0, // 当前tab下标
 			mescroll: { // mescroll-body写在子子子...组件的情况 (多级)
-				onPageScroll: e => {
+				onPageScroll: e=>{
 					this.handlePageScroll(e)
 				},
-				onReachBottom: () => {
+				onReachBottom: ()=>{
 					this.handleReachBottom()
 				},
-				onPullDownRefresh: () => {
+				onPullDownRefresh: ()=>{
 					this.handlePullDownRefresh()
 				}
 			}
@@ -26,49 +26,49 @@ const MescrollMoreMixin = {
 		this.handleReachBottom()
 	},
 	// 当down的native: true时, 还需传递此方法进到子组件
-	onPullDownRefresh() {
+	onPullDownRefresh(){
 		this.handlePullDownRefresh()
 	},
-	methods: {
-		handlePageScroll(e) {
-			const mescroll = this.getMescroll(this.tabIndex)
-			mescroll && mescroll.onPageScroll(e)
+	methods:{
+		handlePageScroll(e){
+			let mescroll = this.getMescroll(this.tabIndex);
+			mescroll && mescroll.onPageScroll(e);
 		},
-		handleReachBottom() {
-			const mescroll = this.getMescroll(this.tabIndex)
-			mescroll && mescroll.onReachBottom()
+		handleReachBottom(){
+			let mescroll = this.getMescroll(this.tabIndex);
+			mescroll && mescroll.onReachBottom();
 		},
-		handlePullDownRefresh() {
-			const mescroll = this.getMescroll(this.tabIndex)
-			mescroll && mescroll.onPullDownRefresh()
+		handlePullDownRefresh(){
+			let mescroll = this.getMescroll(this.tabIndex);
+			mescroll && mescroll.onPullDownRefresh();
 		},
 		// 根据下标获取对应子组件的mescroll
-		getMescroll(i) {
-			if (!this.mescrollItems) this.mescrollItems = []
-			if (!this.mescrollItems[i]) {
+		getMescroll(i){
+			if(!this.mescrollItems) this.mescrollItems = [];
+			if(!this.mescrollItems[i]) {
 				// v-for中的refs
-				const vForItem = this.$refs['mescrollItem']
-				if (vForItem) {
+				let vForItem = this.$refs["mescrollItem"];
+				if(vForItem){
 					this.mescrollItems[i] = vForItem[i]
-				} else {
+				}else{
 					// 普通的refs,不可重复
-					this.mescrollItems[i] = this.$refs['mescrollItem' + i]
+					this.mescrollItems[i] = this.$refs["mescrollItem"+i];
 				}
 			}
-			const item = this.mescrollItems[i]
+			let item = this.mescrollItems[i]
 			return item ? item.mescroll : null
 		},
 		// 切换tab,恢复滚动条位置
-		tabChange(i) {
-			const mescroll = this.getMescroll(i)
-			if (mescroll) {
+		tabChange(i){
+			let mescroll = this.getMescroll(i);
+			if(mescroll){
 				// 延时(比$nextTick靠谱一些),确保元素已渲染
-				setTimeout(() => {
-					mescroll.scrollTo(mescroll.getScrollTop(), 0)
-				}, 30)
+				setTimeout(()=>{
+					mescroll.scrollTo(mescroll.getScrollTop(),0)
+				},30)
 			}
 		}
 	}
 }
 
-export default MescrollMoreMixin
+export default MescrollMoreMixin;

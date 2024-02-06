@@ -13,24 +13,24 @@
 <script>
 export default {
 	props: {
-		option: Object, // down的配置项
+		option: Object , // down的配置项
 		type: Number // 下拉状态（inOffset：1， outOffset：2， showLoading：3， endDownScroll：4）
 	},
 	computed: {
 		// 支付宝小程序需写成计算属性,prop定义default仍报错
-		mOption() {
+		mOption(){
 			return this.option || {}
 		},
 		// 是否在加载中
-		isDownLoading() {
+		isDownLoading(){
 			return this.type === 3
 		},
 		// 旋转的角度
-		downRotate() {
+		downRotate(){
 			return this.type === 2 ? 'rotate(180deg)' : 'rotate(0deg)'
 		}
 	}
-}
+};
 </script>
 
 <style>

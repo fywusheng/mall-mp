@@ -5,57 +5,53 @@
         <image class="icon" :src="icon" mode="scaleToFill" />
         <text>保险</text>
       </view>
-      <view class="right" :class="{ active: item.orderStatus === '5' }">
-        {{ item.orderStatus === "5" ? "保障中" : "已失效" }}</view
-      >
+      <view class="right" :class="{active: item.orderStatus === '5'}">
+        {{item.orderStatus === '5'? '保障中':'已失效'}}</view>
     </view>
     <view class="cont">
-      <view class="name">{{ item.supermarketName }}</view>
-      <view class="time"
-        >保障期限：{{ dateFilter(item.orderTime) }}至{{
-          dateFilter(item.expirationTime)
-        }}
+      <view class="name">{{item.supermarketName}}</view>
+      <view class="time">保障期限：{{item.orderTime | dateFilter}}至{{item.expirationTime | dateFilter}}
       </view>
-      <view class="time"
-        >被保人：{{ desensitizeName(item.transactionSerialNo) }}</view
-      >
+      <view class="time">被保人：{{item.transactionSerialNo | desensitizeName}}</view>
     </view>
   </view>
 </template>
 
 <script>
-import dayjs from "dayjs";
-import { desensitizeName } from "@/utils/desensitization.js";
+import dayjs from 'dayjs'
+import { desensitizeName } from '@/utils/desensitization.js'
 export default {
-  name: "insurance-order-item",
+  name: 'insurance-order-item',
   props: {
     item: {
       type: Object,
-      default: () => {},
-    },
+      default: () => { }
+    }
   },
   data() {
     return {
-      icon: "https://ggllstatic.hpgjzlinfo.com/static/life/insurance-logo.png",
-    };
+      icon: 'https://ggllstatic.hpgjzlinfo.com/static/life/insurance-logo.png'
+    }
   },
   methods: {
-    dateFilter(value) {
-      return dayjs(value).format("YYYY-MM-DD");
-    },
-    desensitizeName(name) {
-      return desensitizeName(name);
-    },
     toDetail(data) {
       uni.navigateTo({
-        url: `/pages/order/insurance-order-info?insuCode=${data.orderId}`,
-      });
-    },
+        url: `/pages/order/insurance-order-info?insuCode=${data.orderId}`
+      })
+    }
   },
-};
+  filters: {
+    dateFilter(value) {
+      return dayjs(value).format('YYYY-MM-DD')
+    },
+    desensitizeName(name) {
+      return desensitizeName(name)
+    }
+  }
+}
 </script>
 
-<style lang="scss" scoped>
+<style  lang="scss" scoped>
 .insurance-order-item {
   width: 686rpx;
   height: 338rpx;

@@ -4,10 +4,11 @@
       <view class="item" v-for="(item, index) in params.materials" :key="index">
         <view class="row flex-h flex-c-s p-20-0">
           <text class="row__indicator">*</text>
-          <text class="row__label--small fs-40 c-black"> 材料类型 </text>
+          <text class="row__label--small fs-40 c-black">
+            材料类型
+          </text>
           <image
-            class="row__illustration ml-12"
-            mode="scaleToFill"
+            class="row__illustration ml-12" mode="scaleToFill"
             src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-illustration.png"
           />
           <picker
@@ -24,8 +25,7 @@
             </text>
           </picker>
           <image
-            class="row__accessory"
-            mode="scaleToFill"
+            class="row__accessory" mode="scaleToFill"
             src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
           />
         </view>
@@ -42,8 +42,7 @@
         <image
           v-if="item.url"
           class="photo mb-32"
-          :src="item.url"
-          mode="scaleToFill"
+          :src="item.url" mode="scaleToFill"
           @click="handlePhotoPickerClick(index)"
         />
         <view
@@ -52,8 +51,7 @@
           @click="handlePhotoPickerClick(index)"
         >
           <image
-            class="photo-picker__icon"
-            mode="scaleToFill"
+            class="photo-picker__icon" mode="scaleToFill"
             src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-select-photo.png"
           />
           <text class="photo-picker__text fs-32 c-black mt-16">

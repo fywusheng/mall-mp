@@ -1,97 +1,94 @@
 <template>
   <view class="pages">
     <view class="nearby-list" v-if="list.length > 0">
-      <view
-        class="item"
-        v-for="(item, index) in list"
-        @click="handleOrderInfo(item.orderId)"
-        :key="index"
-      >
+      <view class="item" v-for="(item,index) in list" @click="handleOrderInfo(item.orderId)"
+        :key="index">
         <view class="header_line">
           <view class="left">
             <image class="t_icon" :src="item.logoPath" />
-            <view class="type">{{ item.orderSourceName }}</view>
+            <view class="type">{{item.orderSourceName}}</view>
           </view>
           <view class="right">已完成</view>
         </view>
         <view class="_topLine">
           <view class="left_part">
-            <image
-              class="logo-img"
-              :src="item.supermarketThumbnail"
-              mode="scaleToFill"
-            />
-            <view class="name">{{ item.supermarketName }}</view>
+            <image class="logo-img" :src="item.supermarketThumbnail" mode="scaleToFill" />
+            <view class="name">{{item.supermarketName}}</view>
           </view>
           <view class="r_pay">
             <view class="pay">实付</view>
-            <view class="money">￥{{ formaterMoney(item.paymentAmount) }}</view>
+            <view class="money">￥{{item.paymentAmount|formaterMoney}}</view>
           </view>
         </view>
-        <view class="address">{{ dateFilter(item.orderTime) }}</view>
+        <view class="address">{{item.orderTime | dateFilter}}</view>
       </view>
     </view>
     <view class="status-box flex-v flex-c-s" v-if="list.length === 0">
-      <image
-        class="icon-img"
+      <image class="icon-img"
         src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/no-order.png"
-        mode="scaleToFill"
-      />
+        mode="scaleToFill" />
       <view>您还没有相关订单</view>
     </view>
   </view>
 </template>
 
 <script>
-import api from "@/apis/index.js";
-import dayjs from "dayjs";
+import api from '@/apis/index.js'
+import dayjs from 'dayjs'
 export default {
   components: {},
   props: {
     list: {
       type: Array,
-      default: [],
-    },
+      default: []
+    }
   },
   data() {
-    return {};
+    return {
+    }
   },
-  created() {},
-  onLoad(e) {},
+  created() {
+  },
+  onLoad(e) {
+  },
   // 下拉刷新
-  onPullDownRefresh() {},
+  onPullDownRefresh() {
+
+  },
   // 上拉加载
-  onReachBottom() {},
+  onReachBottom() {
+
+  },
   methods: {
     // 点击订单
     handleOrderInfo(orderId) {
-      console.log("点击订单", orderId);
+      console.log('点击订单', orderId)
       uni.navigateTo({
-        url: "/pages/supermarket/order-info?orderId=" + orderId,
-      });
-    },
+        url: '/pages/supermarket/order-info?orderId=' + orderId
+      })
+    }
   },
   filters: {
     setDistance(item) {
-      const s = Number(item) / 1000;
+      const s = Number(item) / 1000
       if (s.toFixed(3) < 1) {
-        return parseInt(s * 1000) + "m";
+        return parseInt(s * 1000) + 'm'
       } else {
-        return s.toFixed(1) + "km";
+        return s.toFixed(1) + 'km'
       }
     },
     formaterMoney(v) {
-      return (v / 100).toFixed(2);
+      return (v / 100).toFixed(2)
     },
     // 日期过滤器, 用于格式化日期
     dateFilter(value) {
-      return dayjs(value).format("YYYY-MM-DD HH:mm:ss");
-    },
-  },
-};
+      return dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+    }
+  }
+}
 </script>
 
-<style lang="scss" scoped>
+<style  lang="scss" scoped>
 .pages {
   background-color: #f2f2f2;
   .nearby-list {

@@ -1,39 +1,18 @@
 <!-- tab组件: <me-tabs v-model="tabIndex" :tabs="tabs" @change="tabChange"></me-tabs> -->
 <template>
-  <view
-    class="me-tabs"
-    :class="{ 'tabs-fixed': fixed }"
-    :style="{ height: tabHeightVal, top: topFixed, 'margin-top': topMargin }"
-  >
-    <scroll-view
-      v-if="tabs.length"
-      :id="viewId"
-      :scroll-left="scrollLeft"
-      scroll-x
-      scroll-with-animation
-      :scroll-animation-duration="300"
-    >
-      <view
-        class="tabs-item"
-        :class="{ 'tabs-flex': !isScroll, 'tabs-scroll': isScroll }"
-      >
+  <view class="me-tabs" :class="{'tabs-fixed': fixed}"
+    :style="{height: tabHeightVal, top:topFixed, 'margin-top':topMargin}">
+    <scroll-view v-if="tabs.length" :id="viewId" :scroll-left="scrollLeft" scroll-x
+      scroll-with-animation :scroll-animation-duration="300">
+      <view class="tabs-item" :class="{'tabs-flex':!isScroll, 'tabs-scroll':isScroll}">
         <!-- tab -->
-        <view
-          class="tab-item"
-          :style="{
-            width: tabWidthVal,
-            height: tabHeightVal,
-            'line-height': tabHeightVal,
-          }"
-          v-for="(tab, i) in tabs"
-          :class="{ active: value === i }"
-          :key="i"
-          @click="tabClick(i)"
-        >
-          {{ getTabName(tab) }}
+        <view class="tab-item"
+          :style="{width: tabWidthVal, height: tabHeightVal, 'line-height':tabHeightVal}"
+          v-for="(tab, i) in tabs" :class="{'active': value===i}" :key="i" @click="tabClick(i)">
+          {{getTabName(tab)}}
         </view>
         <!-- 下划线 -->
-        <view class="tabs-line" :style="{ left: lineLeft }"></view>
+        <view class="tabs-line" :style="{left:lineLeft}"></view>
       </view>
     </scroll-view>
   </view>
@@ -42,142 +21,127 @@
 <script>
 export default {
   props: {
-    tabs: {
-      // 支持格式: ['全部', '待付款'] 或 [{name:'全部'}, {name:'待付款'}]
+    tabs: { // 支持格式: ['全部', '待付款'] 或 [{name:'全部'}, {name:'待付款'}]
       type: Array,
       default() {
-        return [];
-      },
+        return []
+      }
     },
-    nameKey: {
-      // 取name的字段
+    nameKey: { // 取name的字段
       type: String,
-      default: "name",
+      default: 'name'
     },
-    value: {
-      // 当前显示的下标 (使用v-model语法糖: 1.props需为value; 2.需回调input事件)
+    value: { // 当前显示的下标 (使用v-model语法糖: 1.props需为value; 2.需回调input事件)
       type: [String, Number],
-      default: 0,
+      default: 0
     },
     fixed: Boolean, // 是否悬浮,默认false
     tabWidth: Number, // 每个tab的宽度,默认不设置值,为flex平均分配; 如果指定宽度,则不使用flex,每个tab居左,超过则水平滑动(单位默认rpx)
-    height: {
-      // 高度,单位rpx
+    height: { // 高度,单位rpx
       type: Number,
-      default: 64,
+      default: 64
     },
-    top: {
-      // 顶部偏移的距离,默认单位rpx (当fixed=true时,已加上windowTop)
+    top: { // 顶部偏移的距离,默认单位rpx (当fixed=true时,已加上windowTop)
       type: Number,
-      default: 0,
-    },
+      default: 0
+    }
   },
   data() {
     return {
-      viewId: "id_" + Math.random().toString(36).substr(2, 16),
+      viewId: 'id_' + Math.random().toString(36).substr(2, 16),
       scrollLeft: 0,
       windowWidth: 0,
-      windowTop: 0,
-    };
+      windowTop: 0
+    }
   },
   computed: {
     isScroll() {
-      return this.tabWidth && this.tabs.length; // 指定了tabWidth的宽度,则支持水平滑动
+      return this.tabWidth && this.tabs.length // 指定了tabWidth的宽度,则支持水平滑动
     },
     tabHeightPx() {
-      return uni.upx2px(this.height);
+      return uni.upx2px(this.height)
     },
     tabHeightVal() {
-      return this.tabHeightPx + "px";
+      return this.tabHeightPx + 'px'
     },
     tabWidthPx() {
-      return uni.upx2px(this.tabWidth);
+      return uni.upx2px(this.tabWidth)
     },
     tabWidthVal() {
-      return this.isScroll ? this.tabWidthPx + "px" : "";
+      return this.isScroll ? this.tabWidthPx + 'px' : ''
     },
     lineLeft() {
       if (this.isScroll) {
-        return this.tabWidthPx * this.value + this.tabWidthPx / 2 + "px"; // 需转为px (用rpx的话iOS真机显示有误差)
+        return this.tabWidthPx * this.value + this.tabWidthPx / 2 + 'px' // 需转为px (用rpx的话iOS真机显示有误差)
       } else {
-        return (
-          (100 / this.tabs.length) * (this.value + 1) -
-          100 / (this.tabs.length * 2) +
-          "%"
-        );
+        return 100 / this.tabs.length * (this.value + 1) - 100 / (this.tabs.length * 2) + '%'
       }
     },
     topFixed() {
-      return this.fixed ? this.windowTop + uni.upx2px(this.top) + "px" : 0;
+      return this.fixed ? this.windowTop + uni.upx2px(this.top) + 'px' : 0
     },
     topMargin() {
-      return this.fixed ? 0 : this.top + "rpx";
-    },
+      return this.fixed ? 0 : this.top + 'rpx'
+    }
   },
   watch: {
     tabs() {
-      this.warpWidth = null; // 重新计算容器宽度
-      this.scrollCenter(); // 水平滚动到中间
+      this.warpWidth = null // 重新计算容器宽度
+      this.scrollCenter() // 水平滚动到中间
     },
     value() {
-      this.scrollCenter(); // 水平滚动到中间
-    },
+      this.scrollCenter() // 水平滚动到中间
+    }
   },
   created() {
-    const sys = uni.getSystemInfoSync();
-    this.windowWidth = sys.windowWidth;
-    this.windowTop = sys.windowTop;
+    const sys = uni.getSystemInfoSync()
+    this.windowWidth = sys.windowWidth
+    this.windowTop = sys.windowTop
   },
   mounted() {
-    this.scrollCenter(); // 滚动到当前下标
+    this.scrollCenter() // 滚动到当前下标
   },
   methods: {
     getTabName(tab) {
-      return typeof tab === "object" ? tab[this.nameKey] : tab;
+      return typeof tab === 'object' ? tab[this.nameKey] : tab
     },
     tabClick(i) {
       if (this.value != i) {
-        this.$emit("input", i);
-        this.$emit("change", i);
+        this.$emit('input', i)
+        this.$emit('change', i)
       }
     },
     async scrollCenter() {
-      if (!this.isScroll) return;
-      if (!this.warpWidth) {
-        // tabs容器的宽度
-        const rect = await this.initWarpRect();
-        this.warpWidth = rect ? rect.width : this.windowWidth; // 某些情况下取不到宽度,暂时取屏幕宽度
+      if (!this.isScroll) return
+      if (!this.warpWidth) { // tabs容器的宽度
+        const rect = await this.initWarpRect()
+        this.warpWidth = rect ? rect.width : this.windowWidth // 某些情况下取不到宽度,暂时取屏幕宽度
       }
-      const tabLeft = this.tabWidthPx * this.value + this.tabWidthPx / 2; // 当前tab中心点到左边的距离
-      const diff = tabLeft - this.warpWidth / 2; // 如果超过tabs容器的一半,则滚动差值
-      this.scrollLeft = diff;
+      const tabLeft = this.tabWidthPx * this.value + this.tabWidthPx / 2 // 当前tab中心点到左边的距离
+      const diff = tabLeft - this.warpWidth / 2 // 如果超过tabs容器的一半,则滚动差值
+      this.scrollLeft = diff
       // #ifdef MP-TOUTIAO
-      this.scrollTimer && clearTimeout(this.scrollTimer);
-      this.scrollTimer = setTimeout(() => {
-        // 字节跳动小程序,需延时再次设置scrollLeft,否则tab切换跨度较大时不生效
-        this.scrollLeft = Math.ceil(diff);
-      }, 400);
+      this.scrollTimer && clearTimeout(this.scrollTimer)
+      this.scrollTimer = setTimeout(() => { // 字节跳动小程序,需延时再次设置scrollLeft,否则tab切换跨度较大时不生效
+        this.scrollLeft = Math.ceil(diff)
+      }, 400)
       // #endif
     },
     initWarpRect() {
-      return new Promise((resolve) => {
-        setTimeout(() => {
-          // 延时确保dom已渲染, 不使用$nextclick
-          let query = uni.createSelectorQuery();
+      return new Promise(resolve => {
+        setTimeout(() => { // 延时确保dom已渲染, 不使用$nextclick
+          let query = uni.createSelectorQuery()
           // #ifndef MP-ALIPAY
-          query = query.in(this); // 支付宝小程序不支持in(this),而字节跳动小程序必须写in(this), 否则都取不到值
+          query = query.in(this) // 支付宝小程序不支持in(this),而字节跳动小程序必须写in(this), 否则都取不到值
           // #endif
-          query
-            .select("#" + this.viewId)
-            .boundingClientRect((data) => {
-              resolve(data);
-            })
-            .exec();
-        }, 20);
-      });
-    },
-  },
-};
+          query.select('#' + this.viewId).boundingClientRect(data => {
+            resolve(data)
+          }).exec()
+        }, 20)
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss">

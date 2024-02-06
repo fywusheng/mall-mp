@@ -2,38 +2,25 @@
   <view class="confirm-card-no">
     <!-- #ifdef MP-ALIPAY -->
     <navigation-bar :alpha="1">
-      <template v-slot:title1>
-        <view
-          class="navigation-bar flex-h flex-c-s"
-          :style="{ height: '44px' }"
-        >
+      <view slot="title1">
+        <view class="navigation-bar flex-h flex-c-s" :style="{height: '44px'}">
           <view class="back-icon"></view>
-          <text class="navigation-bar__title fs-44 c-black flex-1"
-            >确认卡号</text
-          >
+          <text class="navigation-bar__title fs-44 c-black flex-1">确认卡号</text>
         </view>
-      </template>
+      </view>
     </navigation-bar>
     <!-- #endif -->
     <!-- #ifdef MP-WEIXIN -->
     <navigation-bar :alpha="1">
-      <template v-slot:title1>
-        <view
-          class="navigation-bar flex-h flex-c-s"
-          :style="{ height: '44px' }"
-        >
-          <image
-            class="back-icon"
-            @click="handleNavBack"
+      <view slot="title1">
+        <view class="navigation-bar flex-h flex-c-s" :style="{height: '44px'}">
+          <image class="back-icon" @click="handleNavBack"
             src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-arrow-left.png"
-            mode="scaleToFill"
-          />
+            mode="scaleToFill" />
 
-          <text class="navigation-bar__title fs-44 c-black flex-1"
-            >确认卡号</text
-          >
+          <text class="navigation-bar__title fs-44 c-black flex-1">确认卡号</text>
         </view>
-      </template>
+      </view>
     </navigation-bar>
     <!-- #endif -->
     <view class="blank" :style="{ height: navigationBarHeight + 'px' }" />
@@ -42,183 +29,145 @@
       <!-- #ifdef MP-ALIPAY -->
       <canvas class="canvas" id="canvas"></canvas>
       <!-- #endif -->
-      <image
-        class="img-result"
-        :src="'data:image/jpg;base64,' + scanInfo.img"
-      />
-      <view class="title">{{
-        scanInfo.vertifyFlag ? "识别成功，请核对卡号" : "识别失败，请重新拍照"
-      }}</view>
+      <image class="img-result" :src="'data:image/jpg;base64,'+scanInfo.img" />
+      <view class="title">{{scanInfo.vertifyFlag?'识别成功，请核对卡号':'识别失败，请重新拍照'}}</view>
       <view class="input-item">
         <view class="label">银行卡号</view>
         <view class="input-warpper">
-          <input
-            class="input"
-            type="text"
-            :adjust-position="false"
-            :focus="focus"
-            placeholder-class="placeholder"
-            maxlength="23"
-            v-model="preCardNo"
-            @input="handleChange"
-          />
-          <image
-            v-if="scanInfo.bankCardNum.length"
-            class="icon-delete"
-            :src="icon.delete"
-            @click="handleDel"
-          />
+          <input class="input" type="text" :adjust-position="false" :focus="focus"
+            placeholder-class="placeholder" maxlength="23" v-model="preCardNo"
+            @input="handleChange" />
+          <image v-if="scanInfo.bankCardNum.length" class="icon-delete" :src="icon.delete"
+            @click="handleDel" />
         </view>
+
       </view>
     </view>
     <view class="page-footer">
       <button class="btn btn-default" @click="handleRePhone">重新拍照</button>
-      <button
-        class="btn btn-warning"
-        @click="confirmCard"
-        :disabled="!enabledNext"
-        :style="{ opacity: enabledNext ? 1 : 0.5 }"
-      >
-        确认卡号
-      </button>
+      <button class="btn btn-warning" @click="confirmCard" :disabled="!enabledNext"
+        :style="{opacity: enabledNext? 1: 0.5}">确认卡号</button>
     </view>
 
     <canvas class="canvas" id="press-canvas" canvas-id="press-canvas" />
+
   </view>
 </template>
 
 <script>
-import NavigationBar from "@/components/common/navigation-bar.vue";
-import api from "@/apis/index.js";
-import { getLessLimitSizeImage, debounce } from "@/utils/utils.js";
+import NavigationBar from '@/components/common/navigation-bar.vue'
+import api from '@/apis/index.js'
+import { getLessLimitSizeImage, debounce } from '@/utils/utils.js'
 export default {
   components: { NavigationBar },
   data() {
     return {
       // 识别结果
       scanInfo: {
-        img: "",
-        vertifyFlag: "",
-        bankCardNum: "",
+        img: '',
+        vertifyFlag: '',
+        bankCardNum: ''
       },
-      preCardNo: "",
-      imgHeight: "",
-      imgWidth: "",
+      preCardNo: '',
+      imgHeight: '',
+      imgWidth: '',
       focus: false,
       // iconPath
       icon: {
-        delete:
-          "https://ggllstatic.hpgjzlinfo.com/static/pay/icon-input-delete.png",
+        delete: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-input-delete.png'
       },
       // 导航栏高度
       // #ifdef MP-WEIXIN
       navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
       // #endif
       // #ifdef MP-ALIPAY
-      navigationBarHeight:
-        uni.getSystemInfoSync().statusBarHeight +
-        uni.getSystemInfoSync().titleBarHeight,
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
       // #endif
       // 状态栏高度
-      statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-    };
+      statusBarHeight: uni.getSystemInfoSync().statusBarHeight
+    }
   },
   computed: {
     enabledNext() {
-      return this.scanInfo.bankCardNum.length > 12;
-    },
+      return this.scanInfo.bankCardNum.length > 12
+    }
   },
   onLoad(e) {
-    this.scanInfo = JSON.parse(decodeURIComponent(e.cardInfo));
-    this.preCardNo = this.scanInfo.bankCardNum
-      .replace(/\s/g, "")
-      .replace(/(\d{4})(?=\d)/g, "$1 ");
-    this.scanInfo.img = uni.getStorageSync("add_card_base64_img");
+    this.scanInfo = JSON.parse(decodeURIComponent(e.cardInfo))
+    this.preCardNo = this.scanInfo.bankCardNum.replace(/\s/g, '').replace(/(\d{4})(?=\d)/g, '$1 ')
+    this.scanInfo.img = uni.getStorageSync('add_card_base64_img')
   },
   methods: {
     handleChange: debounce(function (e) {
-      this.preCardNo = e.target.value
-        .replace(/[^\d]/g, "")
-        .replace(/\s/g, "")
-        .replace(/(\d{4})(?=\d)/g, "$1 ");
-      this.scanInfo.bankCardNum = this.preCardNo.replace(/\s*/g, "");
+      this.preCardNo = e.target.value.replace(/[^\d]/g, '').replace(/\s/g, '').replace(/(\d{4})(?=\d)/g, '$1 ')
+      this.scanInfo.bankCardNum = this.preCardNo.replace(/\s*/g, '')
     }, 200),
     // 返回上一页
     handleNavBack() {
-      uni.navigateBack();
+      uni.navigateBack()
     },
     // 返回首页
     handleHomeBack() {
       uni.reLaunch({
-        url: "/pages/index/index",
-      });
+        url: '/pages/index/index'
+      })
     },
     // 清空卡号
     handleDel() {
-      this.preCardNo = "";
-      this.scanInfo.bankCardNum = "";
-      this.focus = true;
+      this.preCardNo = ''
+      this.scanInfo.bankCardNum = ''
+      this.focus = true
     },
     // 重新拍照
     handleRePhone() {
       uni.chooseImage({
-        sourceType: ["camera", "album"],
+        sourceType: ['camera', 'album'],
         success: (res) => {
-          const file = res.tempFilePaths[0];
-          getLessLimitSizeImage(
-            "press-canvas",
-            file,
-            0.1,
-            750,
-            (imagePath) => {
-              console.log(imagePath);
-              uni.getFileSystemManager().readFile({
-                filePath: imagePath,
-                encoding: "base64",
-                success: (rs) => {
-                  this.getBankInfoByImg(rs.data);
-                  console.log("---图片---", rs.data);
-                },
-                fail: (erro) => {
-                  console.log("---异常拿到---", erro);
-                },
-              });
-            },
-            this
-          );
-        },
-      });
+          const file = res.tempFilePaths[0]
+          getLessLimitSizeImage('press-canvas', file, 0.1, 750, (imagePath) => {
+            console.log(imagePath)
+            uni.getFileSystemManager().readFile({
+              filePath: imagePath,
+              encoding: 'base64',
+              success: (rs) => {
+                this.getBankInfoByImg(rs.data)
+                console.log('---图片---', rs.data)
+              },
+              fail: (erro) => {
+                console.log('---异常拿到---', erro)
+              }
+            })
+          }, this)
+        }
+      })
     },
     getBankInfoByImg(image64) {
-      uni.showLoading({ title: "识别中" });
+      uni.showLoading({ title: '识别中' })
       api.getBankCardInfoByImage({
-        data: { image64: image64 },
+        data: { 'image64': image64 },
         success: (resinfo) => {
-          uni.hideLoading();
+          uni.hideLoading()
           if (!resinfo.vertifyFlag) {
-            this.$uni.showToast("识别失败，请重新拍照");
-            return;
+            this.$uni.showToast('识别失败，请重新拍照')
+            return
           }
-          this.scanInfo.img = image64;
-          this.scanInfo.vertifyFlag = resinfo.vertifyFlag;
-          this.scanInfo.bankCardNum = resinfo.bankCardNum;
-          this.preCardNo = resinfo.bankCardNum
-            .replace(/[^\d]/g, "")
-            .replace(/\s/g, "")
-            .replace(/(\d{4})(?=\d)/g, "$1 ");
+          this.scanInfo.img = image64
+          this.scanInfo.vertifyFlag = resinfo.vertifyFlag
+          this.scanInfo.bankCardNum = resinfo.bankCardNum
+          this.preCardNo = resinfo.bankCardNum.replace(/[^\d]/g, '').replace(/\s/g, '').replace(/(\d{4})(?=\d)/g, '$1 ')
         },
         fail: (res) => {
-          uni.hideLoading();
-          console.log(res);
-        },
-      });
+          uni.hideLoading()
+          console.log(res)
+        }
+      })
     },
     // 确认卡号
     confirmCard() {
-      const no = this.scanInfo.bankCardNum;
+      const no = this.scanInfo.bankCardNum
       if (no.length === 13) {
-        this.$uni.showToast("银行卡号格式错误!");
-        return false;
+        this.$uni.showToast('银行卡号格式错误!')
+        return false
       }
       if (no.length > 13) {
         // 校验业务
@@ -227,28 +176,26 @@ export default {
           showsLoading: true,
           success: (res) => {
             if (!res) {
-              this.$uni.showToast("【该银行卡不支持本业务请换银行卡试试!】");
-              return false;
+              this.$uni.showToast('【该银行卡不支持本业务请换银行卡试试!】')
+              return false
             }
-            res.realBankCardNum = this.scanInfo.bankCardNum;
-            console.log("进入跳转！！！");
+            res.realBankCardNum = this.scanInfo.bankCardNum
+            console.log('进入跳转！！！')
             uni.navigateTo({
-              url: `/pages/pay/open-online-pay?cardInfo=${encodeURIComponent(
-                JSON.stringify(res)
-              )}`,
+              url: `/pages/pay/open-online-pay?cardInfo=${encodeURIComponent((JSON.stringify(res)))}`,
               fail: function (error) {
-                console.log("无法跳转-----", error);
-              },
-            });
-          },
-        });
+                console.log('无法跳转-----', error)
+              }
+            })
+          }
+        })
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
-<style lang="scss" scoped>
+<style  lang="scss" scoped>
 .canvas {
   position: absolute;
   top: -10000px;

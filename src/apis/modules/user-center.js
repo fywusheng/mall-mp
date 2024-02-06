@@ -1,13 +1,6 @@
 import { request } from '@/apis/request'
 
 export default {
-  // 支付宝一键登录
-  alipayLogin: function (args = {}) {
-    request({
-      url: '/nun/api/acct/checkPhoneAndLogin',
-      ...args
-    })
-  },
   // 是否注销过
   checkLogOutUser: function (args = {}) {
     request({
@@ -49,13 +42,6 @@ export default {
     request({
       url: '/nun/api/userAccount/registeredAndLogin',
       showsLoading: true,
-      ...args
-    })
-  },
-  // 查询遗嘱证信息
-  getWillInfoByPhone: function(args = {}) {
-    return request({
-      url: '/nun/api/testament/selectByPhone',
       ...args
     })
   },

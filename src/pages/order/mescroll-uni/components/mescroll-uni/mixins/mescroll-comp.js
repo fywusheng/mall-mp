@@ -10,38 +10,38 @@ const MescrollCompMixin = {
 		this.handleReachBottom()
 	},
 	// 当down的native: true时, 还需传递此方法进到子组件
-	onPullDownRefresh() {
+	onPullDownRefresh(){
 		this.handlePullDownRefresh()
 	},
 	data() {
 		return {
 			mescroll: { // mescroll-body写在子子子...组件的情况 (多级)
-				onPageScroll: e => {
+				onPageScroll: e=>{
 					this.handlePageScroll(e)
 				},
-				onReachBottom: () => {
+				onReachBottom: ()=>{
 					this.handleReachBottom()
 				},
-				onPullDownRefresh: () => {
+				onPullDownRefresh: ()=>{
 					this.handlePullDownRefresh()
 				}
 			}
 		}
 	},
-	methods: {
-		handlePageScroll(e) {
-			const item = this.$refs['mescrollItem']
-			if (item && item.mescroll) item.mescroll.onPageScroll(e)
+	methods:{
+		handlePageScroll(e){
+			let item = this.$refs["mescrollItem"];
+			if(item && item.mescroll) item.mescroll.onPageScroll(e);
 		},
-		handleReachBottom() {
-			const item = this.$refs['mescrollItem']
-			if (item && item.mescroll) item.mescroll.onReachBottom()
+		handleReachBottom(){
+			let item = this.$refs["mescrollItem"];
+			if(item && item.mescroll) item.mescroll.onReachBottom();
 		},
-		handlePullDownRefresh() {
-			const item = this.$refs['mescrollItem']
-			if (item && item.mescroll) item.mescroll.onPullDownRefresh()
+		handlePullDownRefresh(){
+			let item = this.$refs["mescrollItem"];
+			if(item && item.mescroll) item.mescroll.onPullDownRefresh();
 		}
 	}
 }
 
-export default MescrollCompMixin
+export default MescrollCompMixin;

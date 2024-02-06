@@ -4,17 +4,14 @@
     <view class="item2">
       <view class="top">
         <view class="top_c">
-          <view class="name">{{ hotelName }}</view>
-          <view class="price">{{ address }}</view>
+          <view class="name">{{hotelName}}</view>
+          <view class="price">{{address}}</view>
           <view class="lineB">
-            <view class="distance">距您{{ setDistance(distance) }}</view>
+            <view class="distance">距您{{distance | setDistance}}</view>
             <view class="gomap" @click="goMap()">
               <view class="icon">
-                <image
-                  class="im"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/life/micon.png"
-                  mode="scaleToFill"
-                />
+                <image class="im" src="https://ggllstatic.hpgjzlinfo.com/static/life/micon.png"
+                  mode="scaleToFill" />
               </view>
               地图
             </view>
@@ -24,40 +21,29 @@
     </view>
     <view class="select">
       <view class="pd" @click="clickItem(1)">
-        <view :class="{ select_name: type == 1 ? true : false }">住宿</view>
+        <view :class="{'select_name': type == 1?true:false}">住宿</view>
         <view class="bottom_line" v-if="type == 1"></view>
       </view>
       <view class="pd" @click="clickItem(2)">
-        <view :class="{ select_name: type == 2 ? true : false }"
-          >酒店配套餐饮</view
-        >
+        <view :class="{'select_name': type == 2?true:false}">酒店配套餐饮</view>
         <view class="bottom_line" v-if="type == 2"></view>
       </view>
     </view>
     <view class="content">
-      <view v-if="type == 1"> </view>
+      <view v-if="type == 1">
+
+      </view>
       <view v-if="type == 2">
-        <view
-          class="item3"
-          v-for="(item, index) in list"
-          :key="index"
-          @click="hostDetail(item)"
-        >
+        <view class="item3" v-for="(item,index) in list" :key="index" @click="hostDetail(item)">
           <view class="top">
             <view class="img_qy">
-              <image
-                :src="item.hotelDiscountMainPhoto"
-                class="bgimg"
-                mode="scaleToFill"
-              />
+              <image :src="item.hotelDiscountMainPhoto" class="bgimg" mode="scaleToFill" />
             </view>
             <view class="top_c">
-              <view class="name">{{ item.hotelDiscountName }}</view>
-              <view class="person">{{ item.hotelDiscountUsePeoples }}</view>
-              <view class="time">{{ item.hotelDiscountValidity }}</view>
-              <view class="price"
-                >￥{{ formaterMoney(item.hotelDiscountPrice) }}</view
-              >
+              <view class="name">{{item.hotelDiscountName}}</view>
+              <view class="person">{{item.hotelDiscountUsePeoples}}</view>
+              <view class="time">{{item.hotelDiscountValidity}}</view>
+              <view class="price">￥{{item.hotelDiscountPrice|formaterMoney}}</view>
             </view>
           </view>
         </view>
@@ -67,32 +53,47 @@
   </view>
 </template>
 <script>
-import api from "@/apis/index.js";
-import right from "@/pages/life/components/right.vue";
-import modalKnow from "@/pages/life/components/modal-know.vue";
+import api from '@/apis/index.js'
+import right from '@/pages/life/components/right.vue'
+import modalKnow from '@/pages/life/components/modal-know.vue'
 export default {
   components: { right, modalKnow },
   data() {
     return {
       list: [],
-      hotelName: "",
-      hotelPhoto: "",
-      address: "",
-      distance: "",
-      lat: "",
-      lon: "",
+      hotelName: '',
+      hotelPhoto: '',
+      address: '',
+      distance: '',
+      lat: '',
+      lon: '',
       item: {},
       picArray: [],
       picConent: [],
-      type: 2,
-    };
+      type: 2
+    }
   },
-  created() {},
+  created() {
+
+  },
+  filters: {
+    setDistance(s) {
+      s = Number(s / 1000)
+      if (s.toFixed(2) < 1) {
+        return s.toFixed(2) * 1000 + '米'
+      } else {
+        return s.toFixed(2) + '公里'
+      }
+    },
+    formaterMoney(v) {
+      return (v / 100).toFixed(2)
+    }
+  },
   onShareAppMessage() {
     return {
-      title: "",
-      path: "/pages/index/index?index=0",
-    };
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
     // const params = {
     //    address:this.address,
     //    hotelName:this.hotelName,
@@ -107,29 +108,18 @@ export default {
     //    };
   },
   onLoad(option) {
-    const data = JSON.parse(decodeURIComponent(option.params));
-    console.log("===onload---", data);
-    this.address = data.address;
-    this.hotelPhoto = data.hotelPhoto;
-    this.hotelName = data.hotelName;
-    this.hotelId = data.hotelId;
-    this.lat = data.lat;
-    this.lon = data.lon;
-    this.distance = data.distance;
-    this.queryHotelsinsert();
+    const data = JSON.parse(decodeURIComponent(option.params))
+    console.log('===onload---', data)
+    this.address = data.address
+    this.hotelPhoto = data.hotelPhoto
+    this.hotelName = data.hotelName
+    this.hotelId = data.hotelId
+    this.lat = data.lat
+    this.lon = data.lon
+    this.distance = data.distance
+    this.queryHotelsinsert()
   },
   methods: {
-    setDistance(s) {
-      s = Number(s / 1000);
-      if (s.toFixed(2) < 1) {
-        return s.toFixed(2) * 1000 + "米";
-      } else {
-        return s.toFixed(2) + "公里";
-      }
-    },
-    formaterMoney(v) {
-      return (v / 100).toFixed(2);
-    },
     goMap() {
       const params = {
         name: this.hotelName,
@@ -137,45 +127,36 @@ export default {
         latitude: this.lat - 0,
         distance: this.distance,
         address: this.address,
-        hotelPhoto: this.hotelPhoto,
-      };
-      uni.navigateTo({
-        url:
-          "/pages/life/mapShow?params=" +
-          `${encodeURIComponent(JSON.stringify(params))}`,
-      });
+        hotelPhoto: this.hotelPhoto
+      }
+      uni.navigateTo({ url: '/pages/life/mapShow?params=' + `${encodeURIComponent(JSON.stringify(params))}` })
     },
     hostDetail(item) {
       uni.redirectTo({
-        url:
-          "/pages/life/hotelDetail?hotelDiscountId=" +
-          item.hotelDiscountId +
-          "&change=1" +
-          "&hotelName=" +
-          this.hotelName +
-          "&hotelId=" +
-          this.hotelId,
-      });
+        url: '/pages/life/hotelDetail?hotelDiscountId=' + item.hotelDiscountId + '&change=1' + '&hotelName=' + this.hotelName + '&hotelId=' + this.hotelId
+      })
     },
     clickItem(type) {
       if (type == 1) {
-        this.$refs.notice.open();
+        this.$refs.notice.open()
       }
       // TODO 住宿没有 暂时不坐type切换
       // this.type = type
-      this.type = 2;
+      this.type = 2
     },
     queryHotelsinsert() {
       api.queryHotelsinsert({
         data: { hotelName: this.hotelName },
         success: (res) => {
-          this.list = res;
+          this.list = res
         },
-        fail: (res) => {},
-      });
-    },
-  },
-};
+        fail: (res) => {
+
+        }
+      })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
 .hotelDetail {

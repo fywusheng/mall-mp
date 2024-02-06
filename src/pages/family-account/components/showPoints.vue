@@ -1,20 +1,10 @@
 <template>
-  <view
-    class="credits-popup flex-v flex-c-c"
-    v-if="showsCreditsPopup"
-    @touchmove.stop="touchmove"
-  >
-    <image
-      class="credits-image"
-      mode="scaleToFill"
-      src="https://ggllstatic.hpgjzlinfo.com/static/family-account/image-common-credits-300.png"
-    />
-    <image
-      class="close-icon mt-32"
-      mode="scaleToFill"
+  <view class="credits-popup flex-v flex-c-c" v-if="showsCreditsPopup" @touchmove.stop="touchmove">
+    <image class="credits-image" mode="scaleToFill"
+      src="https://ggllstatic.hpgjzlinfo.com/static/family-account/image-common-credits-300.png" />
+    <image class="close-icon mt-32" mode="scaleToFill"
       src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-popup-close.png"
-      @click="showsCreditsPopup = false"
-    />
+      @click="showsCreditsPopup = false" />
   </view>
 </template>
 
@@ -22,24 +12,24 @@
 export default {
   data() {
     return {
-      showsCreditsPopup: false,
-    };
+      showsCreditsPopup: false
+    }
   },
   methods: {
     detailPoint() {
-      uni.navigateTo({ url: "/pages/user-center/my-points" });
-    },
+      uni.navigateTo({ url: '/pages/user-center/my-points' })
+    }
   },
   watch: {
     showsCreditsPopup(n, o) {
       if (n) {
         setTimeout(() => {
-          this.showsCreditsPopup = false;
-        }, 2000);
+          this.showsCreditsPopup = false
+        }, 2000)
       }
-    },
-  },
-};
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -1,91 +1,72 @@
 <template>
   <view class="insurance">
     <view class="bg">
-      <image
-        class="topIcon"
-        src="https://ggllstatic.hpgjzlinfo.com/static/life/insuranTop.png"
-        mode="widthFix"
-      />
+      <image class="topIcon" src="https://ggllstatic.hpgjzlinfo.com/static/life/insuranTop.png"
+        mode="widthFix" />
     </view>
     <!-- 医疗险 -->
     <view v-if="newList.dataList.length" class="typeItem">
       <view class="left">
-        <view class="line_"></view>{{ newList.firstCategory }}
+        <view class="line_"></view>{{newList.firstCategory}}
       </view>
       <view class="block">
         <view class="top">
-          <view class="_left">{{ newList.categoryDescription }}</view>
+          <view class="_left">{{newList.categoryDescription }}</view>
           <view class="_white"></view>
-          <view class="_right">{{ newList.childCategory }}</view>
+          <view class="_right">{{newList.childCategory}}</view>
         </view>
         <view class="bottom">
-          <view
-            class="b_item"
-            v-for="(listV, i) in newList.dataList"
-            :key="i"
-            @click="goH5Detail(listV, i)"
-          >
+          <view class="b_item" v-for="(listV,i) in newList.dataList" :key="i"
+            @click="goH5Detail(listV, i)">
             <view class="b_left">
               <image class="topIcon" :src="listV.img" mode="widthFix" />
             </view>
             <view class="b_right">
-              <view class="proname">{{ listV.productName }}</view>
-              <view class="infor">{{ listV.productDescription }}</view>
+              <view class="proname">{{listV.productName}}</view>
+              <view class="infor">{{listV.productDescription}}</view>
               <view class="price">
                 <view class="t">
-                  <view class="p">{{ listV.sales.split("/")[0] }}</view>
-                  <view class="d">/{{ listV.sales.split("/")[1] }}</view>
+                  <view class="p">{{listV.sales.split('/')[0]}}</view>
+                  <view class="d">/{{listV.sales.split('/')[1]}}</view>
                 </view>
-                <view class="isfree" v-if="listV.productName == '重疾赠险'"
-                  >免费领取</view
-                >
+                <view class="isfree" v-if="listV.productName == '重疾赠险'">免费领取</view>
               </view>
             </view>
           </view>
         </view>
+
       </view>
     </view>
-    <view class="typeItem" v-for="(item, index) in list" :key="index">
+    <view class="typeItem" v-for="(item,index) in list" :key="index">
       <view class="left">
-        <view class="line_"></view>{{ item.firstName }}
+        <view class="line_"></view>{{item.firstName}}
       </view>
-      <view class="block" v-for="(v, k) in item.list" :key="k">
+      <view class="block" v-for="(v,k) in item.list" :key="k">
         <view class="top">
-          <view class="_left">{{ v.desc }}</view>
+          <view class="_left">{{v.desc}}</view>
           <view class="_white"></view>
-          <view class="_right">{{ v.secondName }}</view>
+          <view class="_right">{{v.secondName}}</view>
         </view>
         <view class="bottom">
-          <view
-            class="b_item"
-            v-for="(listV, i) in v.productList"
-            :key="i"
-            @click="goInsuranDetail(listV)"
-          >
+          <view class="b_item" v-for="(listV,i) in v.productList" :key="i"
+            @click="goInsuranDetail(listV)">
             <view class="b_left">
-              <image
-                class="topIcon"
-                :src="listV.productPhoto"
-                mode="widthFix"
-              />
+              <image class="topIcon" :src="listV.productPhoto" mode="widthFix" />
             </view>
             <view class="b_right">
-              <view class="proname">{{ listV.productName }}</view>
-              <view class="infor">{{ listV.productAdvantage }}</view>
+              <view class="proname">{{listV.productName}}</view>
+              <view class="infor">{{listV.productAdvantage}}</view>
               <view class="price">
                 <view class="t">
-                  <view class="p"
-                    >￥{{ listV.productPrice.split("/")[0] }}</view
-                  >
-                  <view class="d">/{{ listV.productPrice.split("/")[1] }}</view>
+                  <view class="p">￥{{listV.productPrice.split('/')[0]}}</view>
+                  <view class="d">/{{listV.productPrice.split('/')[1]}}</view>
                 </view>
-                <view class="isfree" v-if="listV.productIsFree == 1"
-                  >免费领取</view
-                >
+                <view class="isfree" v-if="listV.productIsFree == 1">免费领取</view>
               </view>
             </view>
           </view>
         </view>
+
       </view>
     </view>
     <modal-know ref="notice"></modal-know>
@@ -94,86 +75,81 @@
   </view>
 </template>
 <script>
-import modalKnow from "@/pages/life/components/modal-know.vue";
-import RealNamePop from "@/pages/real-name-pop/real-name-pop.vue";
-import api from "@/apis/index.js";
+import modalKnow from '@/pages/life/components/modal-know.vue'
+import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue'
+import api from '@/apis/index.js'
 export default {
   components: { modalKnow, RealNamePop },
   data() {
     return {
       list: [],
       newList: {
-        dataList: [],
-      },
-    };
+        dataList: []
+      }
+    }
   },
   created() {
-    this.insuranceList();
-    this.insuranceNewList();
+    this.insuranceList()
+    this.insuranceNewList()
   },
   onShareAppMessage() {
     return {
-      title: "",
-      path: "/pages/index/index?index=0",
-    };
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
   },
   methods: {
     goInsuranDetail(itemv) {
-      const userInfo = uni.getStorageSync("userInfo");
+      const userInfo = uni.getStorageSync('userInfo')
 
       // 未登录, 跳转到登录页面
       if (!userInfo) {
         uni.navigateTo({
-          url: "/pages/user-center/login",
-        });
-        return;
+          url: '/pages/user-center/login'
+        })
+        return
       }
 
       // 未实名
-      if (userInfo.crtfStas === "0") {
-        this.$refs.realpop.open();
-        return false;
+      if (userInfo.crtfStas === '0') {
+        this.$refs.realpop.open()
+        return false
       }
 
-      uni.setStorageSync("insuranDetal", itemv.productH5);
-      uni.navigateTo({
-        url: "/pages/life/insuranceDetail?price=" + itemv.productPrice,
-      });
+      uni.setStorageSync('insuranDetal', itemv.productH5)
+      uni.navigateTo({ url: '/pages/life/insuranceDetail?price=' + itemv.productPrice })
     },
     goH5Detail(item, index) {
-      const userInfo = uni.getStorageSync("userInfo");
+      const userInfo = uni.getStorageSync('userInfo')
 
       // 未登录, 跳转到登录页面
       if (!userInfo) {
         uni.navigateTo({
-          url: "/pages/user-center/login",
-        });
-        return;
+          url: '/pages/user-center/login'
+        })
+        return
       }
 
       // 未实名
-      if (userInfo.crtfStas === "0") {
-        this.$refs.realpop.open();
-        return false;
+      if (userInfo.crtfStas === '0') {
+        this.$refs.realpop.open()
+        return false
       }
 
       uni.navigateTo({
-        url:
-          index === 0
-            ? "/pages/life/insurance-premium"
-            : "/pages/life/insurance-mofang",
-      });
+        url: index === 0 ? '/pages/life/insurance-premium' : '/pages/life/insurance-mofang'
+      })
       // uni.navigateTo({ url: '/pages/common/webpage?url=' + encodeURIComponent(item.targetUrl) })
     },
     // 实名认证成功
     async succFlag(flag) {
       if (flag == 1) {
-        const userInfo = await this.getUserInfo();
-        uni.setStorageSync("userInfo", userInfo);
-        this.$refs.realpop.close();
+        const userInfo = await this.getUserInfo()
+        uni.setStorageSync('userInfo', userInfo)
+        this.$refs.realpop.close()
         uni.navigateTo({
-          url: `/pages/user-center/real-name-result2?back=${"/pages/life/insurance"}`,
-        });
+          url: `/pages/user-center/real-name-result2?back=${'/pages/life/insurance'}`
+        })
       }
     },
     /**
@@ -183,42 +159,44 @@ export default {
       return new Promise((resolve, reject) => {
         api.getUserInfo({
           data: {
-            accessToken: uni.getStorageSync("token"),
+            accessToken: uni.getStorageSync('token')
           },
           success: (data) => {
-            resolve(data);
+            resolve(data)
           },
           fail: (error) => {
-            reject(error);
-          },
-        });
-      });
+            reject(error)
+          }
+        })
+      })
     },
     // insuranceList
     insuranceList() {
       api.insuranceList({
         data: {},
         success: (res) => {
-          this.list = res;
+          this.list = res
         },
         fail: (res) => {
-          console.log(res);
-        },
-      });
+          console.log(res)
+        }
+      })
     },
     // 重疾保障
     insuranceNewList() {
       api.insuranceNewList({
         data: {},
         success: (res) => {
-          console.log(res);
-          this.newList = res;
+          console.log(res)
+          this.newList = res
         },
-        fail: (res) => {},
-      });
-    },
-  },
-};
+        fail: (res) => {
+
+        }
+      })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
 .insurance {
@@ -271,6 +249,7 @@ export default {
           border: 2rpx solid #ffffff;
           background-color: #fff;
           margin-right: 22rpx;
+          margin-left: 10rpx;
           margin-top: 5rpx;
         }
         ._right {

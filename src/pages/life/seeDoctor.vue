@@ -1,26 +1,22 @@
 <template>
   <view class="topArea">
     <view class="bg">
-      <view class="bg_block" @click="goHX(0)">
-        <image mode="scaleToFill" class="topImg" :src="logo" />
+      <view class="bg_block">
+        <swiper class="swiper" :indicator-dots="true" :autoplay="true" :interval="4000"
+          :duration="500" indicator-color="#ffffff" indicator-active-color="#FF5500">
+          <swiper-item v-for="(item,i) in logos" :key="i">
+            <image @click="goLink(item)" class="_icon" mode="scaleToFill" :src="item.bannerUrl" />
+          </swiper-item>
+        </swiper>
       </view>
       <view class="box">
-        <view
-          class="_block"
-          @click="goH5(v.type)"
-          v-for="(v, i) in itemsData"
-          :key="i"
-        >
+        <view class="_block" @click="goH5(v.type)" v-for="(v,i) in itemsData" :key="i">
           <view class="_line">
-            <view class="name">{{ v.name }}</view>
-            <image
-              mode="scaleToFill"
-              class="icon_samll"
-              :class="i == 1 ? 'right_icon' : ''"
-              :src="v.src"
-            />
+            <view class="name">{{v.name}}</view>
+            <image mode="scaleToFill" class="icon_samll" :class="i==1?'right_icon':''"
+              :src="v.src" />
           </view>
-          <view class="_des">{{ v.des }}</view>
+          <view class="_des">{{v.des}}</view>
         </view>
       </view>
       <view class="find" @click="goHX(1)">
@@ -36,14 +32,9 @@
       <view class="order">
         <view class="myorder">我的订单</view>
         <view class="list">
-          <view
-            class="_item"
-            @click="goH5(v.type)"
-            v-for="(v, index) in orderLable"
-            :key="index"
-          >
+          <view class="_item" @click="goH5(v.type)" v-for="(v,index) in orderLable" :key="index">
             <image mode="scaleToFill" class="topImg" :src="v.src" />
-            <view class="name">{{ v.name }}</view>
+            <view class="name">{{v.name}}</view>
           </view>
         </view>
       </view>
@@ -53,17 +44,14 @@
         <view class="title">健康知识</view>
         <view class="more">更多</view>
       </view>
-      <view
-        class="line"
-        @click="goH5(v.type)"
-        v-for="(v, index) in imgs"
-        :key="index"
-      >
-        <view class="_t">{{ v.name }}</view>
+      <view class="line" @click="goH5(v.type)" v-for="(v,index) in imgs" :key="index">
+        <view class="_t">{{v.name}}</view>
         <image mode="scaleToFill" class="topImg" :src="v.src" />
       </view>
     </view>
-    <button class="custom" @click="customerTel">客服电话</button>
+    <button class="custom" @click="customerTel">
+      客服电话
+    </button>
     <view class="space"></view>
     <uni-popup ref="popup" background="none">
       <image class="img-bg" :src="imgUrl" @click="closePop" />
@@ -71,151 +59,163 @@
   </view>
 </template>
 <script>
-import api from "@/apis/index.js";
-import { reportCmPV } from "@/plugins/cloudMonitorHelper";
+import api from '@/apis/index.js'
 export default {
   data() {
     return {
+      logos: ['https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/tmc.png', 'https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/huaxi-bg.png'],
       imgs: [
         {
-          type: "5",
-          src: "https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/tnb.png",
-          name: "#糖尿病#",
+          type: '5',
+          src: 'https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/tnb.png',
+          name: '#糖尿病#'
         },
         {
-          type: "6",
-          src: "https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/gxy.png",
-          name: "#高血压#",
+          type: '6',
+          src: 'https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/gxy.png',
+          name: '#高血压#'
         },
         {
-          type: "7",
-          src: "https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/bnz.png",
-          name: "#白内障#",
-        },
+          type: '7',
+          src: 'https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/bnz.png',
+          name: '#白内障#'
+        }
       ],
-      imgUrl: "https://ggllstatic.hpgjzlinfo.com/static/life/icon-kanbing.png",
-      docotor:
-        "https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/findDoctor.png",
-      logo: "https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/huaxi-bg.png",
+      imgUrl: 'https://ggllstatic.hpgjzlinfo.com/static/life/icon-kanbing.png',
+      docotor: 'https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/findDoctor.png',
+      logo: 'https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/huaxi-bg.png',
       type: 1,
-      itemsData: [
-        {
-          name: "去挂号",
-          type: "1",
-          des: "在家挂号不排队",
-          src: "https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/guahao.png",
-        },
-        {
-          name: "问医生",
-          type: "2",
-          des: "小毛病在线问诊",
-          src: "https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/seeDocotor.png",
-        },
+      itemsData: [{
+        name: '去挂号',
+        type: '1',
+        des: '在家挂号不排队',
+        src: 'https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/guahao.png'
+      },
+      {
+        name: '问医生',
+        type: '2',
+        des: '小毛病在线问诊',
+        src: 'https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/seeDocotor.png'
+      }
       ],
-      orderLable: [
-        {
-          name: "挂号订单",
-          type: "3",
-          src: "https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/yyNumber.png",
-        },
-        {
-          name: "问诊订单",
-          type: "4",
-          src: "https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/wenZ.png",
-        },
+      orderLable: [{
+        name: '挂号订单',
+        type: '3',
+        src: 'https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/yyNumber.png'
+      },
+      {
+        name: '问诊订单',
+        type: '4',
+        src: 'https://ggllstatic.hpgjzlinfo.com/static/seeDoctor/wenZ.png'
+      }
       ],
       userInfor: {},
-      phoneNumber: "95169020",
-    };
-  },
-  created() {
-    this.userInfor = uni.getStorageSync("userInfo");
-    this.initCustomTel();
-  },
-  onLoad(e) {
-    if (e.source === "officialAccount") {
-      reportCmPV({ title: "看病服务", query: e });
+      phoneNumber: '95169020'
     }
   },
+  created() {
+    this.userInfor = uni.getStorageSync('userInfo')
+    this.initCustomTel()
+    this.requestData()
+  },
   mounted() {
-    this.$refs.popup.open();
+    this.$refs.popup.open()
   },
 
   // 分享处理
   onShareAppMessage() {
     return {
-      title: "",
-      path: "/pages/index/index?index=0",
-    };
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
   },
   methods: {
+    goLink(item) {
+      if (item.bannerId == '14') {
+        const token = uni.getStorageSync('token')
+        if (!token) {
+          uni.navigateTo({ url: '/pages/user-center/login' })
+          return
+        }
+        // TODO 去掉调试模式
+        uni.navigateToMiniProgram({
+          appId: 'wx184f795ce88789f7',
+          path: `pages/index/index?pltCode=64401&pltId=${token}`,
+          // envVersion: 'trial',
+          success(res) { }
+        })
+      } else {
+        this.goHX(0)
+      }
+    },
+    requestData() {
+      api.getBanners({
+        data: { bannerType: '4', status: '1' },
+        success: (data) => {
+          this.logos = data
+        }
+      })
+    },
     closePop() {
-      this.$refs.popup.close();
+      this.$refs.popup.close()
     },
     customerTel() {
-      if (!this.phoneNumber) return;
+      if (!this.phoneNumber) return
       uni.makePhoneCall({
-        phoneNumber: this.phoneNumber,
-      });
+        phoneNumber: this.phoneNumber
+      })
     },
     initCustomTel() {
       api.getWyCustomerService({
         data: {},
         success: (data) => {
-          this.phoneNumber = data;
-        },
-      });
+          this.phoneNumber = data
+        }
+      })
     },
     goH5(type) {
-      this.$refs.popup.open();
-      return;
+      this.$refs.popup.open()
+      return
       const url = {
-        1: "https://gjylfw.wy.guahao.com/standard/booking?_channel=wbhz",
-        2: "https://gjylfw.wy.guahao.com/ums/consult/more?solutionId=SO202206102yj001",
-        3: "https://gjylfw.wy.guahao.com/my/order/list?_channel=wbhz",
-        4: "https://gjylfw.wy.guahao.com/my/consult/list?_channel=wbhz",
-        5: "https://wy.guahao.com/ums/label/bb2901d8-32a1-11e6-95f4-b82a72d5b9fb",
-        6: "https://wy.guahao.com/ums/label/880f04cf-32a3-11e6-804e-848f69fd6b70",
-        7: "https://wy.guahao.com/ums/label/bff1d756-32a1-11e6-95f4-b82a72d5b9fb",
-        8: "https://gjylfw.wy.guahao.com/news/menu",
-      };
+        '1': 'https://gjylfw.wy.guahao.com/standard/booking?_channel=wbhz', 2: 'https://gjylfw.wy.guahao.com/ums/consult/more?solutionId=SO202206102yj001',
+        3: 'https://gjylfw.wy.guahao.com/my/order/list?_channel=wbhz', 4: 'https://gjylfw.wy.guahao.com/my/consult/list?_channel=wbhz',
+        5: 'https://wy.guahao.com/ums/label/bb2901d8-32a1-11e6-95f4-b82a72d5b9fb', 6: 'https://wy.guahao.com/ums/label/880f04cf-32a3-11e6-804e-848f69fd6b70',
+        7: 'https://wy.guahao.com/ums/label/bff1d756-32a1-11e6-95f4-b82a72d5b9fb', 8: 'https://gjylfw.wy.guahao.com/news/menu'
+      }
       // console.log("===选择地址--",url[type])
-      const types = ["5", "6", "7"];
+      const types = ['5', '6', '7']
       if (types.includes(type)) {
-        this.$uni.showToast("正在开通中，敬请期待");
-        return;
+        this.$uni.showToast('正在开通中，敬请期待')
+        return
       }
       api.getInquiryReturnUrl({
         data: {
           ext_user_id: this.userInfor.uactId, // 用户id
           target: url[type],
-          mobile: this.userInfor.tel,
+          mobile: this.userInfor.tel
         },
         success: (data) => {
-          const url = data;
+          const url = data
           //  uni.navigateTo({url: `/pages/common/webpage?url=${encodeURIComponent(url)}`})
           //  return
           // #ifdef MP-ALIPAY
-          uni.navigateTo({
-            url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-          });
+          uni.navigateTo({ url: `/pages/common/webpage?url=${encodeURIComponent(url)}` })
           // #endif
           // #ifdef MP-WEIXIN
-          uni.navigateTo({
-            url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-          });
+          uni.navigateTo({ url: `/pages/common/webpage?url=${encodeURIComponent(url)}` })
           // #endif
-        },
-      });
+        }
+      })
     },
     goHX(flag) {
-      this.$refs.popup.open();
-      return;
-      const urls = ["/pages/life/seeDoctor-old", "/pages/life/famouseDoctor"];
-      uni.navigateTo({ url: urls[flag] });
-    },
-  },
-};
+      this.$refs.popup.open()
+      return
+      const urls = ['/pages/life/seeDoctor-old', '/pages/life/famouseDoctor']
+      uni.navigateTo({ url: urls[flag] })
+    }
+  }
+}
+
 </script>
 <style lang="scss" scoped>
 .topArea {
@@ -223,27 +223,29 @@ export default {
   background-color: #f5f5f5;
   .bg {
     height: auto;
-    background: linear-gradient(
-      180deg,
-      #ff9500 0%,
-      #ffbd6f 32%,
-      #ffffff 81%,
-      #f2f2f2 100%
-    );
+    background: linear-gradient(180deg, #ff9500 0%, #ffbd6f 32%, #ffffff 81%, #f2f2f2 100%);
     .bg_block {
       width: 686rpx;
       height: 224rpx;
       margin: 0rpx 32rpx 32rpx 32rpx;
       padding-top: 28rpx;
+      .swiper {
+        height: 282rpx;
+      }
       .topImg {
         width: 100%;
         height: 100%;
+      }
+      ._icon {
+        width: 100%;
+        height: 224rpx;
       }
     }
     .box {
       display: flex;
       padding: 0rpx 32rpx;
       justify-content: space-between;
+      margin-top: 70rpx;
       ._block {
         width: 42%;
         height: auto;

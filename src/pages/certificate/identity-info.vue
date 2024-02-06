@@ -5,24 +5,15 @@
       <view class="row flex-h flex-c-s p-20-0">
         <text class="row__indicator">*</text>
         <text class="row__label fs-40 c-black mr-48">姓名(必填)</text>
-        <input
-          class="fs-40 c-black flex-1"
-          placeholder="请输入姓名"
-          placeholder-class="placeholder"
-          v-model="params.name"
-        />
+        <input class="fs-40 c-black flex-1" placeholder="请输入姓名" placeholder-class="placeholder"
+          v-model="params.name" />
       </view>
       <view class="row flex-h flex-c-s p-20-0">
         <text class="row__indicator">*</text>
         <text class="row__label fs-40 c-black mr-48">身份证号(必填)</text>
-        <input
-          class="fs-40 c-black flex-1"
-          type="idcard"
-          placeholder="请输入身份证号"
-          placeholder-class="placeholder"
-          v-model="params.idCardNumber"
-          @blur="handleIDCardNumberInputFinish"
-        />
+        <input class="fs-40 c-black flex-1" type="idcard" placeholder="请输入身份证号"
+          placeholder-class="placeholder" v-model="params.idCardNumber"
+          @blur="handleIDCardNumberInputFinish" />
       </view>
       <view class="row flex-h flex-c-s p-20-0" v-if="type === 'scan'">
         <text class="row__indicator">*</text>
@@ -42,54 +33,35 @@
         <text class="row__indicator">*</text>
         <text class="row__label fs-40 c-black mr-48">民族(必填)</text>
         <picker class="flex-1" :range="nations" @change="handleNationChange">
-          <text
-            class="fs-40 c-black flex-1"
-            :class="{ 'c-lightgrey': params.nation === '' }"
-          >
+          <text class="fs-40 c-black flex-1 " :class="{ 'c-lightgrey': params.nation === '' }">
             {{ params.nation || "请选择民族" }}
           </text>
         </picker>
-        <image
-          class="row__accessory"
-          mode="scaleToFill"
-          src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
-        />
+        <image class="row__accessory" mode="scaleToFill"
+          src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png" />
       </view>
       <view class="row flex-h flex-c-s p-20-0" v-if="type === 'scan'">
         <text class="row__indicator">*</text>
         <text class="row__label fs-40 c-black mr-48">出生日期(必填)</text>
-        <picker
-          class="flex-1"
-          mode="date"
-          :end="validDate"
-          :value="params.birthday"
-          @change="handleBirthdayChange"
-        >
-          <text
-            class="fs-40 c-black flex-1"
-            :class="{ 'c-lightgrey': params.birthday === '' }"
-          >
+        <picker class="flex-1" mode="date" :end="validDate" :value="params.birthday"
+          @change="handleBirthdayChange">
+          <text class="fs-40 c-black flex-1 " :class="{ 'c-lightgrey': params.birthday === '' }">
             {{ params.birthday || "请选择出生日期" }}
           </text>
         </picker>
-        <image
-          class="row__accessory"
-          mode="scaleToFill"
-          src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
-        />
+        <image class="row__accessory" mode="scaleToFill"
+          src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png" />
       </view>
       <view class="row flex-h flex-c-s p-20-0" v-if="type === 'scan'">
         <text class="row__indicator">*</text>
         <text class="row__label fs-40 c-black mr-48">户籍地址(必填)</text>
         <!-- #ifdef MP-ALIPAY -->
-        <button @click="localeChose" class="clickChose">
-          {{ params.city || "请选择省、市、区" }}
-        </button>
+        <button @click="localeChose" class="clickChose">{{params.city || '请选择省、市、区'}}</button>
         <!-- #endif -->
         <!-- #ifdef MP-WEIXIN -->
         <picker mode="region" @change="pickerCallback" v-model="region">
           <view class="picker fs-40">
-            {{ params.city || "请选择所在地区" }}
+            {{params.city || '请选择所在地区'}}
           </view>
         </picker>
         <!-- <uni-data-picker class="flex-1" popup-title="请选择所在地区" :localdata="cities"
@@ -102,39 +74,22 @@
           </text>
         </uni-data-picker> -->
         <!-- #endif -->
-        <image
-          class="row__accessory"
-          mode="scaleToFill"
-          src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
-        />
+        <image class="row__accessory" mode="scaleToFill"
+          src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png" />
       </view>
       <view class="row flex-h flex-c-s p-20-0" v-if="type === 'scan'">
         <text class="row__indicator"></text>
-        <input
-          v-model="params.address"
-          class="fs-40 c-black flex-1"
-          placeholder="请输入详细地址"
-          placeholder-class="placeholder"
-        />
+        <input v-model="params.address" class="fs-40 c-black flex-1" placeholder="请输入详细地址"
+          placeholder-class="placeholder" />
       </view>
     </view>
-    <view
-      class="rescan flex-h flex-c-c mt-64"
-      v-if="type === 'scan'"
-      @click="handleRescanClick"
-    >
-      <image
-        class="rescan__icon"
-        mode="scaleToFill"
+    <view class="rescan flex-h flex-c-c mt-64" v-if="type === 'scan'" @click="handleRescanClick">
+      <image class="rescan__icon" mode="scaleToFill"
         src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-scan.png"
-        @click="handleRescanClick"
-      />
+        @click="handleRescanClick" />
       <text class="rescan__text fs-44 ml-16">重新扫描</text>
     </view>
-    <button
-      class="next-step-button bg-primary fs-44 c-white"
-      @click="handleNextStepClick"
-    >
+    <button class="next-step-button bg-primary fs-44 c-white" @click="handleNextStepClick">
       下一步
     </button>
     <show-points ref="showPoints" @success_flag="success_flag"></show-points>
@@ -142,20 +97,21 @@
 </template>
 
 <script>
-import dayjs from "dayjs";
-import staticData from "@/utils/dataBase64.js";
-import api from "@/apis/index.js";
-import { startFacialRecognitionVerify } from "@/utils/utils.js";
-import { validateIDCardNumber } from "@/utils/validation.js";
-import { showPoints } from "./components/showPoints.vue";
-import { alipayCityChoose } from "@/utils/utils.js";
+import dayjs from 'dayjs'
+import staticData from '@/utils/dataBase64.js'
+import api from '@/apis/index.js'
+import { startFacialRecognitionVerify } from '@/utils/utils.js'
+// import { UniDataPicker } from '@dcloudio/uni-ui'
+import { validateIDCardNumber } from '@/utils/validation.js'
+import { showPoints } from './components/showPoints.vue'
+import { alipayCityChoose } from '@/utils/utils.js'
 export default {
   components: { showPoints },
   data() {
     return {
       alipayCitys: [],
       // 录入方式  scan: 扫描  input: 输入
-      type: "",
+      type: '',
       // 民族选择器数据
       nations: staticData.nations,
       // 城市选择器数据
@@ -163,26 +119,26 @@ export default {
       region: [],
       // 表单数据
       params: {
-        name: "",
-        idCardNumber: "",
-        gender: "",
-        nation: "",
-        birthday: "",
-        city: "",
-        address: "",
+        name: '',
+        idCardNumber: '',
+        gender: '',
+        nation: '',
+        birthday: '',
+        city: '',
+        address: ''
       },
       value: [],
-      realNmae: false,
-    };
+      realNmae: false
+    }
   },
   onLoad() {
-    this.setData();
-    this.getRegions();
-    this.alipayHandler();
+    this.setData()
+    this.getRegions()
+    this.alipayHandler()
   },
   methods: {
     pickerCallback(e) {
-      this.params.city = e.detail.value.join("");
+      this.params.city = e.detail.value.join('')
     },
     alipayHandler() {
       api.getRegions({
@@ -192,91 +148,91 @@ export default {
               return {
                 name: item.regnName,
                 code: item.regnCode,
-                subList: map(item.children),
-              };
-            });
+                subList: map(item.children)
+              }
+            })
           }
-          this.alipayCitys = map(data);
-        },
-      });
+          this.alipayCitys = map(data)
+        }
+      })
     },
     localeChose() {
       const params = {
         list: this.alipayCitys,
         success: (city) => {
-          this.params.city = city;
-        },
-      };
-      alipayCityChoose(params);
+          this.params.city = city
+        }
+      }
+      alipayCityChoose(params)
     },
     success_flag(successFlag) {
       // this.$emit("success_flag",successFlag)
     },
     radioChange(eve) {
-      this.params.gender = eve.detail.value;
+      this.params.gender = eve.detail.value
     },
     /**
      * 身份证号输入完成事件
      */
     handleIDCardNumberInputFinish() {
-      const birthday = this.params.idCardNumber.substring(6, 14);
-      this.params.birthday = dayjs(birthday).format("YYYY-MM-DD");
-      this.params.gender = this.params.idCardNumber.substring(16, 17) % 2;
+      const birthday = this.params.idCardNumber.substring(6, 14)
+      this.params.birthday = dayjs(birthday).format('YYYY-MM-DD')
+      this.params.gender = this.params.idCardNumber.substring(16, 17) % 2
     },
     /**
      * 民族选择器改变回调
      */
     handleNationChange(e) {
-      this.params.nation = this.nations[e.detail.value];
+      this.params.nation = this.nations[e.detail.value]
     },
     /**
      * 出生日期选择器改变回调
      */
     handleBirthdayChange(e) {
-      this.params.birthday = e.target.value;
+      this.params.birthday = e.target.value
     },
     /**
      * 城市选择器改变回调
      */
     handleCityChange(e) {
-      this.params.city = e.detail.value.map((item) => item.text).join("");
+      this.params.city = e.detail.value.map((item) => item.text).join('')
     },
     /**
      * 重新扫描点击事件
      */
     handleRescanClick() {
       uni.chooseImage({
-        sourceType: ["camera"],
+        sourceType: ['camera'],
         success: (res) => {
           uni.getFileSystemManager().readFile({
             filePath: res.tempFilePaths[0],
-            encoding: "base64",
+            encoding: 'base64',
             success: (rs) => {
               api.getIdentification({
                 data: { image64: rs.data },
                 showsLoading: true,
                 success: (resinfo) => {
                   if (!resinfo.data) {
-                    this.$uni.showToast("身份证识别失败");
-                    return;
+                    this.$uni.showToast('身份证识别失败')
+                    return
                   }
                   // 拍照完成后调用后端识别接口, 并将识别结果传入下个页面
-                  const info = resinfo.data;
+                  const info = resinfo.data
                   const data = {
                     name: info.name,
                     idCardNumber: info.id_num,
                     gender: info.sex,
                     birthday: info.birth,
                     nation: info.nation,
-                    address: info.address,
-                  };
-                  this.backfillData(data);
-                },
-              });
-            },
-          });
-        },
-      });
+                    address: info.address
+                  }
+                  this.backfillData(data)
+                }
+              })
+            }
+          })
+        }
+      })
     },
     /**
      * 身份证校验,是否实名认证  女2 -男1
@@ -291,137 +247,137 @@ export default {
         idCard: this.params.idCardNumber,
         gend: this.params.gender == 0 ? 2 : 1,
         brdy: this.params.birthday,
-        userName: this.params.name,
-      };
+        userName: this.params.name
+      }
       const inputparams = {
         idCard: this.params.idCardNumber,
-        userName: this.params.name,
-      };
-      const pars = this.type == "input" ? inputparams : params;
-      console.log("身份证校验params55599--:", pars);
+        userName: this.params.name
+      }
+      const pars = this.type == 'input' ? inputparams : params
+      console.log('身份证校验params55599--:', pars)
       return new Promise((resolve, reject) => {
         api.validateCard({
           data: { ...pars },
           success: (res) => {
             if (res) {
-              resolve(res);
+              resolve(res)
             }
           },
           fail: (res) => {
-            this.$uni.showToast(res.message);
-            reject(false);
-          },
-        });
-      });
+            this.$uni.showToast(res.message)
+            reject(false)
+          }
+        })
+      })
     },
     // 查询卡状态  TODO
     getCertificateState(name, card) {
       return new Promise((resolve, reject) => {
         api.getCertificateState({
           data: {
-            appId: "53928a083adb4a7dad2eecf05564873f",
-            idType: "身份证",
+            appId: '53928a083adb4a7dad2eecf05564873f',
+            idType: '身份证',
             userName: name,
-            idNo: card,
+            idNo: card
           },
           success: (data) => {
-            resolve(data);
+            resolve(data)
           },
           fail: (error) => {
-            reject(error);
-          },
-        });
-      });
+            reject(error)
+          }
+        })
+      })
     },
 
     /**
      * 下一步点击事件
      */
     async handleNextStepClick() {
-      const status = await this.chackInput();
-      if (!status) return;
+      const status = await this.chackInput()
+      if (!status) return
 
       const params = {
         name: this.params.name,
         idCard: this.params.idCardNumber,
-        returnUrl: "",
-      };
-      console.log("提交的参数params:", params);
+        returnUrl: ''
+      }
+      console.log('提交的参数params:', params)
       // TODO 在没有接入亮证流程时，暂时实名操作只做实名认证操作 即：只要实名认证成功就跳实名认证成功页面 不在进入领证流程实名认证跳转入口
 
       params.success = async () => {
-        console.log("认证成功------this.realName", this.realName);
+        console.log('认证成功------this.realName', this.realName)
         // 进行实名认证 身份信息+头像
         api.realPersonAuthenticate({
           data: {
             userName: this.params.name,
-            idCard: this.params.idCardNumber,
+            idCard: this.params.idCardNumber
             // faceImg: staticData.faceImg, //TODO图片base64为什么是写死的
           },
           showsLoading: true,
           success: async () => {
             // 实名操做
             uni.reLaunch({
-              url: "/pages/user-center/real-name-result",
-            });
+              url: '/pages/user-center/real-name-result'
+            })
 
-            return;
+            return
             // ////////////////////////////////////后续操作等待接入领证流程后在放开//////////////////////////////
             if (this.realName) {
               // 实名操做
               uni.reLaunch({
-                url: "/pages/user-center/real-name-result",
-              });
+                url: '/pages/user-center/real-name-result'
+              })
             } else {
               // 领卡操作
               const cardState = await this.getCertificateState(
                 this.params.name,
                 this.params.idCardNumber
-              );
-              if (cardState.authState === "1" || cardState.authState === "2") {
-                this.$uni.showToast("已经领取过卡了");
-                uni.reLaunch({ url: "/pages/index/index" });
+              )
+              if (cardState.authState === '1' || cardState.authState === '2') {
+                this.$uni.showToast('已经领取过卡了')
+                uni.reLaunch({ url: '/pages/index/index' })
                 // uni.reLaunch({ url: '/pages/certificate/electronic-card' })
-                return;
-              } else if (cardState.authState === "6") {
+                return
+              } else if (cardState.authState === '6') {
                 // 其他渠道授權接口
                 uni.redirectTo({
-                  url: `/pages/certificate/platform-authorization?idCard=${this.params.idCardNumber}&name=${this.params.name}`,
-                });
+                  url: `/pages/certificate/platform-authorization?idCard=${this.params.idCardNumber}&name=${this.params.name}`
+                })
 
-                return;
+                return
               } else {
                 // const process_type = uni.getStorageSync('process_type')
-                this.getUserInfo();
-                this.clearBgImg(staticData.faceImg);
+                this.getUserInfo()
+                this.clearBgImg(staticData.faceImg)
                 const info = {
                   ...this.params,
                   faceImg: staticData.faceImg,
-                  type: this.type,
-                };
-                console.log("---将要传递给人脸识别的上一级参数---", info);
+                  type: this.type
+                }
+                console.log('---将要传递给人脸识别的上一级参数---', info)
 
                 // if (process_type == '3') {
 
                 // } else {
                 uni.navigateTo({
-                  url: "/pages/certificate/avatar-confirm",
+                  url: '/pages/certificate/avatar-confirm',
                   success: (res) => {
-                    console.log("====我来行---", info);
-                    res.eventChannel.emit("didOpenPageFinish", info);
-                  },
-                });
+                    console.log('====我来行---', info)
+                    res.eventChannel.emit('didOpenPageFinish', info)
+                  }
+                })
                 // }
               }
             }
-          },
-        });
-      };
+          }
+        })
+      }
       // this.demo();
       // 开启人脸识别
-      startFacialRecognitionVerify(params);
+      startFacialRecognitionVerify(params)
       // 调用活体检测, 各平台自带的或者大数据提供的, 成功后跳转到头像确认页面
-      uni.setStorageSync("applicantInfo", this.params);
+      uni.setStorageSync('applicantInfo', this.params)
     },
     // 去背景图片
     clearBgImg(photoBase64) {
@@ -430,9 +386,9 @@ export default {
         showsLoading: true,
         success: (resInfo) => {
           // 保存第一次人脸识别图片
-          uni.setStorageSync("first-face-img", JSON.stringify(resInfo));
-        },
-      });
+          uni.setStorageSync('first-face-img', JSON.stringify(resInfo))
+        }
+      })
     },
     /**
      * 获取用户信息
@@ -440,25 +396,25 @@ export default {
     getUserInfo() {
       api.getUserInfo({
         data: {
-          accessToken: uni.getStorageSync("token"),
+          accessToken: uni.getStorageSync('token')
         },
         success: (data) => {
-          uni.$emit("didLogin", data);
+          uni.$emit('didLogin', data)
           // setTimeout(uni.navigateBack, 1500);
-        },
-      });
+        }
+      })
     },
     scanWatchData(data) {
-      this.realName = data.realName;
-      this.type = data.type;
+      this.realName = data.realName
+      this.type = data.type
       switch (this.type) {
-        case "scan":
+        case 'scan':
           // this.$uni.setTitle('身份信息确认')
-          this.backfillData(data.info);
-          break;
-        case "input":
+          this.backfillData(data.info)
+          break
+        case 'input':
           // this.$uni.setTitle('身份信息')
-          break;
+          break
       }
     },
     /**
@@ -466,12 +422,12 @@ export default {
      */
     setData() {
       // #ifdef MP-ALIPAY
-      const data = uni.getStorageSync("scanData");
-      this.scanWatchData(data);
+      const data = uni.getStorageSync('scanData')
+      this.scanWatchData(data)
       // #endif
-      const eventChannel = this.getOpenerEventChannel();
-      eventChannel.on("didOpenPageFinish", (data) => {
-        this.scanWatchData(data);
+      const eventChannel = this.getOpenerEventChannel()
+      eventChannel.on('didOpenPageFinish', (data) => {
+        this.scanWatchData(data)
         // console.log('身份证数据data:', data)
         // this.realName = data.realName
         // this.type = data.type
@@ -486,26 +442,26 @@ export default {
         //     this.$uni.setTitle('身份信息')
         //     break
         // }
-      });
+      })
     },
     /**
      * 数据回填
      */
     backfillData(info) {
-      this.params.name = info.name;
-      this.params.idCardNumber = info.idCardNumber;
-      this.params.gender = info.gender === "男" ? 1 : 0;
-      this.params.nation = `${info.nation}族`;
+      this.params.name = info.name
+      this.params.idCardNumber = info.idCardNumber
+      this.params.gender = info.gender === '男' ? 1 : 0
+      this.params.nation = `${info.nation}族`
       this.params.birthday = info.birthday
-        .replace("年", "-")
-        .replace("月", "-")
-        .replace("日", "");
-      const regex = /.+?(省|市|自治区|自治州|县|区)/g;
-      const city = info.address.match(regex).join("");
-      this.params.city = city;
-      const address = info.address.replace(city, "");
-      this.params.address = address;
-      console.log("数据回填：", this.params);
+        .replace('年', '-')
+        .replace('月', '-')
+        .replace('日', '')
+      const regex = /.+?(省|市|自治区|自治州|县|区)/g
+      const city = info.address.match(regex).join('')
+      this.params.city = city
+      const address = info.address.replace(city, '')
+      this.params.address = address
+      console.log('数据回填：', this.params)
     },
     /**
      * 获取省市区数据
@@ -518,42 +474,42 @@ export default {
               return {
                 text: item.regnName,
                 value: item.regnCode,
-                children: map(item.children),
-              };
-            });
+                children: map(item.children)
+              }
+            })
           }
-          this.cities = map(data);
-        },
-      });
+          this.cities = map(data)
+        }
+      })
     },
     /**
      * 输入信息校验
      */
     async chackInput() {
-      const isScan = this.type === "scan";
+      const isScan = this.type === 'scan'
       if (!this.params.name) {
-        this.$uni.showToast("请输入姓名");
-        return false;
+        this.$uni.showToast('请输入姓名')
+        return false
       }
       if (!this.params.idCardNumber) {
-        this.$uni.showToast("请输入身份证号");
-        return false;
+        this.$uni.showToast('请输入身份证号')
+        return false
       }
       if (!validateIDCardNumber(this.params.idCardNumber)) {
-        this.$uni.showToast("身份证号格式错误，请重新输入");
-        return false;
+        this.$uni.showToast('身份证号格式错误，请重新输入')
+        return false
       }
-      if (isScan && !(this.params.gender === 0 ? "女" : "男")) {
-        this.$uni.showToast("请选择性别");
-        return false;
+      if (isScan && !(this.params.gender === 0 ? '女' : '男')) {
+        this.$uni.showToast('请选择性别')
+        return false
       }
       if (isScan && !this.params.nation) {
-        this.$uni.showToast("请选择民族");
-        return false;
+        this.$uni.showToast('请选择民族')
+        return false
       }
       if (isScan && !this.params.birthday) {
-        this.$uni.showToast("请选择出生日期");
-        return false;
+        this.$uni.showToast('请选择出生日期')
+        return false
       }
       // const today = dayjs();
       // const birthday = dayjs(this.params.birthday);
@@ -563,11 +519,11 @@ export default {
       //   });
       //   return false;
       // }
-      return await this.validateCardC();
-    },
+      return await this.validateCardC()
+    }
   },
-  mounted() {},
-};
+  mounted() { }
+}
 </script>
 
 <style lang="scss" scoped>

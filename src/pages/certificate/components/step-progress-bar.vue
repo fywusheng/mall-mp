@@ -7,8 +7,7 @@
       :class="{ 'step--highlight': step === 1 }"
     >
       <image
-        class="icon"
-        mode="scaleToFill"
+        class="icon" mode="scaleToFill"
         src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-step-finished.png"
         v-if="step > 1"
       />
@@ -20,8 +19,7 @@
       :class="{ 'step--highlight': step === 2 }"
     >
       <image
-        class="icon"
-        mode="scaleToFill"
+        class="icon" mode="scaleToFill"
         src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-step-finished.png"
         v-if="step > 2"
       />
@@ -33,8 +31,7 @@
       :class="{ 'step--highlight': step === 3 }"
     >
       <image
-        class="icon"
-        mode="scaleToFill"
+        class="icon" mode="scaleToFill"
         src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-step-finished.png"
         v-if="step > 3"
       />

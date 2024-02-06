@@ -7,8 +7,7 @@
       :key="index"
     >
       <view class="section-header flex-h flex-c-s p-0-32">
-        <image
-          mode="scaleToFill"
+        <image mode="scaleToFill"
           class="section-header__icon"
           src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-contact-info.png"
         />
@@ -57,17 +56,16 @@
       @click="handleAddClick"
     >
       <image
-        class="add-button__icon"
-        mode="scaleToFill"
+        class="add-button__icon" mode="scaleToFill"
         src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-add-primary.png"
       />
       <text class="fs-40 c-primary ml-20">添加</text>
     </view>
-    <view style="width: 100vw; height: 336rpx"></view>
+    <view style="width: 100vw; height: 336rpx;"></view>
     <view class="footer bg-white">
       <view class="tips">
-        <text class="fs-36" style="color: #424141">我承诺</text>
-        <text class="fs-36" style="color: #0097fe">
+        <text class="fs-36" style="color: #424141;">我承诺</text>
+        <text class="fs-36" style="color: #0097FE;">
           以上填写信息为真实有效信息具有法律效益
         </text>
       </view>
@@ -108,34 +106,31 @@ export default {
     uni.$on("didFilloutStepBack", this.handleFilloutStepBack);
   },
   methods: {
-    checkConect() {
+    checkConect(){
       const list = this.params.contactList;
-      console.log("====list=", list);
+      console.log("====list=",list)
       const userInfor = uni.getStorageSync("userInfo");
-      const _array = [];
-      const _phone = [];
-      console.log("===容器---", _phone);
-      return list.some((item, index, array) => {
-        if (
-          item.name === userInfor.psnName ||
-          item.phoneNumber === userInfor.tel
-        ) {
-          this.$uni.showToast("不能添加自己为紧急联系人");
+      let _array = [];
+      let _phone = [];
+      console.log("===容器---",_phone)
+      return list.some((item,index,array)=>{
+         if(item.name === userInfor.psnName || item.phoneNumber === userInfor.tel){
+           this.$uni.showToast("不能添加自己为紧急联系人");
+           return true;
+         }
+         if(!_array.includes(item.name)){
+           _array.push(item.name);
+         }else{
+          this.$uni.showToast("紧急联系人名字不能相同"); 
           return true;
-        }
-        if (!_array.includes(item.name)) {
-          _array.push(item.name);
-        } else {
-          this.$uni.showToast("紧急联系人名字不能相同");
+         }
+         if(!_phone.includes(item.phoneNumber)){
+           _phone.push(item.phoneNumber);
+         }else{
+          this.$uni.showToast("紧急联系人手机号不能相同"); 
           return true;
-        }
-        if (!_phone.includes(item.phoneNumber)) {
-          _phone.push(item.phoneNumber);
-        } else {
-          this.$uni.showToast("紧急联系人手机号不能相同");
-          return true;
-        }
-      });
+         }
+      })
     },
     handleFilloutStepBack(params) {
       this.params = params;
@@ -165,16 +160,17 @@ export default {
     handleNextStepClick() {
       const ce = this.checkConect();
       if (!this.checkInput() && ce == false) return;
-      if (this.checkInput() && !this.checkConect()) {
+      if(this.checkInput() && !this.checkConect()){
         uni.navigateTo({
-          url: "/pages/certificate/fillout-step-3",
-          success: (res) => {
-            res.eventChannel.emit("didOpenPageFinish", this.params);
-          },
+            url: "/pages/certificate/fillout-step-3",
+            success: (res) => {
+              res.eventChannel.emit("didOpenPageFinish", this.params);
+            },
         });
       }
+      
     },
-
+   
     /**
      * 设置数据 TODO 查看初始上一步的值
      */
@@ -182,9 +178,9 @@ export default {
       const eventChannel = this.getOpenerEventChannel();
       if (!eventChannel.on) return;
       eventChannel.on("didOpenPageFinish", (data) => {
-        console.log("==拿到前一步的数据--", data);
+        console.log('==拿到前一步的数据--',data);
         this.params = { ...this.params, ...data };
-        console.log("==拿到前一步的数据3333--", this.params);
+         console.log('==拿到前一步的数据3333--',this.params);
       });
     },
     /**
@@ -214,7 +210,7 @@ export default {
 <style lang="scss" scoped>
 .fillout-step-2 {
   height: 100vh;
-  background-color: #fff;
+  background-color:#fff;
   .section {
     &-header {
       height: 120rpx;

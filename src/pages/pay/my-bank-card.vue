@@ -1,89 +1,60 @@
 <template>
   <view class="my-bank-card">
-    <view class="bg"></view>
     <!-- #ifdef MP-ALIPAY -->
-    <navigation-bar :alpha="1" backgroundColor="">
-      <template v-slot:title1>
+    <navigation-bar :alpha="1">
+      <view slot="title1" style="margin-top:-12%">
         <view class="bar-height">
-          <view
-            class="navigation-bar flex-h flex-c-s"
-            :style="{ height: '44px' }"
-          >
-            <text class="navigation-bar__title fs-44 c-black flex-1">{{
-              title
-            }}</text>
+          <view class="navigation-bar flex-h flex-c-s" :style="{height: '44px'}">
+            <text class="navigation-bar__title fs-44 c-black flex-1">{{title}}</text>
           </view>
         </view>
-      </template>
+      </view>
     </navigation-bar>
     <!-- #endif -->
     <!-- #ifdef MP-WEIXIN -->
     <navigation-bar :alpha="1">
-      <template v-slot:title1>
-        <view class="bar-height" style="margin-top: -12%">
-          <view
-            class="navigation-bar flex-h flex-c-s"
-            :style="{ height: '44px' }"
-          >
-            <image
-              class="back-icon"
-              @click="handleNavBack"
+      <view slot="title1" style="margin-top:-12%">
+        <view class="bar-height">
+          <view class="navigation-bar flex-h flex-c-s" :style="{height: '44px'}">
+            <image class="back-icon" @click="handleNavBack"
               src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-arrow-left.png"
-              mode="scaleToFill"
-            />
-            <text class="navigation-bar__title fs-44 c-black flex-1">{{
-              title
-            }}</text>
+              mode="scaleToFill" />
+            <text class="navigation-bar__title fs-44 c-black flex-1">{{title}}</text>
           </view>
         </view>
-      </template>
+
+      </view>
     </navigation-bar>
     <!-- #endif -->
-    <view
-      class="blank"
-      :style="{ height: (128 || navigationBarHeight) + 'px' }"
-    />
+    <view class="blank" :style="{ height: (128 || navigationBarHeight) + 'px' }" />
 
     <!-- 我的银行卡 -->
     <view class="page-header mt-16">
       <view class="title">
-        <image
-          v-if="bankList.length > 1"
-          class="icon-circle icon-add"
-          :src="icon.sort"
-          @click="goSort"
-        />
+        <image v-if="bankList.length > 1" class="icon-circle icon-add" :src="icon.sort"
+          @click="goSort" />
         <image class="icon-circle icon-sort" :src="icon.add" @click="goAdd" />
-        <text>我的银行卡（{{ bankList.length }}）</text>
+        <text>我的银行卡（{{bankList.length}}）</text>
       </view>
       <view class="status-box flex-v flex-c-s" v-if="bankList.length === 0">
-        <image
-          class="icon-img"
+        <image class="icon-img"
           src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/no-order.png"
-          mode="scaleToFill"
-        />
+          mode="scaleToFill" />
         <view class="gray">暂未添加银行卡</view>
       </view>
-      <view
-        v-for="(item, index) in bankList"
-        :key="item.recordId"
-        class="bank-card"
-        @click="goCardDetail(item)"
-        :style="{ background: item.cardColor }"
-      >
-        <image
-          class="icon-bg"
+      <view v-for="(item, index) in bankList" :key="item.recordId" class="bank-card"
+        @click="goCardDetail(item)" :style="{background: item.cardColor}">
+        <image class="icon-bg"
           src="https://ggllstatic.hpgjzlinfo.com/static/pay/icon-bank-pattern.png"
-          mode="scaleToFill"
-        />
+          mode="scaleToFill" />
         <view class="bank-name">
           <view class="icon-wrapper">
             <image class="icon-bank" :src="item.bankIcon" />
           </view>
-          <view class="bank-txt">{{ item.bankName }}</view>
+          <view class="bank-txt">{{item.bankName}}</view>
           <view v-if="index === 0" class="default">默认</view>
         </view>
-        <view class="bank-no">{{ formatBankNum(item.bankCardNum) }}</view>
+        <view class="bank-no">{{item.bankCardNum | formatBankNum}}</view>
       </view>
     </view>
 
@@ -130,136 +101,101 @@
     </view>
 
     <!-- 绑卡未完成提示 -->
-    <modal
-      ref="tipModal"
-      cancelText="仍要返回"
-      confirmText="继续绑卡"
-      @cancel="handleCancel"
-      @confirm="handleConfirm"
-    >
+    <modal ref="tipModal" cancelText='仍要返回' confirmText='继续绑卡' @cancel='handleCancel'
+      @confirm='handleConfirm'>
       <view slot="text">
-        <view class="confirm-main" style="height: auto; line-height: 1.5">
-          <view class="content"
-            >绑卡尚未完成，将无法在国家老龄服务平台APP使用该卡，是否确认返回？</view
-          >
+        <view class="confirm-main" style="height:auto;line-height:1.5">
+          <view class="content">绑卡尚未完成，将无法在国家老龄服务平台APP使用该卡，是否确认返回？</view>
         </view>
       </view>
     </modal>
 
     <!-- 预留手机号说明 -->
-    <modal
-      ref="phoneModal"
-      cancelText=" "
-      confirmText="知道了"
-      @cancel="handleCancel"
-      @confirm="handleConfirm"
-    >
-      <template v-slot:text>
-        <view class="confirm-main" style="height: auto; line-height: 1.5">
-          <view class="content"
-            >该银行预留手机号为网银签约手机号，可通过网银个人客户基本资料中预留手机号码或者联系银行客服更新处理。</view
-          >
+    <modal ref="phoneModal" cancelText=' ' confirmText='知道了' @cancel='handleCancel'
+      @confirm='handleConfirm'>
+      <view slot="text">
+        <view class="confirm-main" style="height:auto;line-height:1.5">
+          <view class="content">该银行预留手机号为网银签约手机号，可通过网银个人客户基本资料中预留手机号码或者联系银行客服更新处理。</view>
         </view>
-      </template>
+      </view>
     </modal>
 
     <real-name-pop ref="realpop" @succFlag="succFlag" />
+
   </view>
 </template>
 
 <script>
-import NavigationBar from "./components/navigation-bar.vue";
-import Modal from "@/components/common/modal.vue";
-import RealNamePop from "@/pages/real-name-pop/real-name-pop.vue";
-import api from "@/apis/index.js";
-import { getBankBg } from "@/utils/utils.js";
+import NavigationBar from './components/navigation-bar.vue'
+import Modal from '@/components/common/modal.vue'
+import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue'
+import api from '@/apis/index.js'
+import { getBankBg } from '@/utils/utils.js'
 
 // import { hideRule } from '@/utils/desensitization.js'
 export default {
   components: { NavigationBar, Modal, RealNamePop },
   data() {
     return {
-      title: "银行卡",
+      title: '银行卡',
       // 银行卡列表
       bankList: [],
       // iconPath
       checked: true,
       icon: {
-        sort: "https://ggllstatic.hpgjzlinfo.com/static/pay/icon-sort.png",
-        add: "https://ggllstatic.hpgjzlinfo.com/static/pay/icon-add.png",
-        addPlus:
-          "https://ggllstatic.hpgjzlinfo.com/static/pay/icon-add-white-plus.png",
-        auth: "https://ggllstatic.hpgjzlinfo.com/static/pay/icon-warn-circle-blue.png",
-        delete:
-          "https://ggllstatic.hpgjzlinfo.com/static/pay/icon-input-delete.png",
-        circleGre:
-          "https://ggllstatic.hpgjzlinfo.com/static/pay/icon-warn-circle.png",
-        checked:
-          "https://ggllstatic.hpgjzlinfo.com/static/pay/icon-radio-checked.png",
-        noChecked:
-          "https://ggllstatic.hpgjzlinfo.com/static/pay/icon-radio-default.png",
-        arrow:
-          "https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png",
+        sort: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-sort.png',
+        add: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-add.png',
+        addPlus: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-add-white-plus.png',
+        auth: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-warn-circle-blue.png',
+        delete: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-input-delete.png',
+        circleGre: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-warn-circle.png',
+        checked: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-radio-checked.png',
+        noChecked: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-radio-default.png',
+        arrow: 'https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png'
       },
       // 导航栏高度
       // #ifdef MP-WEIXIN
       navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
       // #endif
       // #ifdef MP-ALIPAY
-      navigationBarHeight:
-        uni.getSystemInfoSync().statusBarHeight +
-        uni.getSystemInfoSync().titleBarHeight,
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
       // #endif
       // 状态栏高度
       statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-      backUrl: "",
-    };
+      backUrl: ''
+    }
   },
   onLoad(e) {
     if (e.back) {
-      this.backUrl = e.back;
+      this.backUrl = e.back
     }
-    this.getBankList();
+    this.getBankList()
   },
-  onShow() {},
+  onShow() {
+
+  },
   onBackPress(e) {
     // uni.redirectTo({
-    //     url: `/pages/index/index`,
+    //     url: `/pages/index/index?index=2`,
     // });
   },
   methods: {
-    formatBankNum(bankNum) {
-      const val = bankNum;
-      const front = 4;
-      const back = 4;
-      let placeholder = 8;
-      const length = val.length;
-      placeholder = placeholder || length - front - back;
-
-      if (length > front + back) {
-        const frontVal = val.slice(0, front);
-        const backVal = back ? val.slice(-back) : "";
-        return frontVal + " " + "*".repeat(placeholder) + " " + backVal;
-      }
-
-      return val;
-    },
     // 获取银行卡背景
     getBankBg(name) {
-      return getBankBg(name);
+      return getBankBg(name)
     },
     // 银行列表
     getBankList() {
       api.getBankList({
         data: {},
-        success: (res) => {
-          this.bankList = res.splice(0, 2);
-          this.payCardInfo = this.bankList[0];
-        },
-      });
+        success: res => {
+          this.bankList = res.splice(0, 2)
+          this.payCardInfo = this.bankList[0]
+        }
+      })
     },
     handlePopPhoneModal() {
-      this.$refs.tipModal.open();
+      this.$refs.tipModal.open()
       // this.$refs.phoneModal.open()
     },
     // 返回上一页
@@ -269,54 +205,53 @@ export default {
 
       if (this.backUrl) {
         if (this.backUrl == 1) {
-          uni.navigateBack();
-          return;
+          uni.navigateBack()
+          return
         } else {
           uni.reLaunch({
-            url: this.backUrl,
-          });
+            url: this.backUrl
+          })
         }
-        return;
+        return
       } else {
         uni.reLaunch({
-          url: "/pages/index/index",
-        });
+          url: '/pages/index/index'
+        })
       }
     },
     // 返回首页
     handleHomeBack() {
       uni.reLaunch({
-        url: "/pages/index/index",
-      });
+        url: '/pages/index/index'
+      })
     },
     // 排序
     goSort() {
       uni.navigateTo({
-        url: "/pages/pay/set-card-no",
-      });
+        url: '/pages/pay/set-card-no'
+      })
     },
     // 添加银行卡
     async goAdd() {
       // const userInfo = uni.getStorageSync('userInfo')
-      this.$uni.showToast("系统升级中");
-      // const userInfo = await this.getUserInfo();
-      // if (userInfo.crtfStas === "0") {
-      //   this.$refs.realpop.open();
-      // } else {
-      //   uni.navigateTo({
-      //     url: "/pages/pay/add-bank-card?source=1",
-      //   });
-      // }
+      const userInfo = await this.getUserInfo()
+      if (userInfo.crtfStas === '0') {
+        this.$refs.realpop.open()
+      } else {
+        uni.navigateTo({
+          url: '/pages/pay/add-bank-card?source=1'
+        })
+      }
     },
     // 实名认证成功
     async succFlag(flag) {
       if (flag == 1) {
-        const userInfo = await this.getUserInfo();
-        uni.setStorageSync("userInfo", userInfo);
-        this.$refs.realpop.close();
+        const userInfo = await this.getUserInfo()
+        uni.setStorageSync('userInfo', userInfo)
+        this.$refs.realpop.close()
         uni.navigateTo({
-          url: `/pages/user-center/real-name-result2?back=${"/pages/pay/add-bank-card"}&index=2`,
-        });
+          url: `/pages/user-center/real-name-result2?back=${'/pages/pay/add-bank-card'}&index=2`
+        })
       }
     },
     /**
@@ -326,43 +261,61 @@ export default {
       return new Promise((resolve, reject) => {
         api.getUserInfo({
           data: {
-            accessToken: uni.getStorageSync("token"),
+            accessToken: uni.getStorageSync('token')
           },
           success: (data) => {
-            resolve(data);
+            resolve(data)
           },
           fail: (error) => {
-            reject(error);
-          },
-        });
-      });
+            reject(error)
+          }
+        })
+      })
     },
     // 银行卡详情
     goCardDetail(item) {
       uni.navigateTo({
-        url: `/pages/pay/my-bank-card-detail?recordId=${item.recordId}`,
-      });
+        url: `/pages/pay/my-bank-card-detail?recordId=${item.recordId}`
+      })
     },
     handleCheckXieyi() {
-      this.checked = !this.checked;
+      this.checked = !this.checked
     },
     hideRule(val, front, back, placeholder) {
-      const length = val.length;
-      placeholder = placeholder || length - front - back;
+      const length = val.length
+      placeholder = placeholder || length - front - back
 
       if (length > front + back) {
-        const frontVal = val.slice(0, front);
-        const backVal = back ? val.slice(-back) : "";
-        return frontVal + " " + "*".repeat(placeholder) + " " + backVal;
+        const frontVal = val.slice(0, front)
+        const backVal = back ? val.slice(-back) : ''
+        return frontVal + ' ' + '*'.repeat(placeholder) + ' ' + backVal
       }
 
-      return val;
-    },
+      return val
+    }
   },
-};
+  filters: {
+    formatBankNum(bankNum) {
+      const val = bankNum
+      const front = 4
+      const back = 4
+      let placeholder = 8
+      const length = val.length
+      placeholder = placeholder || length - front - back
+
+      if (length > front + back) {
+        const frontVal = val.slice(0, front)
+        const backVal = back ? val.slice(-back) : ''
+        return frontVal + ' ' + '*'.repeat(placeholder) + ' ' + backVal
+      }
+
+      return val
+    }
+  }
+}
 </script>
 
-<style lang="scss" scoped>
+<style  lang="scss" scoped>
 .status-box {
   padding-top: 150rpx;
   .icon-img {
@@ -378,7 +331,6 @@ export default {
     color: #999999;
   }
 }
-
 //modal弹框
 .confirm-main {
   width: 552rpx;
@@ -394,19 +346,10 @@ export default {
 .my-bank-card {
   background: #f5f5f5;
   height: 100vh;
-  position: relative;
-  .bg {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 308rpx;
-    background: linear-gradient(180deg, #ff8800 0%, #ff5500 100%);
-  }
   .bar-height {
-    // height: 308rpx;
-    // padding-top: 12%;
-    // background: linear-gradient(180deg, #ff8800 0%, #ff5500 100%);
+    height: 308rpx;
+    padding-top: 12%;
+    background: linear-gradient(180deg, #ff8800 0%, #ff5500 100%);
   }
   // 头部
   .navigation-bar {

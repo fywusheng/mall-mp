@@ -57,7 +57,8 @@ export function request({
       if (showsLoading) hideLoading()
 
       // 处理请求结果
-      if ([600001, 600002, 600003, 600016].includes(response.data.code)) {
+      if (response.data.code === 600001 || response.data.code === 600002 || response.data.code === 600003 || response.data.code === 600016) {
+        // showToast("登录过期");
         Store.dispatch('logout')
         uni.navigateTo({
           url: '/pages/user-center/login'

@@ -6,19 +6,10 @@
         <view class="content" @click="getPoint">
           <!-- <view class="title">{{content.popUpTitle}}</view>
           <view class="cont" v-for="(item, index) in popCont" :key="index">{{item}}</view> -->
-          <image
-            class="get-point-bg"
-            :src="content.popUpImg"
-            mode="scaleToFill"
-          />
+          <image class="get-point-bg" :src="content.popUpImg" mode="scaleToFill" />
         </view>
 
-        <image
-          class="icon-close"
-          @click="close"
-          :src="icon.close"
-          mode="scaleToFill"
-        />
+        <image class="icon-close" @click="close" :src="icon.close" mode="scaleToFill" />
       </view>
     </uni-popup>
   </div>
@@ -29,43 +20,38 @@ export default {
   data() {
     return {
       icon: {
-        bg: "https://ggllstatic.hpgjzlinfo.com/static/images/common/icon-get-point.png",
-        close: "https://ggllstatic.hpgjzlinfo.com/static/common/icon-close.png",
+        bg: 'https://ggllstatic.hpgjzlinfo.com/static/images/common/icon-get-point.png',
+        close: 'https://ggllstatic.hpgjzlinfo.com/static/common/icon-close.png'
       },
       content: {
-        popUpTitle: "领积分,抵现金",
-        popUpDesc: "加入官方本地福利群，领积分领福利",
-        popUpImg:
-          "https://ggllstatic.hpgjzlinfo.com/static/images/common/icon-get-point.png",
-        popUpTargetUrl: "",
-        popUpTimes: 0,
-      },
-    };
+        popUpTitle: '领积分,抵现金',
+        popUpDesc: '加入官方本地福利群，领积分领福利',
+        popUpImg: 'https://ggllstatic.hpgjzlinfo.com/static/images/common/icon-get-point.png',
+        popUpTargetUrl: '',
+        popUpTimes: 0
+      }
+    }
   },
   computed: {
     popCont() {
-      return this.content.popUpDesc.split("，");
-    },
+      return this.content.popUpDesc.split('，')
+    }
   },
   methods: {
     getPoint() {
-      uni.navigateTo({
-        url: `/pages/common/webpage?url=${this.content.popUpTargetUrl}`,
-      });
+      uni.navigateTo({ url: `/pages/common/webpage?url=${this.content.popUpTargetUrl}` })
     },
     open(data) {
-      Object.keys(this.content).map((key) => {
-        if (data[key]) {
-          this.content[key] = data[key];
-        }
-      });
-      this.$refs.popup.open();
+      Object.keys(this.content).map(key => {
+        if (data[key]) { this.content[key] = data[key] }
+      })
+      this.$refs.popup.open()
     },
     close() {
-      this.$refs.popup.close();
-    },
-  },
-};
+      this.$refs.popup.close()
+    }
+  }
+}
 </script>
 
 <style lang="scss" scope>

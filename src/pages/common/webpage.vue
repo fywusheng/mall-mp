@@ -8,28 +8,25 @@ export default {
   data() {
     return {
       // 要加载的 webview URL
-      url: "",
+      url: '',
       // webview 样式
       webviewStyles: {
         // 加载进度条样式
         progress: {
-          color: "#4077F4",
-        },
-      },
-    };
+          color: '#4077F4'
+        }
+      }
+    }
   },
   onLoad(e) {
     // #ifdef MP-ALIPAY
-    if (e.ecodeUrl) {
-      this.url = decodeURIComponent(e.ecodeUrl);
-    } else {
-      this.url = e.url;
-    }
+    this.url = e.url
     // #endif
-
     // #ifdef MP-WEIXIN
-    this.url = decodeURIComponent(e.url);
+    this.url = decodeURIComponent(e.url)
     // #endif
-  },
-};
+  }
+}
 </script>
+
+<style lang="scss" scoped></style>

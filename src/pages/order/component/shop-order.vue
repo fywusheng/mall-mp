@@ -1,196 +1,192 @@
 <template>
   <view class="pages">
     <view class="status">
-      <view
-        v-for="(i, index) in statusList"
-        :key="i.id"
-        :class="{ active: activeIndex === index, 'status-label': true }"
-        @click="handleItemClick(index, i)"
-        >{{ i.label }}</view
-      >
+      <view v-for="(i, index) in statusList" :key="i.id"
+        :class="{active: activeIndex === index,'status-label':true}"
+        @click="handleItemClick(index, i)">{{i.label}}</view>
     </view>
 
-    <view class="hotel-list" v-if="list.length > 0">
-      <view
-        class="item"
-        @click="toDetail(order)"
-        v-for="(order, parentIndex) in orderList"
-        :key="parentIndex"
-      >
+    <view class="hotel-list" v-if="list.length>0">
+
+      <view class="item" @click="toDetail(order)" v-for="(order, parentIndex) in orderList"
+        :key="parentIndex">
         <view class="header_line" @click.stop="goStoreDetail(order)">
           <view class="left">
-            <image
-              class="t_icon"
-              :src="order.orderMallIcon"
-              mode="scaleToFill"
-            />
-            <view class="type">{{ order.storeName }}</view>
+            <image class="t_icon" :src="order.orderMallIcon" />
+            <view class="type">{{order.storeName}}</view>
           </view>
-          <view class="right"> {{ order.orderStatusLabel }}</view>
+          <view class="right"> {{order.orderStatusLabel}}</view>
           <!-- <view class="process" v-else>{{item.orderStatus|formateOrderStatus}}</view> -->
         </view>
-        <template v-if="order.itemList && order.itemList.length < 2">
-          <view
-            class="_topLine"
-            :key="itemIndex"
-            v-for="(item, itemIndex) in order.itemList"
-          >
+        <template v-if="order.itemList&&order.itemList.length < 2">
+          <view class="_topLine" :key="itemIndex" v-for="(item,itemIndex) in order.itemList">
             <view class="left_part">
               <image class="logo-img" :src="item.imgUrl" mode="scaleToFill" />
               <view class="cont">
-                <view class="name l-2">{{ item.productName }}</view>
-                <view class="label l-1">{{ item.skuName }}</view>
+                <view class="name l-2">{{item.productName}}</view>
+                <view class="label l-1">{{item.skuName}}</view>
               </view>
               <view class="cont right">
-                <view class="name"
-                  >¥{{ formaterMoney(item.sellingPrice) }}</view
-                >
-                <view class="label">x{{ item.skuQuantity }}</view>
+                <view class="name">¥{{item.sellingPrice|formaterMoney}}</view>
+                <view class="label">x{{item.skuQuantity}}</view>
               </view>
             </view>
           </view>
         </template>
         <template v-else>
           <ul class="item-img-list">
-            <li
-              class="img-item"
-              :key="itemIndex"
-              v-for="(item, itemIndex) in order.itemList"
-            >
-              <img
-                class="item-logo"
-                mode="scaleToFill"
-                :lazy-load="true"
-                :src="item.imgUrl"
-              />
+            <li class="img-item" :key="itemIndex" v-for="(item,itemIndex) in order.itemList">
+              <img class="item-logo" mode="" :lazy-load="true" :src="item.imgUrl">
             </li>
           </ul>
         </template>
-        <view class="total"
-          >共计{{ order.totalQuantity }}个 合计:
-          <text class="salePrice">
-            &nbsp;¥{{ formaterMoney(order.payableAmount) }}</text
-          >
+        <view class="total">共计{{order.totalQuantity}}个 合计: <text class="salePrice">
+            &nbsp;¥{{order.payableAmount|formaterMoney}}</text>
         </view>
         <div class="footer-btn" @click.stop="">
-          <div
-            class="btn-active"
-            @click="confirm(order)"
-            v-if="order.orderStatus === 30"
-          >
-            确认收货
-          </div>
-          <div
-            class="btn-active"
-            @click="toPay(order)"
-            v-if="order.orderStatus === 10"
-          >
-            付款
-          </div>
+          <div class="btn-active" @click="confirm(order)" v-if="order.orderStatus === 30">确认收货</div>
+          <div class="btn-active" @click="toPay(order)" v-if="order.orderStatus === 10">付款</div>
           <!-- <div class="btn-link" @click="remove(order)" v-if="order.orderStatus < 30">取消订单</div> -->
-          <div
-            class="btn-link"
-            @click="logistics(order)"
-            v-if="
-              order.orderStatus > 20 &&
-              order.orderStatus < 90 &&
-              order.orderStatus !== 60 &&
-              !order.hzhH5
-            "
-          >
+          <div class="btn-link" @click="logistics(order)"
+            v-if="order.orderStatus > 20 && order.orderStatus < 90 && order.orderStatus !== 60 && !order.hzhH5">
             查看物流
           </div>
           <div class="btn-link" @click="toDetail(order)">查看详情</div>
-          <div
-            v-if="order.hzhH5"
-            class="btn-active"
-            @click="lookQrCode(order.hzhH5)"
-          >
-            查看券码
-          </div>
+          <div v-if="order.hzhH5" class="btn-active" @click="lookQrCode(order.hzhH5)">
+            查看券码</div>
         </div>
       </view>
+
     </view>
     <view class="status-box flex-v flex-c-s" v-if="list.length === 0">
-      <image
-        class="icon-img"
+      <image class="icon-img"
         src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/no-order.png"
-        mode="scaleToFill"
-      />
+        mode="scaleToFill" />
       <view>您还没有相关订单</view>
     </view>
   </view>
 </template>
 
 <script>
-import pick from "lodash/pick";
-import dayjs from "dayjs";
+import dayjs from 'dayjs'
 export default {
-  name: "shop-order",
+  name: 'shop-order',
   props: {
     list: {
       type: Array,
-      default: () => [],
-    },
+      default: () => []
+    }
   },
   data() {
     return {
       activeIndex: 0,
-      dialogContent: "",
-      icon: "https://ggllstatic.hpgjzlinfo.com/static/life/warning-circle.png",
+      dialogContent: '',
+      icon: 'https://ggllstatic.hpgjzlinfo.com/static/life/warning-circle.png',
       statusList: [
-        { id: null, label: "全部" },
-        { id: 10, label: "待付款" },
-        { id: 20, label: "待发货" },
-        { id: 30, label: "待收货" },
-      ],
-    };
+        { id: null, label: '全部' },
+        { id: 10, label: '待付款' },
+        { id: 20, label: '待发货' },
+        { id: 30, label: '待收货' }
+      ]
+    }
   },
   computed: {
     orderList() {
-      const res = [];
-      console.log(this.list);
-      this.list.forEach((data) => {
-        const itemList = [];
+      const res = []
+      console.log(this.list)
+      this.list.forEach(data => {
+        const itemList = []
         if (data.storeOrderItems) {
-          data.storeOrderItems.forEach((orderItemModel) => {
-            orderItemModel.items.forEach((item) => {
-              itemList.push(
-                pick(item, [
-                  "imgUrl",
-                  "productId",
-                  "productName",
-                  "skuName",
-                  "sellingPrice",
-                  "skuQuantity",
-                  "payableAmount",
-                ])
-              );
-            });
-          });
-          const tempData = pick(data, [
-            "orderId",
-            "orderStatus",
-            "totalQuantity",
-            "orderType",
-            "orderAmount",
-            "orderStatusLabel",
-            "payableAmount",
-            "storeName",
-            "storeId",
-            "hzhH5",
-          ]);
-          tempData.itemList = itemList;
-          tempData.orderMallIcon = data.storeOrderItems[0].orderMallIcon;
-          res.push(tempData);
+          data.storeOrderItems.forEach(orderItemModel => {
+            orderItemModel.items.forEach(item => {
+              item.imgUrl = XIU.getImgFormat(item.imgUrl, '/resize,w_400')
+              itemList.push(_.pick(item, ['imgUrl', 'productId', 'productName', 'skuName', 'sellingPrice', 'skuQuantity', 'payableAmount']))
+            })
+          })
+          const tempData = _.pick(data, ['orderId', 'orderStatus', 'totalQuantity', 'orderType', 'orderAmount', 'orderStatusLabel', 'payableAmount', 'storeName', 'storeId', 'hzhH5'])
+          tempData.itemList = itemList
+          tempData.orderMallIcon = data.storeOrderItems[0].orderMallIcon
+          res.push(tempData)
         }
-      });
-      return res;
-    },
+      })
+      return res
+    }
   },
-  created() {},
-  onLoad(e) {},
+  created() {
+  },
+  onLoad(e) {
+
+  },
   methods: {
+    // 查看券码
+    lookQrCode(hzhH5) {
+      const url = encodeURIComponent(hzhH5)
+      uni.navigateTo({ url: `/pages/common/webpage?url=${url}` })
+    },
+    // 店铺详情
+    goStoreDetail(item) {
+      uni.navigateTo({ url: '/sub-pages/index/store/main?supplierId=' + item.storeId })
+    },
+    logistics(order) {
+      wx.navigateTo({
+        url: '/sub-pages/me/logistics/main?id=' + order.orderId
+      })
+    },
+    async toPay(order) {
+      wx.showLoading({ title: '正在获取...', mask: true })
+      const result = await Axios.post('/payment/sign', {
+        orderId: order.orderId,
+        paymentMethodCode: 'nepsp_pay',
+        code: new Date().getTime()
+      })
+      wx.hideLoading()
+      if (result.code == 200) {
+        // 去收银台支付
+        uni.reLaunch({
+          url: '/pages/common/webpage?url=' + encodeURIComponent(result.data.payUrl)
+        })
+      } else {
+        wx.showToast({
+          title: result.msg || '获取失败',
+          icon: 'none'
+        })
+      }
+    },
+    async confirm(order) {
+      const result = await wx.showModal({
+        title: '',
+        content: '确定已收货?'
+      })
+      if (result.confirm) {
+        wx.showLoading('正在提交...')
+        const delResult = await Axios.post('/order/confirm', {
+          orderId: order.orderId
+        })
+        wx.hideLoading()
+        if (delResult.code == 200) {
+          setTimeout(() => {
+            wx.showToast({
+              title: delResult.msg || '确认成功',
+              icon: 'none'
+            })
+          }, 1500)
+          this.changeStatus(this.status)
+        } else {
+          wx.showToast(delResult.msg || '确认失败')
+        }
+      }
+    },
+    toDetail(data) {
+      uni.navigateTo({
+        url: `/sub-pages/me/order-detail/main?id=${data.orderId}&popUpType=1`
+      })
+    },
+    handleItemClick(index, i) {
+      this.activeIndex = index
+      this.$emit('resetOptions', i.id)
+    }
+  },
+  filters: {
     formateOrderStatus(v) {
       // 10：创建、待付款
       // 20：已支付、待发货
@@ -200,100 +196,29 @@ export default {
       // 90：订单取消、手动取消、系统自动取消
       // 100：交易取消
       const mapObj = {
-        1: "待付款",
-        2: "待使用",
-        3: "已完成",
-        4: "已关闭",
-        5: "部分退款",
-        6: "已退款",
-        7: "退款中",
-        8: "已过期",
-      };
-      return mapObj[v] || "";
+        '1': '待付款',
+        '2': '待使用',
+        '3': '已完成',
+        '4': '已关闭',
+        '5': '部分退款',
+        '6': '已退款',
+        '7': '退款中',
+        '8': '已过期'
+      }
+      return mapObj[v] || ''
     },
     formaterMoney(v) {
-      return Number(v).toFixed(2);
+      return Number(v).toFixed(2)
     },
     // 日期过滤器, 用于格式化日期
     dateFilter(value) {
-      return dayjs(value).format("YYYY-MM-DD HH:mm");
-    },
-    // 查看券码
-    lookQrCode(hzhH5) {
-      const url = encodeURIComponent(hzhH5);
-      uni.navigateTo({ url: `/pages/common/webpage?url=${url}` });
-    },
-    // 店铺详情
-    goStoreDetail(item) {
-      uni.navigateTo({
-        url: "/sub-pages/index/store/main?supplierId=" + item.storeId,
-      });
-    },
-    logistics(order) {
-      uni.navigateTo({
-        url: "/sub-pages/me/logistics/main?id=" + order.orderId,
-      });
-    },
-    async toPay(order) {
-      uni.showLoading({ title: "正在获取...", mask: true });
-      const result = await Axios.post("/payment/sign", {
-        orderId: order.orderId,
-        paymentMethodCode: "nepsp_pay",
-        code: new Date().getTime(),
-      });
-      uni.hideLoading();
-      if (result.code == 200) {
-        // 去收银台支付
-        uni.reLaunch({
-          url:
-            "/pages/common/webpage?url=" +
-            encodeURIComponent(result.data.payUrl),
-        });
-      } else {
-        uni.showToast({
-          title: result.msg || "获取失败",
-          icon: "none",
-        });
-      }
-    },
-    async confirm(order) {
-      const result = await uni.showModal({
-        title: "",
-        content: "确定已收货?",
-      });
-      if (result.confirm) {
-        uni.showLoading("正在提交...");
-        const delResult = await Axios.post("/order/confirm", {
-          orderId: order.orderId,
-        });
-        uni.hideLoading();
-        if (delResult.code == 200) {
-          setTimeout(() => {
-            uni.showToast({
-              title: delResult.msg || "确认成功",
-              icon: "none",
-            });
-          }, 1500);
-          this.changeStatus(this.status);
-        } else {
-          uni.showToast(delResult.msg || "确认失败");
-        }
-      }
-    },
-    toDetail(data) {
-      uni.navigateTo({
-        url: `/sub-pages/me/order-detail/main?id=${data.orderId}&popUpType=1`,
-      });
-    },
-    handleItemClick(index, i) {
-      this.activeIndex = index;
-      this.$emit("resetOptions", i.id);
-    },
-  },
-};
+      return dayjs(value).format('YYYY-MM-DD HH:mm')
+    }
+  }
+}
 </script>
 
-<style lang="scss" scoped>
+<style  lang="scss" scoped>
 .pages {
   background-color: #f2f2f2;
   position: relative;
@@ -329,7 +254,7 @@ export default {
     padding: 0 32rpx;
     .item {
       background-color: #fff;
-      margin: 32rpx 0;
+      margin: 16rpx 0;
       padding: 0 32rpx 16rpx;
       box-sizing: border-box;
       color: #333;
@@ -394,7 +319,7 @@ export default {
               color: #333333;
               &.l-1 {
                 // width: 350rpx;
-                height: 40rpx;
+                // height: 100rpx;
                 display: -webkit-box;
                 overflow: hidden; /*超出隐藏*/
                 text-overflow: ellipsis; /*隐藏后添加省略号*/
@@ -428,7 +353,7 @@ export default {
             color: #333333;
             &.l-2 {
               // width: 350rpx;
-              height: 87rpx;
+              // height: 100rpx;
               display: -webkit-box;
               overflow: hidden; /*超出隐藏*/
               text-overflow: ellipsis; /*隐藏后添加省略号*/
@@ -465,7 +390,7 @@ export default {
         overflow-x: auto;
         &::before {
           display: block;
-          content: "";
+          content: '';
           height: 100%;
           width: 66rpx;
           position: absolute;

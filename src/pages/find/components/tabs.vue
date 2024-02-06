@@ -1,22 +1,10 @@
 <template>
   <view>
-    <scroll-view
-      class="nav-scroll"
-      :enable-flex="true"
-      scroll-with-animation
-      :throttle="false"
-      :scroll-left="scrollToLeft"
-      scroll-x
-      @scroll="handleScroll"
-    >
+    <scroll-view class="nav-scroll" :enable-flex="true" scroll-with-animation :throttle="false"
+      :scroll-left="scrollToLeft" scroll-x @scroll="handleScroll">
       <view class="nav uni-nav">
-        <view
-          class="nav-item"
-          :class="swiperIndex == index ? 'nav-item-act' : ''"
-          :key="index"
-          v-for="(item, index) in classList"
-          @click="taggleNav(index)"
-        >
+        <view class="nav-item" :class="swiperIndex == index ? 'nav-item-act' : ''" :key="index"
+          v-for="(item, index) in classList" @click="taggleNav(index)">
           {{ item.colName }}
         </view>
         <view class="nav-line" :style="style"></view>
@@ -27,54 +15,33 @@
       <view class="swiper-bg"></view>
       <view class="content">
         <!-- 置顶模块 -->
-        <view
-          class="content-top"
-          v-for="(topItem, topIndex) in topList"
-          @click="topDetail($event)"
-          :data-id="topItem.contId"
-          :key="topIndex"
-        >
+        <view class="content-top" v-for="(topItem,topIndex) in topList" @click="topDetail($event)"
+          :data-id="topItem.contId" :key="topIndex">
           <view class="top-left">置顶</view>
-          <view class="top-right">{{ topItem.ttl }}</view>
+          <view class="top-right">{{topItem.ttl}}</view>
         </view>
-        <block v-for="(artItem, artIndex) in list" :key="artIndex">
+        <block v-for="(artItem,artIndex) in  list" :key="artIndex">
           <!-- 听文章没图片模块 -->
-          <view
-            @click="goDetail($event, index, artIndex)"
-            :data-id="artItem.contId"
+          <view @click="goDetail($event,index,artIndex)" :data-id="artItem.contId"
             :class="['content-noimg ', artItem.play ? 'play' : '']"
-            v-if="artItem.imgs === null && artItem.artiType === '0'"
-          >
-            <view class="noimg-title text-2">{{ artItem.ttl }}</view>
+            v-if="artItem.imgs === null && artItem.artiType === '0'">
+            <view class="noimg-title text-2">{{artItem.ttl}}</view>
             <view class="noimg-bottom">
               <view class="left">
-                <text class="left-time">{{ artItem.releasedTime }}</text>
-                <text class="left-number">{{ artItem.clikCnt }}人在看</text>
+                <text class="left-time">{{artItem.releasedTime}}</text>
+                <text class="left-number">{{artItem.clikCnt}}人在看</text>
               </view>
-              <view
-                class="right"
-                @click.stop="
-                  handleNoimg(artIndex, index, artItem.play ? '1' : '2')
-                "
-              >
-                <image
-                  v-if="!artItem.play"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/find/horn2x.png"
-                  mode="scaleToFill"
-                >
+              <view class="right"
+                @click.native.stop="handleNoimg(artIndex,index,artItem.play?'1':'2')">
+                <image v-if="!artItem.play"
+                  src="https://ggllstatic.hpgjzlinfo.com/static/find/horn2x.png" mode="scaleToFill">
                 </image>
-                <image
-                  v-if="artItem.play && stopPlay"
-                  class="playimg"
+                <image v-if="artItem.play && stopPlay" class="playimg"
                   src="https://ggllstatic.hpgjzlinfo.com/static/find/list-stop2x.png"
-                  mode="scaleToFill"
-                ></image>
-                <image
-                  v-if="artItem.play && !stopPlay"
-                  class="playimg"
+                  mode="scaleToFill"></image>
+                <image v-if="artItem.play && !stopPlay" class="playimg"
                   src="https://ggllstatic.hpgjzlinfo.com/static/find/list-play2x.png"
-                  mode="scaleToFill"
-                ></image>
+                  mode="scaleToFill"></image>
                 <text v-if="!artItem.play">听文章</text>
                 <text v-if="artItem.play && stopPlay">暂停</text>
                 <text v-if="artItem.play && !stopPlay">播放</text>
@@ -82,53 +49,31 @@
             </view>
           </view>
           <!-- 听文章一张图片模块 -->
-          <view
-            @click="goDetail($event, index, artIndex)"
-            :data-id="artItem.contId"
+          <view @click="goDetail($event,index,artIndex)" :data-id="artItem.contId"
             :class="['content-oneimg ', artItem.play ? 'play' : '']"
-            v-else-if="artItem.imgs.length === 1 && artItem.artiType === '0'"
-          >
+            v-else-if="artItem.imgs.length === 1 && artItem.artiType === '0'">
             <view class="oneimg-title">
-              <text class="text-3">{{ artItem.ttl }}</text>
-              <image
-                :src="imgItem"
-                mode="scaleToFill"
-                @error="
-                  handleArticleImageLoadFail(index, artIndex, imgIndex, 1)
-                "
-                v-for="(imgItem, imgIndex) in artItem.imgs"
-                :key="imgIndex"
-              ></image>
+              <text class="text-3">{{artItem.ttl}}</text>
+              <image :src="imgItem" mode="scaleToFill"
+                @error="handleArticleImageLoadFail(index,artIndex,imgIndex,1)"
+                v-for="(imgItem,imgIndex) in artItem.imgs" :key="imgIndex"></image>
             </view>
             <view class="oneimg-bottom">
               <view class="left">
-                <text class="left-time">{{ artItem.releasedTime }}</text>
-                <text class="left-number">{{ artItem.clikCnt }}人在看</text>
+                <text class="left-time">{{artItem.releasedTime}}</text>
+                <text class="left-number">{{artItem.clikCnt}}人在看</text>
               </view>
-              <view
-                class="right"
-                @click.stop="
-                  handleNoimg(artIndex, index, artItem.play ? '1' : '2')
-                "
-              >
-                <image
-                  v-if="!artItem.play"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/find/horn2x.png"
-                  mode="scaleToFill"
-                >
+              <view class="right"
+                @click.native.stop="handleNoimg(artIndex,index,artItem.play?'1':'2')">
+                <image v-if="!artItem.play"
+                  src="https://ggllstatic.hpgjzlinfo.com/static/find/horn2x.png" mode="scaleToFill">
                 </image>
-                <image
-                  v-if="artItem.play && stopPlay"
-                  class="playimg"
+                <image v-if="artItem.play && stopPlay" class="playimg"
                   src="https://ggllstatic.hpgjzlinfo.com/static/find/list-stop2x.png"
-                  mode="scaleToFill"
-                ></image>
-                <image
-                  v-if="artItem.play && !stopPlay"
-                  class="playimg"
+                  mode="scaleToFill"></image>
+                <image v-if="artItem.play && !stopPlay" class="playimg"
                   src="https://ggllstatic.hpgjzlinfo.com/static/find/list-play2x.png"
-                  mode="scaleToFill"
-                ></image>
+                  mode="scaleToFill"></image>
                 <text v-if="!artItem.play">听文章</text>
                 <text v-if="artItem.play && stopPlay">暂停</text>
                 <text v-if="artItem.play && !stopPlay">播放</text>
@@ -136,56 +81,35 @@
             </view>
           </view>
           <!-- 听文章多张图片显示模块 -->
-          <view
-            @click="goDetail($event, index, artIndex)"
-            :data-id="artItem.contId"
+          <view @click="goDetail($event,index,artIndex)" :data-id="artItem.contId"
             :class="['content-noimg ', artItem.play ? 'play' : '']"
-            v-else-if="artItem.imgs.length > 1 && artItem.artiType === '0'"
-          >
-            <view class="noimg-title">{{ artItem.ttl }}</view>
+            v-else-if="artItem.imgs.length > 1 && artItem.artiType === '0'">
+            <view class="noimg-title">{{artItem.ttl}}</view>
             <view class="img-center">
-              <template v-for="(imgItem, imgIndex) in artItem.imgs">
-                <image
-                  v-if="false"
-                  :src="imgItem"
-                  mode="scaleToFill"
-                  @error="
-                    handleArticleImageLoadFail(index, artIndex, imgIndex, 2)
-                  "
-                  :key="imgIndex"
-                >
+              <template v-for="(imgItem,imgIndex) in artItem.imgs">
+                <image v-if="false" :src="imgItem" mode="scaleToFill"
+                  @error="handleArticleImageLoadFail(index,artIndex,imgIndex,2)" :key="imgIndex">
                 </image>
+
               </template>
+
             </view>
             <view class="noimg-bottom">
               <view class="left">
-                <text class="left-time">{{ artItem.releasedTime }}</text>
-                <text class="left-number">{{ artItem.clikCnt }}人在看</text>
+                <text class="left-time">{{artItem.releasedTime}}</text>
+                <text class="left-number">{{artItem.clikCnt}}人在看</text>
               </view>
-              <view
-                class="right"
-                @click.stop="
-                  handleNoimg(artIndex, index, artItem.play ? '1' : '2')
-                "
-              >
-                <image
-                  v-if="!artItem.play"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/find/horn2x.png"
-                  mode="scaleToFill"
-                >
+              <view class="right"
+                @click.native.stop="handleNoimg(artIndex,index,artItem.play?'1':'2')">
+                <image v-if="!artItem.play"
+                  src="https://ggllstatic.hpgjzlinfo.com/static/find/horn2x.png" mode="scaleToFill">
                 </image>
-                <image
-                  v-if="artItem.play && stopPlay"
-                  class="playimg"
+                <image v-if="artItem.play && stopPlay" class="playimg"
                   src="https://ggllstatic.hpgjzlinfo.com/static/find/list-stop2x.png"
-                  mode="scaleToFill"
-                ></image>
-                <image
-                  v-if="artItem.play && !stopPlay"
-                  class="playimg"
+                  mode="scaleToFill"></image>
+                <image v-if="artItem.play && !stopPlay" class="playimg"
                   src="https://ggllstatic.hpgjzlinfo.com/static/find/list-play2x.png"
-                  mode="scaleToFill"
-                ></image>
+                  mode="scaleToFill"></image>
                 <text v-if="!artItem.play">听文章</text>
                 <text v-if="artItem.play && stopPlay">暂停</text>
                 <text v-if="artItem.play && !stopPlay">播放</text>
@@ -193,35 +117,21 @@
             </view>
           </view>
           <!-- 视频模块-->
-          <view
-            @click="goVedio($event, index, artIndex)"
-            :data-id="artItem.contId"
-            class="content-noimg"
-            v-else-if="artItem.artiType === '1'"
-          >
-            <view class="audio-title text-2">{{ artItem.ttl }}</view>
+          <view @click="goVedio($event,index,artIndex)" :data-id="artItem.contId"
+            class="content-noimg" v-else-if="artItem.artiType === '1'">
+            <view class="audio-title text-2">{{artItem.ttl}}</view>
             <view class="audio-center">
               <!-- <image class="bg" src="https://ggllstatic.hpgjzlinfo.com/static/find/video2x.png"   /> -->
-              <image
-                class="bg"
-                :src="artItem.imgs[0]"
-                @error="
-                  handleArticleImageLoadFail(index, artIndex, imgIndex, 1)
-                "
-                v-for="(imgItem, imgIndex) in artItem.imgs"
-                :key="imgIndex"
-                mode="scaleToFill"
-              />
-              <image
-                class="play"
-                mode="scaleToFill"
-                src="https://ggllstatic.hpgjzlinfo.com/static/find/audio2x.png"
-              ></image>
+              <image class="bg" :src="artItem.imgs[0]"
+                @error="handleArticleImageLoadFail(index,artIndex,imgIndex,1)"
+                v-for="(imgItem,imgIndex) in artItem.imgs" :key="imgIndex" mode="scaleToFill" />
+              <image class="play" mode="scaleToFill"
+                src="https://ggllstatic.hpgjzlinfo.com/static/find/audio2x.png"></image>
             </view>
             <view class="noimg-bottom">
               <view class="left">
-                <text class="left-time">{{ artItem.releasedTime }}</text>
-                <text class="left-number">{{ artItem.clikCnt }}人在看</text>
+                <text class="left-time">{{artItem.releasedTime}}</text>
+                <text class="left-number">{{artItem.clikCnt}}人在看</text>
               </view>
             </view>
           </view>
@@ -229,60 +139,59 @@
         <bottom-tips ref="bottomTips" :bottomTips="bottomTips"></bottom-tips>
         <block v-if="list.length === 0 && topList.length === 0">
           <view class="flex-v flex-c-c status-box">
-            <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/status-none2x.png"
-              mode="scaleToFill"
-            />
+            <image src="https://ggllstatic.hpgjzlinfo.com/static/common/status-none2x.png"
+              mode="scaleToFill" />
             <view class="flex-c-c status-text">暂无内容</view>
           </view>
         </block>
+
       </view>
     </view>
   </view>
 </template>
 
 <script>
-import bottomTips from "./bottom-tips";
+import bottomTips from './bottom-tips'
 export default {
   components: { bottomTips },
   props: {
     classList: {
       type: Array,
-      default: [],
+      default: []
     },
     topList: {
       type: Array,
-      default: [],
+      default: []
     },
     list: {
       type: Array,
-      default: [],
+      default: []
     },
     stopPlay: {
       type: Boolean,
-      default: true,
-    },
+      default: true
+    }
   },
 
   data() {
     return {
       swiperIndex: 0, // 当前的swiperindex
-      navItemWidth: "", // 选中下划线的宽度
+      navItemWidth: '', // 选中下划线的宽度
       navItemLeft: 0, // 选中下划线的显示位置
       scrollToLeft: 0, // scrollview需要滚动的距离
       navInfos: [], // 所有navitem的节点信息
       parentLeft: 0, // nav盒子的节点信息
       componentWidth: 0, // nav盒子的宽度
       refreStatus: false, // 状态
-      bottomTips: "", // 加载文字
+      bottomTips: '', // 加载文字
       newLoading: false, // 是否加长页面
-      currentPage: 1, // 当前页码
-    };
+      currentPage: 1 // 当前页码
+    }
   },
   computed: {
     style() {
-      return `width:${this.navItemWidth}px; left:${this.navItemLeft}px`;
-    },
+      return `width:${this.navItemWidth}px; left:${this.navItemLeft}px`
+    }
   },
   mounted() {
     // console.log("mounted执行初始化：",this.list)
@@ -300,19 +209,19 @@ export default {
   methods: {
     // 图片加载失败
     handleArticleImageLoadFail(tab, index, imgIndex, type) {
-      this.$emit("handleArticleImageLoadFail", tab, index, imgIndex, type);
+      this.$emit('handleArticleImageLoadFail', tab, index, imgIndex, type)
     },
     // 获取数据
     getExampleData(type) {
-      this.$emit("refreshData");
+      this.$emit('refreshData')
     },
     // 自定义上拉加载更多
     loadMore() {
-      console.log("加载更多");
+      console.log('加载更多')
       // this.currentPage++;
 
-      this.bottomTips = "loading";
-      this.$emit("loadMore");
+      this.bottomTips = 'loading'
+      this.$emit('loadMore')
       // setTimeout(() => {
       // 	// this.bottomTips = "more";
       // 	this.bottomTips = "more";
@@ -320,207 +229,210 @@ export default {
     },
     // 自定义下拉刷新
     refresh() {
-      this.getExampleData(1);
+      this.getExampleData(1)
     },
     // 获取dom信息
     init() {
-      const query = uni.createSelectorQuery().in(this);
-      query.select(".uni-nav").fields({ rect: true, size: true }, (res) => {
-        this.parentLeft = res.left;
-        this.componentWidth = res.width;
-        console.log("res==>", res);
-      });
+      const query = uni.createSelectorQuery().in(this)
+      query.select('.uni-nav').fields({ rect: true, size: true }, (res) => {
+        this.parentLeft = res.left
+        this.componentWidth = res.width
+        console.log('res==>', res)
+      })
       query
-        .selectAll(".nav-item")
+        .selectAll('.nav-item')
         .fields({ rect: true, size: true }, (data) => {
-          console.log("domdata:", data);
+          console.log('domdata:', data)
           data.forEach((item, index) => {
             if (index == 0) {
-              this.navItemWidth = item.width;
-              this.navItemLeft = item.left;
+              this.navItemWidth = item.width
+              this.navItemLeft = item.left
             }
-            this.navInfos.push({ width: item.width, left: item.left });
-          });
-        });
-      query.exec();
+            this.navInfos.push({ width: item.width, left: item.left })
+          })
+        })
+      query.exec()
       // setTimeout(()=>{
       //   this.taggleNav(1)
       // },100)
     },
     // 点击导航切换swiper
     taggleNav(val) {
-      this.swiperIndex = val;
-      this.$emit("currentIndex", this.swiperIndex);
-      this.bottomTips = "";
-      if (this.nomore && this.list.length > 4) {
-        this.bottomTips = "nomore";
+      this.swiperIndex = val
+      this.$emit('currentIndex', this.swiperIndex)
+      this.bottomTips = ''
+      if (
+        this.nomore &&
+        this.list.length > 4
+      ) {
+        this.bottomTips = 'nomore'
       }
       // #ifdef MP-ALIPAY
-      this.scrollDom();
+      this.scrollDom()
       // #endif
     },
     // 滚动tabs以及移动下划线
     scrollDom() {
-      const info = this.navInfos[this.swiperIndex];
-      console.log("获取元素：", info);
-      const offsetLeft = info.left - this.parentLeft;
-      const scrollLeft = offsetLeft - (this.componentWidth - info.width) / 2;
-      this.scrollToLeft = scrollLeft < 0 ? 0 : scrollLeft;
-      this.navItemLeft = this.navInfos[this.swiperIndex].left;
+      const info = this.navInfos[this.swiperIndex]
+      console.log('获取元素：', info)
+      const offsetLeft = info.left - this.parentLeft
+      const scrollLeft = offsetLeft - (this.componentWidth - info.width) / 2
+      this.scrollToLeft = scrollLeft < 0 ? 0 : scrollLeft
+      this.navItemLeft = this.navInfos[this.swiperIndex].left
       setTimeout(() => {
-        this.navItemWidth = info.width;
-      }, 50);
+        this.navItemWidth = info.width
+      }, 50)
     },
     // swiper的index变动
     swiperChange(e) {
-      this.swiperIndex = e.detail.current;
-      this.$emit("currentIndex", this.swiperIndex);
+      this.swiperIndex = e.detail.current
+      this.$emit('currentIndex', this.swiperIndex)
       if (
         this.list[this.swiperIndex].nomore &&
         this.list[this.swiperIndex].content.length > 4
       ) {
-        this.bottomTips = "nomore";
+        this.bottomTips = 'nomore'
       } else {
-        this.bottomTips = "";
+        this.bottomTips = ''
       }
-      this.scrollDom();
+      this.scrollDom()
     },
     // tabs-scrollview触底
     handleScroll(e) {
-      this.scrollDom();
+      this.scrollDom()
     },
     // 滚动到底部
     bindscrolltolower(e) {
-      console.log(e);
+      console.log(e)
     },
     // swiper-ScrollLower触底
     swiperScrollLower() {
       uni.showToast({
-        icon: "none",
-        title: `此时为${this.list[this.swiperIndex].title}触底`,
-      });
+        icon: 'none',
+        title: `此时为${this.list[this.swiperIndex].title}触底`
+      })
       setTimeout(() => {
         // this.getData();
-      }, 500);
+      }, 500)
     },
     // 生成列表数据
     getData() {
       uni.showLoading({
-        title: "加载中",
-      });
+        title: '加载中'
+      })
       setTimeout(() => {
         for (let index = 0; index < 10; index++) {
-          const arr = this.list[this.swiperIndex].content;
+          const arr = this.list[this.swiperIndex].content
           this.$set(
             arr,
             arr.length,
-            Math.random() + "-" + index + this.list[this.swiperIndex].title
-          );
+            Math.random() + '-' + index + this.list[this.swiperIndex].title
+          )
         }
-        uni.hideLoading();
-      }, 1000);
-      console.log(this.list[this.swiperIndex]);
+        uni.hideLoading()
+      }, 1000)
+      console.log(this.list[this.swiperIndex])
     },
     // 下拉事件
     handleRefre() {
-      this.refreStatus = true;
+      this.refreStatus = true
       uni.showLoading({
-        title: "下拉加载中",
-      });
+        title: '下拉加载中'
+      })
       setTimeout(() => {
-        this.list[this.swiperIndex].content = [];
+        this.list[this.swiperIndex].content = []
         for (var i = 0; i < 5; i++) {
           this.list[this.swiperIndex].content.push([
-            this.list[this.swiperIndex].title + "下拉-" + i,
-          ]);
+            this.list[this.swiperIndex].title + '下拉-' + i
+          ])
         }
-        uni.hideLoading();
-      }, 1000);
+        uni.hideLoading()
+      }, 1000)
       setTimeout(() => {
-        this.refreStatus = false;
-      }, 1000);
+        this.refreStatus = false
+      }, 1000)
     },
     /*
      * 点击听文章事件
      */
     handleNoimg(index, tab, type) {
-      console.log("点击播放音频type：", uni.getStorageSync("network"));
-      if (uni.getStorageSync("network")) {
+      console.log('点击播放音频type：', uni.getStorageSync('network'))
+      if (uni.getStorageSync('network')) {
         // 已授权
         if (type == 2) {
-          this.$emit("handleNoimg", index, tab);
+          this.$emit('handleNoimg', index, tab)
         } else {
           // 切换播放和暂停
-          this.$emit("handleSwitchPlay");
+          this.$emit('handleSwitchPlay')
         }
       } else {
         // 点击播放
         uni.getNetworkType({
           success: (res) => {
-            if (res.networkType != "wifi") {
+            if (res.networkType != 'wifi') {
               uni.showModal({
-                title: "",
-                content: "当前为非wif环境，是否使用流量播放",
-                cancelText: "暂停播放",
-                confirmText: "继续播放",
+                title: '',
+                content: '当前为非wif环境，是否使用流量播放',
+                cancelText: '暂停播放',
+                confirmText: '继续播放',
                 success: (res) => {
                   if (res.confirm) {
                     if (type == 2) {
-                      uni.setStorageSync("network", true);
-                      this.$emit("handleNoimg", index, tab);
+                      uni.setStorageSync('network', true)
+                      this.$emit('handleNoimg', index, tab)
                     } else {
                       // 切换播放和暂停
-                      this.$emit("handleSwitchPlay");
+                      this.$emit('handleSwitchPlay')
                     }
                   } else if (res.cancel) {
                   }
-                },
-              });
+                }
+              })
             } else {
               if (type == 2) {
-                this.$emit("handleNoimg", index, tab);
+                this.$emit('handleNoimg', index, tab)
               } else {
                 // 切换播放和暂停
-                this.$emit("handleSwitchPlay");
+                this.$emit('handleSwitchPlay')
               }
             }
 
-            console.log(res.networkType);
-          },
-        });
+            console.log(res.networkType)
+          }
+        })
       }
     },
     // 置顶详情
     topDetail(e) {
       uni.navigateTo({
-        url: `/pages/find/article-detail?contId=` + e.currentTarget.dataset.id,
-      });
+        url: `/pages/find/article-detail?contId=` + e.currentTarget.dataset.id
+      })
     },
     // 点击文章详情
     goDetail(e, tab, index) {
-      this.$emit("goDetail", e, tab, index);
+      this.$emit('goDetail', e, tab, index)
     },
     // 点击视频详情
     goVedio(e, tab, index) {
-      this.$emit("goVedio", e, tab, index);
+      this.$emit('goVedio', e, tab, index)
       // console.log("e:",e)
-    },
+    }
   },
   watch: {
     classList: {
       // immediate:true,
       handler(n, o) {
         if (n.length > o.length) {
-          this.init();
+          this.init()
         }
         // console.log(n)
-        console.log("新数据的长度：", n.length);
-        console.log("旧数据的长度：", o.length);
+        console.log('新数据的长度：', n.length)
+        console.log('旧数据的长度：', o.length)
       },
-      deep: true,
-    },
-  },
-};
+      deep: true
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
@@ -578,7 +490,7 @@ scroll-view ::v-deep ::-webkit-scrollbar {
   font-weight: bolder;
   position: relative;
   &::after {
-    content: "";
+    content: '';
     display: block;
     position: absolute;
     left: 50%;

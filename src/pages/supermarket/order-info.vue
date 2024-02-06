@@ -1,15 +1,12 @@
 <template>
-  <view
-    v-if="info"
-    class="pages"
-    :style="{ paddingBottom: info.transactionStatus == '1' ? '180rpx' : '' }"
-  >
+  <view v-if="info" class="pages"
+    :style="{paddingBottom:(info.transactionStatus == '1')? '180rpx':''}">
     <view class="item pay-info br-16">
       <view class="title">支付信息</view>
-      <view class="content">
+      <view class="content ">
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">支付订单编号</view>
-          <view class="msg-right" v-if="info.orderId">{{ info.orderId }}</view>
+          <view class="msg-right" v-if="info.orderId">{{info.orderId}}</view>
         </view>
         <!-- <view class="msg-item flex-h fs-36">
           <view class="msg-left">银行卡订单编号</view>
@@ -18,130 +15,94 @@
         </view> -->
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">交易参考号</view>
-          <view class="msg-right" v-if="info.transactionReferenceNo"
-            >{{ info.transactionReferenceNo }}
+          <view class="msg-right" v-if="info.transactionReferenceNo">{{info.transactionReferenceNo}}
           </view>
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">交易流水号</view>
-          <view class="msg-right" v-if="info.transactionSerialNo"
-            >{{ info.transactionSerialNo }}
+          <view class="msg-right" v-if="info.transactionSerialNo">{{info.transactionSerialNo}}
           </view>
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left" v-if="info.voucherNo">凭证号</view>
-          <view class="msg-right" v-if="info.voucherNo">{{
-            info.voucherNo
-          }}</view>
+          <view class="msg-right" v-if="info.voucherNo">{{info.voucherNo}}</view>
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">订单金额</view>
-          <view class="msg-right">￥{{ formaterMoney(info.orderAmount) }}</view>
+          <view class="msg-right">￥{{info.orderAmount|formaterMoney}}</view>
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">优惠金额</view>
-          <view class="msg-right color-red"
-            >￥{{ formaterMoney(info.discountAmount) }}</view
-          >
+          <view class="msg-right  color-red">￥{{info.discountAmount|formaterMoney}}</view>
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">实付金额</view>
-          <view class="msg-right">￥{{ formaterMoney(info.payAmount) }}</view>
+          <view class="msg-right">￥{{info.payAmount|formaterMoney}}</view>
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">交易时间</view>
-          <view class="msg-right" v-if="info.orderTime">{{
-            info.orderTime
-          }}</view>
+          <view class="msg-right" v-if="info.orderTime">{{info.orderTime}}</view>
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">交易状态</view>
-          <view class="msg-right" v-if="info.transactionStatusName"
-            >{{ info.transactionStatusName }}
+          <view class="msg-right" v-if="info.transactionStatusName">{{info.transactionStatusName}}
           </view>
         </view>
       </view>
     </view>
     <view class="item pay-info br-16">
       <view class="title">电子预付卡支付信息</view>
-      <view class="content">
+      <view class="content ">
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">商户名称</view>
-          <view class="msg-right" v-if="info.supermarketName">{{
-            info.supermarketName
-          }}</view>
+          <view class="msg-right" v-if="info.supermarketName">{{info.supermarketName}}</view>
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">门店号</view>
-          <view class="msg-right" v-if="info.supermarketStoreNo">{{
-            info.supermarketStoreNo
-          }}</view>
+          <view class="msg-right" v-if="info.supermarketStoreNo">{{info.supermarketStoreNo}}</view>
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">门店名称</view>
-          <view class="msg-right" v-if="info.supermarketStoreName"
-            >{{ info.supermarketStoreName }}
+          <view class="msg-right" v-if="info.supermarketStoreName">{{info.supermarketStoreName}}
           </view>
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">支付卡号</view>
-          <view class="msg-right" v-if="info.paymentCardNo">{{
-            info.paymentCardNo
-          }}</view>
+          <view class="msg-right" v-if="info.paymentCardNo">{{info.paymentCardNo}}</view>
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">支付金额</view>
-          <view class="msg-right" v-if="info.paymentAmount"
-            >￥{{ formaterMoney(info.paymentAmount) }}
+          <view class="msg-right" v-if="info.paymentAmount">￥{{info.paymentAmount|formaterMoney}}
           </view>
         </view>
       </view>
     </view>
     <view class="item pay-info br-16">
       <view class="title">退货码</view>
-      <view class="content">
-        <view
-          class="msg-item flex-h fs-36"
-          v-if="info.transactionStatus == '2'"
-        >
+      <view class="content ">
+        <view class="msg-item flex-h fs-36" v-if="info.transactionStatus == '2'">
           <view class="msg-left color-red">已退款</view>
-          <view class="msg-right" v-if="info.refundTime">{{
-            info.refundTime
-          }}</view>
+          <view class="msg-right" v-if="info.refundTime">{{info.refundTime}}</view>
         </view>
 
-        <view class="flex-v flex-c-s" v-if="info.transactionStatus == '1'">
+        <view class="flex-v flex-c-s " v-if=" info.transactionStatus == '1'">
           <canvas canvas-id="bar-code" id="bar-code" class="bar-code" />
-          <view class="lh-56 fs-40" v-if="info.refundCode">{{
-            info.refundCode
-          }}</view>
+          <view class="lh-56 fs-40" v-if="info.refundCode">{{info.refundCode}}</view>
         </view>
       </view>
     </view>
 
     <cover-view class="btn-box">
       <!-- invoiceStatus: 0 申请开票  1 已开票 2 不可开票 -->
-      <button
-        class="btn"
-        v-if="info.invoiceStatus == '0'"
-        @click="handleApplyClick"
-      >
-        申请开票
-      </button>
-      <button
-        class="btn"
-        v-if="info.invoiceStatus == '1'"
-        @click="handleInvoiceClick"
-      >
-        查看开票
-      </button>
+      <button class="btn" v-if="info.invoiceStatus == '0'" @click="handleApplyClick">申请开票</button>
+      <button class="btn" v-if="info.invoiceStatus == '1'" @click="handleInvoiceClick">查看开票</button>
     </cover-view>
   </view>
 </template>
 
 <script>
-import api from "@/apis/index.js";
-import generator from "uniapp-qrcode";
+import api from '@/apis/index.js'
+import generator from '@/utils/code-generator.js'
 export default {
   components: {},
   data() {
@@ -149,100 +110,94 @@ export default {
       // 订单信息
       info: null,
       // 选中tab
-      tabIndex: "0",
+      tabIndex: '0',
       // 订单id
-      orderId: "",
-    };
+      orderId: ''
+    }
   },
   onLoad(e) {
-    this.orderId = e.orderId;
+    this.orderId = e.orderId
     // let info = JSON.parse(decodeURIComponent())
-    this.getOrderInfo();
+    this.getOrderInfo()
     // this.drawCanvas()
   },
   methods: {
-    formaterMoney(v) {
-      return (v / 100).toFixed(2);
-    },
     // 申请开票
     handleApplyClick() {
       // let info = JSON.stringify(this.info)
       api.getOrderInfo({
         data: {
-          orderId: this.orderId,
+          orderId: this.orderId
         },
         success: (data) => {
           switch (data.orderStatus) {
-            case "3":
-            case "5":
-              if (data.invoiceStatus !== "2") {
+            case '3':
+            case '5':
+              if (data.invoiceStatus !== '2') {
                 uni.navigateTo({
-                  url:
-                    "/pages/supermarket/apply-invoice?info=" +
-                    JSON.stringify(data),
-                });
+                  url: '/pages/supermarket/apply-invoice?info=' + JSON.stringify(data)
+                })
               } else {
-                this.$uni.showToast(
-                  "该笔订单无法申请开票，请联系客服400-0610-100"
-                );
+                this.$uni.showToast('该笔订单无法申请开票，请联系客服400-0610-100')
               }
-              break;
-            case "6":
-              if (data.invoiceStatus === "1") {
+              break
+            case '6':
+              if (data.invoiceStatus === '1') {
                 uni.navigateTo({
-                  url:
-                    "/pages/supermarket/apply-invoice?info=" +
-                    JSON.stringify(data),
-                });
+                  url: '/pages/supermarket/apply-invoice?info=' + JSON.stringify(data)
+                })
               } else {
-                this.$uni.showToast("该笔订单已退款，无法申请开票");
+                this.$uni.showToast('该笔订单已退款，无法申请开票')
               }
-              break;
-            case "7":
-              if (data.invoiceStatus === "1") {
+              break
+            case '7':
+              if (data.invoiceStatus === '1') {
                 uni.navigateTo({
-                  url:
-                    "/pages/supermarket/apply-invoice?info=" +
-                    JSON.stringify(data),
-                });
+                  url: '/pages/supermarket/apply-invoice?info=' + JSON.stringify(data)
+                })
               } else {
-                this.$uni.showToast("当前正在退款中，无法申请开票");
+                this.$uni.showToast('当前正在退款中，无法申请开票')
               }
-              break;
+              break
           }
-        },
-      });
+        }
+      })
     },
     // 查看开票
     handleInvoiceClick() {
       uni.navigateTo({
-        url: "/pages/supermarket/invoice-info?invoiceId=" + this.info.invoiceId,
-      });
+        url: '/pages/supermarket/invoice-info?invoiceId=' + this.info.invoiceId
+      })
     },
     //  订单详情
     getOrderInfo() {
       api.getOrderInfo({
         data: {
-          orderId: this.orderId,
+          orderId: this.orderId
         },
         success: (data) => {
-          console.log("订单详情:", data);
-          this.info = data || {};
+          console.log('订单详情:', data)
+          this.info = data || {}
           this.$nextTick(() => {
-            this.drawCanvas();
-          });
-        },
-      });
+            this.drawCanvas()
+          })
+        }
+      })
     },
     drawCanvas() {
-      if (!this.info.refundCode) return;
-      generator.barcode("bar-code", this, this.info.refundCode, 562, 128);
-    },
+      if (!this.info.refundCode) return
+      generator.barcode('bar-code', this, this.info.refundCode, 562, 128)
+    }
   },
-};
+  filters: {
+    formaterMoney(v) {
+      return (v / 100).toFixed(2)
+    }
+  }
+}
 </script>
 
-<style lang="scss" scoped>
+<style  lang="scss" scoped>
 .pages {
   min-height: 100vh;
   background-color: #f5f5f5;

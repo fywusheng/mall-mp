@@ -11,7 +11,7 @@ const GlobalOption = {
 		offset: 150, // 距底部多远时,触发upCallback,仅mescroll-uni生效 ( mescroll-body配置的是pages.json的 onReachBottomDistance )
 		toTop: {
 			// 回到顶部按钮,需配置src才显示
-			src: 'https://www.mescroll.com/img/mescroll-totop.png', // 图片路径 (建议放入static目录, 如 /static/img/mescroll-totop.png )
+			src: "https://www.mescroll.com/img/mescroll-totop.png", // 图片路径 (建议放入static目录, 如 /static/img/mescroll-totop.png )
 			offset: 1000, // 列表滚动多少距离才显示回到顶部按钮,默认1000px
 			right: 20, // 到右边的距离, 默认20 (支持"20rpx", "20px", "20%"格式的值, 纯数字则默认单位rpx)
 			bottom: 120, // 到底部的距离, 默认120 (支持"20rpx", "20px", "20%"格式的值, 纯数字则默认单位rpx)
@@ -19,7 +19,7 @@ const GlobalOption = {
 		},
 		empty: {
 			use: true, // 是否显示空布局
-			icon: 'https://www.mescroll.com/img/mescroll-empty.png' // 图标路径 (建议放入static目录, 如 /static/img/mescroll-empty.png )
+			icon: "https://www.mescroll.com/img/mescroll-empty.png" // 图标路径 (建议放入static目录, 如 /static/img/mescroll-empty.png )
 		}
 	},
 	// 国际化配置
@@ -31,7 +31,7 @@ const GlobalOption = {
 				textOutOffset: '释放更新', // 下拉的距离大于offset范围的提示文本
 				textLoading: '加载中 ...', // 加载中的提示文本
 				textSuccess: '加载成功', // 加载成功的文本
-				textErr: '加载失败' // 加载失败的文本
+				textErr: '加载失败', // 加载失败的文本
 			},
 			up: {
 				textLoading: '加载中 ...', // 加载中的提示文本

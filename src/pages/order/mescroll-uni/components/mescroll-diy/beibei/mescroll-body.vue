@@ -1,16 +1,16 @@
 <template>
-	<view
-		class="mescroll-body mescroll-render-touch"
-		:style="{'minHeight':minHeight, 'padding-top': padTop, 'padding-bottom': padBottom}"
+	<view 
+		class="mescroll-body mescroll-render-touch" 
+		:style="{'minHeight':minHeight, 'padding-top': padTop, 'padding-bottom': padBottom}" 
 		:class="{'mescorll-sticky': sticky}"
-		@touchstart="wxsBiz.touchstartEvent"
-		@touchmove="wxsBiz.touchmoveEvent"
-		@touchend="wxsBiz.touchendEvent"
+		@touchstart="wxsBiz.touchstartEvent" 
+		@touchmove="wxsBiz.touchmoveEvent" 
+		@touchend="wxsBiz.touchendEvent" 
 		@touchcancel="wxsBiz.touchendEvent"
 		:change:prop="wxsBiz.propObserver"
 		:prop="wxsProp"
 		>
-
+		
 		<!-- 状态栏 -->
 		<view v-if="topbar&&statusBarHeight" class="mescroll-topbar" :style="{height: statusBarHeight+'px', background: topbar}"></view>
 
@@ -25,7 +25,7 @@
 					<view class="downwarp-mascot"></view>
 				</view>
 			</view>
-
+						
 			<!-- 列表内容 -->
 			<slot></slot>
 
@@ -44,15 +44,15 @@
 				<view v-if="upLoadType===2" class="upwarp-nodata">{{ mescroll.optUp.textNoMore }}</view>
 			</view>
 		</view>
-
+		
 		<!-- 底部是否偏移TabBar的高度(仅H5端生效) -->
 		<!-- #ifdef H5 -->
 		<view v-if="bottombar && windowBottom>0" class="mescroll-bottombar" :style="{height: windowBottom+'px'}"></view>
 		<!-- #endif -->
-
+		
 		<!-- 适配iPhoneX -->
 		<view v-if="safearea" class="mescroll-safearea"></view>
-
+		
 		<!-- 回到顶部按钮 (fixed元素需写在transform外面,防止降级为absolute)-->
 		<mescroll-top v-model="isShowToTop" :option="mescroll.optUp.toTop" @click="toTopClick"></mescroll-top>
 
@@ -84,7 +84,7 @@
 	import WxsMixin from '../../mescroll-uni/wxs/mixins.js';
 	import mescrollI18n from '../../mescroll-uni/mescroll-i18n.js';
 	import GlobalOption from './mescroll-uni-option.js';
-
+	
 	export default {
 		mixins: [WxsMixin],
 		components: {
@@ -325,7 +325,7 @@
 			if (vm.up && vm.up.toTop && vm.up.toTop.safearea != null) {} else {
 				vm.mescroll.optUp.toTop.safearea = vm.safearea;
 			}
-
+			
 			// 全局配置监听
 			uni.$on("setMescrollGlobalOption", options=>{
 				if(!options) return;

@@ -7,7 +7,19 @@
         "navigationBarTitleText": "",
         "mp-alipay": {
           "transparentTitle": "always",
-          "allowsBounceVertical": "NO",
+          "allowsBounceVerticle": "NO",
+          "titlePenetrate": "YES"
+        }
+      }
+    },
+    {
+      "path": "pages/index/find",
+      "style": {
+        "navigationStyle": "custom",
+        "navigationBarTitleText": "",
+        "mp-alipay": {
+          "transparentTitle": "always",
+          "allowsBounceVerticle": "NO",
           "titlePenetrate": "YES"
         }
       }
@@ -39,90 +51,30 @@
   ],
   "subPackages": [
     {
-      "root": "pages/benefit",
+      "root": "pages/job",
       "pages": [
         {
-          "path": "bedehouse",
-          "style": { 
-            "navigationBarTitleText": "养老机构"
+          "path": "jobList",
+          "style": {
+            "navigationBarTitleText": "人才招聘"
           }
         },
         {
-          "path": "house-info",
-          "style": { 
-            "navigationBarTitleText": ""
+          "path": "jobDetail",
+          "style": {
+            "navigationBarTitleText": "岗位详情"
           }
         },
         {
-          "path": "bedehouse-info",
-          "style": { 
-            "navigationBarTitleText": "养老机构详情"
+          "path": "jobSearch",
+          "style": {
+            "navigationBarTitleText": "搜索"
           }
         },
         {
-          "path": "feature-service",
-          "style": { 
-            "navigationBarTitleText": "特色服务"
-          }
-        },
-        {
-          "path": "feature-item",
-          "style": { 
-            "navigationBarTitleText": "特色项目"
-          }
-        },
-        {
-          "path": "medicine-food",
-          "style": { 
-            "navigationBarTitleText": "药食同源"
-          }
-        },
-        {
-          "path": "elder-tools",
-          "style": { 
-            "navigationBarTitleText": "老年辅具"
-          }
-        },
-        {
-          "path": "trip-info",
-          "style": { 
-            "navigationBarTitleText": "出行旅游"
-          }
-        },
-        {
-          "path": "trip-info-russia",
-          "style": { 
-            "navigationBarTitleText": "出行旅游"
-          }
-        },
-        {
-          "path": "trip-list",
-          "style": { 
-            "navigationBarTitleText": "出行旅游"
-          }
-        },
-        {
-          "path": "confirm-order",
-          "style": { 
-            "navigationBarTitleText": "确认订单",
-            "mp-alipay": {
-              "titleBarColor": "#FFD3BC"
-            }
-          }
-        },
-        {
-          "path": "refund-apply",
-          "style": { 
-            "navigationBarTitleText": "申请退款"
-          }
-        },
-        {
-          "path": "order-info",
-          "style": { 
-            "navigationBarTitleText": "订单详情",
-            "mp-alipay": {
-              "titleBarColor": "#FFD3BC"
-            }
+          "path": "trade",
+          "style": {
+            "navigationBarTitleText": "行业"
           }
         }
       ]
@@ -178,7 +130,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -226,7 +178,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -238,7 +190,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -342,7 +294,7 @@
             "onReachBottomDistance": 30,
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -354,7 +306,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -389,7 +341,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -401,7 +353,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -425,7 +377,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -449,7 +401,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -485,7 +437,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -497,7 +449,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -524,6 +476,68 @@
           "path": "maintenance-and-support",
           "style": {
             "navigationBarTitleText": "赡养扶养关系"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/map",
+      "pages": [
+        {
+          "path": "map",
+          "style": {
+            "navigationBarTitleText": "国家老龄服务平台"
+          }
+        },
+        {
+          "path": "search",
+          "style": {
+            "navigationBarTitleText": "国家老龄服务平台"
+          }
+        },
+        {
+          "path": "direction",
+          "style": {
+            "navigationBarTitleText": "国家老龄服务平台"
+          }
+        },
+        {
+          "path": "location-search",
+          "style": {
+            "navigationBarTitleText": "国家老龄服务平台"
+          }
+        },
+        {
+          "path": "busline",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "",
+            "disableScroll": true,
+            "mp-alipay": {
+              "transparentTitle": "always",
+              "titlePenetrate": "YES",
+              "allowsBounceVertical": "NO"
+            }
+          }
+        },
+        {
+          "path": "address-detail",
+          "style": {
+            "navigationBarTitleText": "详情"
+          }
+        },
+        {
+          "path": "around-search",
+          "style": {
+            "navigationBarTitleText": "周边",
+            "onReachBottomDistance": 30,
+            "enablePullDownRefresh": true
+          }
+        },
+        {
+          "path": "image-gallery",
+          "style": {
+            "navigationBarTitleText": "图片"
           }
         }
       ]
@@ -590,7 +604,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -599,7 +613,7 @@
           "path": "add",
           "mp-alipay": {
             "transparentTitle": "always",
-            "allowsBounceVertical": "NO",
+            "allowsBounceVerticle": "NO",
             "titlePenetrate": "YES"
           }
         },
@@ -610,7 +624,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -627,7 +641,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -639,7 +653,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -651,7 +665,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -663,7 +677,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -678,6 +692,130 @@
       ]
     },
     {
+      "root": "pages/voice",
+      "pages": [
+        {
+          "path": "voice-search"
+        },
+        {
+          "path": "real-name",
+          "style": {
+            "navigationBarTitleText": "实名认证"
+          }
+        },
+        {
+          "path": "mili-pay"
+        },
+        {
+          "path": "real-name-result"
+        }
+      ]
+    },
+    {
+      "root": "pages/rights",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "navigationBarTitleText": "个人权益"
+          }
+        },
+        {
+          "path": "right-unclaimed",
+          "style": {
+            "navigationBarTitleText": "未领取的权益"
+          }
+        },
+        {
+          "path": "record-list"
+        },
+        {
+          "path": "record-detail"
+        },
+        {
+          "path": "consumption-record",
+          "style": {
+            "navigationBarTitleText": "消费记录查询"
+          }
+        },
+        {
+          "path": "right-list",
+          "style": {
+            "navigationBarTitleText": "已有的权益"
+          }
+        },
+        {
+          "path": "right-detail",
+          "style": {
+            "navigationStyle": "custom",
+            "navigationBarTitleText": "",
+            "mp-alipay": {
+              "transparentTitle": "always",
+              "allowsBounceVerticle": "NO",
+              "titlePenetrate": "YES"
+            }
+          }
+        },
+        {
+          "path": "hospital-list",
+          "style": {
+            "navigationBarTitleText": "预约体检"
+          }
+        },
+        {
+          "path": "older-allowance",
+          "style": {
+            "navigationBarTitleText": "老年补贴"
+          }
+        },
+        {
+          "path": "eva-question",
+          "style": {
+            "navigationBarTitleText": "老年痴呆评估调查问卷"
+          }
+        },
+        {
+          "path": "older-train",
+          "style": {
+            "navigationBarTitleText": "老年认知训练"
+          }
+        }
+      ]
+    },
+    {
+      "root": "pages/services",
+      "pages": [
+        {
+          "path": "index",
+          "style": {
+            "enablePullDownRefresh": true,
+            "onReachBottomDistance": 30,
+            "mp-alipay": {
+              "allowsBounceVertical": "YES"
+            }
+          }
+        },
+        {
+          "path": "address-detail",
+          "style": {
+            "navigationBarTitleText": "服务详情"
+          }
+        },
+        {
+          "path": "activist",
+          "style": {
+            "navigationBarTitleText": "维权服务"
+          }
+        },
+        {
+          "path": "will",
+          "style": {
+            "navigationBarTitleText": "传承服务"
+          }
+        }
+      ]
+    },
+    {
       "root": "pages/supermarket",
       "pages": [
         {
@@ -687,7 +825,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -706,7 +844,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -759,7 +897,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -797,7 +935,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -809,7 +947,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -821,7 +959,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -833,7 +971,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -845,7 +983,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -857,7 +995,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -869,7 +1007,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -881,7 +1019,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -893,7 +1031,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -905,7 +1043,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -917,7 +1055,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -929,7 +1067,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -941,7 +1079,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -953,7 +1091,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -965,7 +1103,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -977,7 +1115,7 @@
             "navigationBarTitleText": "",
             "mp-alipay": {
               "transparentTitle": "always",
-              "allowsBounceVertical": "NO",
+              "allowsBounceVerticle": "NO",
               "titlePenetrate": "YES"
             }
           }
@@ -1112,11 +1250,40 @@
           "style": {
             "navigationBarTitleText": "保单详情"
           }
+        }
+      ]
+    },
+    {
+      "root": "pages/protect-service",
+      "pages": [
+        {
+          "path": "power",
+          "style": {
+            "navigationBarTitleText": "维权服务"
+          }
         },
         {
-          "path": "consum-order-info",
+          "path": "wqPoint",
           "style": {
-            "navigationBarTitleText": "订单详情"
+            "navigationBarTitleText": "老年人权益保障法"
+          }
+        },
+        {
+          "path": "oldAge",
+          "style": {
+            "navigationBarTitleText": "养老金"
+          }
+        },
+        {
+          "path": "oldAgeWei",
+          "style": {
+            "navigationBarTitleText": "老有所为"
+          }
+        },
+        {
+          "path": "medical",
+          "style": {
+            "navigationBarTitleText": "医保服务"
           }
         }
       ]
@@ -1124,18 +1291,6 @@
     {
       "root": "sub-pages/index",
       "pages": [
-        {
-          "path": "checkout/main",
-          "style": {
-            "navigationBarTitleText": "订单确认"
-          }
-        },
-        {
-          "path": "category/main",
-          "style": {
-            "navigationBarTitleText": "分类商品"
-          }
-        },
         {
           "path": "shop/main",
           "style": {
@@ -1149,9 +1304,33 @@
           }
         },
         {
+          "path": "topic/main",
+          "style": {
+            "navigationBarTitleText": "收货地址管理"
+          }
+        },
+        {
           "path": "search/main",
           "style": {
-            "navigationBarTitleText": ""
+            "navigationBarTitleText": "搜索"
+          }
+        },
+        {
+          "path": "item-list/main",
+          "style": {
+            "navigationBarTitleText": "商品列表"
+          }
+        },
+        {
+          "path": "super-purchase/index",
+          "style": {
+            "navigationBarTitleText": "超值购"
+          }
+        },
+        {
+          "path": "local-benefit/index",
+          "style": {
+            "navigationBarTitleText": "本地惠"
           }
         },
         {
@@ -1161,15 +1340,57 @@
           }
         },
         {
+          "path": "coupon-center/main",
+          "style": {
+            "navigationBarTitleText": "领券中心"
+          }
+        },
+        {
+          "path": "item-reviews/main",
+          "style": {
+            "navigationBarTitleText": "我的积分"
+          }
+        },
+        {
           "path": "item-attribute/main",
           "style": {
             "navigationBarTitleText": "参数"
           }
         },
         {
+          "path": "checkout/main",
+          "style": {
+            "navigationBarTitleText": "我的订单"
+          }
+        },
+        {
+          "path": "brand/main",
+          "style": {
+            "navigationBarTitleText": "订单详情"
+          }
+        },
+        {
+          "path": "checkout-invoice/main",
+          "style": {
+            "navigationBarTitleText": "售后列表"
+          }
+        },
+        {
           "path": "checkout-coupon/main",
           "style": {
             "navigationBarTitleText": "选择服务类型"
+          }
+        },
+        {
+          "path": "webview/main",
+          "style": {
+            "navigationBarTitleText": "看病"
+          }
+        },
+        {
+          "path": "index/main",
+          "style": {
+            "navigationBarTitleText": "惠民商城"
           }
         }
       ]
@@ -1193,6 +1414,18 @@
           "path": "my-coupon/main",
           "style": {
             "navigationBarTitleText": "优惠券"
+          }
+        },
+        {
+          "path": "my-collect/main",
+          "style": {
+            "navigationBarTitleText": "收藏"
+          }
+        },
+        {
+          "path": "my-brand/main",
+          "style": {
+            "navigationBarTitleText": "关注"
           }
         },
         {
@@ -1237,19 +1470,19 @@
       "root": "sub-pages/point",
       "pages": [
         {
+          "path": "checkout/main",
+          "style": {
+            "navigationBarTitleText": "我的订单"
+          }
+        },
+        {
           "path": "cart/main",
           "style": {
             "navigationBarTitleText": "积分购物车"
           }
         },
         {
-          "path": "index/water-full",
-          "style": {
-            "navigationBarTitleText": "积分购物车"
-          }
-        },
-        {
-          "path": "index/index",
+          "path": "index",
           "style": {
             "navigationBarTitleText": "积分兑换"
           }
@@ -1262,13 +1495,19 @@
     "selectedColor": "#303133",
     "backgroundColor": "#FFFFFF",
     "borderStyle": "black",
-    "customize": true,
+    "custom": true,
     "list": [
       {
         "pagePath": "pages/index/index",
         "iconPath": "",
         "selectedIconPath": "",
         "text": "首页"
+      },
+      {
+        "pagePath": "pages/index/find",
+        "iconPath": "",
+        "selectedIconPath": "",
+        "text": "发现"
       },
       {
         "pagePath": "pages/index/category",
@@ -1288,12 +1527,22 @@
         "selectedIconPath": "",
         "text": "我的"
       }
-    ]
+    ],
+    "usingComponents": {}
   },
-  "easycom": {
-		"autoscan": true,
-		"custom": {
-			"^uni-(.*)": "@dcloudio/uni-ui/lib/uni-$1/uni-$1.vue"
-		}
-	}
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "国家老龄服务平台",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundColor": "#ffffff",
+    "mp-alipay": {
+      "scrollIndicator": "none",
+      "allowsBounceVertical": "NO"
+    },
+    "mp-weixin": {
+      "usingComponents": {
+        "wxml-to-canvas": "/wxcomponents/wxml-to-canvas/index"
+      }
+    }
+  }
 }

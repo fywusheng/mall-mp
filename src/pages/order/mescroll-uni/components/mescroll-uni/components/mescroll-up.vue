@@ -20,18 +20,18 @@ export default {
 	computed: {
 		// 支付宝小程序需写成计算属性,prop定义default仍报错
 		mOption() {
-			return this.option || {}
+			return this.option || {};
 		},
 		// 加载中
 		isUpLoading() {
-			return this.type === 1
+			return this.type === 1;
 		},
 		// 没有更多了
 		isUpNoMore() {
-			return this.type === 2
+			return this.type === 2;
 		}
 	}
-}
+};
 </script>
 
 <style>

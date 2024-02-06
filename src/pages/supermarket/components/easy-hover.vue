@@ -1,41 +1,27 @@
 <template>
-  <view
-    class="hover-wrapper"
-    :style="{
-      width: width + 'rpx',
-      height: height + 'rpx',
-      'border-radius': circle ? '50%' : '0',
-      top: top + 'px',
-      left: left + 'px',
-    }"
-    @touchmove.prevent="touchmove"
-    @touchend="touchend"
-    @tap="doTap"
-    @touchstart.prevent="touchstart"
-  >
-    <image
-      :src="iconUrl"
-      mode="aspectFill"
-      class="icon"
-      :style="{
-        width: width + 'rpx',
-        height: height + 'rpx',
-        'border-radius': circle ? '50%' : '0',
-      }"
-    ></image>
+  <view class="hover-wrapper"
+        :style="{'width':width+'rpx','height':height+'rpx','border-radius':circle?'50%':'0','top':top+'px','left':left+'px'}"
+        @touchmove.prevent="touchmove"
+        @touchend="touchend"
+        @tap="doTap"
+        @touchstart.prevent="touchstart">
+    <image :src="iconUrl"
+           mode="aspectFill"
+           class="icon"
+           :style="{'width':width+'rpx','height':height+'rpx','border-radius':circle?'50%':'0'}"></image>
   </view>
 </template>
 
 <script>
 export default {
-  name: "easy-hover",
+  name: 'easy-hover',
   props: {
     /**
      * 初始化方向
      */
     initSide: {
       type: String,
-      default: "right",
+      default: 'right',
     },
     /**
      * 初始化距离上部距离rpx
@@ -49,7 +35,7 @@ export default {
      */
     iconUrl: {
       type: String,
-      default: "",
+      default: '',
     },
     /**
      * 宽度
@@ -82,8 +68,8 @@ export default {
     // 是否能拖动
     enableDrag: {
       type: Boolean,
-      default: true,
-    },
+      default: true
+    }
   },
   data() {
     return {
@@ -101,42 +87,42 @@ export default {
       initTouchX: 0,
       initTouchY: 0,
       // 导航栏高度
-      // #ifdef MP-WEIXIN
+      //#ifdef MP-WEIXIN
       navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-      // #endif
-      // #ifdef MP-ALIPAY
+      //#endif
+      //#ifdef MP-ALIPAY
       navigationBarHeight:
         uni.getSystemInfoSync().statusBarHeight +
         uni.getSystemInfoSync().titleBarHeight,
-      // #endif
-    };
+      //#endif
+    }
   },
   methods: {
     /**
      * 初始化参数封装，主要处理界面参数
      */
     initParams() {
-      const phoneParam = uni.getSystemInfoSync();
-      this.screenWidthMax = phoneParam.windowWidth;
-      this.screenHeightMax = phoneParam.windowHeight;
-      console.log("===phoneParam==:", phoneParam);
+      let phoneParam = uni.getSystemInfoSync()
+      this.screenWidthMax = phoneParam.windowWidth
+      this.screenHeightMax = phoneParam.windowHeight
+      console.log('===phoneParam==:', phoneParam)
       // this.screenHeightMax = phoneParam.screenHeight
-      this.widthMiddle = phoneParam.windowWidth / 2;
-      this.menuHeight = phoneParam.windowHeight - phoneParam.windowHeight;
-      // 计算偏移量
-      this.xOffset = (this.width * phoneParam.windowWidth) / 750;
-      this.yOffset = (this.height * phoneParam.windowWidth) / 750;
-      // 计算top和left
-      console.log("this.menuHeight:", this.menuHeight);
-      console.log("phoneParam.windowHeight :", phoneParam.windowHeight);
-      this.top = this.menuHeight + (phoneParam.windowHeight - 288);
+      this.widthMiddle = phoneParam.windowWidth / 2
+      this.menuHeight = phoneParam.windowHeight - phoneParam.windowHeight
+      //计算偏移量
+      this.xOffset = (this.width * phoneParam.windowWidth) / 750
+      this.yOffset = (this.height * phoneParam.windowWidth) / 750
+      //计算top和left
+      console.log('this.menuHeight:', this.menuHeight)
+      console.log('phoneParam.windowHeight :', phoneParam.windowHeight)
+      this.top = this.menuHeight + (phoneParam.windowHeight - 288)
       // this.bottom = this.menuHeight + (this.initMarginTop * phoneParam.screenWidth / 750)
       this.left =
-        this.initSide === "left"
+        this.initSide === 'left'
           ? this.xOffset
-          : this.initSide === "right"
+          : this.initSide === 'right'
           ? this.screenWidthMax - this.xOffset
-          : 0;
+          : 0
       // this.left = this.initSide === 'left' ? (this.xOffset / 2) : this.initSide === 'right' ? (this.screenWidthMax - this
       // 	.xOffset / 2) : 0
     },
@@ -145,47 +131,47 @@ export default {
      * 长按拖动
      */
     touchstart(e) {
-      if (this.enableDrag) return;
-      const touch = e.touches[0] || e.changedTouches[0];
-      this.initTouchX = touch.clientX;
-      this.initTouchY = touch.clientY;
+      if(this.enableDrag) return
+      let touch = e.touches[0] || e.changedTouches[0]
+      this.initTouchX = touch.clientX
+      this.initTouchY = touch.clientY
     },
     /**
      * 长按拖动
      */
     touchmove(e) {
-      if (this.enableDrag) return;
-      this.isMove = true;
-      const touch = e.touches[0] || e.changedTouches[0];
+      if(this.enableDrag) return
+      this.isMove = true
+      let touch = e.touches[0] || e.changedTouches[0]
       // 计算移动的水平距离
-      const distanceX = touch.clientX - this.initTouchX;
+      let distanceX = touch.clientX - this.initTouchX
       // 计算将会到达水平的位置
-      const newOffsetX = this.left + distanceX;
+      let newOffsetX = this.left + distanceX
       // 计算移动的垂直距离
-      const distanceY = touch.clientY - this.initTouchY;
+      let distanceY = touch.clientY - this.initTouchY
       // 计算将会到达垂直的位置
-      const newOffsetY = this.top + distanceY;
+      let newOffsetY = this.top + distanceY
 
-      if (newOffsetX >= 0 && newOffsetX <= this.screenWidthMax - this.xOffset) {
-        this.left = newOffsetX;
+      if (0 <= newOffsetX && newOffsetX <= this.screenWidthMax - this.xOffset) {
+        this.left = newOffsetX
       } else if (newOffsetX < 0) {
-        this.left = 0;
+        this.left = 0
       } else if (newOffsetX > this.screenWidthMax - this.xOffset) {
-        this.left = this.screenWidthMax - this.xOffset;
+        this.left = this.screenWidthMax - this.xOffset
       }
-      this.initTouchX = touch.clientX;
+      this.initTouchX = touch.clientX
 
       if (
         this.navigationBarHeight <= newOffsetY &&
         newOffsetY <= this.screenHeightMax - this.yOffset
       ) {
-        this.top = newOffsetY;
+        this.top = newOffsetY
       } else if (newOffsetY < this.navigationBarHeight) {
-        this.top = this.navigationBarHeight;
+        this.top = this.navigationBarHeight
       } else if (newOffsetY > this.screenHeightMax - this.yOffset) {
-        this.top = this.screenHeightMax - this.yOffset;
+        this.top = this.screenHeightMax - this.yOffset
       }
-      this.initTouchY = touch.clientY;
+      this.initTouchY = touch.clientY
     },
     /**
      * 长按结束
@@ -194,16 +180,16 @@ export default {
      * 贴边计算时因为质心为中心，需要加上偏移量
      */
     touchend(e) {
-      // 超过边界放置于边界，不属于贴边，属于通用
+      //超过边界放置于边界，不属于贴边，属于通用
       // let touch = e.touches[0] || e.changedTouches[0];
-      // 开启贴边，贴边原则，只要一遍碰到边就，只要过中线也贴
-      if (this.enableDrag) return;
+      //开启贴边，贴边原则，只要一遍碰到边就，只要过中线也贴
+      if(this.enableDrag) return
       if (this.stickSide) {
-        // x方向小于贴边
+        //x方向小于贴边
         if (this.left < (this.screenWidthMax - this.xOffset) / 2) {
-          this.left = 0;
+          this.left = 0
         } else {
-          this.left = this.screenWidthMax - this.xOffset;
+          this.left = this.screenWidthMax - this.xOffset
         }
       } else {
       }
@@ -216,14 +202,14 @@ export default {
      * 被点击
      */
     doTap() {
-      console.log("执行点击");
-      this.$emit("taped");
+      console.log('执行点击')
+      this.$emit('taped')
     },
   },
   created() {
-    this.initParams();
+    this.initParams()
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>

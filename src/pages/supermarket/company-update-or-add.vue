@@ -7,57 +7,34 @@
     <navigation-bar :title="title" :shows-back-button="true" :alpha="1" />
     <!-- #endif -->
     <view class="blank" :style="{ height: navigationBarHeight + 'px' }" />
-    <view
-      class="tip flex-h flex-c-s"
-      :style="{ top: navigationBarHeight + 'px' }"
-    >
-      <image
-        class="img"
-        src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-tip.png"
-        mode="scaleToFill"
-      />
+    <view class="tip flex-h flex-c-s" :style="{ top: navigationBarHeight + 'px'}">
+      <image class="img" src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-tip.png"
+        mode="scaleToFill" />
       <view class="fs-32 lh-40">请认真核对开票信息</view>
     </view>
     <view class="form">
       <view class="top"></view>
       <view class="base box">
+
         <view class="item flex-h flex-c-b">
           <view class="label">抬头类型</view>
           <view class="check-group input">
-            <view
-              class="check-item flex-h flex-c-s"
-              @click="changeInvoiceType('0')"
-            >
-              <image
-                class="icon-check"
-                v-if="params.invoiceType === '1'"
+            <view class="check-item flex-h flex-c-s" @click="changeInvoiceType('0')">
+              <image class="icon-check" v-if="params.invoiceType === '1' "
                 src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-unselect.png"
-                mode="scaleToFill"
-              />
-              <image
-                class="icon-check"
-                v-if="params.invoiceType === '0'"
+                mode="scaleToFill" />
+              <image class="icon-check" v-if="params.invoiceType === '0' "
                 src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-selected.png"
-                mode="scaleToFill"
-              />
+                mode="scaleToFill" />
               <view>个人</view>
             </view>
-            <view
-              class="check-item flex-h flex-c-s"
-              @click="changeInvoiceType('1')"
-            >
-              <image
-                class="icon-check"
-                v-if="params.invoiceType === '0'"
+            <view class="check-item flex-h flex-c-s" @click="changeInvoiceType('1')">
+              <image class="icon-check" v-if="params.invoiceType === '0' "
                 src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-unselect.png"
-                mode="scaleToFill"
-              />
-              <image
-                class="icon-check"
-                v-if="params.invoiceType === '1'"
+                mode="scaleToFill" />
+              <image class="icon-check" v-if="params.invoiceType === '1' "
                 src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-selected.png"
-                mode="scaleToFill"
-              />
+                mode="scaleToFill" />
               <view>单位</view>
             </view>
           </view>
@@ -66,87 +43,54 @@
           <view class="need">*</view>
           <view class="label">发票抬头</view>
           <view class="input">
-            <input
-              class="input-t"
-              v-model="params.invoiceHeaderName"
-              placeholder-class="placehlder"
-              placeholder="请填写抬头名称"
-              type="text"
-            />
+            <input class="input-t" v-model="params.invoiceHeaderName" placeholder-class="placehlder"
+              placeholder="请填写抬头名称" type="text">
           </view>
         </view>
-        <view class="item flex-h flex-c-b" v-if="params.invoiceType === '1'">
+        <view class="item flex-h flex-c-b" v-if="params.invoiceType === '1' ">
           <view class="need">*</view>
           <view class="label">发票税号</view>
-          <image
-            class="icon-tip"
-            @click="showTaxNoPop"
+          <image class="icon-tip" @click="showTaxNoPop"
             src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-tip-grey.png"
-            mode="scaleToFill"
-          />
+            mode="scaleToFill" />
           <view class="input">
-            <input
-              class="input-t"
-              v-model="params.taxNo"
-              placeholder-class="placehlder"
-              placeholder="请填写纳税人识别号"
-              type="text"
-            />
+            <input class="input-t" v-model="params.taxNo" placeholder-class="placehlder"
+              placeholder="请填写纳税人识别号" type="text">
           </view>
         </view>
       </view>
 
-      <view class="bank box" v-if="params.invoiceType === '1'">
+      <view class="bank box" v-if="params.invoiceType === '1' ">
         <view class="item flex-h flex-c-b">
           <view class="need"></view>
           <view class="label">银行名称</view>
           <view class="input">
-            <input
-              class="input-t"
-              v-model="params.bankName"
-              placeholder-class="placehlder"
-              placeholder="可选填"
-              type="text"
-            />
+            <input class="input-t" v-model="params.bankName" placeholder-class="placehlder"
+              placeholder="可选填" type="text">
           </view>
         </view>
         <view class="item flex-h flex-c-b">
           <view class="need"></view>
           <view class="label">银行账户</view>
           <view class="input">
-            <input
-              class="input-t"
-              v-model="params.bankAccount"
-              placeholder-class="placehlder"
-              placeholder="可选填"
-              type="text"
-            />
+            <input class="input-t" v-model="params.bankAccount" placeholder-class="placehlder"
+              placeholder="可选填" type="text">
           </view>
         </view>
         <view class="item flex-h flex-c-b">
           <view class="need"></view>
           <view class="label">注册电话</view>
           <view class="input">
-            <input
-              class="input-t"
-              v-model="params.registeredPhone"
-              placeholder-class="placehlder"
-              placeholder="可选填"
-              type="text"
-            />
+            <input class="input-t" v-model="params.registeredPhone" placeholder-class="placehlder"
+              placeholder="可选填" type="text">
           </view>
         </view>
         <view class="item flex-h flex-c-b">
           <view class="need"></view>
           <view class="label">注册地址</view>
           <view class="input">
-            <input
-              class="input-t"
-              v-model="params.registeredAddress"
-              placeholder-class="placehlder"
-              placeholder="可选填"
-              type="text"
-            />
+            <input class="input-t" v-model="params.registeredAddress" placeholder-class="placehlder"
+              placeholder="可选填" type="text">
           </view>
         </view>
       </view>
@@ -155,77 +99,60 @@
           <view class="need">*</view>
           <view class="label">收票人姓名</view>
           <view class="input">
-            <input
-              class="input-t"
-              v-model="params.payeeName"
-              placeholder-class="placehlder"
-              placeholder="请填写收票人姓名"
-              type="text"
-            />
+            <input class="input-t" v-model="params.payeeName" placeholder-class="placehlder"
+              placeholder="请填写收票人姓名" type="text">
           </view>
         </view>
         <view class="item flex-h flex-c-b">
           <view class="need">*</view>
           <view class="label">收票人手机号</view>
           <view class="input">
-            <input
-              class="input-t"
-              v-model="params.payeePhone"
-              placeholder-class="placehlder"
-              placeholder="请填写收票人手机号"
-              type="text"
-            />
+            <input class="input-t" v-model="params.payeePhone" placeholder-class="placehlder"
+              placeholder="请填写收票人手机号" type="text">
           </view>
         </view>
         <view class="item flex-h flex-c-b">
           <view class="need">*</view>
           <view class="label">收票人邮箱</view>
           <view class="input">
-            <input
-              class="input-t"
-              v-model="params.payeeEmail"
-              placeholder-class="placehlder"
-              placeholder="请填写收票人邮箱"
-              type="text"
-            />
+            <input class="input-t" v-model="params.payeeEmail" placeholder-class="placehlder"
+              placeholder="请填写收票人邮箱" type="text">
           </view>
         </view>
       </view>
     </view>
     <view class="btn-box">
-      <button class="btn" @click="handleAddClick">
-        {{ invoiceHeaderId ? "修改" : "添加" }}
-      </button>
+      <button class="btn" @click="handleAddClick">{{invoiceHeaderId?'修改':'添加'}}</button>
     </view>
 
     <!-- 发票税号说明弹框 -->
-    <modal
-      ref="taxNoPop"
-      title="发票税号说明"
-      cancelText=" "
-      confirmStyle="font-size:44rpx;font-weight:400;color:#333;"
-      confirmText="我知道了"
-      @confirm="checkConfirm"
-    >
-      <template v-slot:text>
+    <modal ref="taxNoPop" title="发票税号说明" cancelText=' '
+      confirmStyle='font-size:44rpx;font-weight:400;color:#333;' confirmText='我知道了'
+      @confirm='checkConfirm'>
+      <view slot="text">
         <view class="tip-content">
           <scroll-view scroll-y="true" class="confirm-main">
             <view class="content">
               什么是纳税人识别号/统一社会信用代码?纳税人识别号，通常简称为税号，就是税务登记证上的号，每个企业的识别号都是唯一的，相当于税务局发给企业的“身份证号。统一社会信用代码，是一组长度为18位的用于法人和其他组织身份识别的代码。统一社会信用代码由国家标准委发布。2015年10月1日起，国家启动将企业依次申请的工商营业执照、组织机构代码证和税务登记证三证合发
             </view>
+
           </scroll-view>
           <view class="mask-leaner"></view>
         </view>
-      </template>
+      </view>
     </modal>
+
   </view>
 </template>
 
 <script>
-import api from "@/apis/index.js";
-import { validateEmail, validatePhoneNumber } from "@/utils/validation.js";
-import Modal from "@/components/common/modal.vue";
-import NavigationBar from "../../components/common/navigation-bar.vue";
+import api from '@/apis/index.js'
+import {
+  validateEmail,
+  validatePhoneNumber
+} from '@/utils/validation.js'
+import Modal from '@/components/common/modal.vue'
+import NavigationBar from '../../components/common/navigation-bar.vue'
 
 export default {
   components: { Modal, NavigationBar },
@@ -243,54 +170,54 @@ export default {
       // 状态栏高度
       statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
       params: {
-        invoiceHeaderName: "", // 发票抬头名称
-        invoiceType: "0", // 类型（个人为0、单位为1）
-        taxNo: "", // 发票税号（类型为单位时传）
-        bankName: "", // 银行名称
-        bankAccount: "", // 银行账户
-        registeredAddress: "", // 注册地址
-        registeredPhone: "", //	注册电话
-        payeeName: "", //	收票人姓名
-        payeePhone: "", //	收票人手机号
-        payeeEmail: "", //	收票人邮箱
+        invoiceHeaderName: '', // 发票抬头名称
+        invoiceType: '0', // 类型（个人为0、单位为1）
+        taxNo: '', // 发票税号（类型为单位时传）
+        bankName: '', // 银行名称
+        bankAccount: '', // 银行账户
+        registeredAddress: '', // 注册地址
+        registeredPhone: '', //	注册电话
+        payeeName: '', //	收票人姓名
+        payeePhone: '', //	收票人手机号
+        payeeEmail: '' //	收票人邮箱
       },
       invoiceHeaderId: undefined,
       // 标题
-      title: "",
+      title: '',
       isClick: true,
-      timer: "",
-    };
+      timer: ''
+    }
   },
   watch: {},
   onLoad(e) {
     if (e.info) {
-      const info = JSON.parse(e.info);
-      console.log("info:", info);
-      this.params.invoiceHeaderName = info.invoiceHeaderName || "";
-      this.params.invoiceType = info.invoiceType === "C" ? "0" : "1";
-      this.params.taxNo = info.taxNo || "";
-      this.params.bankName = info.bankName || "";
-      this.params.bankAccount = info.bankAccount || "";
-      this.params.registeredAddress = info.registeredAddress || "";
-      this.params.registeredPhone = info.registeredPhone || "";
-      this.params.payeeName = info.payeeName || "";
-      this.params.payeePhone = info.payeePhone || "";
-      this.params.payeeEmail = info.payeeEmail || "";
-      this.invoiceHeaderId = info.invoiceHeaderId || undefined;
-      this.title = "编辑发票抬头";
+      const info = JSON.parse(e.info)
+      console.log('info:', info)
+      this.params.invoiceHeaderName = info.invoiceHeaderName || ''
+      this.params.invoiceType = info.invoiceType === 'C' ? '0' : '1'
+      this.params.taxNo = info.taxNo || ''
+      this.params.bankName = info.bankName || ''
+      this.params.bankAccount = info.bankAccount || ''
+      this.params.registeredAddress = info.registeredAddress || ''
+      this.params.registeredPhone = info.registeredPhone || ''
+      this.params.payeeName = info.payeeName || ''
+      this.params.payeePhone = info.payeePhone || ''
+      this.params.payeeEmail = info.payeeEmail || ''
+      this.invoiceHeaderId = info.invoiceHeaderId || undefined
+      this.title = '编辑发票抬头'
       // this.$uni.setTitle('编辑发票抬头')
     } else {
-      this.title = "添加发票抬头";
+      this.title = '添加发票抬头'
       // this.$uni.setTitle('添加发票抬头')
     }
   },
   destroyed() {
-    clearTimeout(this.timer);
+    clearTimeout(this.timer)
   },
   methods: {
     // 更改发票类型
     changeInvoiceType(type) {
-      this.params.invoiceType = type;
+      this.params.invoiceType = type
       // if(this.title === '编辑发票抬头'){
       //   return
       // }
@@ -306,59 +233,59 @@ export default {
     },
     // 点击返回上一页
     handleNavigationBack() {
-      if (this.title === "添加发票抬头") {
+      if (this.title === '添加发票抬头') {
         uni.navigateBack({
-          delta: 1,
-        });
-        return;
+          delta: 1
+        })
+        return
       }
       this.$uni.showConfirm({
-        content: "是否保存本次编辑结果?",
-        confirmText: "保存",
-        cancelText: "不保存",
-        title: "",
+        content: '是否保存本次编辑结果?',
+        confirmText: '保存',
+        cancelText: '不保存',
+        title: '',
         confirm: () => {
-          this.handleAddClick();
+          this.handleAddClick()
         },
         cancel: () => {
           uni.navigateBack({
-            delta: 1,
-          });
-        },
-      });
+            delta: 1
+          })
+        }
+      })
     },
     // 发票税号说明弹框，点击我知道了
     checkConfirm() {
-      this.$refs.taxNoPop.close();
+      this.$refs.taxNoPop.close()
     },
     // 发票税号说明弹框
     showTaxNoPop() {
-      this.$refs.taxNoPop.open();
+      this.$refs.taxNoPop.open()
     },
     /**
      * 输入校验
      */
     checkInput() {
       if (!this.params.invoiceHeaderName) {
-        this.$uni.showToast("请填写发票抬头");
-        return false;
+        this.$uni.showToast('请填写发票抬头')
+        return false
       }
-      if (!this.params.taxNo && this.params.invoiceType === "1") {
-        this.$uni.showToast("请填写发票税号");
-        return false;
+      if (!this.params.taxNo && this.params.invoiceType === '1') {
+        this.$uni.showToast('请填写发票税号')
+        return false
       }
       if (
         this.params.registeredPhone &&
         !validatePhoneNumber(this.params.registeredPhone)
       ) {
-        this.$uni.showToast("注册电话格式不正确");
-        return false;
+        this.$uni.showToast('注册电话格式不正确')
+        return false
       }
 
       if (!this.params.payeeName) {
-        console.log(this.params.payeeName);
-        this.$uni.showToast("请填写收票人姓名");
-        return false;
+        console.log(this.params.payeeName)
+        this.$uni.showToast('请填写收票人姓名')
+        return false
       }
       // if (!/^[\u4E00-\u9FA5]+$/.test(this.params.payeeName)) {
       //   console.log(this.params.payeeName)
@@ -367,79 +294,77 @@ export default {
       // }
 
       if (!this.params.payeePhone) {
-        this.$uni.showToast("请填写收票人手机号");
-        return false;
+        this.$uni.showToast('请填写收票人手机号')
+        return false
       }
       if (!validatePhoneNumber(this.params.payeePhone)) {
-        this.$uni.showToast("收票人手机号格式不正确");
-        return false;
+        this.$uni.showToast('收票人手机号格式不正确')
+        return false
       }
 
       if (!this.params.payeeEmail) {
-        this.$uni.showToast("请填写收票人邮箱");
-        return false;
+        this.$uni.showToast('请填写收票人邮箱')
+        return false
       }
       if (!validateEmail(this.params.payeeEmail)) {
-        this.$uni.showToast("邮箱格式不正确");
-        return false;
+        this.$uni.showToast('邮箱格式不正确')
+        return false
       }
-      return true;
+      return true
     },
     /**
      * 确定点击事件
      */
     handleAddClick() {
       if (this.isClick) {
-        if (!this.checkInput()) return;
-        this.isClick = false;
+        this.isClick = false
+        if (!this.checkInput()) return
         const data = {
-          invoiceHeaderId: this.invoiceHeaderId || "",
-          invoiceType: this.params.invoiceType === "0" ? "C" : "P",
+          invoiceHeaderId: this.invoiceHeaderId || '',
+          invoiceType: this.params.invoiceType === '0' ? 'C' : 'P',
 
-          typeName: this.params.invoiceType === "0" ? "个人" : "单位",
+          typeName: this.params.invoiceType === '0' ? '个人' : '单位',
           invoiceHeaderName: this.params.invoiceHeaderName,
-          taxNo: this.params.invoiceType === "1" ? this.params.taxNo : "",
-          bankName: this.params.invoiceType === "1" ? this.params.bankName : "",
+          taxNo: this.params.invoiceType === '1' ? this.params.taxNo : '',
+          bankName: this.params.invoiceType === '1' ? this.params.bankName : '',
           bankAccount:
-            this.params.invoiceType === "1" ? this.params.bankAccount : "",
+            this.params.invoiceType === '1' ? this.params.bankAccount : '',
           registeredAddress:
-            this.params.invoiceType === "1"
-              ? this.params.registeredAddress
-              : "",
+            this.params.invoiceType === '1' ? this.params.registeredAddress : '',
           registeredPhone:
-            this.params.invoiceType === "1" ? this.params.registeredPhone : "",
+            this.params.invoiceType === '1' ? this.params.registeredPhone : '',
           payeeName: this.params.payeeName,
           payeePhone: this.params.payeePhone,
-          payeeEmail: this.params.payeeEmail,
-        };
+          payeeEmail: this.params.payeeEmail
+        }
         api.handleUpdateOrAddHeader({
           showsLoading: true,
           data,
           success: (res) => {
-            console.log("添加成功:", res);
+            console.log('添加成功:', res)
             if (this.invoiceHeaderId) {
-              this.$uni.showToast({ title: "发票抬头内容修改成功" });
+              this.$uni.showToast({ title: '发票抬头内容修改成功' })
             } else {
-              this.$uni.showToast({ title: "添加成功" });
+              this.$uni.showToast({ title: '添加成功' })
             }
 
             setTimeout(() => {
-              uni.$emit("didAddInvoice", true);
-              uni.navigateBack();
-            }, 1500);
+              uni.$emit('didAddInvoice', true)
+              uni.navigateBack()
+            }, 1500)
           },
           fail: (err) => {
-            console.log("添加失败：", err);
-            this.$uni.showToast(err.message);
-          },
-        });
-        this.timer = setTimeout(() => {
-          this.isClick = true;
-        }, 3000);
+            console.log('添加失败：', err)
+            this.$uni.showToast(err.message)
+          }
+        })
+        this.timer = setTimeout(() => { this.isClick = true }, 3000)
       }
-    },
+    }
   },
-};
+
+  filters: {}
+}
 </script>
 
 <style lang="scss" scoped>
@@ -563,11 +488,7 @@ export default {
       left: 0;
       right: 0;
       height: 96rpx;
-      background: linear-gradient(
-        180deg,
-        rgba(255, 255, 255, 0) 0%,
-        #ffffff 100%
-      );
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, #ffffff 100%);
     }
   }
   .confirm-main {

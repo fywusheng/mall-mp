@@ -6,40 +6,43 @@
 var me = {}
 
 // 初始化window对象的touch事件 (仅初始化一次)
-if (window && !window.$mescrollRenderInit) {
+if(window && !window.$mescrollRenderInit){
 	window.$mescrollRenderInit = true
-
-	window.addEventListener('touchstart', function(e) {
-		if (me.disabled()) return
-		me.startPoint = me.getPoint(e) // 记录起点
-	}, { passive: true })
-
-	window.addEventListener('touchmove', function(e) {
-		if (me.disabled()) return
-		if (me.getScrollTop() > 0) return // 需在顶部下拉,才禁止bounce
-
-		var curPoint = me.getPoint(e) // 当前点
-		var moveY = curPoint.y - me.startPoint.y // 和起点比,移动的距离,大于0向下拉,小于0向上拉
+	
+	
+	window.addEventListener('touchstart', function(e){
+		if (me.disabled()) return;
+		me.startPoint = me.getPoint(e); // 记录起点
+	}, {passive: true})
+	
+	
+	window.addEventListener('touchmove', function(e){
+		if (me.disabled()) return;
+		if (me.getScrollTop() > 0) return; // 需在顶部下拉,才禁止bounce
+		
+		var curPoint = me.getPoint(e); // 当前点
+		var moveY = curPoint.y - me.startPoint.y; // 和起点比,移动的距离,大于0向下拉,小于0向上拉
 		// 向下拉
 		if (moveY > 0) {
 			// 可下拉的条件
 			if (!me.isDownScrolling && !me.optDown.isLock && (!me.isUpScrolling || (me.isUpScrolling && me.isUpBoth))) {
+				
 				// 只有touch在mescroll的view上面,才禁止bounce
-				var el = e.target
-				var isMescrollTouch = false
-				while (el && el.tagName && el.tagName !== 'UNI-PAGE-BODY' && el.tagName != 'BODY') {
-					var cls = el.classList
+				var el = e.target;
+				var isMescrollTouch = false;
+				while (el && el.tagName && el.tagName !== 'UNI-PAGE-BODY' && el.tagName != "BODY") {
+					var cls = el.classList;
 					if (cls && cls.contains('mescroll-render-touch')) {
 						isMescrollTouch = true
-						break
+						break;
 					}
-					el = el.parentNode // 继续检查其父元素
+					el = el.parentNode; // 继续检查其父元素
 				}
 				// 禁止bounce (不会对swiper和iOS侧滑返回造成影响)
-				if (isMescrollTouch && e.cancelable && !e.defaultPrevented) e.preventDefault()
+				if (isMescrollTouch && e.cancelable && !e.defaultPrevented) e.preventDefault();
 			}
 		}
-	}, { passive: false })
+	}, {passive: false})
 }
 
 /* 获取滚动条的位置 */
@@ -48,21 +51,21 @@ me.getScrollTop = function() {
 }
 
 /* 是否禁用下拉刷新 */
-me.disabled = function() {
+me.disabled = function(){
 	return !me.optDown || !me.optDown.use || me.optDown.native
 }
 
 /* 根据点击滑动事件获取第一个手指的坐标 */
 me.getPoint = function(e) {
 	if (!e) {
-		return { x: 0, y: 0 }
+		return {x: 0,y: 0}
 	}
 	if (e.touches && e.touches[0]) {
-		return { x: e.touches[0].pageX, y: e.touches[0].pageY }
+		return {x: e.touches[0].pageX,y: e.touches[0].pageY}
 	} else if (e.changedTouches && e.changedTouches[0]) {
-		return { x: e.changedTouches[0].pageX, y: e.changedTouches[0].pageY }
+		return {x: e.changedTouches[0].pageX,y: e.changedTouches[0].pageY}
 	} else {
-		return { x: e.clientX, y: e.clientY }
+		return {x: e.clientX,y: e.clientY}
 	}
 }
 
@@ -81,9 +84,9 @@ function propObserver(wxsProp) {
 const renderBiz = {
 	data() {
 		return {
-			propObserver: propObserver
+			propObserver: propObserver,
 		}
 	}
 }
 
-export default renderBiz
+export default renderBiz;

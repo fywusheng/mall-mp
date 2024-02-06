@@ -55,6 +55,7 @@ export default {
       ctx.commit('LOG_OUT')
     },
     async login(ctx) {
+      // const {code} = await wx.login();
       const authData = await Axios.post(`/user/login`, {})
       ctx.commit(VUEX.LOGIN.SET_WX_AUTH_ID, authData.data)
     }

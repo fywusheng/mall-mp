@@ -8,37 +8,40 @@
 export default {
   data() {
     return {
-      url: "",
-    };
+      url: '',
+    }
   },
   onLoad(e) {
     // this.url = 'http://localhost:9081/#/checkstand'
-    this.url = decodeURIComponent(e.url);
+    this.url = decodeURIComponent(e.url) 
   },
-  onShow() {},
-  onShareAppMessage() {
+  onShow(){
+    
+  },
+   onShareAppMessage() {
     return {
-      title: "",
-      path: "/pages/index/index?index=0",
+      title:'',
+      path:
+        "/pages/index/index?index=0",
     };
   },
   methods: {
-    // 返回上一页
+      // 返回上一页
     handleNavBack() {
       uni.navigateBack();
     },
-    // 返回首页
+      // 返回首页
     handleHomeBack() {
       uni.reLaunch({
-        url: "/pages/index/index",
+         url: '/pages/index/index'
       });
     },
   },
-};
+}
 </script>
 
-<style lang="scss" scoped>
-.web {
+<style  lang="scss" scoped>
+.web{
   margin-top: 100px;
 }
 </style>

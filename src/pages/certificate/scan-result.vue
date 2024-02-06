@@ -4,13 +4,11 @@
       <text class="title fs-40 c-black m-32-0">{{ info.org_name }}</text>
       <view class="line" />
       <image
-        class="avatar mt-40 mb-88"
-        mode="scaleToFill"
+        class="avatar mt-40 mb-88" mode="scaleToFill"
         src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-avatar.png"
       />
       <image
-        class="success-icon"
-        mode="scaleToFill"
+        class="success-icon" mode="scaleToFill"
         src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-scan-success.png"
       />
       <view class="line" />
@@ -20,12 +18,12 @@
         </view>
         <view class="row flex-h flex-c-s mb-24">
           <text class="fs-36 c-black">
-            姓名：{{ nameFilter(info.psn_name) }}
+            姓名：{{ info.psn_name | nameFilter }}
           </text>
         </view>
         <view class="row flex-h flex-c-s mb-24">
           <text class="fs-36 c-black">
-            身份证号：{{ idCardNumberFilter(info.psn_id) }}
+            身份证号：{{ info.psn_id | idCardNumberFilter }}
           </text>
         </view>
         <view class="row flex-h flex-c-s mb-24">
@@ -37,8 +35,7 @@
       </view>
     </view>
     <image
-      class="signature"
-      mode="scaleToFill"
+      class="signature" mode="scaleToFill"
       src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-signature.png"
     />
     <button class="return-button fs-40 c-white">返回</button>
@@ -55,7 +52,7 @@ export default {
       info: {},
     };
   },
-  methods: {
+  filters: {
     // 姓名过滤器, 用于姓名脱敏
     nameFilter(value) {
       return desensitizeName(value);

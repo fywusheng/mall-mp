@@ -2,40 +2,27 @@
 <template>
   <view class="local-upload flex-v flex-c-b">
     <view class="avatar flex-v flex-c-c mt-24">
-      <image
-        class="border-image"
-        mode="scaleToFill"
-        src="https://ggllstatic.hpgjzlinfo.com/static/certificate/bg-certificate-avatar-border.png"
-      />
+      <image class="border-image" mode="scaleToFill"
+             src="https://ggllstatic.hpgjzlinfo.com/static/certificate/bg-certificate-avatar-border.png" />
       <!-- #ifdef MP-ALIPAY -->
-      <canvas
-        class="canvas"
-        :width="imgWidth"
-        :height="imgHeight"
-        id="canvas"
-      ></canvas>
+      <canvas class="canvas"   :width="imgWidth"
+                :height="imgHeight" id="canvas"></canvas>
       <!-- #endif -->
-      <image
-        class="avatar-image"
-        mode="scaleToFill"
-        v-if="avatarURL"
-        :src="avatarURL"
-      />
-      <view class="add flex-v flex-c-c" v-else @click="handleChooseImageClick">
-        <image
-          class="add-icon"
-          mode="scaleToFill"
-          src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-avatar-add.png"
-        />
+      <image class="avatar-image" mode="scaleToFill"
+             v-if="avatarURL"
+             :src="avatarURL" />
+      <view class="add flex-v flex-c-c"
+            v-else
+            @click="handleChooseImageClick">
+        <image class="add-icon" mode="scaleToFill"
+               src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-avatar-add.png" />
         <text class="fs-36 c-black mt-12">点击添加照片</text>
       </view>
     </view>
-    <button
-      class="reselect-button fs-40 c-primary"
-      hover-class="none"
-      v-if="avatarURL"
-      @click="handleChooseImageClick"
-    >
+    <button class="reselect-button fs-40 c-primary"
+            hover-class="none"
+            v-if="avatarURL"
+            @click="handleChooseImageClick">
       重新选择
     </button>
     <view class="tips flex-1">
@@ -44,38 +31,36 @@
         您上传的照片尺寸须为1寸或2寸，请确保您的面部清晰可见，否则会检测失败，建议最好是证件照。
       </text>
     </view>
-    <button
-      class="normal-button fs-44 c-white"
-      hover-class="none"
-      :class="{ disabled: !avatarURL }"
-      @click="handleUploadClick"
-    >
+    <button class="normal-button fs-44 c-white"
+            hover-class="none"
+            :class="{ disabled: !avatarURL }"
+            @click="handleUploadClick">
       确认上传
     </button>
   </view>
 </template>
 
 <script>
-import api from "@/apis/index.js";
+import api from '@/apis/index.js'
 export default {
   data() {
     return {
       // 头像路径
-      avatarURL: "",
+      avatarURL: '',
       // 身份证照数据
       params: {},
       // 用户数据
       userInfo: {},
 
-      imgWidth: "",
-      imgHeight: "",
-    };
+      imgWidth:'',
+      imgHeight:''
+    }
   },
   onLoad(e) {
-    const eventChannel = this.getOpenerEventChannel();
-    eventChannel.on("sendPrevImg", (info) => {
-      this.params = info;
-    });
+    const eventChannel = this.getOpenerEventChannel()
+    eventChannel.on('sendPrevImg', (info) => {
+      this.params = info
+    })
   },
   methods: {
     /**
@@ -83,7 +68,7 @@ export default {
      */
     handleChooseImageClick() {
       uni.chooseImage({
-        sourceType: ["album"],
+        sourceType: ['album'],
         count: 1,
         success: (res) => {
           // uni.getFileSystemManager().readFile({
@@ -95,38 +80,39 @@ export default {
           //   },
           // })
 
-          // #ifdef MP-WEIXIN
+
+          //#ifdef MP-WEIXIN
 
           uni.getFileSystemManager().readFile({
             filePath: res.tempFilePaths[0],
-            encoding: "base64",
+            encoding: 'base64',
             success: (rs) => {
-              console.log("图片选取成功：", rs);
+              console.log('图片选取成功：', rs)
               // 去背景图片
-              this.getBackGroundImg(rs.data);
+              this.getBackGroundImg(rs.data)
             },
-          });
-          // #endif
+          })
+          //#endif
 
-          // #ifdef MP-ALIPAY
+          //#ifdef MP-ALIPAY
           my.getImageInfo({
             src: res.tempFilePaths[0],
-            success: (resImg) => {
-              console.log("图片数据resImg：", resImg);
-              this.imgWidth = resImg.width;
-              this.imgHeight = resImg.height;
-              const canvas = my.createCanvasContext("canvas");
+            success:  (resImg) => {
+                console.log('图片数据resImg：', resImg)
+              this.imgWidth = resImg.width 
+              this.imgHeight = resImg.height
+              let canvas = my.createCanvasContext('canvas')
               canvas.drawImage(
                 res.tempFilePaths[0],
                 0,
                 0,
                 this.imgWidth,
                 this.imgHeight
-              );
+              ) 
               // 1. 绘制图片至canvas
               // 绘制完成后执行回调
               canvas.draw(false, () => {
-                console.log("绘制完成后执行回调");
+                console.log('绘制完成后执行回调')
                 canvas
                   .toDataURL({
                     width: this.imgWidth,
@@ -134,30 +120,30 @@ export default {
                     quality: 1,
                   })
                   .then((baseImg) => {
-                    console.log("图片baseImg：", baseImg);
+                    console.log('图片baseImg：', baseImg)
                     // let base64 = baseImg.replace("data:image/png;base64,", "");
-                    const base64 = baseImg.split(",")[1];
-                    console.log("图片base64：", base64);
-                    this.getBackGroundImg(base64);
-                  });
+                    let base64 = baseImg.split(',')[1]
+                     console.log('图片base64：', base64)
+                    this.getBackGroundImg(base64)
+                  })
                 //  console.log("图片base64：",base64)
                 // base64 = base64.replace("data:image/png;base64,", "");
                 // 身份证识别
-              });
+              })
             },
-          });
+          })
 
-          // #endif
+          //#endif
         },
-      });
+      })
     },
     /**
      * 确认上传点击事件
      */
     handleUploadClick() {
-      uni.setStorageSync("customFace", this.resinfo);
+      uni.setStorageSync('customFace', this.resinfo)
       uni.navigateBack({
-        delta: 1,
+         delta: 1
       });
 
       // uni.navigateTo({
@@ -184,14 +170,14 @@ export default {
         },
         showsLoading: true,
         success: (resinfo) => {
-          console.log("抠图结果resinfo:", resinfo);
-          this.avatarURL = "data:image/jpg;base64," + resinfo.photoBase64;
-          this.resinfo = resinfo;
+          console.log('抠图结果resinfo:', resinfo)
+          this.avatarURL = 'data:image/jpg;base64,' + resinfo.photoBase64
+          this.resinfo = resinfo
         },
-      });
+      })
     },
   },
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -203,7 +189,7 @@ export default {
       @include size(318, 440);
       position: absolute;
     }
-    .canvas {
+    .canvas{
       position: absolute;
       z-index: -100;
       opacity: 0;

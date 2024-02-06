@@ -3,88 +3,61 @@
     <!-- 头部导航栏 -->
     <!-- #ifdef MP-ALIPAY -->
     <navigation-bar :alpha="1">
-      <template v-slot:title1>
+      <view slot="title1">
         <view class="navigation-bar flex-h flex-c-s">
           <view class="back-icon"></view>
-          <image
-            class="icon-desc"
-            @click="handleDesc"
+          <image class="icon-desc" @click="handleDesc"
             src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-desc.png"
-            mode="scaleToFill"
-          />
+            mode="scaleToFill" />
           <text class="desc fs-36">说明</text>
           <view class="navigation-bar__title fs-44 c-black flex-1">
             优惠买单
           </view>
         </view>
-      </template>
+      </view>
     </navigation-bar>
     <!-- #endif -->
     <!-- #ifdef MP-WEIXIN -->
     <navigation-bar :alpha="0" statusBackGround="#fff">
-      <template v-slot:title1>
+      <view slot="title1">
         <view class="navigation-bar flex-h flex-c-s">
-          <image
-            class="back-icon"
-            @click="handleNavBack"
+          <image class="back-icon" @click="handleNavBack"
             src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-arrow-left.png"
-            mode="scaleToFill"
-          />
-          <image
-            class="icon-desc"
-            @click="handleDesc"
+            mode="scaleToFill" />
+          <image class="icon-desc" @click="handleDesc"
             src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-desc.png"
-            mode="scaleToFill"
-          />
+            mode="scaleToFill" />
           <text class="desc">说明</text>
-          <view
-            @click="handleDesc"
-            class="navigation-bar__title fs-44 c-black flex-1"
-          >
+          <view @click="handleDesc" class="navigation-bar__title fs-44 c-black flex-1">
             优惠买单
           </view>
         </view>
-      </template>
+      </view>
     </navigation-bar>
     <!-- #endif -->
     <view class="blank" :style="{ height: navigationBarHeight + 'px' }" />
     <!-- banner -->
     <view class="mb-24">
-      <swiper
-        class="banners"
-        :autoplay="true"
-        :circular="true"
-        :indicator-dots="banners.length > 1"
-        indicator-active-color="white"
-      >
+      <swiper class="banners" :autoplay="true" :circular="true" :indicator-dots="banners.length>1"
+        indicator-active-color="white">
         <swiper-item class="item" v-for="(item, index) in banners" :key="index">
-          <image
-            class="image"
-            mode="scaleToFill"
-            :src="item.bannerUrl"
-            @error="handleBannerLoadFail(index)"
-          />
+          <image class="image" mode="scaleToFill" :src="item.bannerUrl"
+            @error="handleBannerLoadFail(index)" />
         </swiper-item>
       </swiper>
     </view>
     <!-- 超时列表 -->
     <view class="flex-h flex-c-b flex-wrap ml-32 mr-32 mt-24 supmarket">
-      <view
-        class="market flex-v flex-c-c mb-24"
-        v-for="(item, index) in supermarketList"
-        @click="handleDetailClick(item)"
-        :key="index"
-      >
+      <view class="market flex-v flex-c-c mb-24" v-for="(item,index) in supermarketList"
+        @click="handleDetailClick(item)" :key=" index">
         <image class="market-logo" :src="item.logo" mode="scaleToFill" />
         <view class="line"></view>
-        <view class="market-name">{{ item.supermarketName }}</view>
+        <view class="market-name">{{item.supermarketName}}</view>
         <view class="count flex-h flex-c-c">
-          <image
-            class="img"
+          <image class="img"
             src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-discount.png"
-            mode="scaleToFill"
-          />
-          <view class="text">{{ markrtDiscount(item.showDiscount) }}折</view>
+            mode="scaleToFill" />
+          <view class="text">{{item.showDiscount | markrtDiscount}}折</view>
         </view>
       </view>
     </view>
@@ -94,9 +67,9 @@
 </template>
 
 <script>
-import api from "@/apis/index.js";
-import EasyHover from "./components/easy-hover.vue";
-import NavigationBar from "../../components/common/navigation-bar.vue";
+import api from '@/apis/index.js'
+import EasyHover from './components/easy-hover.vue'
+import NavigationBar from '../../components/common/navigation-bar.vue'
 export default {
   components: { EasyHover, NavigationBar },
   data() {
@@ -108,10 +81,9 @@ export default {
       // 商超的城市信息
       city: {},
 
-      iconUrl:
-        "https://ggllstatic.hpgjzlinfo.com/static/supermarket/img-myOrder.png",
+      iconUrl: 'https://ggllstatic.hpgjzlinfo.com/static/supermarket/img-myOrder.png',
 
-      title: "优惠买单",
+      title: '优惠买单',
 
       // 导航栏高度
       // #ifdef MP-WEIXIN
@@ -123,36 +95,37 @@ export default {
         uni.getSystemInfoSync().titleBarHeight,
       // #endif
       // 状态栏高度
-      statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-    };
+      statusBarHeight: uni.getSystemInfoSync().statusBarHeight
+    }
   },
   onLoad() {
-    this.getBannerList();
-    this.getSupermarketList();
+    this.getBannerList()
+    this.getSupermarketList()
     // this.getLocation()
   },
   onShareAppMessage() {
     return {
-      title: "优惠买单",
-      path: "/pages/index/index?index=0",
-    };
+      title: '优惠买单',
+      path:
+        '/pages/index/index?index=0'
+    }
   },
   methods: {
     // 点击我的订单
     handleEasyClick() {
       uni.navigateTo({
-        url: "/pages/order/orderList",
-      });
+        url: '/pages/supermarket/myOrder'
+      })
     },
     // 点击说明
     handleDesc() {
       uni.navigateTo({
-        url: "/pages/supermarket/discount-detail",
-      });
+        url: '/pages/supermarket/discount-detail'
+      })
     },
     // 返回上一页
     handleNavBack() {
-      uni.navigateBack();
+      uni.navigateBack()
     },
 
     /**
@@ -160,93 +133,105 @@ export default {
      */
     getLocation() {
       uni.getLocation({
-        type: "gcj02",
+        type: 'gcj02',
         success: (res) => {
-          uni.setStorageSync("location", res);
+          uni.setStorageSync('location', res)
           // 调用高德地图 API 逆地理编码, 通过经纬度获取当前位置城市信息
           api.regeoMap(
             {
-              location: res.longitude + "," + res.latitude,
+              location: res.longitude + ',' + res.latitude
             },
             {
               success: (amap) => {
                 const city = {
                   code:
-                    amap.regeocode.addressComponent.adcode.substr(0, 4) + "00",
+                    amap.regeocode.addressComponent.adcode.substr(0, 4) + '00',
                   longitude: res.longitude,
-                  latitude: res.latitude,
-                };
+                  latitude: res.latitude
+                }
                 // 当城市是省直辖县时返回为空，以及城市为北京、上海、天津、重庆四个直辖市时，该字段返回为[],否则为城市名称（字符串）
                 if (amap.regeocode.addressComponent.city.length === 0) {
-                  city.name = amap.regeocode.addressComponent.province;
+                  city.name = amap.regeocode.addressComponent.province
                 } else {
-                  city.name = amap.regeocode.addressComponent.city;
+                  city.name = amap.regeocode.addressComponent.city
                 }
-                uni.setStorageSync("supermarketCity", city);
-                this.city = city;
-                this.getSupermarketList();
-              },
+                uni.setStorageSync('supermarketCity', city)
+                this.city = city
+                this.getSupermarketList()
+              }
             }
-          );
+          )
         },
         fail: () => {
           // // 定位失败默认北京市
           // const city = { code: 110100, name: '北京市' }
           // this.handleSelectCity(city)
-        },
-      });
+        }
+      })
     },
     // 获取 轮播列表
     getBannerList() {
       api.bannerForPay({
         success: (data) => {
-          this.banners = data;
-        },
-      });
+          this.banners = data
+        }
+      })
     },
     // 获取品牌商家列表（有排序）
     getSupermarketList() {
       api.getSupermarket({
         data: {
-          isOnlyCheck: "0",
+          isOnlyCheck: '0'
           // lat: this.city.latitude,
           // lon: this.city.longitude,
           // cityCode: this.city.code,
         },
         showsLoading: true,
         success: (data) => {
-          console.log("超市列表：", data.result);
+          console.log('超市列表：', data.result)
           if (data && data.result) {
-            this.supermarketList = data.result;
+            this.supermarketList = data.result
           }
-        },
-      });
+        }
+      })
     },
     /**
      * 轮播图加载失败事件
      */
     handleBannerLoadFail(index) {
       // 图片加载失败时显示默认图片
-      this.banners[index].bannerUrl =
-        "https://ggllstatic.hpgjzlinfo.com/static/home/banner-home-default.png";
+      this.banners[index].bannerUrl = 'https://ggllstatic.hpgjzlinfo.com/static/home/banner-home-default.png'
     },
 
     // 进入超市
     handleDetailClick(data) {
       uni.navigateTo({
         url:
-          "/pages/supermarket/market?info=" +
-          encodeURIComponent(JSON.stringify(data)),
-      });
-    },
-    markrtDiscount(num) {
-      return (Number(num) * 10).toFixed(2);
-    },
+          '/pages/supermarket/market?info=' +
+          encodeURIComponent(JSON.stringify(data))
+      })
+    }
   },
-};
+  filters: {
+    markrtDiscount(num) {
+      // let arr = ((Number(num) * 10) + '').split('.')
+      // let numFloat = ''
+      // if(!arr[1]){
+      //   numFloat = '00'
+      // }else if(arr[1] && arr[1].length === 1){
+      //   numFloat = arr[1]+'0'
+      // }else{
+      //   numFloat = arr[1]
+      // }
+      // console.log(arr[0]+ '.'+numFloat)
+      // return arr[0]+ '.'+numFloat
+      return (Number(num) * 10).toFixed(2)
+    }
+  }
+}
 </script>
 
-<style lang="scss" scoped>
+<style  lang="scss" scoped>
 .index {
   background: #f2f2f2;
   // 头部

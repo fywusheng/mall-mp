@@ -10,10 +10,8 @@
     <step-progress-bar :step="1" />
     <view class="section">
       <view class="section-header flex-h flex-c-s p-0-32">
-        <image
-          class="section-header__icon"
-          src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-basic-info.png"
-        />
+        <image class="section-header__icon"
+          src="https://ggllstatic.hpgjzlinfo.com/static/certificate/icon-certificate-basic-info.png" />
         <text class="fs-44 c-black ml-16">基本信息</text>
       </view>
       <view class="form m-0-32">
@@ -21,54 +19,36 @@
           <text class="row__indicator">*</text>
           <text class="row__label fs-40 c-black">民族(必填)</text>
           <picker class="flex-1" :range="nations" @change="handleNationChange">
-            <text
-              class="fs-40 c-black flex-1 ml-48"
-              :class="{ 'c-lightgrey': params.nation === '' }"
-            >
+            <text class="fs-40 c-black flex-1  ml-48"
+              :class="{ 'c-lightgrey': params.nation === '' }">
               {{ params.nation || "请选择民族" }}
             </text>
           </picker>
-          <image
-            class="row__accessory"
-            src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
-          />
+          <image class="row__accessory"
+            src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png" />
         </view>
         <view class="row flex-h flex-c-s p-20-0">
           <text class="row__indicator"></text>
           <text class="row__label fs-40 c-black">血型</text>
-          <picker
-            class="flex-1"
-            :range="bloodTypes"
-            @change="handleBloodTypeChange"
-          >
-            <text
-              class="fs-40 c-black flex-1 ml-48"
-              :class="{ 'c-lightgrey': params.bloodType === '' }"
-            >
+          <picker class="flex-1" :range="bloodTypes" @change="handleBloodTypeChange">
+            <text class="fs-40 c-black flex-1 ml-48"
+              :class="{ 'c-lightgrey': params.bloodType === '' }">
               {{ params.bloodType || "请选择血型" }}
             </text>
           </picker>
-          <image
-            class="row__accessory"
-            src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
-          />
+          <image class="row__accessory"
+            src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png" />
         </view>
         <view class="row flex-h flex-c-s p-20-0">
           <text class="row__indicator">*</text>
           <text class="row__label fs-40 c-black">现居住地址(必填)</text>
           <!-- #ifdef MP-ALIPAY -->
-          <button @click="alipayChose" class="clickChose">
-            {{ params.residentialCity || "请选择所在地区" }}
-          </button>
+          <button @click="alipayChose"
+            class="clickChose">{{params.residentialCity || '请选择所在地区'}}</button>
           <!-- #endif -->
           <!-- #ifdef MP-WEIXIN -->
-          <uni-data-picker
-            class="flex-1"
-            popup-title="请选择省、市、区"
-            :localdata="cities"
-            v-slot:default="{ data, error, options }"
-            @change="handleResidentialCityChange"
-          >
+          <uni-data-picker class="flex-1" popup-title="请选择省、市、区" :localdata="cities"
+            v-slot:default="{data, error, options}" @change="handleResidentialCityChange">
             <!-- <view>
                <text
               class="city fs-40 c-black flex-1  ml-48"
@@ -77,74 +57,50 @@
               {{ params.residentialCity || "请选择省、市、区" }}
             </text>
             </view> -->
-            <view v-if="data.length > 0" class="selectValue"
-              ><text v-for="(item, index) in data" :key="index">{{
-                item.text
-              }}</text></view
-            >
-            <text
-              v-if="data.length == 0"
-              class="city fs-40 c-black flex-1 ml-48"
-              :class="{ 'c-lightgrey': data.length == 0 }"
-            >
+            <view v-if="data.length > 0" class="selectValue"><text v-for="(item,index) in data"
+                :key="index">{{item.text}}</text></view>
+            <text v-if="data.length == 0" class="city fs-40 c-black flex-1 ml-48"
+              :class="{ 'c-lightgrey': data.length == 0 }">
               请选择省、市、区
             </text>
           </uni-data-picker>
           <!-- #endif -->
-          <image
-            class="row__accessory"
-            src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
-          />
+          <image class="row__accessory"
+            src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png" />
         </view>
         <view class="row flex-h flex-c-s p-20-0">
           <text class="row__indicator"></text>
-          <input
-            v-model="params.residentialAddress"
-            class="fs-40 c-black flex-1"
-            placeholder="请输入详细地址：街道、路、小区"
-            placeholder-class="placeholder"
-          />
+          <input v-model="params.residentialAddress" class="fs-40 c-black flex-1"
+            placeholder="请输入详细地址：街道、路、小区" placeholder-class="placeholder" />
         </view>
         <view class="row flex-h flex-c-s p-20-0">
           <text class="row__indicator">*</text>
-          <text class="row__label--small fs-40 c-black"> 办证机构(必填) </text>
+          <text class="row__label--small fs-40 c-black">
+            办证机构(必填)
+          </text>
           <!-- <image
             class="row__illustration ml-12"
             src="./static/icon-certificate-illustration.png"
           /> -->
-          <picker
-            class="flex-1"
-            :range="institutions"
-            @change="handleInstitutionChange"
-          >
-            <text
-              class="fs-40 c-black flex-1 ml-36"
-              :class="{ 'c-lightgrey': params.institution === '' }"
-            >
+          <picker class="flex-1" :range="institutions" @change="handleInstitutionChange">
+            <text class="fs-40 c-black flex-1 ml-36"
+              :class="{ 'c-lightgrey': params.institution === '' }">
               {{ params.institution || "请选择办证机构" }}
             </text>
           </picker>
-          <image
-            class="row__accessory"
-            src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
-          />
+          <image class="row__accessory"
+            src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png" />
         </view>
         <view class="row flex-h flex-c-s p-20-0" v-if="type === 'input'">
           <text class="row__indicator">*</text>
           <text class="row__label fs-40 c-black">户籍地址(必填)</text>
           <!-- #ifdef MP-ALIPAY -->
-          <button @click="localeChose" class="clickChose">
-            {{ params.domicileCity || "请选择所在地区" }}
-          </button>
+          <button @click="localeChose"
+            class="clickChose">{{params.domicileCity || '请选择所在地区'}}</button>
           <!-- #endif -->
           <!-- #ifdef MP-WEIXIN -->
-          <uni-data-picker
-            class="flex-1"
-            popup-title="请选择"
-            :localdata="cities"
-            v-slot:default="{ data, error, options }"
-            @change="handleDomicileCityChange"
-          >
+          <uni-data-picker class="flex-1" popup-title="请选择" :localdata="cities"
+            v-slot:default="{data, error, options}" @change="handleDomicileCityChange">
             <!-- <view >
               <text
               class="city fs-40 c-black flex-1 ml-48"
@@ -153,37 +109,25 @@
               {{ params.domicileCity || "请选择" }}
             </text>
             </view> -->
-            <view v-if="data.length > 0" class="selectValue"
-              ><text v-for="(item, index) in data" :key="index">{{
-                item.text
-              }}</text></view
-            >
-            <text
-              v-if="data.length == 0"
-              class="city fs-40 c-black flex-1 ml-48"
-              :class="{ 'c-lightgrey': data.length == 0 }"
-            >
+            <view v-if="data.length > 0" class="selectValue"><text v-for="(item,index) in data"
+                :key="index">{{item.text}}</text></view>
+            <text v-if="data.length == 0" class="city fs-40 c-black flex-1 ml-48"
+              :class="{ 'c-lightgrey': data.length == 0 }">
               请选择
             </text>
           </uni-data-picker>
           <!-- #endif -->
-          <image
-            class="row__accessory"
-            src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
-          />
+          <image class="row__accessory"
+            src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png" />
         </view>
         <view class="row flex-h flex-c-s p-20-0" v-if="type === 'input'">
           <text class="row__indicator"></text>
-          <input
-            v-model="params.domicileAddress"
-            class="fs-40 c-black flex-1"
-            placeholder="请输入详细地址：街道、路、小区"
-            placeholder-class="placeholder"
-          />
+          <input v-model="params.domicileAddress" class="fs-40 c-black flex-1"
+            placeholder="请输入详细地址：街道、路、小区" placeholder-class="placeholder" />
         </view>
       </view>
     </view>
-    <view class="blank" style="height: 200rpx" />
+    <view class="blank" style="height: 200rpx;" />
     <view class="footer bg-white">
       <button class="button fs-44 c-white" @click="handleNextStepClick">
         下一步
@@ -196,10 +140,11 @@
 import api from "@/apis/index.js";
 import staticData from "@/utils/dataBase64.js";
 import StepProgressBar from "./components/step-progress-bar.vue";
+import { UniDataPicker } from "@dcloudio/uni-ui";
 import NavigationBar from "../../components/common/navigation-bar.vue";
-import { alipayCityChoose } from "@/utils/utils.js";
+import { alipayCityChoose } from '@/utils/utils.js'
 export default {
-  components: { StepProgressBar, NavigationBar },
+  components: { StepProgressBar, UniDataPicker, NavigationBar },
   data() {
     return {
       alipayCitys: [],
@@ -208,9 +153,7 @@ export default {
       navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
       //#endif
       //#ifdef MP-ALIPAY
-      navigationBarHeight:
-        uni.getSystemInfoSync().statusBarHeight +
-        uni.getSystemInfoSync().titleBarHeight,
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
       //#endif
       // 录入方式  scan: 扫描  input: 输入
       type: "",
@@ -235,18 +178,22 @@ export default {
     };
   },
   onLoad(e) {
+
     //#ifdef MP-ALIPAY
-    let data = JSON.parse(decodeURIComponent(uni.getStorageSync("otherInfo")));
-    uni.removeStorageSync("otherInfo");
+    let data = JSON.parse(decodeURIComponent(uni.getStorageSync('otherInfo')));
+    uni.removeStorageSync('otherInfo');
     //#endif
+
 
     //#ifdef MP-WEIXIN
-    let data = JSON.parse(decodeURIComponent(e.info));
+    let data = JSON.parse(decodeURIComponent(e.info))
     //#endif
 
+
     this.type = data.type;
-    console.log("----查看一下类型情况正式环境下可以直接识别---", data);
+    console.log('----查看一下类型情况正式环境下可以直接识别---', data)
     this.params = { ...this.params, ...data };
+
 
     uni.$on("didFilloutStepBack", this.handleFilloutStepBack);
   },
@@ -259,10 +206,10 @@ export default {
       const params = {
         list: this.alipayCitys,
         success: (city) => {
-          this.params.domicileCity = city;
-        },
-      };
-      alipayCityChoose(params);
+          this.params.domicileCity = city
+        }
+      }
+      alipayCityChoose(params)
     },
     alipayHandler() {
       api.getRegions({
@@ -273,39 +220,40 @@ export default {
                 name: item.regnName,
                 code: item.regnCode,
                 subList: map(item.children),
-              };
-            });
+              }
+            })
           }
-          this.alipayCitys = map(data);
+          this.alipayCitys = map(data)
         },
-      });
+      })
     },
     alipayChose() {
       const params = {
         list: this.alipayCitys,
         success: (city) => {
-          this.params.residentialCity = city;
-        },
-      };
-      alipayCityChoose(params);
+          this.params.residentialCity = city
+        }
+      }
+      alipayCityChoose(params)
     },
     //返回上一页
     handleNavigationBack() {
       this.$uni.showConfirm({
-        content: "您确定要中断申领电子老年人证吗?",
-        confirmText: "继续申领",
-        cancelText: "放弃申领",
-        title: "",
+        content: '您确定要中断申领电子老年人证吗?',
+        confirmText: '继续申领',
+        cancelText: '放弃申领',
+        title: '',
         cancel: () => {
+
           uni.navigateBack({
-            delta: 1,
+            delta: 1
           });
-        },
-      });
+        }
+      })
     },
     handleFilloutStepBack(params) {
       this.params = params;
-      console.log("获取的参数1params：", params);
+      console.log('获取的参数1params：', params)
     },
     /**
      * 民族选择器改变回调
@@ -345,7 +293,7 @@ export default {
      * 下一步点击事件
      */
     handleNextStepClick() {
-      console.log("---第二步的时候传递的值--", this.params);
+      console.log('---第二步的时候传递的值--', this.params)
       if (!this.checkInput()) return;
       uni.navigateTo({
         url: "/pages/certificate/other-fillout-step-2",

@@ -5,39 +5,26 @@
     <!-- 订单状态 -->
     <view class="top">
       <view class="top-left">
-        <view class="bold">{{ formateOrderStatus(info.orderStatus) }}</view>
-        <view v-if="info.orderStatus == 1"
-          >剩余 <text class="red">{{ expirationTime[0] }}</text
-          >分<text class="red">{{ expirationTime[1] }}</text
-          >秒 订单自动取消</view
-        >
-        <view v-else-if="info.orderStatus == 2"
-          >还有 <text class="red">{{ interval_time }}</text
-          >过期,请尽快使用</view
-        >
-        <view v-else>{{ formateOrderStatusText(info.orderStatus) }}</view>
+        <view class="bold">{{info.orderStatus|formateOrderStatus}}</view>
+        <view v-if="info.orderStatus == 1">剩余 <text class="red">{{expirationTime[0]}}</text>分<text
+            class="red">{{expirationTime[1]}}</text>秒 订单自动取消</view>
+        <view v-else-if="info.orderStatus == 2">还有 <text
+            class="red">{{interval_time}}</text>过期,请尽快使用</view>
+        <view v-else>{{info.orderStatus|formateOrderStatusText}}</view>
       </view>
-      <image
-        class="status-bg"
-        :src="getIconByStatus(info.orderStatus)"
-        mode="scaleToFill"
-      />
+      <image class="status-bg" :src="getIconByStatus(info.orderStatus)" mode="scaleToFill" />
     </view>
 
     <!-- 套餐详情 -->
     <view class="panel" @click="goHotelDetail">
       <view class="panel-body">
         <view class="top_c">
-          <image
-            class="hotel-logo"
-            :src="info.supermarketThumbnail"
-            mode="scaleToFill"
-          />
+          <image class="hotel-logo" :src="info.supermarketThumbnail" mode="scaleToFill" />
           <view class="top_c-right">
-            <view class="hotel-name">{{ info.productName }}</view>
-            <view>数量：{{ info.payNumber }}</view>
-            <view>有效期至{{ dateFilter(info.expirationTime) }}</view>
-            <view class="price">¥{{ dateFilter(info.orderAmount) }}</view>
+            <view class="hotel-name">{{info.productName}}</view>
+            <view>数量：{{info.payNumber}}</view>
+            <view>有效期至{{info.expirationTime|dateFilter}}</view>
+            <view class="price">¥{{info.orderAmount|formaterMoney}}</view>
           </view>
         </view>
       </view>
@@ -52,38 +39,29 @@
       <view class="panel-body">
         <!-- 位置 -->
         <view class="panel-card" @click="goHotelDetail">
-          <view class="card-title">{{ info.supermarketName }}</view>
+          <view class="card-title">{{info.supermarketName}}</view>
           <view class="card-cont">
-            <view class="cont-left">{{ info.hotel.address }}</view>
+            <view class="cont-left">{{info.hotel.address}}</view>
             <view class="cont-right" @click.stop="goMap">
               <view class="line"></view>
-              <image
-                class="icon-address"
-                src="https://ggllstatic.hpgjzlinfo.com/static/life/micon.png"
-                mode="scaleToFill"
-              />
+              <image class="icon-address"
+                src="https://ggllstatic.hpgjzlinfo.com/static/life/micon.png" mode="scaleToFill" />
               <view class="_map">地图</view>
             </view>
           </view>
         </view>
 
         <!-- 待使用 || 已过期 || 退款中 6已退款-->
-        <view
-          v-if="['6', '7', '8'].includes(info.orderStatus)"
-          class="panel-card has-expre"
-          style="height: unset"
-        >
+        <view v-if="['6','7','8'].includes(info.orderStatus)" class="panel-card has-expre"
+          style="height:unset">
           <view class="card-title">您需要提前预定,方可享受该服务</view>
           <view class="nor">·同一商品同一时间只可预定1个</view>
           <view class="nor">·请提前2-3天预定,预定前24小时不可取消预定</view>
           <button class="pre-btn unable">立即预定</button>
         </view>
         <!-- 已付款-->
-        <view
-          v-if="['2'].includes(info.orderStatus)"
-          class="panel-card has-expre"
-          style="height: unset"
-        >
+        <view v-if="['2'].includes(info.orderStatus)" class="panel-card has-expre"
+          style="height:unset">
           <!-- 待使用 已过预定时间订单状态为 已完成-->
           <view v-if="info.productStatus == 1">
             <!-- 立即预定 -->
@@ -97,24 +75,16 @@
             <!-- 取消预定 -->
             <view v-if="isCancel == '1'">
               <!-- 可以取消 -->
-              <view class="card-title"
-                >预约到店时间：{{ formatDateTime(info.usageTime) }}</view
-              >
-              <button class="pre-btn cancel" @click="handlePre(false)">
-                取消预定
-              </button>
+              <view class="card-title">预约到店时间：{{info.usageTime|formatDateTime}}</view>
+              <button class="pre-btn cancel" @click="handlePre(false)">取消预定</button>
             </view>
             <view v-if="isCancel == '2'">
               <!-- 不可以取消 -->
-              <view class="card-title"
-                >预约到店时间：{{ formatDateTime(info.usageTime) }}</view
-              >
+              <view class="card-title">预约到店时间：{{info.usageTime|formatDateTime}}</view>
               <view class="card-cont flex-left">
-                <image
-                  class="icon-tip"
+                <image class="icon-tip"
                   src="https://ggllstatic.hpgjzlinfo.com/static/life/warning-circle.png"
-                  mode="scaleToFill"
-                />
+                  mode="scaleToFill" />
                 <view class="pre-time">预定前24小时不可取消预订</view>
               </view>
             </view>
@@ -122,16 +92,12 @@
         </view>
 
         <!-- 提示信息 已完成 -->
-        <view v-if="info.orderStatus == 3" class="panel-card">
-          <view class="card-title"
-            >预约到店时间：{{ formatDateTime(info.usageTime) }}</view
-          >
+        <view v-if="info.orderStatus ==3" class="panel-card">
+          <view class="card-title">预约到店时间：{{info.usageTime|formatDateTime}}</view>
           <view class="card-cont flex-left">
-            <image
-              class="icon-tip"
+            <image class="icon-tip"
               src="https://ggllstatic.hpgjzlinfo.com/static/life/warning-circle.png"
-              mode="scaleToFill"
-            />
+              mode="scaleToFill" />
             <view class="pre-time">预定前24小时不可取消预订</view>
           </view>
         </view>
@@ -139,19 +105,14 @@
     </view>
 
     <!-- 券码 -->
-    <view
-      class="panel"
-      v-if="['2', '3', '6', '7', '8'].includes(info.orderStatus)"
-    >
+    <view class="panel" v-if="['2','3','6','7','8'].includes(info.orderStatus)">
       <view class="panel-title">
         <view class="title">券码</view>
-        <view class="right" :class="qrClass">{{
-          formateOrderStatus(info.orderStatus)
-        }}</view>
+        <view class="right" :class="qrClass">{{info.orderStatus|formateOrderStatus}}</view>
       </view>
       <view class="panel-body">
         <view class="qr-code">
-          <view class="code">{{ info.transactionReferenceNo }}</view>
+          <view class="code">{{info.transactionReferenceNo}}</view>
           <view class="text">到店后请提供券码</view>
         </view>
       </view>
@@ -164,74 +125,49 @@
       </view>
       <view class="panel-body">
         <view class="static">
-          <view class="txt">订单编号：{{ info.orderId || "" }}</view>
-          <view class="txt">下单时间：{{ formatTime(info.orderTime) }}</view>
-          <view class="txt" v-if="!['1', '4'].includes(info.orderStatus)">
-            付款时间：{{ formatTime(info.paymentTime) }}</view
-          >
-          <view class="txt"
-            >订单总价：¥{{ formaterMoney(info.orderAmount) }}</view
-          >
-          <view class="txt" v-if="['1', '4'].includes(info.orderStatus)">
-            应付金额：¥{{ formaterMoney(info.payAmount) }}</view
-          >
-          <view class="txt" v-else
-            >实付金额：¥{{ formaterMoney(info.paymentAmount) }}</view
-          >
+          <view class="txt">订单编号：{{info.orderId||''}}</view>
+          <view class="txt">下单时间：{{info.orderTime|formatTime}}</view>
+          <view class="txt" v-if="!(['1','4'].includes(info.orderStatus))">
+            付款时间：{{info.paymentTime|formatTime}}</view>
+          <view class="txt">订单总价：¥{{info.orderAmount|formaterMoney}}</view>
+          <view class="txt" v-if="['1','4'].includes(info.orderStatus)">
+            应付金额：¥{{info.payAmount|formaterMoney}}</view>
+          <view class="txt" v-else>实付金额：¥{{info.paymentAmount|formaterMoney}}</view>
         </view>
       </view>
     </view>
 
     <!-- 操作按钮 -->
-    <view v-if="info.orderStatus == 1" class="bottom_fix"
-      ><button class="btn active" @click="handlePay(info)">
-        立即支付
-      </button></view
-    >
-    <view
-      v-if="
-        info.orderStatus == 2 && !(info.productStatus == 2 && isCancel == '2')
-      "
-      class="bottom_fix _right"
-    >
+    <view v-if="info.orderStatus == 1" class="bottom_fix"><button class="btn active"
+        @click="handlePay(info)">立即支付</button></view>
+    <view v-if="info.orderStatus == 2 && !(info.productStatus == 2 && isCancel == '2')"
+      class="bottom_fix _right">
       <button class="btn" @click="handleReturn">申请退款</button>
     </view>
     <!-- invoiceStatus 发票状态（0-未开票，1-已开票，2-不可开发票） -->
-    <view
-      class="bottom_fix"
-      v-if="info.orderStatus == 3 && info.invoiceStatus == 0"
-    >
+    <view class="bottom_fix" v-if="info.orderStatus == 3 && info.invoiceStatus == 0">
       <button class="btn" @click="handleApplyClick">申请开票</button>
     </view>
-    <view
-      class="bottom_fix"
-      v-if="info.orderStatus == 3 && info.invoiceStatus == 1"
-    >
+    <view class="bottom_fix" v-if="info.orderStatus == 3 && info.invoiceStatus == 1">
       <button class="btn" @click="handleInvoiceClick">查看开票</button>
     </view>
     <!-- 提示弹窗 -->
-    <modal
-      ref="callPhonePop"
-      title=" "
-      cancelText="取消"
-      confirmText="拨打电话"
-      @cancel="marketPopCancel"
-      @confirm="marketPopConfirm"
-    >
-      <template v-slot:text>
+    <modal ref="callPhonePop" title=" " cancelText='取消' confirmText='拨打电话' @cancel='marketPopCancel'
+      @confirm='marketPopConfirm'>
+      <view slot="text">
         <view class="confirm-main">
           <view class="content">
-            {{ dialogContent }}
+            {{dialogContent}}
           </view>
         </view>
-      </template>
+      </view>
     </modal>
   </view>
 </template>
 <script>
-import api from "@/apis/index.js";
-import dayjs from "dayjs";
-import Modal from "@/components/common/modal.vue";
+import api from '@/apis/index.js'
+import dayjs from 'dayjs'
+import Modal from '@/components/common/modal.vue'
 export default {
   components: { Modal },
   data() {
@@ -239,67 +175,50 @@ export default {
       //  订单详情
       info: null,
       orderId: null,
-      dialogContent: "",
-      interval_time: "",
-      expirationTime: ["", ""],
-      isCancel: "", // ‘1’-可以取消 ‘2’-不可以取消
-    };
+      dialogContent: '',
+      interval_time: '',
+      expirationTime: ['', ''],
+      isCancel: ''// ‘1’-可以取消 ‘2’-不可以取消
+    }
   },
-  created(e) {},
+  created(e) {
+
+  },
   onShareAppMessage() {
     return {
-      title: "",
-      path: "/pages/index/index?index=0",
-    };
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
     // return {
     //         title:'酒店',
     //         path:"/pages/life/hotelHome",
     //      };
   },
   onLoad(e) {
-    this.orderId = e.orderId;
-    this.getOrderInfo();
+    this.orderId = e.orderId
+    this.getOrderInfo()
     // 监听页面打开事件
-    uni.$on("openOrderInfoPage", (data) => {
-      this.getOrderInfo();
-    });
+    uni.$on('openOrderInfoPage', data => {
+      this.getOrderInfo()
+    })
   },
-  computed: {
-    qrClass() {
-      if (!this.info) return "";
-      const mapObj = {
-        2: "green", // 待使用
-        3: "grey", // 已使用
-        6: "bron", // 已失效
-        7: "bron", // 退款中
-        8: "bron", // 已过期
-      };
-      return mapObj[this.info.orderStatus] || "";
-    },
-  },
-  onUnload() {
-    if (this.timer) {
-      clearTimeout(this.timer);
-      this.timer = null;
-    }
-  },
-  methods: {
+  filters: {
     /**
      * 订单状态
      * （1:待付款、2:已付款(待使用，已预订)、3:交易完成、4:关单、5:部分退款、6:已退款、7:退款中、8：已过期）
      */
     formateOrderStatus(v) {
       const mapObj = {
-        1: "待付款",
-        2: "待使用",
-        3: "已完成",
-        4: "已关闭",
-        5: "部分退款",
-        6: "已退款",
-        7: "退款中",
-        8: "已过期",
-      };
-      return mapObj[v] || "";
+        '1': '待付款',
+        '2': '待使用',
+        '3': '已完成',
+        '4': '已关闭',
+        '5': '部分退款',
+        '6': '已退款',
+        '7': '退款中',
+        '8': '已过期'
+      }
+      return mapObj[v] || ''
     },
     /**
      * 提示文本
@@ -307,268 +226,266 @@ export default {
      */
     formateOrderStatusText(v) {
       const mapObj = {
-        1: "剩29分28秒 订单自动取消",
-        2: "还有365天过期 请尽快使用",
-        3: "您的订单已完成 欢迎下次光临",
-        4: "超时支付 订单已自动关闭",
-        5: " ",
-        6: "退款完成 欢迎下次光临",
-        7: "订单退款中 请耐心等待",
-        8: "商品已过有效期 欢迎下次光临",
-      };
-      return mapObj[v] || "";
+        '1': '剩29分28秒 订单自动取消',
+        '2': '还有365天过期 请尽快使用',
+        '3': '您的订单已完成 欢迎下次光临',
+        '4': '超时支付 订单已自动关闭',
+        '5': ' ',
+        '6': '退款完成 欢迎下次光临',
+        '7': '订单退款中 请耐心等待',
+        '8': '商品已过有效期 欢迎下次光临'
+      }
+      return mapObj[v] || ''
     },
     // 金钱格式化
     formaterMoney(v) {
-      if (!v) return "";
-      return (v / 100).toFixed(2);
+      if (!v) return ''
+      return (v / 100).toFixed(2)
     },
     // 日期过滤器, 用于格式化日期
     dateFilter(value) {
-      if (!value) return "";
-      return dayjs(value).format("YYYY-MM-DD HH:mm");
+      if (!value) return ''
+      return dayjs(value).format('YYYY-MM-DD HH:mm')
     },
     // 日期过滤器, 用于格式化日期
     formatTime(value) {
-      if (!value) return "";
-      return dayjs(value).format("YYYY-MM-DD HH:mm:ss");
+      if (!value) return ''
+      return dayjs(value).format('YYYY-MM-DD HH:mm:ss')
     },
     formatDateTime(value) {
-      if (!value) return "";
-      return dayjs(value).format("YYYY年MM月DD日");
-    },
+      if (!value) return ''
+      return dayjs(value).format('YYYY年MM月DD日')
+    }
+  },
+  computed: {
+    qrClass() {
+      if (!this.info) return ''
+      const mapObj = {
+        '2': 'green', // 待使用
+        '3': 'grey', // 已使用
+        '6': 'bron', // 已失效
+        '7': 'bron', // 退款中
+        '8': 'bron' // 已过期
+      }
+      return mapObj[this.info.orderStatus] || ''
+    }
+  },
+  onUnload() {
+    if (this.timer) {
+      clearTimeout(this.timer)
+      this.timer = null
+    }
+  },
+  methods: {
     // 申请开票
     handleApplyClick() {
       api.getOrderInfo({
         data: {
-          orderId: this.orderId,
+          orderId: this.orderId
         },
         success: (data) => {
           switch (data.orderStatus) {
-            case "3":
-            case "5":
-              if (data.invoiceStatus !== "2") {
+            case '3':
+            case '5':
+              if (data.invoiceStatus !== '2') {
                 uni.navigateTo({
-                  url:
-                    "/pages/supermarket/apply-invoice?info=" +
-                    JSON.stringify(data),
-                });
+                  url: '/pages/supermarket/apply-invoice?info=' + JSON.stringify(data)
+                })
               } else {
-                this.$uni.showToast(
-                  "该笔订单无法申请开票，请联系客服400-0610-100"
-                );
+                this.$uni.showToast('该笔订单无法申请开票，请联系客服400-0610-100')
               }
-              break;
-            case "6":
-              if (data.invoiceStatus === "1") {
+              break
+            case '6':
+              if (data.invoiceStatus === '1') {
                 uni.navigateTo({
-                  url:
-                    "/pages/supermarket/apply-invoice?info=" +
-                    JSON.stringify(data),
-                });
+                  url: '/pages/supermarket/apply-invoice?info=' + JSON.stringify(data)
+                })
               } else {
-                this.$uni.showToast("该笔订单已退款，无法申请开票");
+                this.$uni.showToast('该笔订单已退款，无法申请开票')
               }
-              break;
-            case "7":
-              if (data.invoiceStatus === "1") {
+              break
+            case '7':
+              if (data.invoiceStatus === '1') {
                 uni.navigateTo({
-                  url:
-                    "/pages/supermarket/apply-invoice?info=" +
-                    JSON.stringify(data),
-                });
+                  url: '/pages/supermarket/apply-invoice?info=' + JSON.stringify(data)
+                })
               } else {
-                this.$uni.showToast("当前正在退款中，无法申请开票");
+                this.$uni.showToast('当前正在退款中，无法申请开票')
               }
-              break;
+              break
           }
-        },
-      });
+        }
+      })
     },
     // 查看开票
     handleInvoiceClick() {
       uni.navigateTo({
-        url: "/pages/supermarket/invoice-info?invoiceId=" + this.info.invoiceId,
-      });
+        url: '/pages/supermarket/invoice-info?invoiceId=' + this.info.invoiceId
+      })
     },
     // 申请退款
     handleReturn() {
-      const orderId = this.info.orderId;
+      const orderId = this.info.orderId
       uni.navigateTo({
-        url: `/pages/life/applyRefund?orderId=${orderId}`,
-      });
+        url: `/pages/life/applyRefund?orderId=${orderId}`
+      })
     },
     // 套餐详情
     goHotelDetail() {
-      const { hotelName, hotelId, hotelDiscountId } = this.info.hotel;
-      const change = 1;
+      const { hotelName, hotelId, hotelDiscountId } = this.info.hotel
+      const change = 1
       api.queryByDiscountId({
         data: { hotelDiscountId, isTransaction: change },
         success: (res) => {
           if (res) {
             uni.navigateTo({
-              url:
-                "/pages/life/hotelDetail?hotelDiscountId=" +
-                hotelDiscountId +
-                "&change=1" +
-                "&hotelName=" +
-                hotelName +
-                "&hotelId=" +
-                hotelId,
-            });
+              url: '/pages/life/hotelDetail?hotelDiscountId=' + hotelDiscountId + '&change=1' + '&hotelName=' + hotelName + '&hotelId=' + hotelId
+            })
           } else {
-            uni.showToast("商品过期不存在！");
+            uni.showToast('商品过期不存在！')
           }
         },
-        fail: (res) => {},
-      });
+        fail: (res) => {
+
+        }
+      })
     },
     // 地图
     goMap() {
-      const { address, hotelName, hotelId, hotelPhoto, lat, lon } =
-        this.info.hotel;
-      const { latitude, longitude } = uni.getStorageSync("location");
+      const { address, hotelName, hotelId, hotelPhoto, lat, lon } = this.info.hotel
+      const { latitude, longitude } = uni.getStorageSync('location')
       api.getInfoByHotelId({
         data: { lat: latitude, lon: longitude, hotelId },
-        success: (res) => {
+        success: res => {
           const params = {
             name: hotelName,
             longitude: lon - 0,
             latitude: lat - 0,
             distance: res.distance,
             address,
-            hotelPhoto,
-          };
-          uni.navigateTo({
-            url:
-              "/pages/life/mapShow?params=" +
-              `${encodeURIComponent(JSON.stringify(params))}`,
-          });
-        },
-      });
+            hotelPhoto
+          }
+          uni.navigateTo({ url: '/pages/life/mapShow?params=' + `${encodeURIComponent(JSON.stringify(params))}` })
+        }
+      })
     },
     // 支付
     handlePay(info) {
-      const url = `https://api.hpgjzlinfo.com/#/checkstand?cashId=${info.orderId}`;
+      const url = `https://api.hpgjzlinfo.com/#/checkstand?cashId=${info.orderId}`
       // #ifdef MP-ALIPAY
       uni.reLaunch({
-        url: `/pages/common/webpage?url=${url}`,
-      });
+        url: `/pages/common/webpage?url=${url}`
+      })
       // #endif
 
       // #ifdef MP-WEIXIN
       uni.reLaunch({
-        url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-      });
+        url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
+      })
       // #endif
     },
     // 预定
     handlePre(isPre) {
       if (isPre) {
-        this.dialogContent = "您需要拨打电话预定酒店服务，是否立即拨打";
+        this.dialogContent = '您需要拨打电话预定酒店服务，是否立即拨打'
       } else {
-        this.dialogContent = "您已预定酒店服务，是否拨打电话取消预定";
+        this.dialogContent = '您已预定酒店服务，是否拨打电话取消预定'
       }
 
-      this.$refs.callPhonePop.open();
+      this.$refs.callPhonePop.open()
     },
     // 拨打电话
     marketPopConfirm() {
-      this.$refs.callPhonePop.close();
+      this.$refs.callPhonePop.close()
       uni.makePhoneCall({
-        phoneNumber: this.info.customerService,
-      });
+        phoneNumber: this.info.customerService
+      })
     },
     // 取消
     marketPopCancel() {
-      this.$refs.callPhonePop.close();
+      this.$refs.callPhonePop.close()
     },
     //  订单详情
     getOrderInfo(noTime) {
       api.getOrderInfo({
         data: {
-          orderId: this.orderId,
+          orderId: this.orderId
         },
         success: (data) => {
-          this.info = data;
-          const usageTime = new Date(this.info.usageTime).getTime();
-          const now = new Date().getTime();
-          const toalTime = usageTime - now;
-          const chaValue = Math.floor(toalTime / 3600000); // 小时
+          this.info = data
+          const usageTime = new Date(this.info.usageTime).getTime()
+          const now = new Date().getTime()
+          const toalTime = usageTime - now
+          const chaValue = Math.floor(toalTime / 3600000) // 小时
           // TODO 按照逻辑来说待使用超过预定时间，订单应该变更为已完成。但目前待使用状态变更为已完成需要客乐芙返回。
           if (chaValue > 0 && chaValue <= 24) {
-            this.isCancel = "2"; // 不可以取消
+            this.isCancel = '2' // 不可以取消
           } else if (chaValue > 24) {
-            this.isCancel = "1"; // 可以取消
+            this.isCancel = '1' // 可以取消
           }
           if (!noTime) {
-            this.getExpTime();
+            this.getExpTime()
           }
-        },
-      });
+        }
+      })
     },
     // 计算剩余过期时间
     getExpTime() {
-      const totalSecond = dayjs(this.info.expirationTime).diff(
-        dayjs(),
-        "second"
-      );
-      const munite = Math.floor(totalSecond / 60);
-      const second = totalSecond - munite * 60;
-      this.expirationTime = [munite, second];
+      const totalSecond = dayjs(this.info.expirationTime).diff(dayjs(), 'second')
+      const munite = Math.floor(totalSecond / 60)
+      const second = totalSecond - (munite * 60)
+      this.expirationTime = [munite, second]
 
       this.timer = setTimeout(() => {
-        this.getExpTime();
+        this.getExpTime()
         // 处理待使用倒计时
-        this.handlerTime(totalSecond);
+        this.handlerTime(totalSecond)
         if (totalSecond == 0) {
-          clearTimeout(this.timer);
-          this.getOrderInfo(1);
+          clearTimeout(this.timer)
+          this.getOrderInfo(1)
         }
-      }, 1000);
+      }, 1000)
     },
     handlerTime(allt) {
-      var day = Math.floor(allt / (60 * 60 * 24));
-      var hours = Math.floor((allt - day * 60 * 60 * 24) / (60 * 60));
-      var minutes = Math.floor(
-        (allt - day * 60 * 60 * 24 - hours * 60 * 60) / 60
-      );
-      var seconds = allt - day * 60 * 60 * 24 - hours * 60 * 60 - minutes * 60;
-      var resutTime = "";
+      var day = Math.floor(allt / (60 * 60 * 24))
+      var hours = Math.floor((allt - day * 60 * 60 * 24) / (60 * 60))
+      var minutes = Math.floor((allt - day * 60 * 60 * 24 - hours * 60 * 60) / 60)
+      var seconds = allt - day * 60 * 60 * 24 - hours * 60 * 60 - minutes * 60
+      var resutTime = ''
       if (day > 0) {
-        resutTime = day + "天";
+        resutTime = day + '天'
       }
       if (hours < 10) {
-        hours = "0" + hours;
+        hours = '0' + hours
       }
       if (minutes < 10) {
-        minutes = "0" + minutes;
+        minutes = '0' + minutes
       }
       if (seconds < 10) {
-        seconds = "0" + seconds;
+        seconds = '0' + seconds
       }
       // console.log(day + '天' + hours + '时' + minutes + '分')
-      this.interval_time = day + "天" + hours + "时" + minutes + "分";
+      this.interval_time = day + '天' + hours + '时' + minutes + '分'
     },
     // 获取状态图片
     getIconByStatus(orderStatus) {
       const mapObj = {
-        1: "https://ggllstatic.hpgjzlinfo.com/static/life/icon-daifukuan.png",
-        2: "https://ggllstatic.hpgjzlinfo.com/static/life/icon-daishiyong.png",
-        3: "https://ggllstatic.hpgjzlinfo.com/static/life/icon-yiwancheng.png",
-        4: "https://ggllstatic.hpgjzlinfo.com/static/life/icon-yiguanbi.png",
-        5: "",
-        6: "https://ggllstatic.hpgjzlinfo.com/static/life/icon-tuikuanwancheng1.png",
-        7: "https://ggllstatic.hpgjzlinfo.com/static/life/icon-tuikuanzhong.png",
-        8: "https://ggllstatic.hpgjzlinfo.com/static/life/icon-yiguoqi.png",
-      };
-      return mapObj[orderStatus] || "";
+        '1': 'https://ggllstatic.hpgjzlinfo.com/static/life/icon-daifukuan.png',
+        '2': 'https://ggllstatic.hpgjzlinfo.com/static/life/icon-daishiyong.png',
+        '3': 'https://ggllstatic.hpgjzlinfo.com/static/life/icon-yiwancheng.png',
+        '4': 'https://ggllstatic.hpgjzlinfo.com/static/life/icon-yiguanbi.png',
+        '5': '',
+        '6': 'https://ggllstatic.hpgjzlinfo.com/static/life/icon-tuikuanwancheng1.png',
+        '7': 'https://ggllstatic.hpgjzlinfo.com/static/life/icon-tuikuanzhong.png',
+        '8': 'https://ggllstatic.hpgjzlinfo.com/static/life/icon-yiguoqi.png'
+      }
+      return mapObj[orderStatus] || ''
     },
     clickItem(type) {
-      this.type = type;
-    },
-  },
-};
+      this.type = type
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
 .red {

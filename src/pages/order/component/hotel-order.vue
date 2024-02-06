@@ -1,252 +1,217 @@
 <template>
   <view class="pages">
     <view class="status">
-      <view
-        v-for="(i, index) in statusList"
-        :key="i.id"
-        :class="{ active: activeIndex === index, 'status-label': true }"
-        @click="handleItemClick(index, i)"
-        >{{ i.label }}</view
-      >
+      <view v-for="(i, index) in statusList" :key="i.id"
+        :class="{active: activeIndex === index,'status-label':true}"
+        @click="handleItemClick(index, i)">{{i.label}}</view>
     </view>
 
-    <view class="hotel-list" v-if="list.length > 0">
-      <view
-        class="item"
-        v-for="(item, index) in list"
-        :key="index"
-        @click="handleOrderInfo(item)"
-      >
+    <view class="hotel-list" v-if="list.length>0">
+
+      <view class="item" v-for="(item,index) in list" :key="index" @click="handleOrderInfo(item)">
         <view class="header_line">
           <view class="left">
             <image class="t_icon" :src="item.logoPath" />
-            <view class="type">{{ item.supermarketName }}</view>
+            <view class="type">{{item.supermarketName}}</view>
           </view>
-          <view
-            class="right"
-            v-if="['3', '4', '8', '6'].includes(item.orderStatus)"
-          >
-            {{ formateOrderStatus(item.orderStatus) }}</view
-          >
-          <view class="process" v-else>{{
-            formateOrderStatus(item.orderStatus)
-          }}</view>
+          <view class="right" v-if="['3','4','8','6'].includes(item.orderStatus)">
+            {{item.orderStatus|formateOrderStatus}}</view>
+          <view class="process" v-else>{{item.orderStatus|formateOrderStatus}}</view>
         </view>
         <view class="_topLine">
           <view class="left_part">
-            <image
-              class="logo-img"
-              :src="item.supermarketThumbnail"
-              mode="scaleToFill"
-            />
+            <image class="logo-img" :src="item.supermarketThumbnail" mode="scaleToFill" />
             <view class="cont">
-              <view class="name">{{ item.productName }}</view>
-              <view class="label">数量：{{ item.payNumber }}</view>
-              <view class="label" v-if="!['1', '4'].includes(item.orderStatus)">
-                有效期至{{ dateFilter(item.expirationTime) }}</view
-              >
-              <view
-                class="label2"
-                v-if="['1', '4'].includes(item.orderStatus)"
-              ></view>
+              <view class="name">{{item.productName}}</view>
+              <view class="label">数量：{{item.payNumber}}</view>
+              <view class="label" v-if="!['1','4'].includes(item.orderStatus)">
+                有效期至{{item.expirationTime|dateFilter}}</view>
+              <view class="label2" v-if="['1','4'].includes(item.orderStatus)"></view>
             </view>
           </view>
-          <view class="r_pay" v-if="['1', '4'].includes(item.orderStatus)">
+          <view class="r_pay" v-if="['1','4'].includes(item.orderStatus)">
             <view class="pay">应付</view>
-            <view class="money">￥{{ formaterMoney(item.payAmount) }}</view>
+            <view class="money">￥{{item.payAmount|formaterMoney}}</view>
           </view>
           <view class="r_pay" v-else>
             <view class="pay">实付</view>
-            <view class="money">￥{{ formaterMoney(item.paymentAmount) }}</view>
+            <view class="money">￥{{item.paymentAmount|formaterMoney}}</view>
           </view>
         </view>
         <view class="opr">
-          <button
-            class="btn enable"
-            @click.stop="handlePay(item)"
-            v-if="
-              item.orderStatus == 1 && checkExpirationTime(item.expirationTime)
-            "
-          >
-            立即支付
-          </button>
-          <template v-if="item.orderStatus == 2 && item.productStatus == 1">
-            <button class="btn enable" @click.stop="handlePre(true, item)">
-              立即预定
-            </button>
-            <button class="btn" @click.stop="handleReturn(item)">
-              申请退款
-            </button>
+
+          <button class="btn enable" @click.stop="handlePay(item)"
+            v-if="item.orderStatus ==1&&checkExpirationTime(item.expirationTime)">立即支付</button>
+          <template v-if="item.orderStatus ==2&&item.productStatus ==1">
+            <button class="btn enable" @click.stop="handlePre(true, item)">立即预定</button>
+            <button class="btn" @click.stop="handleReturn(item)">申请退款</button>
           </template>
-          <button
-            class="btn cancel"
-            v-if="item.productStatus == 2"
-            @click.stop="handlePre(false, item)"
-          >
-            取消预定
-          </button>
+          <button class="btn cancel" v-if="item.productStatus == 2"
+            @click.stop="handlePre(false, item)">取消预定</button>
         </view>
       </view>
+
     </view>
     <view class="status-box flex-v flex-c-s" v-if="list.length === 0">
-      <image
-        class="icon-img"
+      <image class="icon-img"
         src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/no-order.png"
-        mode="scaleToFill"
-      />
+        mode="scaleToFill" />
       <view>您还没有相关订单</view>
     </view>
 
-    <modal
-      ref="callPhonePop"
-      title=" "
-      cancelText="取消"
-      confirmText="拨打电话"
-      @cancel="marketPopCancel"
-      @confirm="marketPopConfirm"
-    >
-      <template v-slot:text>
+    <modal ref="callPhonePop" title=" " cancelText='取消' confirmText='拨打电话' @cancel='marketPopCancel'
+      @confirm='marketPopConfirm'>
+      <view slot="text">
         <view class="confirm-main">
           <view class="content">
-            {{ dialogContent }}
+            {{dialogContent}}
           </view>
         </view>
-      </template>
+      </view>
     </modal>
   </view>
 </template>
 
 <script>
-import api from "@/apis/index.js";
-import dayjs from "dayjs";
-import Modal from "@/components/common/modal.vue";
+import api from '@/apis/index.js'
+import dayjs from 'dayjs'
+import Modal from '@/components/common/modal.vue'
 export default {
   components: { Modal },
   props: {
     list: {
       type: Array,
-      default: [],
-    },
+      default: []
+    }
   },
   data() {
     return {
       activeIndex: 0,
-      dialogContent: "",
-      icon: "https://ggllstatic.hpgjzlinfo.com/static/life/warning-circle.png",
+      dialogContent: '',
+      icon: 'https://ggllstatic.hpgjzlinfo.com/static/life/warning-circle.png',
       statusList: [
-        { id: null, label: "全部" },
-        { id: 1, label: "待支付" },
-        { id: 2, label: "待使用" },
-        { id: 3, label: "已完成" },
-      ],
-    };
+        { id: null, label: '全部' },
+        { id: 1, label: '待支付' },
+        { id: 2, label: '待使用' },
+        { id: 3, label: '已完成' }
+      ]
+    }
   },
-  created() {},
-  onLoad(e) {},
+  created() {
+  },
+  onLoad(e) {
+
+  },
   // watch:{
   //   list(v){
   //     console.log(v, 'list改变了---')
   //   }
   // },
   // 下拉刷新
-  onPullDownRefresh() {},
+  onPullDownRefresh() {
+
+  },
   // 上拉加载
-  onReachBottom() {},
+  onReachBottom() {
+
+  },
   methods: {
+    // 立即支付
+    handlePay(item) {
+      const url = `https://api.hpgjzlinfo.com/#/checkstand?cashId=${item.orderId}`
+
+      // #ifdef MP-ALIPAY
+      uni.navigateTo({
+        url: `/pages/common/webpage?url=${url}`
+      })
+      // #endif
+
+      // #ifdef MP-WEIXIN
+      uni.navigateTo({
+        url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
+      })
+      // #endif
+    },
+    // 校验过期
+    checkExpirationTime(expTime) {
+      return (new Date(expTime).getTime() - new Date().getTime()) > 0
+    },
+    // 申请退款
+    handleReturn({ orderId }) {
+      uni.navigateTo({
+        url: `/pages/life/applyRefund?orderId=${orderId}`
+      })
+    },
+    // 预定
+    handlePre(isPre, item) {
+      if (isPre) {
+        this.dialogContent = '您需要拨打电话预定酒店服务，是否立即拨打'
+      } else {
+        this.dialogContent = '您已预定酒店服务，是否拨打电话取消预定'
+      }
+      this.customerService = item.customerService
+      this.$refs.callPhonePop.open()
+    },
+    // 拨打电话
+    marketPopConfirm() {
+      this.$refs.callPhonePop.close()
+      uni.makePhoneCall({
+        phoneNumber: this.customerService
+      })
+    },
+    // 取消
+    marketPopCancel() {
+      this.$refs.callPhonePop.close()
+    },
+    handleItemClick(index, i) {
+      this.activeIndex = index
+      this.$emit('resetOptions', i.id)
+    },
+    // 点击订单
+    handleOrderInfo({ orderId }) {
+      uni.navigateTo({
+        url: `/pages/life/orderInfo?orderId=${orderId}`
+      })
+    }
+  },
+  filters: {
     formateOrderStatus(v) {
       // 1-未支付、2-已支付、3-已完成、5-部分退款、6-已退款、7-退款中
       // 订单状态 （1-未支付、2-已支付、3-已完成、5-部分退款、6-已退款、7-退款中）
       const mapObj = {
-        1: "待付款",
-        2: "待使用",
-        3: "已完成",
-        4: "已关闭",
-        5: "部分退款",
-        6: "已退款",
-        7: "退款中",
-        8: "已过期",
-      };
-      return mapObj[v] || "";
+        '1': '待付款',
+        '2': '待使用',
+        '3': '已完成',
+        '4': '已关闭',
+        '5': '部分退款',
+        '6': '已退款',
+        '7': '退款中',
+        '8': '已过期'
+      }
+      return mapObj[v] || ''
     },
     setDistance(item) {
-      const s = Number(item) / 1000;
+      const s = Number(item) / 1000
       if (s.toFixed(3) < 1) {
-        return parseInt(s * 1000) + "m";
+        return parseInt(s * 1000) + 'm'
       } else {
-        return s.toFixed(1) + "km";
+        return s.toFixed(1) + 'km'
       }
     },
     formaterMoney(v) {
-      return (v / 100).toFixed(2);
+      return (v / 100).toFixed(2)
     },
     // 日期过滤器, 用于格式化日期
     dateFilter(value) {
       // console.log("value:",value)
       // console.log("dayjs:",dayjs(value).format("YYYY-MM-DD HH:mm:ss"))
-      return dayjs(value).format("YYYY-MM-DD HH:mm");
-    },
-    // 立即支付
-    handlePay(item) {
-      const url = `https://api.hpgjzlinfo.com/#/checkstand?cashId=${item.orderId}`;
-
-      // #ifdef MP-ALIPAY
-      uni.navigateTo({
-        url: `/pages/common/webpage?url=${url}`,
-      });
-      // #endif
-
-      // #ifdef MP-WEIXIN
-      uni.navigateTo({
-        url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-      });
-      // #endif
-    },
-    // 校验过期
-    checkExpirationTime(expTime) {
-      return new Date(expTime).getTime() - new Date().getTime() > 0;
-    },
-    // 申请退款
-    handleReturn({ orderId }) {
-      uni.navigateTo({
-        url: `/pages/life/applyRefund?orderId=${orderId}`,
-      });
-    },
-    // 预定
-    handlePre(isPre, item) {
-      if (isPre) {
-        this.dialogContent = "您需要拨打电话预定酒店服务，是否立即拨打";
-      } else {
-        this.dialogContent = "您已预定酒店服务，是否拨打电话取消预定";
-      }
-      this.customerService = item.customerService;
-      this.$refs.callPhonePop.open();
-    },
-    // 拨打电话
-    marketPopConfirm() {
-      this.$refs.callPhonePop.close();
-      uni.makePhoneCall({
-        phoneNumber: this.customerService,
-      });
-    },
-    // 取消
-    marketPopCancel() {
-      this.$refs.callPhonePop.close();
-    },
-    handleItemClick(index, i) {
-      this.activeIndex = index;
-      this.$emit("resetOptions", i.id);
-    },
-    // 点击订单
-    handleOrderInfo({ orderId }) {
-      uni.navigateTo({
-        url: `/pages/life/orderInfo?orderId=${orderId}`,
-      });
-    },
-  },
-};
+      return dayjs(value).format('YYYY-MM-DD HH:mm')
+    }
+  }
+}
 </script>
 
-<style lang="scss" scoped>
+<style  lang="scss" scoped>
 //modal弹框
 .confirm-main {
   width: 552rpx;

@@ -1,43 +1,42 @@
 <template>
-  <view
-    class="pages"
-    :style="{ paddingBottom: info.status == '1' ? '180rpx' : '' }"
-  >
+  <view class="pages"
+        :style="{paddingBottom:(info.status == '1')? '180rpx':''}">
     <view class="item pay-info br-16">
       <view class="title flex-h flex-c-b pr-24">
         <view>电子发票</view>
         <!-- <view class="status orange">开票中</view> -->
         <view class="status green">已开票</view>
       </view>
-      <view class="content">
+      <view class="content ">
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">申请时间</view>
-          <view class="msg-right">{{ dateFilter(info.applicationTime) }}</view>
+          <view class="msg-right"
+               >{{info.applicationTime | dateFilter}}</view>
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">开票时间</view>
-          <view class="msg-right">{{ dateFilter(info.billingTime) }}</view>
+          <view class="msg-right"
+               >{{info.billingTime | dateFilter}}</view>
         </view>
       </view>
     </view>
     <view class="item pay-info br-16">
       <view class="title">开票信息</view>
-      <view class="content">
+      <view class="content ">
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">发票类型 </view>
-          <view class="msg-right" v-if="info.typeName">{{
-            info.typeName
-          }}</view>
+          <view class="msg-right"
+                v-if="info.typeName">{{info.typeName}}</view>
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">发票抬头</view>
-          <view class="msg-right" v-if="info.invoiceHeaderName">{{
-            info.invoiceHeaderName
-          }}</view>
+          <view class="msg-right"
+                v-if="info.invoiceHeaderName">{{info.invoiceHeaderName}}</view>
         </view>
         <view class="msg-item flex-h fs-36" v-if="info.typeName !== '个人'">
           <view class="msg-left">发票税号</view>
-          <view class="msg-right" v-if="info.taxNo">{{ info.taxNo }}</view>
+          <view class="msg-right"
+                v-if="info.taxNo">{{info.taxNo}}</view>
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">发票内容</view>
@@ -45,106 +44,90 @@
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">发票金额</view>
-          <view class="msg-right" v-if="info.invoiceAmount"
-            >￥{{ formaterMoney(info.invoiceAmount) }}</view
-          >
+          <view class="msg-right"
+                v-if="info.invoiceAmount">￥{{info.invoiceAmount|formaterMoney}}</view>
         </view>
       </view>
     </view>
     <view class="item pay-info br-16">
       <view class="title">收票人信息</view>
-      <view class="content">
+      <view class="content ">
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">收票人姓名 </view>
-          <view class="msg-right" v-if="info.payeeName">{{
-            info.payeeName
-          }}</view>
+          <view class="msg-right"
+                v-if="info.payeeName">{{info.payeeName}}</view>
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">收票人手机号</view>
-          <view class="msg-right" v-if="info.payeePhone">{{
-            info.payeePhone
-          }}</view>
+          <view class="msg-right"
+                v-if="info.payeePhone">{{info.payeePhone}}</view>
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">收票人邮箱</view>
-          <view class="msg-right" v-if="info.payeeEmail">{{
-            info.payeeEmail
-          }}</view>
+          <view class="msg-right"
+                v-if="info.payeeEmail">{{info.payeeEmail}}</view>
         </view>
+
       </view>
     </view>
 
     <!-- 酒店订单 -->
-    <view
-      v-if="orderInfo.orderSource == 4"
-      class="item-order hotel-order mt-24 mr-42 mb-24 ml-24 flex-h flex-c-b"
-    >
+    <view v-if="orderInfo.orderSource == 4" class="item-order hotel-order mt-24 mr-42 mb-24 ml-24 flex-h flex-c-b">
       <view class="flex-h flex-c-s">
-        <image
-          class="logo-img"
-          :src="orderInfo.supermarketThumbnail"
-          mode="scaleToFill"
-        />
+        <image class="logo-img"
+               :src="orderInfo.supermarketThumbnail"
+               mode="scaleToFill" />
         <view class="item-order-left flex-v flex-s-c">
-          <view class="mb-20 fs-40 fw-bold text-over">{{
-            orderInfo.productName
-          }}</view>
-          <view class="address fs-34">数量：{{ orderInfo.payAmount }}</view>
+          <view class="mb-20 fs-40 fw-bold text-over">{{orderInfo.productName}}</view>
+          <view class="address fs-34">数量：{{orderInfo.payAmount}}</view>
           <view class="address fs-34"></view>
         </view>
       </view>
-      <view class="item-order-right flex-v flex-s-c">
-        <view class="fs-40 fw-bold"
-          >-￥{{ formaterMoney(orderInfo.payAmount) }}</view
-        >
+      <view class="item-order-right flex-v flex-s-c"
+           >
+        <view class="fs-40 fw-bold">-￥{{orderInfo.payAmount|formaterMoney}}</view>
       </view>
     </view>
 
     <!-- 其他订单 -->
     <view v-else class="item-order mt-24 mr-42 mb-24 ml-24 flex-h flex-c-b">
       <view class="flex-h flex-c-s">
-        <image
-          class="logo-img"
-          :src="orderInfo.supermarketThumbnail"
-          mode="scaleToFill"
-        />
+        <image class="logo-img"
+               :src="orderInfo.supermarketThumbnail"
+               mode="scaleToFill" />
         <view class="item-order-left flex-v flex-s-c">
-          <view class="mb-20 fs-40 fw-bold">{{
-            orderInfo.supermarketName
-          }}</view>
-          <view class="address fs-32">{{ orderInfo.orderTime }}</view>
+          <view class="mb-20 fs-40 fw-bold">{{orderInfo.supermarketName}}</view>
+          <view class="address fs-32">{{orderInfo.orderTime}}</view>
         </view>
       </view>
-      <view class="item-order-right flex-v flex-s-c">
-        <view class="fs-32 fw-bold"
-          >-￥{{ formaterMoney(orderInfo.payAmount) }}</view
-        >
+      <view class="item-order-right flex-v flex-s-c"
+           >
+        <view class="fs-32 fw-bold">-￥{{orderInfo.payAmount|formaterMoney}}</view>
       </view>
     </view>
 
-    <view class="btn-box" v-if="info.status == '1'">
+    <view class="btn-box"
+          v-if="info.status == '1'">
       <button class="btn" @click="handleSendEmail">发送邮箱</button>
     </view>
-    <input-modal
-      ref="inputModal"
-      cancelText="取消"
-      confirmText="发送"
-      @cancel="modalPopCancel"
-      @confirm="modalPopConfirm"
-      title="请确定邮箱地址"
-    >
+    <input-modal ref="inputModal"
+                 cancelText="取消"
+                 confirmText="发送"
+                 @cancel='modalPopCancel'
+                 @confirm='modalPopConfirm'
+                 title="请确定邮箱地址">
       <view slot="text">
         <view class="mainMin">
           <view class="content">
-            <input type="text" class="email" v-model="email" placeholder=" " />
-            <image
-              class="icon"
-              @click="email = ''"
-              v-if="email"
-              src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-close.png"
-              mode="scaleToFill"
-            />
+            <input type="text"
+                   class="email"
+                   v-model="email"
+                   placeholder=" ">
+            <image class="icon"
+                   @click="email = ''"
+                   v-if="email"
+                   src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-close.png"
+                   mode="scaleToFill" />
           </view>
         </view>
       </view>
@@ -153,25 +136,25 @@
 </template>
 
 <script>
-import api from "@/apis/index.js";
-import inputModal from "./components/input-modal.vue";
-import { validateEmail, validatePhoneNumber } from "@/utils/validation.js";
-import dayjs from "dayjs";
+import api from '@/apis/index.js'
+import inputModal from './components/input-modal.vue'
+import { validateEmail, validatePhoneNumber } from '@/utils/validation.js'
+import dayjs from 'dayjs'
 export default {
   components: { inputModal },
   data() {
     return {
       // 发票id
-      invoiceId: "",
-      info: {},
-      orderInfo: {},
-      email: "",
-    };
+      invoiceId: '',
+      info:{},
+      orderInfo:{},
+      email:'',
+    }
   },
   onLoad(e) {
-    this.invoiceId = e.invoiceId;
+    this.invoiceId = e.invoiceId
     // let info = JSON.parse(decodeURIComponent())
-    this.getInvoiceInfo();
+    this.getInvoiceInfo()
     // this.drawCanvas()
   },
   methods: {
@@ -182,89 +165,79 @@ export default {
           invoiceId: this.invoiceId,
         },
         success: (data) => {
-          console.log("发票详情:", data);
-          this.info = data;
+          console.log('发票详情:', data)
+          this.info = data
           api.getOrderInfo({
             data: {
               orderId: this.info.orderId,
             },
             success: (orderData) => {
-              console.log("订单详情:", orderData);
-              this.orderInfo = orderData;
+              console.log('订单详情:', orderData)
+              this.orderInfo = orderData
             },
-          });
+          })
         },
-      });
+      })
     },
     // 发送邮箱
-    handleSendEmail() {
-      this.email = this.info.payeeEmail;
-      this.$refs.inputModal.open();
+    handleSendEmail(){
+      this.email = this.info.payeeEmail
+     this.$refs.inputModal.open()
     },
     // 点击发送按钮
     modalPopConfirm() {
       if (!this.email) {
-        this.$uni.showToast("请填写邮箱");
-        return false;
+        this.$uni.showToast('请填写邮箱')
+        return false
       }
       if (!validateEmail(this.email)) {
-        this.$uni.showToast("邮箱格式不正确");
-        return false;
+        this.$uni.showToast('邮箱格式不正确')
+        return false
       }
       api.sendMailbox({
-        data: {
-          pdfUrl: this.info.pdfUrl,
-          mailBox: this.email,
+        data:{
+          pdfUrl:this.info.pdfUrl,
+          mailBox:this.email,
         },
-        showsLoading: true,
-        success: (res) => {
-          this.$uni.showToast("发送成功");
-          this.$refs.inputModal.close();
-        },
-      });
+        showsLoading:true,
+        success:(res)=>{
+        this.$uni.showToast("发送成功")
+          this.$refs.inputModal.close()
+        }
+      })
+      
     },
     // 点击取消按钮
     modalPopCancel() {
-      this.$refs.inputModal.close();
+      this.$refs.inputModal.close()
     },
+  },
+  filters: {
     formaterMoney(v) {
-      return (v / 100).toFixed(2);
+      return (v/100).toFixed(2)
     },
-    // 日期过滤器, 用于格式化日期
+     // 日期过滤器, 用于格式化日期
     dateFilter(value) {
       // console.log("value:",value)
       // console.log("dayjs:",dayjs(value).format("YYYY-MM-DD HH:mm:ss"))
-      if (!value) return "";
+      if(!value) return ''
 
       var time = new Date(Number(value));
-      function add0(m) {
-        return m < 10 ? "0" + m : m;
-      }
+      function add0(m) { return m < 10 ? '0' + m : m }
       var y = time.getFullYear();
       var m = time.getMonth() + 1;
       var d = time.getDate();
       var h = time.getHours();
       var mm = time.getMinutes();
       var s = time.getSeconds();
-      return (
-        y +
-        "-" +
-        add0(m) +
-        "-" +
-        add0(d) +
-        " " +
-        add0(h) +
-        ":" +
-        add0(mm) +
-        ":" +
-        add0(s)
-      );
+      return y + '-' + add0(m) + '-' + add0(d) + ' ' + add0(h) + ':' + add0(mm) + ':' + add0(s);
+      
     },
   },
-};
+}
 </script>
 
-<style lang="scss" scoped>
+<style  lang="scss" scoped>
 .pages {
   min-height: 100vh;
   background-color: #f5f5f5;
@@ -371,23 +344,23 @@ export default {
       font-size: 40rpx;
       // height: 154rpx;
     }
-    &.hotel-order {
-      .logo-img {
+    &.hotel-order{
+      .logo-img{
         width: 142rpx;
         height: 154rpx;
       }
-      .item-order-left {
+      .item-order-left{
         flex: 1;
         height: 154rpx;
         justify-content: space-between;
-        .text-over {
+        .text-over{
           width: 340rpx;
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
         }
       }
-      .item-order-right {
+      .item-order-right{
         height: 154rpx;
         flex: 1;
         display: flex;
