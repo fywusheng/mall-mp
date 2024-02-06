@@ -1298,6 +1298,12 @@
           }
         },
         {
+          "path": "category/main",
+          "style": {
+            "navigationBarTitleText": "分类商品"
+          }
+        },
+        {
           "path": "store/main",
           "style": {
             "navigationBarTitleText": "店铺"
