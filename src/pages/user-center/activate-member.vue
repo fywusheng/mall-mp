@@ -1,0 +1,312 @@
+<template>
+  <view class="activate-member">
+    <view class="card">
+      <view class="row">
+        <view class="title">卡种选择</view>
+        <view class="right" @click="handleAddClick">
+          <text class="label">发票信息</text>
+          <image
+            class="icon-right"
+            mode="scaleToFill"
+            src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
+          />
+        </view>
+      </view>
+      <view class="mem">
+        <view class="wrapper" @click="setCardType(0)">
+          <image
+            class="unable"
+            mode="scaleToFill"
+            :src="
+              cardType === 0
+                ? 'https://ggllstatic.hpgjzlinfo.com/static/songhui/user-center/able.png'
+                : 'https://ggllstatic.hpgjzlinfo.com/static/songhui/user-center/unable.png'
+            "
+          />
+
+          <view class="t">年卡-商城会员</view>
+          <view class="price">
+            <text>¥</text>
+            <text>288</text>
+          </view>
+          <view class="cost-price">¥388</view>
+        </view>
+        <view class="wrapper" @click="setCardType(1)">
+          <image
+            class="unable"
+            mode="scaleToFill"
+            :src="
+              cardType === 0
+                ? 'https://ggllstatic.hpgjzlinfo.com/static/songhui/user-center/unable.png'
+                : 'https://ggllstatic.hpgjzlinfo.com/static/songhui/user-center/able.png'
+            "
+          />
+          <view class="t">半年卡-商城会员</view>
+          <view class="price">
+            <text>¥</text>
+            <text>288</text>
+          </view>
+          <view class="cost-price">¥388</view>
+        </view>
+      </view>
+    </view>
+    <view class="row-line"></view>
+
+    <view class="card">
+      <view class="row benefit">
+        <text class="title">卡内权益</text>
+        <view class="line"></view>
+        <text class="desc">年卡/半年卡均享有如下特权</text>
+      </view>
+      <image
+        src="https://ggllstatic.hpgjzlinfo.com/static/songhui/user-center/banner@2x.png"
+        mode="scaleToFill"
+        class="banner"
+      />
+      <view class="bene-fit">
+        <image
+          src="https://ggllstatic.hpgjzlinfo.com/static/songhui/user-center/baoyou.png"
+          mode="scaleToFill"
+          class="banner1"
+        />
+        <image
+          src="https://ggllstatic.hpgjzlinfo.com/static/songhui/user-center/huiyuanjifen.png"
+          mode="scaleToFill"
+          class="banner1"
+        />
+        <image
+          src="https://ggllstatic.hpgjzlinfo.com/static/songhui/user-center/zhuanshuyouhui.png"
+          mode="scaleToFill"
+          class="banner1"
+        />
+        <image
+          src="https://ggllstatic.hpgjzlinfo.com/static/songhui/user-center/zhuanshuguwen.png"
+          mode="scaleToFill"
+          class="banner1"
+        />
+      </view>
+      <view class="btn">
+        立即支付¥
+        <text class="bold">120</text>
+        /年
+      </view>
+      <view class="xiyi">
+        <view class="radio">
+          <image
+            @click="handleCheckXieyi"
+            :class="checked ? 'icon-check' : 'icon-noCheck'"
+            :src="checked ? icon.checked : icon.noChecked"
+          />
+        </view>
+
+        <view class="fs-36">
+          开通前请确认
+          <text class="c-code" @click="handleUserAgreementClick">《商城会员用户协议》</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</template>
+
+<script>
+  import ScanOrInputPopup from './common/scan-or-input-popup.vue';
+  import api from '@/apis/index.js';
+  export default {
+    components: { ScanOrInputPopup },
+    data() {
+      return {
+        // 卡类型 0 年卡，1 半年卡
+        cardType: 0,
+        checked: false,
+        icon: {
+          checked: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-radio-checked.png',
+          noChecked: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-radio-default.png',
+        },
+      };
+    },
+    onLoad() {},
+    methods: {
+      // 添加
+      handleAddClick() {
+        uni.navigateTo({
+          url: '/pages/supermarket/company-update-or-add',
+        });
+      },
+      handleCheckXieyi() {
+        this.checked = !this.checked;
+      },
+      /**
+       * 用户协议点击事件
+       */
+      handleUserAgreementClick() {
+        const url = 'https://ggll.hpgjzlinfo.com/#/agreement?type=0';
+        uni.navigateTo({
+          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
+        });
+      },
+      /**
+       * 立即开通
+       */
+      handleApplyClick() {
+        uni.navigateTo({
+          url: '/pages/user-center/activate-member',
+        });
+      },
+      // 设置卡类型
+      setCardType(cardType) {
+        this.cardType = cardType;
+      },
+      /**
+       * 暂不领取点击事件
+       */
+      handleBackToHomeClick() {
+        uni.navigateBack({ delta: 9 });
+      },
+    },
+    mounted() {
+      //  this.$refs.popup.open()
+    },
+  };
+</script>
+
+<style lang="scss" scoped>
+  .activate-member {
+    .card {
+      padding: 40rpx 32rpx;
+      background: #ffffff;
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        &.benefit {
+          justify-content: unset;
+          .line {
+            width: 2rpx;
+            height: 36rpx;
+            margin: 20rpx;
+            background: #ebedf0;
+          }
+          .desc {
+            font-size: 32rpx;
+            font-family: PingFangSC, PingFang SC;
+            font-weight: 400;
+            color: #999999;
+            line-height: 44rpx;
+          }
+        }
+        .title {
+          font-size: 40rpx;
+          font-family: PingFangSC, PingFang SC;
+          font-weight: 500;
+          color: #333333;
+        }
+        .right {
+          display: flex;
+          align-items: center;
+          font-size: 36rpx;
+          font-family: PingFangSC, PingFang SC;
+          font-weight: 400;
+          color: #666666;
+          .icon-right {
+            width: 48rpx;
+            height: 48rpx;
+          }
+        }
+      }
+      .mem {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 30rpx;
+        .wrapper {
+          width: 334rpx;
+          height: 282rpx;
+          position: relative;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: space-evenly;
+          .unable,
+          .able {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+          }
+          .t {
+            position: relative;
+            font-size: 36rpx;
+            font-family: PingFangSC, PingFang SC;
+            font-weight: 500;
+            color: #333333;
+            line-height: 50rpx;
+          }
+          .price {
+            position: relative;
+            font-size: 72rpx;
+            font-family: PingFangSC, PingFang SC;
+            font-weight: 600;
+            color: #333333;
+            line-height: 100rpx;
+          }
+          .cost-price {
+            position: relative;
+            font-size: 40rpx;
+            font-family: PingFangSC, PingFang SC;
+            font-weight: 400;
+            color: #999999;
+            line-height: 56rpx;
+            text-decoration: line-through;
+          }
+        }
+      }
+      .banner {
+        width: 686rpx;
+        height: 144rpx;
+      }
+      .bene-fit {
+        margin-top: 20rpx;
+        display: grid;
+        grid-template-columns: 334rpx 334rpx;
+        grid-template-rows: 112rpx 112rpx;
+        column-gap: 18rpx;
+        row-gap: 20rpx;
+      }
+      .btn {
+        margin-top: 80rpx;
+        width: 686rpx;
+        height: 108rpx;
+        background: linear-gradient(136deg, #ff8800 0%, #ff5500 100%);
+        border-radius: 60rpx;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .bold {
+          font-size: 64rpx;
+        }
+      }
+      .xiyi {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 40rpx;
+        .icon-check,
+        .icon-noCheck {
+          width: 35rpx;
+          height: 35rpx;
+          margin-right: 8rpx;
+        }
+        .c-code {
+          color: #ff5500;
+        }
+      }
+    }
+    .row-line {
+      width: 750rpx;
+      height: 20rpx;
+      background: #f2f2f2;
+    }
+  }
+</style>

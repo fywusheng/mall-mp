@@ -136,6 +136,18 @@
           }
         },
         {
+          "path": "activate-member",
+          "style": {
+            "navigationBarTitleText": "购买商城会员"
+          }
+        },
+        {
+          "path": "applicant-info",
+          "style": {
+            "navigationBarTitleText": "身份信息确认"
+          }
+        },
+        {
           "path": "profile",
           "style": {
             "navigationBarTitleText": "个人信息"
