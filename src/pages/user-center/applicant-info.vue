@@ -383,6 +383,7 @@
        * 下一步点击事件
        */
       handleNextStepClick() {
+        uni.navigateTo({ url: '/pages/user-center/register-userInfo-result' });
         if (!this.chackInput()) return;
 
         // // 人脸识别

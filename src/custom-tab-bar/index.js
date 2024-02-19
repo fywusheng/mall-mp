@@ -15,9 +15,9 @@ Component({
         id: 2,
         name: "发现",
         imgOff:
-          "https://ggllstatic.hpgjzlinfo.com/static/images/footer/home.png",
+          "https://ggllstatic.hpgjzlinfo.com/static/images/footer/find.png",
         imgOn:
-          "https://ggllstatic.hpgjzlinfo.com/static/images/footer/home-active.png",
+          "https://ggllstatic.hpgjzlinfo.com/static/images/footer/find-active.png",
         url: "/pages/index/find",
       },
       {

@@ -178,6 +178,12 @@
           }
         },
         {
+          "path": "register-userInfo-result",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        },
+        {
           "path": "real-name-authentication",
           "style": {
             "navigationBarTitleText": "身份信息"

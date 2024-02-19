@@ -12,7 +12,9 @@
             src="https://ggllstatic.hpgjzlinfo.com/static/home/home-logo.png"
             mode="scaleToFill"
           />
-          <text class="navigation-bar__title fs-40 c-white flex-1">银发优选</text>
+          <text class="navigation-bar__title fs-40 c-white flex-1">
+            松辉医疗 | 国家老龄服务平台
+          </text>
         </view>
       </template>
     </navigation-bars>
@@ -67,7 +69,7 @@
       >
         <swiper
           class="banner-swiper"
-          :indicator-dots="false"
+          :indicator-dots="true"
           :autoplay="true"
           :interval="4000"
           :duration="500"
@@ -500,7 +502,7 @@
           data: { bannerType: '21', status: '1' },
           success: (data) => {
             this.banners = data;
-            this.info = [1, 2, 3, 4, 5, 6];
+            this.info = data;
           },
         });
         this.recommend(11);
@@ -575,6 +577,14 @@
       .image {
         @include size(48, 48);
         margin: 0 14rpx 0 30rpx;
+      }
+      .navigation-bar__title {
+        height: 44rpx;
+        font-size: 32rpx;
+        font-family: PingFangSC, PingFang SC;
+        font-weight: 400;
+        color: #ffffff;
+        line-height: 44rpx;
       }
     }
     .pop {
