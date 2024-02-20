@@ -8,6 +8,9 @@
       :height="imgHeight"
     ></canvas>
     <view class="blank" :style="{ height: navigationBarHeight + 'px' }" />
+    <view @click="setting" class="iconSet">
+      <image class="icon_set" src="https://ggllstatic.hpgjzlinfo.com/static/life/shezhi.png" />
+    </view>
     <view class="user-info flex-h flex-c-s">
       <view class="imgbox" @click="handleChooseImageClick">
         <image class="avatar" mode="scaleToFill" :src="header" />
@@ -20,28 +23,60 @@
       <view v-if="!userInfo.tel" @click="login">
         <text class="fs-60 c-black ml-12">请登录</text>
       </view>
-      <view class="flex-v ml-12" v-else-if="userInfo.tel && userInfo.crtfStas === '0'">
+
+      <view class="flex-v ml-12 avatar-r">
+        <view class="fs-60 c-black name-wrapper">
+          <view class="name">{{ nameFilter(userInfo.psnName) }}</view>
+          <image
+            class="member-icon"
+            src="https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/member-icon.png"
+            mode="scaleToFill"
+          />
+        </view>
+        <view class="fs-30 time-wrapper">
+          <view class="end-time">2010-2-10 会员到期</view>
+          <view class="r">
+            <image
+              class="sign"
+              src="https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/sign.png"
+              mode="scaleToFill"
+            />
+            <view class="sign-txt">每日签到</view>
+          </view>
+        </view>
+      </view>
+      <!-- <view class="flex-v ml-12" v-else-if="userInfo.tel && userInfo.crtfStas === '0'">
         <text class="fs-60 c-black">{{ phoneNumberFilter(userInfo.tel) }}</text>
         <text class="fs-36 no-certi">未实名</text>
       </view>
       <view class="flex-v ml-12" v-else-if="userInfo.tel && userInfo.crtfStas !== '0'">
         <text class="fs-60 c-black">{{ nameFilter(userInfo.psnName) }}</text>
         <text class="fs-32 has-certi">已实名</text>
-      </view>
+      </view> -->
     </view>
-    <view @click="setting" class="iconSet">
+    <!-- <view @click="setting" class="iconSet">
       <image class="icon_set" src="https://ggllstatic.hpgjzlinfo.com/static/life/shezhi.png" />
-    </view>
+    </view> -->
+
+    <view class="statistics"></view>
 
     <view class="service">
       <view class="area_top">
-        <view class="_item" @click="handleServiceClick(5)">
+        <!-- <view class="_item" @click="handleServiceClick(5)">
           <img
             class="img"
             src="https://ggllstatic.hpgjzlinfo.com/static/mine/huilao.png"
             mode="scaleToFill"
           />
           <text class="text cards">惠老钱包</text>
+        </view> -->
+        <view class="_item" @click="handleServiceClick(6)">
+          <img
+            class="img"
+            src="https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/card.png"
+            mode="scaleToFill"
+          />
+          <text class="text family">我的券包</text>
         </view>
         <view class="_item" @click="handleIntegralClick">
           <img
@@ -51,14 +86,7 @@
           />
           <text class="text cards">我的积分</text>
         </view>
-        <view class="_item" @click="handleServiceClick(6)">
-          <img
-            class="img"
-            src="https://ggllstatic.hpgjzlinfo.com/static/life/cardSF_w.png"
-            mode="scaleToFill"
-          />
-          <text class="text family">我的券包</text>
-        </view>
+
         <view class="_item" @click="handleServiceClick(7)">
           <img
             class="img"
@@ -74,10 +102,10 @@
       <view class="user-item flex-v flex-c-c" @click="handleServiceClick(2)">
         <image
           class="img"
-          src="https://ggllstatic.hpgjzlinfo.com/static/mine/qinqin.png"
+          src="https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/profile.png"
           mode="scaleToFill"
         />
-        <text>亲情账号</text>
+        <text>用户资料</text>
       </view>
       <view class="user-item flex-v flex-c-c" @click="handleUserClick(2)">
         <image
@@ -109,10 +137,10 @@
       <view class="user-item flex-v flex-c-c" @click="handleServiceClick(1)">
         <image
           class="img"
-          src="https://ggllstatic.hpgjzlinfo.com/static/mine/shanyang.png"
+          src="https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/address.png"
           mode="scaleToFill"
         />
-        <text>赡养扶养</text>
+        <text>收货地址</text>
       </view>
       <view class="user-item flex-v flex-c-c" @click="handleFeedbackClick()">
         <image
@@ -555,18 +583,21 @@
         }
         switch (type) {
           case 1:
-            this.checkUserState(() => {
-              uni.navigateTo({
-                url: '/pages/support/index',
-                error: function (res) {
-                  console.log('console13', res);
-                },
-              });
+            // this.checkUserState(() => {
+            //   uni.navigateTo({
+            //     url: '/pages/support/index',
+            //     error: function (res) {
+            //       console.log('console13', res);
+            //     },
+            //   });
+            // });
+            uni.navigateTo({
+              url: '/sub-pages/me/address-list/main',
             });
             break;
           case 2:
-            this.checkUserState(() => {
-              this.findFamilyMemberList();
+            uni.navigateTo({
+              url: '/pages/user-center/applicant-info',
             });
             break;
           case 3:
@@ -668,17 +699,16 @@
 <style lang="scss" scoped>
   .mine {
     min-height: 100vh;
+    padding-bottom: 150rpx;
     background: #f2f2f2;
     background-image: url('https://ggllstatic.hpgjzlinfo.com/static/mine/icon-mine-bg.png');
     .iconSet {
-      position: absolute;
-      right: 50rpx;
-      width: 48rpx;
-      height: 48rpx;
-      top: 180rpx;
+      padding: 10rpx 30rpx 36rpx;
+      display: flex;
+      flex-direction: row-reverse;
       .icon_set {
-        width: 100%;
-        height: 100%;
+        width: 48rpx;
+        height: 48rpx;
       }
     }
     .illustration {
@@ -736,9 +766,10 @@
       z-index: 0;
     }
     .user-info {
-      margin: 0 0 58rpx 20rpx;
+      margin: 0 30rpx 58rpx;
       margin-bottom: 58rpx;
       position: relative;
+      flex: 1;
       .integral {
         position: absolute;
         top: 22rpx;
@@ -767,6 +798,45 @@
           @include square(48);
         }
       }
+      .avatar-r {
+        flex: 1;
+        .name-wrapper {
+          display: flex;
+          align-items: center;
+          .member-icon {
+            width: 210rpx;
+            height: 50rpx;
+            margin-left: 10rpx;
+          }
+        }
+        .time-wrapper {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          .end-time {
+            color: #999999;
+          }
+          .r {
+            display: flex;
+            align-items: center;
+            .sign {
+              width: 36rpx;
+              height: 36rpx;
+              margin-right: 12rpx;
+            }
+            .sign-txt {
+              color: #ff5500;
+            }
+          }
+        }
+      }
+    }
+    .statistics {
+      width: 688rpx;
+      height: 420rpx;
+      background-image: url('https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/member-bg.png');
+      background-size: 100% 100%;
+      margin: 0 auto;
     }
     .service {
       margin-bottom: 20rpx;

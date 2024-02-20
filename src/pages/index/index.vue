@@ -100,7 +100,7 @@
 
     <view class="d-line"></view>
     <!-- 积分兑换 -->
-    <view class="benefit ml-32 mr-32 mt-24 mb-48 br-16">
+    <view class="benefit ml-32 mr-32 mt-24 mb-48 br-16" @click="goPath(0)">
       <view class="benefit-top title-top flex-h flex-c-b" @click="goPath(0)">
         <view class="title-top-left flex-h flex-c-c">
           <view class="title-top-left-text _line">
@@ -295,7 +295,8 @@
         });
       },
       goPath() {
-        uni.navigateTo({ url: '/sub-pages/point/index/index' });
+        console.log(123);
+        uni.navigateTo({ url: '/sub-pages/point/index' });
       },
       hanldeBannerChange(e) {
         this.currentIn = e.detail.current;
@@ -307,7 +308,10 @@
           });
           return;
         }
-        uni.navigateTo({ url: `/sub-pages/index/category/main?code=${v.code}` });
+        uni.navigateTo({
+          url: '/sub-pages/index/item-list/main?key=',
+        });
+        // uni.navigateTo({ url: `/sub-pages/index/category/main?code=${v.code}` });
       },
       async getCateGoryList() {
         const { data, code, msg } = await Axios.post('/category/getCategoryList', { type: 2 });

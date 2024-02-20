@@ -382,6 +382,7 @@
 <script>
   import UniNumberBox from './component/uni-number-box.vue';
   import apis from '@/apis/index.js';
+  console.log('apis: ', apis);
   export default {
     name: 'CART',
     components: { UniNumberBox },
@@ -632,6 +633,7 @@
             }
           });
         });
+        console.log('apis: ', apis);
 
         apis.checkOrderSettlementFromCart({
           data: {

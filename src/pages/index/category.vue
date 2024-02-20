@@ -50,7 +50,10 @@
 
       // 去列表页
       toCategory(cate) {
-        uni.navigateTo({ url: `/sub-pages/index/category/main?code=${cate.code}` });
+        uni.navigateTo({
+          url: '/sub-pages/index/item-list/main?key=',
+        });
+        // uni.navigateTo({ url: `/sub-pages/index/category/main?code=${cate.code}` });
       },
 
       handleImgLoadFail(item) {
