@@ -35,7 +35,7 @@
         </view>
         <view class="fs-30 time-wrapper">
           <view class="end-time">2010-2-10 会员到期</view>
-          <view class="r">
+          <view class="r" @click="signClick">
             <image
               class="sign"
               src="https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/sign.png"
@@ -58,7 +58,34 @@
       <image class="icon_set" src="https://ggllstatic.hpgjzlinfo.com/static/life/shezhi.png" />
     </view> -->
 
-    <view class="statistics"></view>
+    <view class="statistics">
+      <view class="row">
+        <view class="l" @click="goSaveMoney">
+          <text>累计已省(元)</text>
+          <image
+            class="icon-right"
+            src="https://ggllstatic.hpgjzlinfo.com/static/images/checkout/right.png"
+          />
+        </view>
+        <view class="l">
+          <text>会员开通记录</text>
+          <image
+            class="icon-right"
+            src="https://ggllstatic.hpgjzlinfo.com/static/images/checkout/right.png"
+          />
+        </view>
+      </view>
+      <view class="row">
+        <view class="price">555.55</view>
+        <view class="btn" @click="openMember">立即续费</view>
+      </view>
+      <view class="benefit">
+        <view v-for="item in benefitList" :key="item.name" class="benefit-item">
+          <image class="benefit-icon" :src="item.icon" />
+          <view class="txt">{{ item.name }}</view>
+        </view>
+      </view>
+    </view>
 
     <view class="service">
       <view class="area_top">
@@ -152,6 +179,7 @@
       </view>
     </view>
 
+    <sign-pop ref="signPop" :signDay="signDay"></sign-pop>
     <pop-entry-method ref="popup" :showImg="showImg" />
     <real-name-pop
       ref="realpop"
@@ -172,8 +200,9 @@
   import api from '@/apis/index.js';
   import { desensitizeName, desensitizeInfo } from '@/utils/desensitization.js';
   import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
+  import SignPop from './component/sign.vue';
   export default {
-    components: { PopEntryMethod, RealNamePop },
+    components: { PopEntryMethod, RealNamePop, SignPop },
     data() {
       return {
         // 导航栏高度
@@ -195,11 +224,35 @@
         score: '',
         // 录入方式是否有图片
         showImg: false,
+        benefitList: [
+          {
+            icon: 'https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/benefit-1.png',
+            name: '单笔最高千 元购物优惠',
+          },
+          {
+            icon: 'https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/benefit-2.png',
+            name: '有效期内享 无限次包邮',
+          },
+          {
+            icon: 'https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/benefit-3.png',
+            name: '积分兑换 0元拿好物',
+          },
+          {
+            icon: 'https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/benefit-4.png',
+            name: '不定期发放 专属优惠券',
+          },
+          {
+            icon: 'https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/benefit-5.png',
+            name: '1对1专属顾问 为您答疑解惑',
+          },
+        ],
 
         // canvas的宽高
         imgWidth: '',
         imgHeight: '',
         hasLoading: false,
+
+        signDay: 5,
       };
     },
     mounted() {
@@ -211,6 +264,16 @@
       uni.$off('didLogin');
     },
     methods: {
+      // 自动签到
+      signClick() {
+        this.$refs.signPop.open();
+      },
+      openMember() {
+        uni.navigateTo({ url: '/pages/user-center/activate-member' });
+      },
+      goSaveMoney() {
+        uni.navigateTo({ url: '/pages/services/save-money' });
+      },
       // 姓名过滤器, 用于姓名脱敏
       nameFilter(value) {
         return desensitizeName(value);
@@ -837,6 +900,89 @@
       background-image: url('https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/member-bg.png');
       background-size: 100% 100%;
       margin: 0 auto;
+      padding: 24rpx 20rpx;
+      .row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        .l {
+          display: flex;
+          align-items: center;
+          height: 44rpx;
+          font-size: 32rpx;
+          font-family: PingFangSC, PingFang SC;
+          font-weight: 400;
+          color: #333333;
+          line-height: 44rpx;
+          .icon-right {
+            width: 36rpx;
+            height: 36rpx;
+            margin-left: 10rpx;
+          }
+        }
+        .price {
+          height: 90rpx;
+          font-size: 64rpx;
+          font-family: PingFangSC, PingFang SC;
+          font-weight: 500;
+          color: #333333;
+          line-height: 90rpx;
+        }
+        .btn {
+          width: 186rpx;
+          height: 72rpx;
+          background: linear-gradient(90deg, #af763a 0%, #71471c 100%);
+          border-radius: 40rpx;
+          font-size: 36rpx;
+          font-family: PingFangSC, PingFang SC;
+          font-weight: 500;
+          color: #ffffff;
+          line-height: 72rpx;
+          text-align: center;
+        }
+      }
+      .benefit {
+        width: 646rpx;
+        height: 218rpx;
+        background: #f5c998;
+        border-radius: 16rpx;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        overflow: auto;
+        padding: 0 20rpx;
+        margin-top: 8rpx;
+        .benefit-item {
+          flex-shrink: 0;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          width: 193rpx;
+          height: 170rpx;
+
+          font-size: 32rpx;
+          font-family: PingFangSC, PingFang SC;
+          font-weight: 400;
+          color: #333333;
+          margin-right: 40rpx;
+          &:last-child {
+            margin-right: 0;
+          }
+          .benefit-icon {
+            width: 72rpx;
+            height: 72rpx;
+            margin-bottom: 10rpx;
+          }
+          .txt {
+            // text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+          }
+        }
+      }
     }
     .service {
       margin-bottom: 20rpx;
