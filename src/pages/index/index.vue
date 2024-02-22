@@ -89,7 +89,7 @@
     </view>
 
     <!-- 商品分类 -->
-    <view class="part-wraper">
+    <view v-if="parts.length > 0" class="part-wraper">
       <view class="part" :class="{ 'one-line': parts.length < 8 }">
         <view class="item" v-for="(v, i) in parts" :key="i" @click="typeList(v, i)">
           <image class="img" mode="scaleToFill" :src="v.iconUrl" />
@@ -886,8 +886,8 @@
             margin-bottom: 0;
           }
           .img {
-            width: 78rpx;
-            height: 78rpx;
+            width: 108rpx;
+            height: 108rpx;
             margin-bottom: 16rpx;
           }
           .name {

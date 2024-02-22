@@ -828,6 +828,12 @@
           }
         },
         {
+          "path": "open-record",
+          "style": {
+            "navigationBarTitleText": "会员开通记录"
+          }
+        },
+        {
           "path": "activist",
           "style": {
             "navigationBarTitleText": "维权服务"
@@ -1559,8 +1565,7 @@
         "selectedIconPath": "static/top.png",
         "text": "我的"
       }
-    ],
-    "usingComponents": {}
+    ]
   },
   "globalStyle": {
     "navigationBarTextStyle": "black",

@@ -11,11 +11,15 @@
       <view v-if="showsBackButton" class="back-button" @click="handleBackClick">
         <image class="back-button__image" mode="scaleToFill" :src="backButtonIconURL" />
       </view>
-      <slot name="title1">
-        <!-- <view class="container">
+      <view v-if="title" class="container">
+        <text class="title" :style="{ color: titleColor }">{{ title }}</text>
+      </view>
+      <slot name="title1"></slot>
+      <!-- <slot name="title1"> -->
+      <!-- <view class="container">
           <text class="title" :style="{ color: titleColor }">{{ title }}</text>
         </view> -->
-      </slot>
+      <!-- </slot> -->
     </view>
   </view>
 </template>

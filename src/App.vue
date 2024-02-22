@@ -3,7 +3,6 @@
   import wx from 'utils/wx';
   export default {
     async onLaunch() {
-      console.log('tiaozhu');
       // console.log('app created')
       // console.log('App Launch')
       // 将用户授权流量播放音频的操作重置

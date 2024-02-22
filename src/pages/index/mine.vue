@@ -67,7 +67,7 @@
             src="https://ggllstatic.hpgjzlinfo.com/static/images/checkout/right.png"
           />
         </view>
-        <view class="l">
+        <view class="l" @click="openMemberRecord">
           <text>会员开通记录</text>
           <image
             class="icon-right"
@@ -270,6 +270,9 @@
       },
       openMember() {
         uni.navigateTo({ url: '/pages/user-center/activate-member' });
+      },
+      openMemberRecord() {
+        uni.navigateTo({ url: '/pages/services/open-record' });
       },
       goSaveMoney() {
         uni.navigateTo({ url: '/pages/services/save-money' });
