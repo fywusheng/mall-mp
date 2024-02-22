@@ -78,31 +78,6 @@
   };
 </script>
 
-<style>
-  /*每个页面公共css */
-  button {
-    margin: 0;
-    padding: 0;
-    background: transparent;
-    border: none;
-  }
-  button::after {
-    border: none;
-  }
-  .placeholder {
-    font-size: 40rpx;
-    color: #999999;
-  }
-  /* #ifdef MP-WEIXIN */
-  wx-swiper .wx-swiper-dot {
-    width: 16rpx;
-    height: 16rpx;
-    background-color: rgba(255, 255, 255, 0.43);
-  }
-  wx-swiper .wx-swiper-dot-active {
-    background-color: rgba(255, 255, 255, 1);
-    width: 32rpx;
-    border-radius: 8rpx;
-  }
-  /* #endif */
+<style lang="scss">
+  @import '@/styles/index.scss';
 </style>

@@ -289,7 +289,7 @@
         });
       },
       toTop() {
-        my.pageScrollTo({
+        uni.pageScrollTo({
           scrollTop: 0,
           duration: 500,
         });

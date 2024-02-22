@@ -672,6 +672,7 @@
 </script>
 
 <style lang="scss">
+  @import '~@/styles/base';
   .line {
     height: 18rpx;
   }

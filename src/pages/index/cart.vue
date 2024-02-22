@@ -1,4 +1,5 @@
 <style lang="scss">
+  @import '~@/styles/base';
   .app {
     background: #f5f5f5;
     padding-top: 32rpx;

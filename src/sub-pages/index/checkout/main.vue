@@ -494,6 +494,7 @@
 </script>
 
 <style lang="scss">
+  @import '~@/styles/base';
   body {
     background-color: #f7f7f7;
   }
