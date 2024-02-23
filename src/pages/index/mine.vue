@@ -24,7 +24,7 @@
         <text class="fs-60 c-black ml-12">请登录</text>
       </view>
 
-      <view class="flex-v ml-12 avatar-r">
+      <view v-else class="flex-v ml-12 avatar-r">
         <view class="fs-60 c-black name-wrapper">
           <view class="name">{{ nameFilter(userInfo.psnName) }}</view>
           <image

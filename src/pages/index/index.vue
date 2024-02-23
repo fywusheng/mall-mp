@@ -12,7 +12,7 @@
             src="https://ggllstatic.hpgjzlinfo.com/static/home/home-logo.png"
             mode="scaleToFill"
           />
-          <text class="navigation-bar__title fs-40 c-white flex-1">
+          <text class="navigation-bar__title fs-32 c-white flex-1">
             松辉医疗 | 国家老龄服务平台
           </text>
         </view>
@@ -98,7 +98,7 @@
       </view>
     </view>
 
-    <view class="d-line"></view>
+    <!-- <view class="d-line"></view> -->
     <!-- 积分兑换 -->
     <view class="benefit ml-32 mr-32 mt-24 mb-48 br-16" @click="goPath(0)">
       <view class="benefit-top title-top flex-h flex-c-b" @click="goPath(0)">
@@ -121,14 +121,14 @@
         </view>
       </view>
     </view>
-    <view class="d-line"></view>
+    <!-- <view class="d-line"></view> -->
     <!-- 商品推荐 -->
     <view class="benefit ml-32 mr-32 mt-24 br-16">
       <view class="benefit-top title-top flex-h flex-c-b">
         <view class="title-top-left flex-h flex-c-c">
           <view class="title-top-left-text _line">
             <view class="_leftLine"></view>
-            精选
+            精品推荐
           </view>
         </view>
         <view></view>
@@ -319,8 +319,8 @@
           if (data.length >= 8) {
             const temp = data.slice(0, 7);
             temp.push({
-              name: '全部',
-              iconUrl: 'https://ggllstatic.hpgjzlinfo.com/static/home/all.png',
+              name: '全部分类',
+              iconUrl: 'https://ggllstatic.hpgjzlinfo.com/static/home/all.png?t=1',
             });
             this.parts = temp;
           } else {

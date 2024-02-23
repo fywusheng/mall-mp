@@ -9,7 +9,9 @@
             src="https://ggllstatic.hpgjzlinfo.com/static/home/home-logo.png"
             mode="scaleToFill"
           />
-          <text class="navigation-bar__title fs-40 c-white flex-1">国家老龄服务平台</text>
+          <text class="navigation-bar__title fs-32 c-white flex-1">
+            松辉医疗 | 国家老龄服务平台
+          </text>
         </view>
       </view>
     </navigation-bar>
@@ -838,7 +840,6 @@
     }
   }
   .search-view {
-    width: calc(100vw - 64rpx);
     height: 112rpx;
     margin-top: 180rpx;
     .search-bar {
