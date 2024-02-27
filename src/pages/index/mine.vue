@@ -295,7 +295,7 @@
         });
       },
       imgRead() {
-        const url = `https://ggll.hpgjzlinfo.com/#/agreement?type=4`;
+        const url = `${ENV.H5}/#/agreement?type=4`;
         uni.navigateTo({
           url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
         });

@@ -139,7 +139,7 @@
        * 用户协议点击事件
        */
       handleUserAgreementClick() {
-        const url = 'https://ggll.hpgjzlinfo.com/#/agreement?type=0';
+        const url = `${ENV.H5}/#/agreement?type=0`;
         uni.navigateTo({
           url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
         });

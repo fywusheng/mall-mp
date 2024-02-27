@@ -240,9 +240,7 @@
       // 点击复制链接
       handleCopyClick() {
         uni.setClipboardData({
-          data:
-            'https://ggll.hpgjzlinfo.com/#/discovery/app-detail/' +
-            this.list[this.shareIndex].contId,
+          data: `${ENV.H5}/#/discovery/app-detail/` + this.list[this.shareIndex].contId,
           success: (res) => {
             uni.getClipboardData({
               success: (resp) => {
