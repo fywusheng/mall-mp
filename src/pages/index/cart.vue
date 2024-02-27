@@ -2,11 +2,10 @@
   @import '~@/styles/base';
   .app {
     background: #f5f5f5;
-    padding-top: 32rpx;
+    padding-top: 30rpx;
+    padding-bottom: 300rpx;
+
     min-height: 100vh;
-  }
-  .cart-footer-block {
-    height: 100rpx;
   }
 
   .cart-footer {
@@ -539,6 +538,7 @@
           this.totalPayablePrice = result.data.totalPayablePrice;
           this.totalNum = result.data.totalNum;
           this.recountCheck();
+        } else if (result.code === '1001') {
         } else {
           this.$uni.showToast(result.msg || '获取购物车信息失败');
         }
@@ -656,10 +656,10 @@
       },
     },
     async onShow() {
-      if (!Store.getters.isLogin) {
-        Store.dispatch('logout');
-        // await Store.dispatch('login')
-      }
+      // if (!Store.getters.isLogin) {
+      //   Store.dispatch('logout');
+      //   // await Store.dispatch('login')
+      // }
       const curPages = getCurrentPages()[0];
       if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
         curPages.getTabBar().setData({

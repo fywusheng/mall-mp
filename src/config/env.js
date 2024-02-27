@@ -9,8 +9,8 @@ export default {
 
   // 商城基础url
   API: {
-    development: 'https://mall.hling168.com/mall-client-api', // 正式环境
-    // development: 'http://192.168.1.187:18888', // 测试环境
+    // development: 'https://mall.hling168.com/mall-client-api', // 正式环境
+    development: 'http://192.168.1.187:18888', // 测试环境
     test: 'http://192.168.1.187:18888',
     production: 'https://mall.hling168.com/mall-client-api'
   }[process.env.NODE_ENV],
