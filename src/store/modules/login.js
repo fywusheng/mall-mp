@@ -1,9 +1,9 @@
 /**
  * 登录模块
  */
-// import { set } from 'lodash'
 export default {
   state: {
+    token: uni.getStorageSync('token') || '',
     sessionId: uni.getStorageSync('sessionId') || '',
     session_key: '',
     openid: '',
@@ -15,7 +15,7 @@ export default {
     }
   },
   mutations: {
-    [VUEX.LOGIN.SET_WX_AUTH_ID](state, payload) {
+    setWxAuthId(state, payload) {
       payload = payload || {}
       if (payload.openId) {
         state.openid = payload.openId
@@ -36,28 +36,33 @@ export default {
         uni.setStorageSync('sessionId', state.sessionId)
       }
     },
-    [VUEX.LOGIN.SET_SESSION_ID](state, payload) {
+    setSessionId(state, payload) {
       state.sessionId = payload
     },
-    'LOG_OUT'(state) {
+    setToken(state, payload) {
+      state.setToken = payload
+    },
+    logout(state) {
       const map = ['sessionId', 'session_key', 'openid', 'unionid']
       map.forEach(key => {
         state[key] = ''
-        uni.removeStorageSync(key)
       })
     }
   },
   actions: {
+    setToken(ctx, payload) {
+      ctx.commit('setToken', payload)
+    },
     logout(ctx) {
-      ['token', 'userInfo'].forEach((key) => {
+      ['token', 'userInfo','sessionId'].forEach((key) => {
         uni.removeStorageSync(key)
       })
-      ctx.commit('LOG_OUT')
+      ctx.commit('logout')
     },
     async login(ctx) {
       // const {code} = await wx.login();
       const authData = await Axios.post(`/user/login`, {})
-      ctx.commit(VUEX.LOGIN.SET_WX_AUTH_ID, authData.data)
+      ctx.commit('setWxAuthId', authData.data)
     }
   }
 }

@@ -62,84 +62,32 @@
             :adjust-position="false"
             placeholder="请输入所属门店编号"
             placeholder-class="placeholder"
-            v-model="params.storeCode"
+            v-model="params.storeNo"
           />
           <view class="no-code">没有门店编号？</view>
           <view class="here">请点击这里</view>
         </view>
       </view>
-      <!-- <view class="row flex-h flex-c-s p-20-0">
-        <text class="row__indicator">*</text>
-        <text class="row__label fs-40 c-black mr-48">民族(必填)</text>
-        <picker class="flex-1" :range="nations" @change="handleNationChange">
-          <text class="fs-40 c-black" :class="{ 'c-lightgrey': params.nation === '' }">
-            {{ params.nation || '请选择民族' }}
-          </text>
-        </picker>
-        <image
-          class="row__accessory"
-          mode="scaleToFill"
-          src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
-        />
-      </view> -->
-      <!-- <view class="row flex-h flex-c-s p-20-0">
-        <text class="row__indicator">*</text>
-        <text class="row__label fs-40 c-black mr-48">出生日期(必填)</text>
-        <picker
-          class="flex-1"
-          mode="date"
-          :end="validDate"
-          :value="params.birthday"
-          @change="handleBirthdayChange"
-        >
-          <text class="fs-40 c-black" :class="{ 'c-lightgrey': params.birthday === '' }">
-            {{ params.birthday || '请选择出生日期' }}
-          </text>
-        </picker>
-        <image
-          class="row__accessory"
-          mode="scaleToFill"
-          src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
-        />
-      </view> -->
+
       <view class="row flex-h flex-c-s p-20-0">
-        <!-- <text class="row__indicator"></text> -->
+        <text class="row__indicator"></text>
         <text class="row__label fs-40 c-black mr-48">门店地址</text>
-        <!-- #ifdef MP-ALIPAY -->
-        <button @click="localeChose" class="clickChose">
-          {{ params.city || '请选择所在地区' }}
-        </button>
-        <!-- #endif -->
-        <!-- #ifdef MP-WEIXIN -->
-        <uni-data-picker
-          class="flex-1"
-          popup-title="请选择所在地区"
-          :localdata="cities"
-          @change="handleCityChange"
-          v-slot:default="{ data, error, options }"
-        >
-          <view v-if="data.length > 0" class="selectValue">
-            <text v-for="(item, index) in data" :key="index">{{ item.text }}</text>
-            <!-- <text class="selectValue">123</text> -->
-          </view>
-          <text
-            v-if="data.length == 0"
-            class="city fs-40 c-black flex-1 ml-48"
-            :class="{ 'c-lightgrey': data.length == 0 }"
-          >
-            请选择所在地区
+
+        <view class="right">
+          <text class="city fs-40 c-black flex-1">
+            {{ params.address }}
           </text>
-        </uni-data-picker>
-        <!-- #endif -->
-        <image
-          class="row__accessory"
-          mode="scaleToFill"
-          src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
-        />
+          <!-- <image
+            class="row__accessory"
+            mode="scaleToFill"
+            src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
+          /> -->
+        </view>
       </view>
       <view class="row flex-h flex-c-s p-20-0">
         <text class="row__indicator"></text>
         <input
+          readonly
           v-model="params.address"
           class="fs-40 c-black flex-1"
           placeholder="请输入详细地址"
@@ -165,7 +113,7 @@
       </view>
     </view>
     <button class="next-step-button bg-primary fs-44 c-white" @click="handleNextStepClick">
-      提交
+      提交{{ sesssionId }}
     </button>
     <!-- 疾病选择弹窗 -->
     <uni-popup ref="popup" type="bottom">
@@ -201,7 +149,6 @@
   import api from '@/apis/index.js';
   import { UniDataPicker, UniPopup } from '@dcloudio/uni-ui';
   import { validateIDCardNumber } from '@/utils/validation.js';
-  import staticData from '@/utils/dataBase64.js';
   import { alipayCityChoose } from '@/utils/utils.js';
   export default {
     components: { UniDataPicker, UniPopup },
@@ -224,24 +171,17 @@
           { name: '老年痴呆', value: 10 },
           { name: '骨关节病', value: 11 },
         ],
-        // 民族选择器数据
-        nations: staticData.nations,
-        // 城市选择器数据
         cities: [],
-        // 出生日期选择器最大可选有效时间
-        validDate: dayjs().subtract(60, 'year').format('YYYY-MM-DD'),
         // 表单数据
         params: {
           name: '', // 姓名
           idCardNumber: '', //身份证号
           gender: 1, // 性别
           age: '', //年龄
-          storeCode: '', //门店编号
-
-          nation: '',
-          birthday: '',
-          city: '',
-          address: '',
+          storeNo: '', //门店编号
+          address: '北京朝阳区', // 门店地址
+          disease: '', //疾病情况
+          memberId: '', //所属会员id
         },
       };
     },
@@ -288,6 +228,11 @@
     },
     onUnload() {
       uni.$off('faceRecognitionFinished');
+    },
+    computed: {
+      sesssionId() {
+        return this.$store.state.login.sesssionId;
+      },
     },
     methods: {
       confirm() {
@@ -382,47 +327,16 @@
       /**
        * 下一步点击事件
        */
-      handleNextStepClick() {
-        uni.navigateTo({ url: '/pages/user-center/register-userInfo-result' });
+      async handleNextStepClick() {
         if (!this.chackInput()) return;
+        const params = Object.assign({ disease: this.showDisease.join(',') }, this.params);
 
-        // // 人脸识别
-        wx.startFacialRecognitionVerify({
-          name: this.params.name, // 姓名
-          idCardNumber: this.params.idCardNumber, // 身份证号码
-          // checkAliveType: "", 人脸核验的交互方式，默认读数字（见表1）
-          success: (data) => {
-            console.log(data, 'sucess');
-            // errCode为0时表示人脸通过完成
-            if (data.errCode == 0) {
-              api.authAcct({
-                data: {
-                  userName: this.params.name,
-                  idCard: this.params.idCardNumber,
-                },
-                success: (res) => {
-                  const info = JSON.stringify({
-                    ...this.params,
-                    faceImg: staticData.faceImg,
-                  });
-                  uni.navigateTo({
-                    url: `/pages/certificate/local-upload?info=${info}`,
-                  });
-                },
-              });
-            }
-          },
-          fail: (err) => {
-            console.log(err, 'err');
-          },
-        });
-        uni.setStorageSync('applicantInfo', this.params);
-        return;
-        const url = `http://120.42.37.86:10013/#/?psnName=${this.params.name}&idCard=${this.params.idCardNumber}&url=/pages/common/face-recognition-result&platform=miniProgram`;
-        console.log(url);
-        uni.navigateTo({
-          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-        });
+        const result = await Axios.post('/member/sh/memberInformation/saveMemberInfo', params);
+        if (result.code == 200) {
+          this.$uni.showToast('保存成功');
+        } else {
+          this.$uni.showToast(result.msg || result.data);
+        }
       },
       /**
        * 请求数据
@@ -479,22 +393,19 @@
           this.$uni.showToast('请选择性别');
           return false;
         }
-        if (!this.params.nation) {
-          this.$uni.showToast('请选择民族');
+        if (!this.params.age) {
+          this.$uni.showToast('请输入年龄');
           return false;
         }
-        if (!this.params.birthday) {
-          this.$uni.showToast('请选择出生日期');
+        if (!this.params.storeNo) {
+          this.$uni.showToast('请输入所属门店编号');
           return false;
         }
-        // const today = dayjs();
-        // const birthday = dayjs(this.params.birthday);
-        // if (today.diff(birthday, "year") < 60) {
-        //   this.$uni.showAlert({
-        //     content: "您未满60周岁，不满足申请条件",
-        //   });
-        //   return false;
-        // }
+        if (!this.showDisease.length) {
+          this.$uni.showToast('请选择疾病情况');
+          return false;
+        }
+
         return true;
       },
     },
@@ -546,6 +457,7 @@
         }
         &__indicator {
           width: 24rpx;
+          min-height: 24rpx;
           text-align: center;
           color: #eb3030;
         }
