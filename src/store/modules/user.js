@@ -1,30 +1,88 @@
-/**
- * 用户模块
- */
-import VUEX from '@/store/mutation-types'
 
 export default {
   state: {
+    token: uni.getStorageSync('token') || '',
+    sessionId: uni.getStorageSync('sessionId') || '',
+    session_key: '',
+    openid: '',
+    unionid: '',
     userInfo: null, //  平台用户数据
     wxUserInfo: null // 微信用户信息
   },
-  getters: {},
+  getters: {
+    isLogin(state) {
+      return !!state.sessionId
+    }
+  },
   mutations: {
-    [VUEX.USER.SET_USER_INFO](state, userInfo) {
-      userInfo.age = userInfo.age || ''
-      userInfo.gender = userInfo.gender || ''
+    setWxAuthId(state, payload) {
+      payload = payload || {}
+      if (payload.openId) {
+        state.openid = payload.openId
+        uni.setStorageSync('openid', state.openId)
+      }
+
+      if (payload.unionId) {
+        state.unionid = payload.unionId
+        uni.setStorageSync('unionid', state.unionId)
+      }
+
+      if (payload.wxSessionKey) {
+        state.session_key = payload.wxSessionKey
+        uni.setStorageSync('session_key', state.wxSessionKey)
+      }
+      if (payload.sessionId) {
+        state.sessionId = payload.sessionId
+        uni.setStorageSync('sessionId', state.sessionId)
+      }
+    },
+    setSessionId(state, payload) {
+      state.sessionId = payload
+    },
+    setToken(state, payload) {
+      state.setToken = payload
+    },
+    logout(state) {
+      const map = ['sessionId', 'session_key', 'openid', 'unionid']
+      map.forEach(key => {
+        state[key] = ''
+      })
+    },
+    setUserInfo(state, userInfo) {
       state.userInfo = userInfo
     },
-    [VUEX.USER.SET_WX_USER_INFO](state, payload) {
+    setWxUserInfo(state, payload) {
       state.wxUserInfo = payload
-    },
-    [VUEX.USER.SET_MODE](state, mode) {
-      state.mode = mode
     }
   },
   actions: {
-    getUserData(ctx) {
-
-    }
+    // 设置token
+    setToken(ctx, payload) {
+      ctx.commit('setToken', payload)
+    },
+    // 退出登录
+    logout(ctx) {
+      ['token', 'userInfo','sessionId'].forEach((key) => {
+        uni.removeStorageSync(key)
+      })
+      ctx.commit('logout')
+    },
+    // 登录
+    async login(ctx) {
+      // const {code} = await wx.login();
+      const authData = await Axios.post(`/user/login`, {})
+      ctx.commit('setWxAuthId', authData.data)
+    },
+    // 获取用户信息
+    async getUserInfo({ commit, state }) {
+      const params = {token: state.token}
+      const result = await Axios.post('/member/sh/memberInformation/getMemberInfoById', params);
+      console.log('result: ', result);
+      if (result.code == 200) {
+        commit('setUserInfo', result.data)
+      } else {
+        uni.showToast(result.msg || result.data);
+      }
+    },
   }
 }

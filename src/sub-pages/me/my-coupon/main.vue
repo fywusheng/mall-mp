@@ -320,7 +320,7 @@
           pageNum: 1,
           pageSize: 100,
           queryObject: {
-            sessionId: Store.state.login.sessionId,
+            sessionId: Store.state.user.sessionId,
           },
         });
         wx.hideLoading();

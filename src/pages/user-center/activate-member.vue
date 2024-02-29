@@ -27,9 +27,9 @@
           <view class="t">年卡-商城会员</view>
           <view class="price">
             <text>¥</text>
-            <text>288</text>
+            <text>144</text>
           </view>
-          <view class="cost-price">¥388</view>
+          <view class="cost-price">¥144</view>
         </view>
         <view class="wrapper" @click="setCardType(1)">
           <image
@@ -44,9 +44,9 @@
           <view class="t">半年卡-商城会员</view>
           <view class="price">
             <text>¥</text>
-            <text>288</text>
+            <text>72</text>
           </view>
-          <view class="cost-price">¥388</view>
+          <view class="cost-price">¥72</view>
         </view>
       </view>
     </view>
@@ -85,9 +85,9 @@
           class="banner1"
         />
       </view>
-      <view class="btn">
+      <view class="btn" @click="handleApplyClick">
         立即支付¥
-        <text class="bold">120</text>
+        <text class="bold">{{ paymentAmount }}</text>
         /年
       </view>
       <view class="xiyi">
@@ -110,7 +110,7 @@
 
 <script>
   import ScanOrInputPopup from './common/scan-or-input-popup.vue';
-  import api from '@/apis/index.js';
+  import { putHotelOrder } from '@/api/life.js';
   export default {
     components: { ScanOrInputPopup },
     data() {
@@ -125,6 +125,14 @@
       };
     },
     onLoad() {},
+    computed: {
+      paymentAmount() {
+        return this.cardType === 0 ? 0.1 : 0.2;
+      },
+      remark() {
+        return this.cardType === 0 ? '年卡' : '半年卡';
+      },
+    },
     methods: {
       // 添加
       handleAddClick() {
@@ -147,10 +155,39 @@
       /**
        * 立即开通
        */
-      handleApplyClick() {
-        uni.navigateTo({
-          url: '/pages/user-center/activate-member',
+      async handleApplyClick() {
+        const price = this.paymentAmount * 100;
+        const result = await putHotelOrder({
+          productId: this.cardType === 0 ? 'VIP001' : 'VIP002',
+          supermarketName: '商城会员卡', // 标题
+          orderAmount: price, // 原总金额
+          discountAmount: 0, //优惠金额
+          paymentAmount: price, //应付金额
+          orderSource: 6, //订单类型
+          productPrice: price, //单价
+          payNumber: 1, //数量
+          uactId: 13261890779, // 用户memberId
+          usageTime: '', // 出发日期
+          expirationTime: '', //返程日期
+          crterName: '仝江飞', //联系人
+          updterName: '13261890779', //联系电话
+          scopeOfApplication: this.remark, //备注
         });
+        const url = `${ENV.H5}/#/checkstand?cashId=${result}`;
+        // #ifdef MP-ALIPAY
+        uni.reLaunch({
+          url: `/pages/common/webpage?url=${url}`,
+        });
+        // #endif
+
+        // #ifdef MP-WEIXIN
+        uni.reLaunch({
+          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
+        });
+        // #endif
+        // uni.navigateTo({
+        //   url: '/pages/user-center/activate-member',
+        // });
       },
       // 设置卡类型
       setCardType(cardType) {
@@ -275,6 +312,7 @@
         row-gap: 20rpx;
       }
       .btn {
+        color: #ffffff;
         margin-top: 80rpx;
         width: 686rpx;
         height: 108rpx;

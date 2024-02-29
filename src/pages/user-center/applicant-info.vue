@@ -63,9 +63,10 @@
             placeholder="请输入所属门店编号"
             placeholder-class="placeholder"
             v-model="params.storeNo"
+            @blur="handleStoreNoChange(false, $event)"
           />
           <view class="no-code">没有门店编号？</view>
-          <view class="here">请点击这里</view>
+          <view class="here" @click="handleStoreNoChange(true)">请点击这里</view>
         </view>
       </view>
 
@@ -75,7 +76,7 @@
 
         <view class="right">
           <text class="city fs-40 c-black flex-1">
-            {{ params.address }}
+            {{ params.districtArea }}
           </text>
           <!-- <image
             class="row__accessory"
@@ -113,7 +114,7 @@
       </view>
     </view>
     <button class="next-step-button bg-primary fs-44 c-white" @click="handleNextStepClick">
-      提交{{ sesssionId }}
+      提交
     </button>
     <!-- 疾病选择弹窗 -->
     <uni-popup ref="popup" type="bottom">
@@ -147,14 +148,13 @@
 <script>
   import dayjs from 'dayjs';
   import api from '@/apis/index.js';
-  import { UniDataPicker, UniPopup } from '@dcloudio/uni-ui';
+  import { UniPopup } from '@dcloudio/uni-ui';
   import { validateIDCardNumber } from '@/utils/validation.js';
-  import { alipayCityChoose } from '@/utils/utils.js';
+  import { mapState } from 'vuex';
   export default {
-    components: { UniDataPicker, UniPopup },
+    components: { UniPopup },
     data() {
       return {
-        alipayCitys: [],
         showDisease: [],
         selectDisease: [],
         diseaseList: [
@@ -171,7 +171,6 @@
           { name: '老年痴呆', value: 10 },
           { name: '骨关节病', value: 11 },
         ],
-        cities: [],
         // 表单数据
         params: {
           name: '', // 姓名
@@ -179,7 +178,8 @@
           gender: 1, // 性别
           age: '', //年龄
           storeNo: '', //门店编号
-          address: '北京朝阳区', // 门店地址
+          districtArea: '', //省市
+          address: '', // 门店地址
           disease: '', //疾病情况
           memberId: '', //所属会员id
         },
@@ -204,10 +204,7 @@
       //   const address = data.address.replace(city, '');
       //   this.params.address = address;
       // });
-
-      this.requestData();
-      this.alipayHandler();
-      uni.$on('faceRecognitionFinished', this.handleFaceRecognitionFinish);
+      // uni.$on('faceRecognitionFinished', this.handleFaceRecognitionFinish);
     },
     onShow() {
       // 如果用户已实人, 则读取用户实人信息
@@ -218,21 +215,22 @@
       //   this.params.idCardNumber = userInfo.idCard
       //   this.handleIDCardNumberInputFinish()
       // }
-
       // 人脸认证结束后回填预先保存的信息
-      const applicantInfo = uni.getStorageSync('applicantInfo');
-      if (applicantInfo) {
-        this.params = applicantInfo;
-        uni.removeStorageSync('applicantInfo');
-      }
+      // const applicantInfo = uni.getStorageSync('applicantInfo');
+      // if (applicantInfo) {
+      //   this.params = applicantInfo;
+      //   uni.removeStorageSync('applicantInfo');
+      // }
+      this.$store.dispatch('getUserInfo');
     },
     onUnload() {
-      uni.$off('faceRecognitionFinished');
+      // uni.$off('faceRecognitionFinished');
     },
     computed: {
-      sesssionId() {
-        return this.$store.state.login.sesssionId;
-      },
+      ...mapState({
+        name: (state) => state.name,
+        sessionId: (state) => state.user.sessionId,
+      }),
     },
     methods: {
       confirm() {
@@ -240,7 +238,6 @@
         this.closePop();
       },
       open() {
-        // 通过组件定义的ref调用uni-popup方法 ,如果传入参数 ，type 属性将失效 ，仅支持 ['top','left','bottom','right','center']
         this.$refs.popup.open('bottom');
       },
       closePop() {
@@ -250,54 +247,6 @@
         if (this.selectDisease.includes(item.name)) return;
         this.selectDisease.push(item.name);
       },
-      localeChose() {
-        const params = {
-          list: this.alipayCitys,
-          success: (city) => {
-            this.params.city = city;
-          },
-        };
-        alipayCityChoose(params);
-      },
-      /**
-       * 人脸认证结果回调
-       */
-      handleFaceRecognitionFinish(result) {
-        // 人脸认证结束后处理结果
-        const { ismatch, img } = result;
-        if (ismatch) {
-          const userInfo = uni.getStorageSync('userInfo');
-          const isAuthenticated = userInfo && userInfo.crtfStas !== '0';
-          // 若用户已实人则调用 userPen 接口, 该接口不修改用户认证状态
-          // 若用户未实人则调用 bindBankAcct 接口, 该接口会修改用户认证状态
-          const request = isAuthenticated
-            ? api.getFaceRecognitionResult
-            : api.realPersonAuthenticate;
-          request({
-            data: {
-              userName: this.params.name,
-              idCard: this.params.idCardNumber,
-              faceImg: `data:image/jpg;base64,${decodeURIComponent(img)}`,
-            },
-            success: () => {
-              const info = {
-                ...this.params,
-                faceImg: `data:image/jpg;base64,${decodeURIComponent(img)}`,
-              };
-              // uni.navigateTo({
-              //   url: `/pages/certificate/additional-info?info=${info}`,
-              // });
-
-              uni.navigateTo({
-                url: '/pages/certificate/avatar-confirm',
-                success: (res) => {
-                  res.eventChannel.emit('didOpenPageFinish', info);
-                },
-              });
-            },
-          });
-        }
-      },
       /**
        * 身份证号输入完成事件
        */
@@ -306,72 +255,35 @@
         this.params.birthday = dayjs(birthday).format('YYYY-MM-DD');
         this.params.gender = this.params.idCardNumber.substring(16, 17) % 2;
       },
-      /**
-       * 民族选择器改变回调
-       */
-      handleNationChange(e) {
-        this.params.nation = this.nations[e.detail.value];
-      },
-      /**
-       * 出生日期选择器改变回调
-       */
-      handleBirthdayChange(e) {
-        this.params.birthday = e.target.value;
-      },
-      /**
-       * 城市选择器改变回调
-       */
-      handleCityChange(e) {
-        this.params.city = e.detail.value.map((item) => item.text).join('');
+      // 获取门店信息
+      async handleStoreNoChange(manStore, e) {
+        let params = {};
+        if (manStore) {
+          params = { queryObject: { storeType: 2 } };
+        } else {
+          params = { queryObject: { storeNo: value } };
+        }
+
+        const result = await Axios.post('/srm/sh/stores/listByPageNo', params);
+        if (result.code == 200 && result.data.list.length) {
+          this.params.storeNo = result.data.list[0].storeNo;
+          this.params.address = result.data.list[0].address;
+          this.params.districtArea = result.data.list[0].districtArea;
+        }
       },
       /**
        * 下一步点击事件
        */
       async handleNextStepClick() {
         if (!this.chackInput()) return;
-        const params = Object.assign({ disease: this.showDisease.join(',') }, this.params);
-
+        const params = { ...this.params };
+        params.disease = this.showDisease.join(',');
         const result = await Axios.post('/member/sh/memberInformation/saveMemberInfo', params);
         if (result.code == 200) {
           this.$uni.showToast('保存成功');
         } else {
           this.$uni.showToast(result.msg || result.data);
         }
-      },
-      /**
-       * 请求数据
-       */
-      requestData() {
-        api.getRegions({
-          success: (data) => {
-            function map(array) {
-              return array.map((item) => {
-                return {
-                  text: item.regnName,
-                  value: item.regnCode,
-                  children: map(item.children),
-                };
-              });
-            }
-            this.cities = map(data);
-          },
-        });
-      },
-      alipayHandler() {
-        api.getRegions({
-          success: (data) => {
-            function map(array) {
-              return array.map((item) => {
-                return {
-                  name: item.regnName,
-                  code: item.regnCode,
-                  subList: map(item.children),
-                };
-              });
-            }
-            this.alipayCitys = map(data);
-          },
-        });
       },
       /**
        * 输入信息校验
