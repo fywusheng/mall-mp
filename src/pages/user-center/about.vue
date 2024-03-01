@@ -3,14 +3,14 @@
     <view class="logon">
       <image src="https://ggllstatic.hpgjzlinfo.com/static/user-center/logo.png" class="logoicon" />
     </view>
-    <view class="title">国家老龄服务平台</view>
+    <view class="title">松辉云康｜国家老龄服务平台</view>
     <view class="v-num">版本号 {{ version }}</view>
     <view class="bottom">
       <view class="xieyi">
         <view class="user" @click="handleUserAgreementClick">《用户协议》</view>
         <view class="user" @click="handlePrivacyPolicyClick">《隐私政策》</view>
       </view>
-      <view class="version">国家老龄服务平台版权所有</view>
+      <view class="version">松辉云康｜国家老龄服务平台版权所有</view>
     </view>
   </view>
 </template>
