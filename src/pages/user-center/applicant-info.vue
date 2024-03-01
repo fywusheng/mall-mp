@@ -21,20 +21,19 @@
           :adjust-position="false"
           placeholder="请输入正确的身份证号"
           placeholder-class="placeholder"
-          v-model="params.idCardNumber"
-          @blur="handleIDCardNumberInputFinish"
+          v-model="params.idCard"
         />
       </view>
       <view class="row flex-h flex-c-s p-20-0">
         <text class="row__indicator">*</text>
         <text class="row__label fs-40 c-black mr-48">性别(必填)</text>
-        <radio-group class="flex-h flex-c-s flex-1">
+        <radio-group @change="handleSexChange" class="flex-h flex-c-s flex-1">
           <label class="flex-h flex-c-s radio mr-64">
-            <radio color="#ff5000" value="0" :checked="params.gender === 1" />
+            <radio color="#ff5000" value="0" :checked="params.sex == 0" />
             <text>男</text>
           </label>
           <label class="flex-h flex-c-s radio mr-64">
-            <radio color="#ff5000" value="1" :checked="params.gender === 0" />
+            <radio color="#ff5000" value="1" :checked="params.sex == 1" />
             <text>女</text>
           </label>
         </radio-group>
@@ -65,8 +64,10 @@
             v-model="params.storeNo"
             @blur="handleStoreNoChange(false, $event)"
           />
-          <view class="no-code">没有门店编号？</view>
-          <view class="here" @click="handleStoreNoChange(true)">请点击这里</view>
+          <view v-if="!params.districtArea" class="no-code">没有门店编号？</view>
+          <view v-if="!params.districtArea" class="here" @click="handleStoreNoChange(true)">
+            请点击这里
+          </view>
         </view>
       </view>
 
@@ -88,10 +89,9 @@
       <view class="row flex-h flex-c-s p-20-0">
         <text class="row__indicator"></text>
         <input
-          readonly
+          disabled
           v-model="params.address"
           class="fs-40 c-black flex-1"
-          placeholder="请输入详细地址"
           placeholder-class="placeholder"
         />
       </view>
@@ -114,7 +114,7 @@
       </view>
     </view>
     <button class="next-step-button bg-primary fs-44 c-white" @click="handleNextStepClick">
-      提交
+      {{ add ? '提交' : '修改' }}
     </button>
     <!-- 疾病选择弹窗 -->
     <uni-popup ref="popup" type="bottom">
@@ -174,8 +174,8 @@
         // 表单数据
         params: {
           name: '', // 姓名
-          idCardNumber: '', //身份证号
-          gender: 1, // 性别
+          idCard: '', //身份证号
+          sex: '0', // 性别
           age: '', //年龄
           storeNo: '', //门店编号
           districtArea: '', //省市
@@ -185,52 +185,26 @@
         },
       };
     },
-    onLoad() {
-      // const eventChannel = this.getOpenerEventChannel();
-      // eventChannel.on('didOpenPageFinish', (data) => {
-      //   console.log('回填数据：', data);
-      //   // 数据回填
-      //   this.params.name = data.name;
-      //   this.params.idCardNumber = data.idCardNumber;
-      //   this.params.gender = data.gender === '男' ? 1 : 0;
-      //   this.params.nation = `${data.nation}族`;
-      //   this.params.birthday = data.birthday;
-      //   // .replace("年", "-")
-      //   // .replace("月", "-")
-      //   // .replace("日", "");
-      //   const regex = /.+?(省|市|自治区|自治州|县|区)/g;
-      //   const city = data.address.match(regex).join('');
-      //   this.params.city = city;
-      //   const address = data.address.replace(city, '');
-      //   this.params.address = address;
-      // });
-      // uni.$on('faceRecognitionFinished', this.handleFaceRecognitionFinish);
-    },
-    onShow() {
-      // 如果用户已实人, 则读取用户实人信息
-      // const userInfo = uni.getStorageSync('userInfo')
-      // const isAuthenticated = userInfo && userInfo.crtfStas !== '0'
-      // if (isAuthenticated) {
-      //   this.params.name = userInfo.psnName
-      //   this.params.idCardNumber = userInfo.idCard
-      //   this.handleIDCardNumberInputFinish()
-      // }
-      // 人脸认证结束后回填预先保存的信息
-      // const applicantInfo = uni.getStorageSync('applicantInfo');
-      // if (applicantInfo) {
-      //   this.params = applicantInfo;
-      //   uni.removeStorageSync('applicantInfo');
-      // }
-      this.$store.dispatch('getUserInfo');
+    async onLoad() {
+      await this.$store.dispatch('getUserInfo');
+      this.fillParams(this.params);
     },
     onUnload() {
       // uni.$off('faceRecognitionFinished');
     },
     computed: {
       ...mapState({
-        name: (state) => state.name,
+        userInfo: (state) => state.user.userInfo,
         sessionId: (state) => state.user.sessionId,
       }),
+      // 页面操作  true 新增， false修改
+      add() {
+        if (this.userInfo && this.userInfo.id) {
+          return false;
+        } else {
+          return true;
+        }
+      },
     },
     methods: {
       confirm() {
@@ -247,13 +221,19 @@
         if (this.selectDisease.includes(item.name)) return;
         this.selectDisease.push(item.name);
       },
+      fillParams(data) {
+        for (let key in data) {
+          this.params[key] = this.userInfo[key];
+        }
+        this.showDisease = this.userInfo.disease.split(',');
+        this.selectDisease = this.userInfo.disease.split(',');
+        this.params.disease = this.userInfo.disease.split(',');
+      },
       /**
        * 身份证号输入完成事件
        */
-      handleIDCardNumberInputFinish() {
-        const birthday = this.params.idCardNumber.substring(6, 14);
-        this.params.birthday = dayjs(birthday).format('YYYY-MM-DD');
-        this.params.gender = this.params.idCardNumber.substring(16, 17) % 2;
+      handleSexChange(e) {
+        this.params.sex = e.target.value;
       },
       // 获取门店信息
       async handleStoreNoChange(manStore, e) {
@@ -261,14 +241,17 @@
         if (manStore) {
           params = { queryObject: { storeType: 2 } };
         } else {
-          params = { queryObject: { storeNo: value } };
+          params = { queryObject: { storeNo: e.target.value } };
         }
 
         const result = await Axios.post('/srm/sh/stores/listByPageNo', params);
         if (result.code == 200 && result.data.list.length) {
           this.params.storeNo = result.data.list[0].storeNo;
           this.params.address = result.data.list[0].address;
-          this.params.districtArea = result.data.list[0].districtArea;
+          this.params.districtArea = result.data.list[0].districtAreaStr;
+        } else {
+          this.params.districtArea = '';
+          this.params.address = '';
         }
       },
       /**
@@ -278,9 +261,14 @@
         if (!this.chackInput()) return;
         const params = { ...this.params };
         params.disease = this.showDisease.join(',');
+        if (!this.add) {
+          params.id = this.userInfo.id;
+        }
         const result = await Axios.post('/member/sh/memberInformation/saveMemberInfo', params);
         if (result.code == 200) {
           this.$uni.showToast('保存成功');
+          this.$store.dispatch('getUserInfo');
+          uni.navigateTo({ url: '/pages/user-center/register-userInfo-result' });
         } else {
           this.$uni.showToast(result.msg || result.data);
         }
@@ -293,18 +281,18 @@
           this.$uni.showToast('请输入姓名');
           return false;
         }
-        if (!this.params.idCardNumber) {
+        if (!this.params.idCard) {
           this.$uni.showToast('请输入身份证号');
           return false;
         }
-        if (!validateIDCardNumber(this.params.idCardNumber)) {
+        if (!validateIDCardNumber(this.params.idCard)) {
           this.$uni.showToast('身份证号格式错误，请重新输入');
           return false;
         }
-        if (!this.params.gender) {
-          this.$uni.showToast('请选择性别');
-          return false;
-        }
+        // if (!this.params.sex) {
+        //   this.$uni.showToast('请选择性别');
+        //   return false;
+        // }
         if (!this.params.age) {
           this.$uni.showToast('请输入年龄');
           return false;

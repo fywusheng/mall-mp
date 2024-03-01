@@ -77,11 +77,11 @@ export default {
     async getUserInfo({ commit, state }) {
       const params = {token: state.token}
       const result = await Axios.post('/member/sh/memberInformation/getMemberInfoById', params);
-      console.log('result: ', result);
       if (result.code == 200) {
         commit('setUserInfo', result.data)
+        uni.setStorageSync('userInfo', result.data)
       } else {
-        uni.showToast(result.msg || result.data);
+        uni.showToast({icon:'none',title: result.msg || result.data});
       }
     },
   }

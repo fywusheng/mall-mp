@@ -1,5 +1,5 @@
 <template>
-  <view v-if="hasLoading" class="mine">
+  <view class="mine">
     <canvas
       canvas-id="canvas"
       id="canvas"
@@ -20,13 +20,13 @@
           mode="scaleToFill"
         />
       </view>
-      <view v-if="!userInfo.tel" @click="login">
+      <view v-if="!userInfo" @click="login">
         <text class="fs-60 c-black ml-12">请登录</text>
       </view>
 
       <view v-else class="flex-v ml-12 avatar-r">
         <view class="fs-60 c-black name-wrapper">
-          <view class="name">{{ nameFilter(userInfo.psnName) }}</view>
+          <view class="name">{{ nameFilter(userInfo.name) }}</view>
           <image
             class="member-icon"
             src="https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/member-icon.png"
@@ -201,6 +201,7 @@
   import { desensitizeName, desensitizeInfo } from '@/utils/desensitization.js';
   import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
   import SignPop from './component/sign.vue';
+  import { mapState } from 'vuex';
   export default {
     components: { PopEntryMethod, RealNamePop, SignPop },
     data() {
@@ -214,7 +215,7 @@
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
         // #endif
 
-        userInfo: {},
+        // userInfo: {},
         // 图片地址，控件展示条件
         url: '',
         // 获取默认头像
@@ -258,10 +259,15 @@
     mounted() {
       // 监听登录回调
       uni.$on('didLogin', this.handleLogin);
-      this.getUserInfoByToken();
+      // this.getUserInfoByToken();
     },
     destroyed() {
       uni.$off('didLogin');
+    },
+    computed: {
+      ...mapState({
+        userInfo: (state) => state.user.userInfo,
+      }),
     },
     methods: {
       // 自动签到
@@ -597,44 +603,6 @@
               uni.removeStorageSync('userInfo');
             },
           });
-        }
-      },
-      // 获取用户信息
-      getUserInfoByToken() {
-        const accessToken = uni.getStorageSync('token');
-
-        if (accessToken) {
-          this.hasLoading = false;
-          uni.showLoading({ title: '加载中' });
-          api.getUserInfo({
-            data: { accessToken },
-            success: (data) => {
-              this.userInfo = data;
-              uni.setStorageSync('userInfo', data);
-              if (this.userInfo.tel) {
-                // this.handleScoreInfo()
-              }
-              this.header =
-                this.userInfo.userIcon ||
-                'https://ggllstatic.hpgjzlinfo.com/static/user-center/icon-user-center-default-avatar.png';
-              this.hasLoading = true;
-              uni.hideLoading();
-
-              // 没有实名
-              // if (this.userInfo.crtfStas !== '2') {
-              //   this.$nextTick(() => {
-              //     this.$refs.firstLogin.open()
-              //   })
-              // }
-            },
-            fail: () => {
-              uni.hideLoading();
-              uni.removeStorageSync('token');
-              uni.removeStorageSync('userInfo');
-            },
-          });
-        } else {
-          this.hasLoading = true;
         }
       },
       // 点击赡养扶养,亲情账号，我的券包，我的订单7

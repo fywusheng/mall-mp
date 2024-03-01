@@ -208,6 +208,7 @@
       font-family: PingFangSC, PingFang SC;
       font-weight: 500;
       color: #ffffff;
+      text-align: center;
     }
   }
 </style>

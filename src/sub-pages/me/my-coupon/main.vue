@@ -57,8 +57,9 @@
       .coupon {
         position: relative;
         // width: rpx(680);
-        margin-bottom: rpx(15);
+
         margin: 0 auto;
+        margin-bottom: rpx(15);
         width: 710rpx;
         height: 232rpx;
         background: #ffffff;
@@ -189,9 +190,10 @@
           <div class="coupon-body">
             <div class="money">
               <span class="unit">¥</span>
-              <span v-if="coupon.type == 0">{{ coupon.denominationStr }}元</span>
+
+              <span v-if="coupon.type == 0">{{ coupon.denominationStr }}</span>
               <span v-else-if="coupon.type == 1">{{ coupon.denominationStr }}折</span>
-              <div class="desc">满{{ coupon.thresholdValue }}元可用</div>
+              <div class="desc">满{{ coupon.thresholdValue }}可用</div>
             </div>
             <div class="coupon__name">{{ coupon.name }}</div>
             <div class="coupon__rule">{{ coupon.description }}</div>
@@ -219,9 +221,9 @@
           <div class="coupon-body">
             <div class="money">
               <span class="unit">¥</span>
-              <span v-if="coupon.type == 0">{{ coupon.denominationStr }} 元</span>
+              <span v-if="coupon.type == 0">{{ coupon.denominationStr }}</span>
               <span v-else-if="coupon.type == 1">{{ coupon.denominationStr }} 折</span>
-              <div class="desc">满{{ coupon.thresholdValue }}元可用</div>
+              <div class="desc">满{{ coupon.thresholdValue }}可用</div>
             </div>
             <div class="coupon__name">{{ coupon.name }}</div>
             <div class="coupon__rule">{{ coupon.description }}</div>
@@ -248,9 +250,9 @@
           <div class="coupon-body">
             <div class="money">
               <span class="unit">¥</span>
-              <span v-if="coupon.type == 0">{{ coupon.denominationStr }}元</span>
+              <span v-if="coupon.type == 0">{{ coupon.denominationStr }}</span>
               <span v-else-if="coupon.type == 1">{{ coupon.denominationStr }}折</span>
-              <div class="desc">满{{ coupon.thresholdValue }}元可用</div>
+              <div class="desc">满{{ coupon.thresholdValue }}可用</div>
             </div>
             <div class="coupon__name">{{ coupon.name }}</div>
             <div class="coupon__rule">{{ coupon.description }}</div>

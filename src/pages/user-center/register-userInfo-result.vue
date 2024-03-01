@@ -5,7 +5,7 @@
       mode="scaleToFill"
       src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-success.png"
     />
-    <text class="fs-50 lh-72 fw-bold c-primary mt-60">提交成功成功</text>
+    <text class="fs-50 lh-72 fw-bold c-primary mt-60">提交成功</text>
     <!-- <text class="fs-40 lh-60 fw-bold c-grey mt-24">立即开通商城会员</text>
     <text class="fs-40 lh-60 fw-bold c-grey">享有会员优惠折扣、积分</text> -->
     <button
