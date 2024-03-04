@@ -1,27 +1,69 @@
 <template>
   <view class="open-record">
-    <view class="open-list">
-      <view class="list-item">
-        <view class="name">商城会员年卡</view>
-        <view class="time">2023.2.1支付成功</view>
-        <view class="valid-time">商城会员卡有效期：2023.02.01-2024.02.02</view>
+    <view v-for="item in list" :key="item.orderId" class="open-list">
+      <view :class="{ active: item.actived }" class="list-item">
+        <view class="name">{{ item.orderDetailDTO.productName }}</view>
+        <view class="time">{{ item.paymentTime }}支付成功</view>
+        <view class="valid-time">
+          商城会员卡有效期：{{ item.orderDetailDTO.usageTime }}-{{
+            item.orderDetailDTO.expirationTime
+          }}
+        </view>
       </view>
     </view>
   </view>
 </template>
 <script>
+  import api from '@/apis/index.js';
+  import dayjs from 'dayjs';
   export default {
     data() {
       return {
+        list: [],
         percent: 50,
         select: 0,
         randomId: '123',
         tabs: [{ name: '累计省钱' }, { name: '本周期省钱' }],
       };
     },
-    onLoad(e) {},
-    created() {},
+    created() {
+      this.getMemberRecordInfo();
+    },
     methods: {
+      getMemberRecordInfo() {
+        api.getOrderList({
+          data: {
+            pageNum: 1,
+            pageSize: 100,
+            orderSource: 6,
+            orderStatus: 3,
+          },
+          success: (data) => {
+            const firstData = data.list[0];
+            firstData.actived = dayjs().isBefore(firstData.orderDetailDTO.expirationTime);
+
+            // const now = dayjs();
+            // const first = dayjs('2023-12-12' || firstData.orderDetailDTO.expirationTime);
+            // if (now.isBefore(first)) {
+            //   console.log('生效中');
+            // } else {
+            //   console.log('失效');
+            // }
+
+            data.list.forEach((element) => {
+              element.orderDetailDTO.usageTime = element.orderDetailDTO.usageTime
+                .split('-')
+                .join('.');
+              element.orderDetailDTO.expirationTime = element.orderDetailDTO.expirationTime
+                .split('-')
+                .join('.');
+            });
+            this.list = data.list;
+
+            console.log('data: ', data);
+          },
+        });
+      },
       openMember() {
         uni.navigateTo({ url: '/pages/user-center/activate-member' });
       },

@@ -127,7 +127,7 @@
     onLoad() {},
     computed: {
       paymentAmount() {
-        return this.cardType === 0 ? 0.1 : 0.2;
+        return this.cardType === 0 ? 0.01 : 0.02;
       },
       remark() {
         return this.cardType === 0 ? '年卡' : '半年卡';
