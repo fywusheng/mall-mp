@@ -271,8 +271,18 @@
     },
     methods: {
       // 自动签到
-      signClick() {
-        this.$refs.signPop.open();
+      async signClick() {
+        // 签到
+        await Axios.post('/member/sh/member/signRecords/saveSignRecords', {});
+        // 获取签到次数
+        const { code, data } = await Axios.post(
+          '/member/sh/member/signRecords/getSignRecordsById',
+          {},
+        );
+        if (code === '200') {
+          this.signDay = data.consecutiveSigns > 7 ? 1 : data.consecutiveSigns;
+          this.$refs.signPop.open();
+        }
       },
       openMember() {
         uni.navigateTo({ url: '/pages/user-center/activate-member' });

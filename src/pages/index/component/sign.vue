@@ -22,7 +22,7 @@
               src="https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/sign-gold.png"
               mode="scaleToFill"
             />
-            <view class="point">+1</view>
+            <view class="point">{{ index > 4 ? '+2' : '+1' }}</view>
             <view v-if="item < signDay" class="has-sign">
               <image
                 class="right-icon"
