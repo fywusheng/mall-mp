@@ -284,8 +284,9 @@
     // },
     methods: {
       goItemClick(item) {
+        const sceneType = item.isCreditPoints === 1 ? '积分兑换' : '商品购买';
         uni.navigateTo({
-          url: `/sub-pages/index/item/main?id=${item.id}&sceneType=积分兑换`,
+          url: `/sub-pages/index/item/main?id=${item.id}&sceneType=${sceneType}`,
         });
       },
       toTop() {

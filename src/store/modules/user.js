@@ -40,10 +40,10 @@ export default {
       state.sessionId = payload
     },
     setToken(state, payload) {
-      state.setToken = payload
+      state.token = payload
     },
     logout(state) {
-      const map = ['sessionId', 'session_key', 'openid', 'unionid']
+      const map = ['sessionId', 'session_key', 'openid', 'unionid','userInfo', 'token']
       map.forEach(key => {
         state[key] = ''
       })
@@ -68,10 +68,12 @@ export default {
       ctx.commit('logout')
     },
     // 登录
-    async login(ctx) {
+    async login({commit, dispatch}) {
       // const {code} = await wx.login();
       const authData = await Axios.post(`/user/login`, {})
-      ctx.commit('setWxAuthId', authData.data)
+      commit('setWxAuthId', authData.data)
+
+      await dispatch('getUserInfo')
     },
     // 获取用户信息
     async getUserInfo({ commit, state }) {

@@ -264,13 +264,22 @@
         if (!this.add) {
           params.id = this.userInfo.id;
         }
-        const result = await Axios.post('/member/sh/memberInformation/saveMemberInfo', params);
-        if (result.code == 200) {
-          this.$uni.showToast('保存成功');
-          this.$store.dispatch('getUserInfo');
-          uni.navigateTo({ url: '/pages/user-center/register-userInfo-result' });
-        } else {
-          this.$uni.showToast(result.msg || result.data);
+
+        try {
+          await this.validRealName({
+            userName: params.name,
+            idCard: params.idCard,
+          });
+          const result = await Axios.post('/member/sh/memberInformation/saveMemberInfo', params);
+          if (result.code == 200) {
+            this.$uni.showToast('保存成功');
+            this.$store.dispatch('getUserInfo');
+            uni.navigateTo({ url: '/pages/user-center/register-userInfo-result' });
+          } else {
+            this.$uni.showToast(result.msg || result.data);
+          }
+        } catch (error) {
+          this.$uni.showToast('实名认证失败,请重新输入');
         }
       },
       /**
@@ -307,6 +316,21 @@
         }
 
         return true;
+      },
+      // 进行实名认证
+      validRealName(data) {
+        return new Promise((resolve, reject) => {
+          api.realPersonAuthenticate({
+            data,
+            showsLoading: true,
+            success: (res) => {
+              resolve(res);
+            },
+            fail: (error) => {
+              reject(error);
+            },
+          });
+        });
       },
     },
   };

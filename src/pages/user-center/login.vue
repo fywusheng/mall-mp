@@ -356,24 +356,17 @@
           },
           success: (data) => {
             uni.setStorageSync('token', data.accessToken);
-            Store.dispatch('login');
-            // 登陆成功获取用户数据
-            api.getUserInfo({
-              data: {
-                accessToken: uni.getStorageSync('token'),
-              },
-              success: (data) => {
-                this.userInfo = data;
-                uni.setStorageSync('userInfo', data);
-                uni.$emit('didLogin');
-                if (this.goUrl != '') {
-                  uni.reLaunch({
-                    url: this.goUrl,
-                  });
-                } else {
-                  uni.navigateBack();
-                }
-              },
+            Store.dispatch('setToken', data.accessToken);
+            Store.dispatch('login').then((result) => {
+              // console.log('result: ', result);
+              uni.$emit('didLogin');
+              if (this.goUrl != '') {
+                uni.reLaunch({
+                  url: this.goUrl,
+                });
+              } else {
+                uni.navigateBack();
+              }
             });
           },
         });
@@ -398,25 +391,17 @@
           },
           success: (data) => {
             uni.setStorageSync('token', data.accessToken);
+            Store.dispatch('setToken', data.accessToken);
             Store.dispatch('login').then((result) => {
-              // 登陆成功获取用户数据
-              api.getUserInfo({
-                data: {
-                  accessToken: uni.getStorageSync('token'),
-                },
-                success: (data) => {
-                  this.userInfo = data;
-                  uni.setStorageSync('userInfo', data);
-                  uni.$emit('didLogin');
-                  if (this.goUrl != '') {
-                    uni.reLaunch({
-                      url: this.goUrl,
-                    });
-                  } else {
-                    uni.navigateBack();
-                  }
-                },
-              });
+              // console.log('result: ', result);
+              uni.$emit('didLogin');
+              if (this.goUrl != '') {
+                uni.reLaunch({
+                  url: this.goUrl,
+                });
+              } else {
+                uni.navigateBack();
+              }
             });
 
             // uni.navigateBack();

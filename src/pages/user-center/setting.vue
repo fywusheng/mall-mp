@@ -51,8 +51,8 @@
           </view>
         </view>
       </view>
-      <view class="exitButton" @click="exitLoad" v-if="userInfo.id">退出登录</view>
-      <view class="exitButton delUser" @click="delUser" v-if="userInfo.id">注销账号</view>
+      <view class="exitButton" @click="exitLoad" v-if="userInfo">退出登录</view>
+      <view class="exitButton delUser" @click="delUser" v-if="userInfo">注销账号</view>
     </view>
     <real-name-pop ref="realpop" :showTop="showTop" @succFlag="succFlag" />
   </view>
@@ -90,9 +90,11 @@
             api.logout({
               success: () => {
                 Store.dispatch('logout');
-                uni.reLaunch({
-                  url: '/pages/index/index?index=4',
-                });
+                setTimeout(() => {
+                  // uni.reLaunch({
+                  //   url: '/pages/index/index',
+                  // });
+                }, 2000);
               },
             });
           },

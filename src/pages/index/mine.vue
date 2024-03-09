@@ -28,13 +28,17 @@
         <view class="fs-60 c-black name-wrapper">
           <view class="name">{{ nameFilter(userInfo.name) }}</view>
           <image
+            v-if="userInfo.memberStatus === 1"
             class="member-icon"
             src="https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/member-icon.png"
             mode="scaleToFill"
           />
         </view>
         <view class="fs-30 time-wrapper">
-          <view class="end-time">2010-2-10 会员到期</view>
+          <view v-if="userInfo.memberStatus === 1" class="end-time">
+            {{ userInfo.expirationTime }}
+            会员到期
+          </view>
           <view class="r" @click="signClick">
             <image
               class="sign"
@@ -258,8 +262,7 @@
     },
     mounted() {
       // 监听登录回调
-      uni.$on('didLogin', this.handleLogin);
-      // this.getUserInfoByToken();
+      // uni.$on('didLogin', this.handleLogin);
     },
     destroyed() {
       uni.$off('didLogin');
@@ -375,7 +378,6 @@
       // 点击裁剪确定按钮
       onok(ev) {
         this.path = ev.path;
-        console.log('ev:', ev);
         this.header = ev.path;
         this.url = '';
       },
