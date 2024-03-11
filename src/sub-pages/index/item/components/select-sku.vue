@@ -239,14 +239,16 @@
           <template v-if="selectSize.subClassAttrId">
             <span>¥{{ selectSize.sellingPrice }}</span>
 
-            <!-- 积分商城-会员到手价 -->
-            <text class="sell-price-label">兑换到手价</text>
+            <!-- 积分商城-到手价 -->
+            <text v-if="sceneType === '积分商城'" class="sell-price-label">兑换到手价</text>
 
             <!-- 商城项目-非会员到手价 -->
-            <!-- <text class="sell-price-label">到手价</text> -->
+            <text v-if="(sceneType === '商品购买') & member" class="sell-price-label">到手价</text>
 
             <!-- 商城项目-会员到手价 -->
-            <!-- <text class="member-price-label">会员到手价</text> -->
+            <text v-if="(sceneType === '商品购买') & !member" class="member-price-label">
+              会员到手价
+            </text>
           </template>
         </div>
         <div class="product-no">{{ selectSize.subClassAttrName }}</div>
@@ -324,6 +326,10 @@
       product: {
         type: Object,
         default: () => {},
+      },
+      member: {
+        type: Number,
+        default: false,
       },
       productImgList: {
         type: Array,

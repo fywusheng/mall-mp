@@ -32,22 +32,31 @@
         <view class="product-info" :class="product.creditPoints ? 'margTop1' : ''">
           <view class="product-price">
             <view class="sell-price">
-              <span class="span">¥{{ selectSize.sellingPrice }}</span>
+              <span class="span">
+                ¥{{ member ? selectSize.memberPrice : selectSize.finalPrice }}
+              </span>
             </view>
 
-            <!-- 积分商城-会员到手价 -->
-            <view class="sell-price-label">兑换到手价</view>
+            <!-- 积分商城-到手价 -->
+            <view v-if="sceneType === '积分兑换'" class="sell-price-label">兑换到手价</view>
 
             <!-- 商城项目-非会员到手价 -->
-            <!-- <view class="sell-price-label">到手价</view>
-            <image
-              class="member-price-icon"
-              src="https://ggllstatic.hpgjzlinfo.com/static/songhui/sub-item/member-price.png"
-              mode="scaleToFill"
-            /> -->
+            <template v-if="sceneType === '商品购买'">
+              <!-- 会员到手价 -->
+              <template v-if="member">
+                <view class="member-price-label">会员到手价</view>
+              </template>
+              <!-- 非会员到手价 -->
+              <template v-else>
+                <view class="sell-price-label">到手价</view>
 
-            <!-- 商城项目-会员到手价 -->
-            <!-- <view class="member-price-label">会员到手价</view> -->
+                <image
+                  class="member-price-icon"
+                  src="https://ggllstatic.hpgjzlinfo.com/static/songhui/sub-item/member-price.png"
+                  mode="scaleToFill"
+                />
+              </template>
+            </template>
 
             <!-- <view class="market-price" v-if="selectSize.markOffPrice">
               ¥{{ selectSize.markOffPrice }}
@@ -55,7 +64,9 @@
           </view>
 
           <!-- 商城项目-会员到手价 -->
-          <!-- <view class="no-member-price">¥1568.0 非会员到手价</view> -->
+          <view v-if="sceneType === '商品购买' && member" class="no-member-price">
+            ¥{{ selectSize.finalPrice }} 非会员到手价
+          </view>
 
           <view
             v-if="couponList && couponList.length"
@@ -99,12 +110,15 @@
             </view>
           </view>
 
-          <view class="getPrice" v-if="product.creditPoints && selectSize.presentPrice >= 0">
+          <!-- 积分兑换计算 -->
+          <view v-if="sceneType === '积分兑换'" class="getPrice">
             <img class="collected" src="https://ggllstatic.hpgjzlinfo.com/static/home/getP.png" />
             <view class="flex_line">
               <view class="item">
                 <view class="g">到手价</view>
-                <view class="g_n">￥{{ selectSize.presentPrice }}</view>
+                <view class="g_n">
+                  ￥{{ member ? selectSize.memberPrice : selectSize.finalPrice }}
+                </view>
               </view>
               <view class="item_d">
                 <view class="d">=</view>
@@ -118,7 +132,44 @@
               </view>
               <view class="item_p">
                 <view class="g">积分抵扣</view>
-                <view class="g_n">￥{{ product.creditPoints }}</view>
+                <view class="g_n">
+                  ￥{{ member ? product.pointDiscountPoint : product.registerPoint }}
+                </view>
+              </view>
+            </view>
+          </view>
+          <!-- 商品购买计算 -->
+          <view v-if="sceneType === '商品购买'" class="getPrice">
+            <img class="collected" src="https://ggllstatic.hpgjzlinfo.com/static/home/getP.png" />
+            <view class="flex_line">
+              <view class="item">
+                <view class="g">{{ member ? '会员到手价' : '到手价' }}</view>
+                <view class="g_n">
+                  ￥{{ member ? selectSize.memberPrice : selectSize.finalPrice }}
+                </view>
+              </view>
+              <view class="item_d">
+                <view class="d">=</view>
+              </view>
+              <view class="item_p">
+                <view class="g">原价</view>
+                <view class="g_n">￥{{ selectSize.sellingPrice }}</view>
+              </view>
+
+              <view v-if="member" class="item_d">
+                <view class="d">-</view>
+              </view>
+              <view v-if="member" class="item_p">
+                <view class="g">会员优惠</view>
+                <view class="g_n">￥{{ product.discountAmount ? product.discountAmount : 0 }}</view>
+              </view>
+
+              <view v-if="product.couponAmount" class="item_d">
+                <view class="d">-</view>
+              </view>
+              <view v-if="product.couponAmount" class="item_p">
+                <view class="g">优惠券</view>
+                <view class="g_n">￥{{ product.couponAmount ? product.discountAmount : 0 }}</view>
               </view>
             </view>
           </view>
@@ -269,6 +320,7 @@
     </template>
     <select-sku
       ref="selectSku"
+      :member="member"
       :selectSize="selectSize"
       :product="product"
       :selectColor="selectColor"
@@ -282,10 +334,10 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex';
   import Top from '@/sub-pages/index/components/top.vue';
   import SelectSku from './components/select-sku';
   import CouponList from './components/coupon-list';
-  // import { reportCmPV } from "@/plugins/cloudMonitorHelper";
 
   export default {
     data() {
@@ -352,7 +404,15 @@
         });
       },
     },
-    created() {},
+    computed: {
+      ...mapState({
+        userInfo: (state) => state.user.userInfo,
+      }),
+      // 是否会员
+      member() {
+        return true;
+      },
+    },
     methods: {
       handleBannerChange(e) {
         this.currentIndex = e.detail.current + 1;
