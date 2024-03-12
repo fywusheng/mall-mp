@@ -136,6 +136,13 @@
                   ￥{{ member ? product.pointDiscountPoint : product.registerPoint }}
                 </view>
               </view>
+              <view v-if="product.couponAmount" class="item_d">
+                <view class="d">-</view>
+              </view>
+              <view v-if="product.couponAmount" class="item_p">
+                <view class="g">优惠券</view>
+                <view class="g_n">￥{{ product.couponAmount ? product.discountAmount : 0 }}</view>
+              </view>
             </view>
           </view>
           <!-- 商品购买计算 -->
@@ -410,7 +417,7 @@
       }),
       // 是否会员
       member() {
-        return true;
+        return this.userInfo.memberStatus === 1;
       },
     },
     methods: {

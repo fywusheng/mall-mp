@@ -247,10 +247,10 @@
       this.getLocation();
 
       // 若存在 token 缓存, 则请求用户信息
-      if (uni.getStorageSync('token')) {
-        this.handleLogin();
-        this.getHomePop();
-      }
+      // if (uni.getStorageSync('token')) {
+      //   this.handleLogin();
+      //   this.getHomePop();
+      // }
 
       this.getCateGoryList();
       this.recommend1(21);
@@ -258,15 +258,15 @@
       // 监听城市选择回调
       uni.$on('didSelectCity', this.handleSelectCity);
       // 监听登录回调
-      uni.$on('didLogin', this.handleLogin);
-      // 监听退出登录回调
-      uni.$on('didLogout', this.handleLogout);
+      // uni.$on('didLogin', this.handleLogin);
+      // // 监听退出登录回调
+      // uni.$on('didLogout', this.handleLogout);
     },
     onUnload() {
       // 取消监听登录回调
-      uni.$off('didLogin');
+      // uni.$off('didLogin');
       // 取消监听退出登录回调
-      uni.$off('didLogout');
+      // uni.$off('didLogout');
     },
     onShow() {
       const curPages = getCurrentPages()[0];

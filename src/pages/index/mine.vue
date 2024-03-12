@@ -678,7 +678,7 @@
       // 点击实名认证,积分兑换,消息中心，收藏中心
       handleUserClick(type) {
         // 检查用户是否登录
-        if (!this.userInfo.tel) {
+        if (!this.userInfo) {
           // 未登录, 跳转到登录页面
           uni.navigateTo({
             url: '/pages/user-center/login',

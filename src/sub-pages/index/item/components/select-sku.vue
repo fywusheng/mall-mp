@@ -237,16 +237,16 @@
         <div class="sku-img" :style="{ backgroundImage: 'url(' + imgUrl + ')' }"></div>
         <div class="sell-price">
           <template v-if="selectSize.subClassAttrId">
-            <span>¥{{ selectSize.sellingPrice }}</span>
+            <span>¥{{ member ? selectSize.memberPrice : selectSize.finalPrice }}</span>
 
             <!-- 积分商城-到手价 -->
-            <text v-if="sceneType === '积分商城'" class="sell-price-label">兑换到手价</text>
+            <text v-if="sceneType === '积分兑换'" class="sell-price-label">兑换到手价</text>
 
             <!-- 商城项目-非会员到手价 -->
-            <text v-if="(sceneType === '商品购买') & member" class="sell-price-label">到手价</text>
+            <text v-if="(sceneType === '商品购买') & !member" class="sell-price-label">到手价</text>
 
             <!-- 商城项目-会员到手价 -->
-            <text v-if="(sceneType === '商品购买') & !member" class="member-price-label">
+            <text v-if="(sceneType === '商品购买') & member" class="member-price-label">
               会员到手价
             </text>
           </template>
@@ -328,7 +328,7 @@
         default: () => {},
       },
       member: {
-        type: Number,
+        type: Boolean,
         default: false,
       },
       productImgList: {
@@ -359,6 +359,7 @@
         showPopup: false,
         number: 1,
         imgUrl: '',
+        sceneType: '',
       };
     },
 
@@ -441,6 +442,7 @@
         this.$parent.changeSku('selectSize', size);
       },
       show(flag, type, sceneType) {
+        console.log('sceneType: ', sceneType);
         this.showPopup = flag;
         this.sceneType = sceneType;
         if (flag) {

@@ -162,7 +162,7 @@
             ctx.beginPath();
             ctx.arc(63, 63, 52, startRadian, endRadian); // 创建圆弧
             ctx.setStrokeStyle('#ff5500'); // 设置填充颜色
-            ctx.setLineWidth(15); // 设置填充线宽
+            ctx.setLineWidth(10); // 设置填充线宽
             ctx.stroke(); // 开始描边
             ctx.closePath();
 

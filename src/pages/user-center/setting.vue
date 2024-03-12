@@ -1,23 +1,23 @@
 <template>
   <view class="setting">
-    <view v-if="isShow">
+    <view>
       <view class="blank"></view>
       <view class="list flex-v">
         <view class="item flex-h flex-c-b" @click="realClick">
           <text class="fs-40 c-black flex-1">实名认证</text>
           <view class="item__text flex-h flex-c-e">
-            <text>{{ userInfo.name }}</text>
-            <image
+            <text>{{ userInfo.name ? '已实名' : '未实名' }}</text>
+            <!-- <image
               class="item__accessory"
               mode="scaleToFill"
               src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
-            />
+            /> -->
           </view>
         </view>
-        <view class="item flex-h flex-c-b" @click="handleModifyPhoneNumberClick" v-if="userInfo.id">
+        <view class="item flex-h flex-c-b" @click="handleModifyPhoneNumberClick" v-if="userInfo">
           <text class="fs-40 c-black flex-1">更换绑定手机号</text>
           <view class="item__text flex-h flex-c-e">
-            <text>{{ userInfo.tel | phoneNumberFilter }}</text>
+            <text>{{ userInfo.phone | phoneNumberFilter }}</text>
             <image
               class="item__accessory"
               mode="scaleToFill"
@@ -54,22 +54,20 @@
       <view class="exitButton" @click="exitLoad" v-if="userInfo">退出登录</view>
       <view class="exitButton delUser" @click="delUser" v-if="userInfo">注销账号</view>
     </view>
-    <real-name-pop ref="realpop" :showTop="showTop" @succFlag="succFlag" />
+    <!-- <real-name-pop ref="realpop" :showTop="showTop" @succFlag="succFlag" /> -->
   </view>
 </template>
 
 <script>
-  import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
+  import { mapState } from 'vuex';
+  // import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
   import { desensitizeInfo } from '@/utils/desensitization.js';
   import api from '@/apis/index.js';
 
   export default {
-    components: { RealNamePop },
+    components: {},
     data() {
       return {
-        // 导航栏高度
-        userInfo: uni.getStorageSync('userInfo'),
-        isShow: true,
         showTop: false,
       };
     },
@@ -79,8 +77,10 @@
         return desensitizeInfo(value);
       },
     },
-    onShow() {
-      this.userInfo = uni.getStorageSync('userInfo');
+    computed: {
+      ...mapState({
+        userInfo: (state) => state.user.userInfo,
+      }),
     },
     methods: {
       exitLoad() {
@@ -137,16 +137,16 @@
         }
       },
       realClick() {
-        if (!this.userInfo.tel) {
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
-        }
-        if (this.userInfo.crtfStas != '0') {
-          return;
-        }
-        this.$refs.realpop.open();
+        // if (!this.userInfo.tel) {
+        //   uni.navigateTo({
+        //     url: '/pages/user-center/login',
+        //   });
+        //   return;
+        // }
+        // if (this.userInfo.crtfStas != '0') {
+        //   return;
+        // }
+        // this.$refs.realpop.open();
       },
       /**
        * 修改手机号点击事件

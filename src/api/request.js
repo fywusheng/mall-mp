@@ -13,7 +13,7 @@ export function request({
   if (showsLoading) showLoading('加载中')
 
   const headers = {
-    'channel': uni.getSystemInfoSync().app,
+    'channel': uni.getSystemInfoSync().host.env,
     'Accept': 'application/json',
     'accessToken': uni.getStorageSync('token'),
     'tsf-metadata': ''
