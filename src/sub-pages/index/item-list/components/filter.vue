@@ -16,6 +16,7 @@
     position: absolute;
     bottom: 0;
     width: rpx(750);
+    height: 80vh;
     background-color: #fff;
     // height: 100vh;
     padding-bottom: rpx(192);
