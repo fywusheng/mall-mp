@@ -4,7 +4,7 @@
       <view class="header-wrapper">
         <image class="avatar" src="" mode="scaleToFill" />
         <view class="right">
-          <view class="name">你好，高**</view>
+          <view class="name">你好，{{ userInfo.name }}</view>
           <view>您已尊享商城会员服务123天</view>
         </view>
       </view>
@@ -18,7 +18,7 @@
           font-size="36rpx"
           @change="handleTabClick"
         ></me-tabs>
-        <view class="time">2021年02月10日至2024年02月</view>
+        <view class="time">{{ startTime }}至{{ endTime }}</view>
         <view class="save">
           <view class="circle">
             <!-- 圆环 -->
@@ -47,54 +47,53 @@
           />
         </view>
         <view class="product">
-          <view class="product-list">
+          <view v-for="item in list" :key="item.id" class="product-list">
             <view class="timer">
-              <text>2024-1-1</text>
-              <text>共 1 件商品</text>
+              <text>{{ item.createdTime }}</text>
+              <text>共 {{ item.itemList.length }} 件商品</text>
             </view>
-            <view class="product-info">
-              <image
-                class="logo"
-                src="https://ggllstatic.hpgjzlinfo.com/static/songhui/services/total.png"
-                mode="scaleToFill"
-              />
-              <view class="right">
-                <view class="name">商品名称萨科合法看电视</view>
-                <view class="total">
-                  <text>合计省钱</text>
-                  <text class="unit">¥</text>
-                  <text class="price">42.2</text>
-                  <image
-                    class="icon-bottom icon"
-                    src="https://ggllstatic.hpgjzlinfo.com/static/songhui/services/top.png"
-                    mode="scaleToFill"
-                  />
+            <view v-for="subOrder in item.itemList" :key="subOrder.id">
+              <view class="product-info">
+                <image class="logo" :src="subOrder.imgUrl" mode="scaleToFill" />
+                <view class="right">
+                  <view class="name">{{ subOrder.productName }}</view>
+                  <view class="total">
+                    <text>合计省钱</text>
+                    <text class="unit">¥</text>
+                    <text class="price">42.2</text>
+                    <image
+                      class="icon-bottom icon"
+                      src="https://ggllstatic.hpgjzlinfo.com/static/songhui/services/top.png"
+                      mode="scaleToFill"
+                    />
+                  </view>
                 </view>
               </view>
-            </view>
-            <view class="benefit-info">
-              <view class="item">
-                <view class="desc">购物优惠</view>
-                <view class="benefit-price">
-                  <text class="unit">¥</text>
-                  <text class="number">12.00</text>
+              <view class="benefit-info">
+                <view class="item">
+                  <view class="desc">购物优惠</view>
+                  <view class="benefit-price">
+                    <text class="unit">¥</text>
+                    <text class="number">12.00</text>
+                  </view>
                 </view>
-              </view>
-              <view class="item">
-                <view class="desc">专享优惠券</view>
-                <view class="benefit-price">
-                  <text class="unit">¥</text>
-                  <text class="number">12.00</text>
+                <view class="item">
+                  <view class="desc">专享优惠券</view>
+                  <view class="benefit-price">
+                    <text class="unit">¥</text>
+                    <text class="number">12.00</text>
+                  </view>
                 </view>
-              </view>
-              <view class="item">
-                <view class="desc">运费优惠</view>
-                <view class="benefit-price">
-                  <text class="unit">¥</text>
-                  <text class="number">12.00</text>
+                <view class="item">
+                  <view class="desc">运费优惠</view>
+                  <view class="benefit-price">
+                    <text class="unit">¥</text>
+                    <text class="number">12.00</text>
+                  </view>
                 </view>
               </view>
             </view>
+
             <view class="line"></view>
           </view>
         </view>
@@ -107,32 +106,48 @@
   </view>
 </template>
 <script>
+  import { mapState } from 'vuex';
+  import dayjs from 'dayjs';
   export default {
     data() {
       return {
-        percent: 50,
+        startTime: '',
+        endTime: '',
+        percent: 100,
         select: 0,
+        totalMoney: 0,
         bottomTips: '',
-        randomId: '123',
         list: [],
         tabs: [{ name: '累计省钱' }, { name: '本周期省钱' }],
       };
     },
-    onLoad(e) {},
     created() {
-      // 随机id是为了避免组件在多个地方使用有冲突
-      this.randomId = 'canvas' + (Math.random() * 1000000).toFixed(0);
-      setTimeout(() => {
-        this.initCanvas();
-      }, 500);
+      this.setTime();
       this.getShopOrderList();
+      this.getTotalSaveMoney();
+    },
+    computed: {
+      ...mapState({
+        userInfo: (state) => state.user.userInfo,
+      }),
     },
     methods: {
       openMember() {
         uni.navigateTo({ url: '/pages/user-center/activate-member' });
       },
       handleTabClick(index) {
-        // this.tabIndex = index;
+        this.list = [];
+        this.$nextTick(() => {
+          this.setTime();
+          this.getShopOrderList();
+          this.getTotalSaveMoney();
+        });
+      },
+      setTime() {
+        this.startTime = dayjs()
+          .subtract(this.select == 0 ? 5 : 1, 'year')
+          .format('YYYY-MM-DD');
+        this.endTime = dayjs().format('YYYY-MM-DD');
       },
       // canvas
       initCanvas() {
@@ -142,9 +157,7 @@
           .boundingClientRect((data) => {
             const { width, height } = data;
             const ctx = uni.createCanvasContext('saveMoney');
-
             ctx.scale(width / 126, height / 126); // 页面适配，获取缩放比例进行缩放
-
             // 先填充一个完整的圆作为背景
             ctx.beginPath(); // 开始路径
             ctx.arc(63, 63, 52, 0, 2 * Math.PI);
@@ -152,15 +165,12 @@
             ctx.setLineWidth(15); // 设置填充线宽
             ctx.stroke(); // 开始描边
             ctx.closePath(); // 结束路径
-
             // 起始位置在最上面，所以是-(Math.PI / 2)
             const startRadian = -(Math.PI / 2);
-
             // 根据百分比计算对应的弧度得出结束位置
             const angle = (360 * this.percent) / 100;
             const radian = (angle * Math.PI) / 180;
             const endRadian = startRadian + radian;
-
             // 绘制进度条
             ctx.beginPath();
             ctx.arc(63, 63, 52, startRadian, endRadian); // 创建圆弧
@@ -168,7 +178,6 @@
             ctx.setLineWidth(10); // 设置填充线宽
             ctx.stroke(); // 开始描边
             ctx.closePath();
-
             // 绘制进度条中间文字
             ctx.beginPath();
             ctx.setFontSize(14);
@@ -176,18 +185,28 @@
             ctx.setTextAlign('center'); // 设置文字居中
             ctx.fillText('我累计已省', 126 / 2, 126 / 2 - 5); // 第二个参数需要设置canvas宽度的一半
             ctx.closePath();
-
             // 绘制进度条中间百分比
             ctx.beginPath();
             ctx.setFontSize(16);
             ctx.setFillStyle('#ff5500');
             ctx.setTextAlign('center');
-            ctx.fillText(this.percent.toFixed(1) + '%', 126 / 2, 126 / 2 + 25);
+            ctx.fillText('¥' + this.totalMoney.toFixed(2), 126 / 2, 126 / 2 + 25);
             ctx.closePath();
-
             ctx.draw();
           })
           .exec();
+      },
+      // 获取累计省钱详情
+      async getTotalSaveMoney() {
+        const result = await Axios.post('/order/getMemberSaveMoney', {
+          memberSaveMoneyFlag: true,
+          startTime: this.startTime,
+          endTime: this.endTime,
+        });
+        if (result.code === '200') {
+          this.totalMoney = result.data;
+          this.initCanvas();
+        }
       },
       // 获取省钱明细
       async getShopOrderList() {
@@ -199,13 +218,43 @@
           numPerPage: 20,
           sceneType: '',
           memberSaveMoneyFlag: true,
+          startTime: this.startTime,
+          endTime: this.endTime,
           // status: this.currentIndex == 1 ? 3 : this.pageOption[this.currentIndex]['orderStatus'],
         };
         const result = await Axios.post('/order/list', params);
         uni.hideLoading();
         if (result.code == 200) {
           const list = result.data.list || [];
-          this.list = this.list.concat(list);
+          const res = [];
+          list.forEach((data) => {
+            const itemList = [];
+            if (data.storeOrderItems) {
+              data.storeOrderItems.forEach((orderItemModel) => {
+                orderItemModel.items.forEach((item) => {
+                  itemList.push(item);
+                });
+              });
+              const tempData = _.pick(data, [
+                'createdTime',
+                'orderId',
+                'orderStatus',
+                'totalQuantity',
+                'orderType',
+                'orderAmount',
+                'orderStatusLabel',
+                'payableAmount',
+                'storeName',
+                'storeId',
+                'hzhH5',
+              ]);
+              tempData.itemList = itemList;
+              tempData.orderMallIcon = data.storeOrderItems[0].orderMallIcon;
+              res.push(tempData);
+            }
+          });
+          // return res;
+          this.list = this.list.concat(res);
         } else {
           uni.showToast(result.msg);
         }
@@ -360,6 +409,7 @@
         .product {
           margin-top: 40rpx;
           .product-list {
+            margin-bottom: 24rpx;
             .timer {
               width: 686rpx;
               height: 48rpx;
@@ -465,6 +515,7 @@
             .line {
               width: 686rpx;
               height: 2rpx;
+              margin-top: 40rpx;
               background: #ebedf0;
             }
           }
