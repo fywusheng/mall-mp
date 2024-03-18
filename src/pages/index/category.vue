@@ -37,7 +37,6 @@
     methods: {
       // 请求数据
       async loadData() {
-        console.log(123);
         const { data, code, msg } = await Axios.post('/category/getCategoryList', {
           type: 2,
         });
@@ -51,9 +50,8 @@
       // 去列表页
       toCategory(cate) {
         uni.navigateTo({
-          url: '/sub-pages/index/item-list/main?key=',
+          url: '/sub-pages/index/item-list/main?dispId=' + cate.id,
         });
-        // uni.navigateTo({ url: `/sub-pages/index/category/main?code=${cate.code}` });
       },
 
       handleImgLoadFail(item) {

@@ -310,7 +310,7 @@
           return;
         }
         uni.navigateTo({
-          url: '/sub-pages/index/item-list/main?key=',
+          url: '/sub-pages/index/item-list/main?dispId=' + v.id,
         });
         // uni.navigateTo({ url: `/sub-pages/index/category/main?code=${v.code}` });
       },

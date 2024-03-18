@@ -112,7 +112,9 @@
       return {
         percent: 50,
         select: 0,
+        bottomTips: '',
         randomId: '123',
+        list: [],
         tabs: [{ name: '累计省钱' }, { name: '本周期省钱' }],
       };
     },
@@ -123,6 +125,7 @@
       setTimeout(() => {
         this.initCanvas();
       }, 500);
+      this.getShopOrderList();
     },
     methods: {
       openMember() {
@@ -185,6 +188,32 @@
             ctx.draw();
           })
           .exec();
+      },
+      // 获取省钱明细
+      async getShopOrderList() {
+        uni.showLoading({
+          title: '加载中',
+        });
+        const params = {
+          pageNum: 1,
+          numPerPage: 20,
+          sceneType: '',
+          memberSaveMoneyFlag: true,
+          // status: this.currentIndex == 1 ? 3 : this.pageOption[this.currentIndex]['orderStatus'],
+        };
+        const result = await Axios.post('/order/list', params);
+        uni.hideLoading();
+        if (result.code == 200) {
+          const list = result.data.list || [];
+          this.list = this.list.concat(list);
+        } else {
+          uni.showToast(result.msg);
+        }
+        if (result.total > 5) {
+          this.bottomTips = result.hasNextPage ? 'more' : 'nomore';
+        } else {
+          this.bottomTips = '';
+        }
       },
     },
   };

@@ -202,11 +202,10 @@
         <ul class="condition-list">
           <li
             class="condition"
-            v-show="showMoreCate || index < 3"
             :class="{ active: subAttr.check }"
-            v-for="(subAttr, index) in suitPeopleList"
+            v-for="(subAttr, index) in targetAudienceList"
             :key="index"
-            @click="changeCate(subAttr)"
+            @click="changeTargetAudience(subAttr)"
           >
             <view class="txt">{{ subAttr.name }}</view>
             <!-- {{ subAttr.name }} -->
@@ -288,11 +287,6 @@
         type: Array,
         default: [],
       },
-      // 适用人群
-      suitPeopleList: {
-        type: Array,
-        default: [],
-      },
       priceList: {
         type: Array,
         default: [],
@@ -305,6 +299,16 @@
         params: {
           brandId: '',
         },
+        // 适用人群
+        targetAudienceList: [
+          { name: '人群1', value: '人群1', check: false },
+          { name: '人群2', value: '人群2', check: false },
+          { name: '人群3', value: '人群3', check: false },
+          { name: '人群4', value: '人群4', check: false },
+          { name: '人群5', value: '人群5', check: false },
+          { name: '人群6', value: '人群6', check: false },
+          { name: '人群7', value: '人群7', check: false },
+        ],
         dataList: [],
         showMoreBrand: false,
         showMoreCate: false,
@@ -318,12 +322,28 @@
         this.$emit('changePrice', price);
       },
       reset() {
+        this.targetAudienceList.forEach((data) => {
+          data.check = false;
+        });
         this.$emit('reset');
         this.showPopup = false;
       },
       search() {
         this.$emit('search');
         this.showPopup = false;
+      },
+
+      changeTargetAudience(target) {
+        target.check = !target.check;
+        // 适用人群
+        const index = this.targetAudienceList.findIndex((item) => {
+          return item.name == target.name;
+        });
+        this.$set(this.targetAudienceList, index, target);
+        this.$emit(
+          'changeTargetAudience',
+          this.targetAudienceList.filter((item) => item.check),
+        );
       },
       changeCate(cate) {
         //类别

@@ -597,7 +597,11 @@
                 {{ item.brandName }}
               </div>
               <div class="item-name">{{ item.name }}||{{ item.soldOut }}</div>
-              <div class="item-price">&yen;{{ item.salePrice }}</div>
+              <div class="item-price">
+                {{ member ? '会员到手价' : '到手价' }}:&yen;{{
+                  member ? item.memberPrice : item.finalPrice
+                }}
+              </div>
               <div class="item-price">
                 <view class="jf" v-if="item.isCreditPoints == 1">
                   积分抵扣￥{{
@@ -629,7 +633,11 @@
                   {{ item.brandName }}
                 </div>
                 <div class="item-name">{{ item.name }}</div>
-                <div class="item-price">&yen;{{ item.salePrice }}</div>
+                <div class="item-price">
+                  {{ member ? '会员到手价' : '到手价' }}:&yen;{{
+                    member ? item.memberPrice : item.finalPrice
+                  }}
+                </div>
                 <div class="item-price">
                   <view class="jf" v-if="item.isCreditPoints == 1">
                     积分抵扣￥{{
@@ -657,6 +665,7 @@
       @changePrice="changePrice"
       @search="search"
       @changeBrand="changeBrand"
+      @changeTargetAudience="changeTargetAudience"
       @changeCate="changeCate"
       :priceList="priceList"
       :attrList="attrList"
@@ -667,6 +676,7 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex';
   import Top from '@/sub-pages/index/components/top.vue';
   import SearchFilter from './components/filter';
   import wx from 'utils/wx';
@@ -674,7 +684,6 @@
     name: 'SEARCH',
     data() {
       return {
-        sceneType: '适老用品',
         loading: true,
         filterType: 0,
         pageNo: 1,
@@ -691,6 +700,7 @@
         name: '',
         attrList: [],
         categoryList: [],
+        targetAudienceList: [],
         priceList: [],
       };
     },
@@ -709,6 +719,15 @@
       Top,
       SearchFilter,
     },
+    computed: {
+      ...mapState({
+        userInfo: (state) => state.user.userInfo,
+      }),
+      // 是否会员
+      member() {
+        return this.userInfo && this.userInfo.memberStatus === 1;
+      },
+    },
     methods: {
       toHome() {
         uni.navigateTo({
@@ -719,9 +738,9 @@
         this.listType = this.listType === 0 ? 1 : 0;
       },
       goItem(item) {
-        // XIU.bridge.goItem(item.id)
+        const sceneType = item.isCreditPoints === 1 ? '积分兑换' : '商品购买';
         uni.navigateTo({
-          url: `/sub-pages/index/item/main?id=${item.id}&sceneType=${this.sceneType}`,
+          url: `/sub-pages/index/item/main?id=${item.id}&sceneType=${sceneType}`,
         });
       },
       back() {
@@ -735,6 +754,9 @@
           data.check = false;
         });
         this.brandList.forEach((data) => {
+          data.check = false;
+        });
+        this.targetAudienceList.forEach((data) => {
           data.check = false;
         });
         this.attrList.forEach((data) => {
@@ -761,6 +783,9 @@
       changePrice(priceRange) {
         priceRange.check = !priceRange.check;
         this.$set(this.priceList, priceRange.id, priceRange);
+      },
+      changeTargetAudience(list) {
+        this.targetAudienceList = list;
       },
       changeBrand(brand) {
         brand.check = !brand.check;
@@ -840,6 +865,15 @@
         });
         if (priceIds.length) {
           params.priceRange = priceIds.join(',');
+        }
+        const targetAudiences = [];
+        this.targetAudienceList.forEach((target) => {
+          if (target.check) {
+            targetAudiences.push(target.name);
+          }
+        });
+        if (targetAudiences.length) {
+          params.targetAudience = targetAudiences.join(',');
         }
         this.disabled = true;
         uni.showLoading();
@@ -969,6 +1003,9 @@
           this.empty = true;
         }
       },
+    },
+    onReachBottom() {
+      this.loadData();
     },
     onPageScroll(e) {
       // this.$refs.toTop.show(e.scrollTop > App.systemInfo.screenHeight);
