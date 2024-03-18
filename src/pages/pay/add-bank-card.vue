@@ -8,7 +8,7 @@
           <!-- <view class="back-icon"></view>
           <image class="icon-desc"
           @click="handleHomeBack"
-                 src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-index.png"
+                 src="http://192.168.1.187:10088/static/supermarket/icon-index.png"
                  mode="scaleToFill" /> -->
 
           <text class="navigation-bar__title fs-44 c-black flex-1">{{ title }}</text>
@@ -23,7 +23,7 @@
           <image
             class="back-icon"
             @click="handleNavBack"
-            src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-arrow-left.png"
+            src="http://192.168.1.187:10088/static/supermarket/icon-arrow-left.png"
             mode="scaleToFill"
           />
           <text class="navigation-bar__title fs-44 c-black flex-1">{{ title }}</text>
@@ -120,11 +120,11 @@
         focus: false,
         // iconPath
         icon: {
-          camera: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-camera.png',
-          arrow: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-arrow.png',
+          camera: 'http://192.168.1.187:10088/static/pay/icon-camera.png',
+          arrow: 'http://192.168.1.187:10088/static/pay/icon-arrow.png',
           bankArrow:
-            'https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png',
-          delete: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-input-delete.png',
+            'http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png',
+          delete: 'http://192.168.1.187:10088/static/pay/icon-input-delete.png',
         },
         // 导航栏高度
         // #ifdef MP-WEIXIN

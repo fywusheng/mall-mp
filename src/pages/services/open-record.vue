@@ -75,9 +75,9 @@
         font-weight: 400;
         color: #271d1a;
         background-size: 100% 100%;
-        background-image: url('https://ggllstatic.hpgjzlinfo.com/static/songhui/services/member-bg.png');
+        background-image: url('http://192.168.1.187:10088/static/songhui/services/member-bg.png');
         &.active {
-          background-image: url('https://ggllstatic.hpgjzlinfo.com/static/songhui/services/member-bg-active.png');
+          background-image: url('http://192.168.1.187:10088/static/songhui/services/member-bg-active.png');
         }
         .name {
           font-size: 44rpx;

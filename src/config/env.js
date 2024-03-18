@@ -39,5 +39,5 @@ export default {
   }[process.env.NODE_ENV],
 
   // 默认图片
-  IMG_DEFAULT: 'https://ggllstatic.hpgjzlinfo.com/static/home/image-home-article-default.png'
+  IMG_DEFAULT: 'http://192.168.1.187:10088/static/home/image-home-article-default.png'
 }

@@ -3,19 +3,16 @@
     <button class="menu" v-if="showShop" open-type="contact" @click="goBuy">
       <img
         class="icon icon-service"
-        src="https://ggllstatic.hpgjzlinfo.com/static/images/common/bug.png"
+        src="http://192.168.1.187:10088/static/images/common/bug.png"
       />
     </button>
     <div class="menu" v-if="showTop" @click="toTop">
-      <img
-        class="icon icon-top"
-        src="https://ggllstatic.hpgjzlinfo.com/static/images/common/top.png"
-      />
+      <img class="icon icon-top" src="http://192.168.1.187:10088/static/images/common/top.png" />
     </div>
     <button class="menu" v-if="showContact" open-type="contact">
       <img
         class="icon icon-service"
-        src="https://ggllstatic.hpgjzlinfo.com/static/images/common/service.png"
+        src="http://192.168.1.187:10088/static/images/common/service.png"
       />
     </button>
   </div>

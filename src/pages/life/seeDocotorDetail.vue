@@ -19,19 +19,19 @@
             <image
               v-if="!play"
               mode="scaleToFill"
-              src="https://ggllstatic.hpgjzlinfo.com/static/find/horn2x.png"
+              src="http://192.168.1.187:10088/static/find/horn2x.png"
             ></image>
             <image
               v-if="play && !paused"
               class="playimg"
               mode="scaleToFill"
-              src="https://ggllstatic.hpgjzlinfo.com/static/find/list-stop2x.png"
+              src="http://192.168.1.187:10088/static/find/list-stop2x.png"
             ></image>
             <image
               v-if="play && paused"
               class="playimg"
               mode="scaleToFill"
-              src="https://ggllstatic.hpgjzlinfo.com/static/find/list-play2x.png"
+              src="http://192.168.1.187:10088/static/find/list-play2x.png"
             ></image>
             <text v-if="!play">听文章</text>
             <text class="play" v-if="play && !paused">暂停</text>
@@ -203,8 +203,7 @@
       //图片加载失败
       handleImageLoadFail() {
         // 图片加载失败时显示默认图片
-        this.detail.image =
-          'https://ggllstatic.hpgjzlinfo.com/static/home/image-home-article-default.png';
+        this.detail.image = 'http://192.168.1.187:10088/static/home/image-home-article-default.png';
       },
       handleNoimg() {
         if (!this.play) {

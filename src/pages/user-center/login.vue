@@ -3,7 +3,7 @@
     <image
       class="image"
       mode="scaleToFill"
-      src="https://ggllstatic.hpgjzlinfo.com/static/user-center/icon-login-logo.png"
+      src="http://192.168.1.187:10088/static/user-center/icon-login-logo.png"
     />
     <view class="row flex-h flex-c-s m-0-60 b-b-line">
       <!-- <text class="row__label fs-40 c-black">账&nbsp;&nbsp;&nbsp;号：</text> -->
@@ -138,8 +138,8 @@
         loginType: 'smsCode',
         checked: false,
         icon: {
-          checked: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-radio-checked.png',
-          noChecked: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-radio-default.png',
+          checked: 'http://192.168.1.187:10088/static/pay/icon-radio-checked.png',
+          noChecked: 'http://192.168.1.187:10088/static/pay/icon-radio-default.png',
         },
         // 登录方式选项
         loginTypes: [],
@@ -172,8 +172,8 @@
       // 密码图标地址
       passwordIconURL() {
         return this.showsPasswordText
-          ? 'https://ggllstatic.hpgjzlinfo.com/static/user-center/icon-user-center-show-password.png'
-          : 'https://ggllstatic.hpgjzlinfo.com/static/user-center/icon-user-center-hide-password.png';
+          ? 'http://192.168.1.187:10088/static/user-center/icon-user-center-show-password.png'
+          : 'http://192.168.1.187:10088/static/user-center/icon-user-center-hide-password.png';
       },
     },
     onLoad(e) {

@@ -61,7 +61,7 @@
       </view>
     </view>
     <view v-if="loading == 3" class="empt">
-      <image src="https://ggllstatic.hpgjzlinfo.com/static/life/emp.png" class="l_empt" />
+      <image src="http://192.168.1.187:10088/static/life/emp.png" class="l_empt" />
       <view class="watch">登录后查看订单</view>
       <view class="login" @click="goLogin">去登录</view>
     </view>

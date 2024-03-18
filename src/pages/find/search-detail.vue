@@ -20,17 +20,17 @@
             <image
               v-if="!play"
               mode="scaleToFill"
-              src="https://ggllstatic.hpgjzlinfo.com/static/find/horn2x.png"
+              src="http://192.168.1.187:10088/static/find/horn2x.png"
             ></image>
             <image
               v-if="play && !paused"
               mode="scaleToFill"
-              src="https://ggllstatic.hpgjzlinfo.com/static/find/list-stop2x.png"
+              src="http://192.168.1.187:10088/static/find/list-stop2x.png"
             ></image>
             <image
               v-if="play && paused"
               mode="scaleToFill"
-              src="https://ggllstatic.hpgjzlinfo.com/static/find/list-play2x.png"
+              src="http://192.168.1.187:10088/static/find/list-play2x.png"
             ></image>
             <text v-if="!play">听文章</text>
             <text class="play" v-if="play && !paused">暂停</text>
@@ -45,7 +45,7 @@
 
     <!-- <image class="max"
          mode="widthFix"
-         src="https://ggllstatic.hpgjzlinfo.com/static/home/image-home-article-default.png"
+         src="http://192.168.1.187:10088/static/home/image-home-article-default.png"
          @error="handleImageLoadFail"
          alt=""> -->
     <view class="flex-c-c share-bot">
@@ -54,13 +54,13 @@
           class="cole"
           mode="scaleToFill"
           v-if="detail.colFlag === '1'"
-          src="https://ggllstatic.hpgjzlinfo.com/static/map/icon-map-collected.png"
+          src="http://192.168.1.187:10088/static/map/icon-map-collected.png"
         />
         <image
           class="cole"
           mode="scaleToFill"
           v-else
-          src="https://ggllstatic.hpgjzlinfo.com/static/map/icon-map-uncollect.png"
+          src="http://192.168.1.187:10088/static/map/icon-map-uncollect.png"
         />
         <text>收藏</text>
       </view>
@@ -68,7 +68,7 @@
         <image
           class="share"
           mode="scaleToFill"
-          src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-share2x.png"
+          src="http://192.168.1.187:10088/static/common/icon-share2x.png"
         />
         <text>分享</text>
       </view>
@@ -80,29 +80,26 @@
         <view class="flex-h list fs-36">
           <button class="item flex-v flex-c-c" open-type="share">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-wechat.png"
+              src="http://192.168.1.187:10088/static/common/icon-wechat.png"
               mode="scaleToFill"
             />
             <text>微信好友</text>
           </button>
           <!-- #ifdef MP-ALIPAY -->
           <button class="item flex-v flex-c-c" open-type="share">
-            <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-qq.png"
-              mode="scaleToFill"
-            />
+            <image src="http://192.168.1.187:10088/static/common/icon-qq.png" mode="scaleToFill" />
             <text>QQ好友</text>
           </button>
           <button class="item flex-v flex-c-c" open-type="share">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-alipay.png"
+              src="http://192.168.1.187:10088/static/common/icon-alipay.png"
               mode="scaleToFill"
             />
             <text>支付宝好友</text>
           </button>
           <button class="item flex-v flex-c-c" open-type="share">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-message.png"
+              src="http://192.168.1.187:10088/static/common/icon-message.png"
               mode="scaleToFill"
             />
             <text>短信</text>
@@ -110,7 +107,7 @@
           <!-- #endif -->
           <button class="item flex-v flex-c-c ml-56" @click="handleCopyClick">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-link.png"
+              src="http://192.168.1.187:10088/static/common/icon-link.png"
               mode="scaleToFill"
             />
             <text>复制链接</text>
@@ -177,7 +174,7 @@
         //音频文章标题
         title: '',
         //设置默认图片
-        videoBg: 'https://ggllstatic.hpgjzlinfo.com/static/find/process_bg2x.png',
+        videoBg: 'http://192.168.1.187:10088/static/find/process_bg2x.png',
         // 播放音频的下标
         playindex: null,
         // 暂停播放
@@ -230,9 +227,9 @@
           this.videoBg = this.list[this.playindex].imgs[0];
           this.innerAudioContext.coverImgUrl = this.list[this.playindex].imgs[0];
         } else {
-          this.videoBg = 'https://ggllstatic.hpgjzlinfo.com/static/find/process_bg2x.png';
+          this.videoBg = 'http://192.168.1.187:10088/static/find/process_bg2x.png';
           this.innerAudioContext.coverImgUrl =
-            'https://ggllstatic.hpgjzlinfo.com/static/find/process_bg2x.png';
+            'http://192.168.1.187:10088/static/find/process_bg2x.png';
         }
         console.log('到碗里来');
         //判断当前是否在暂停
@@ -499,9 +496,9 @@
           this.videoBg = this.list[index].imgs[0];
           this.innerAudioContext.coverImgUrl = this.list[index].imgs[0];
         } else {
-          this.videoBg = 'https://ggllstatic.hpgjzlinfo.com/static/find/process_bg2x.png';
+          this.videoBg = 'http://192.168.1.187:10088/static/find/process_bg2x.png';
           this.innerAudioContext.coverImgUrl =
-            'https://ggllstatic.hpgjzlinfo.com/static/find/process_bg2x.png';
+            'http://192.168.1.187:10088/static/find/process_bg2x.png';
         }
 
         this.innerAudioContext.onPlay(() => {});
@@ -709,7 +706,7 @@
         path: '/pages/find/article-detail?contId=' + this.contId,
         imageUrl: this.imgs
           ? this.imgs[0]
-          : 'https://ggllstatic.hpgjzlinfo.com/static/common/bg-share.png',
+          : 'http://192.168.1.187:10088/static/common/bg-share.png',
         success(res) {
           this.$uni.showToast({
             title: '分享成功',
@@ -731,7 +728,7 @@
         query: 'contId=' + this.contId,
         imageUrl: this.imgs
           ? this.imgs[0]
-          : 'https://ggllstatic.hpgjzlinfo.com/static/common/bg-share.png',
+          : 'http://192.168.1.187:10088/static/common/bg-share.png',
         success(res) {
           uni.showToast({
             title: '分享成功',

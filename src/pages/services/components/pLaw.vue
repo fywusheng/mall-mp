@@ -18,14 +18,14 @@
     <view v-else class="_space">
       <view class="flex-v flex-c-c status-box2" v-if="loading == 1">
         <image
-          src="https://ggllstatic.hpgjzlinfo.com/static/common/business_loading.gif"
+          src="http://192.168.1.187:10088/static/common/business_loading.gif"
           mode="scaleToFill"
         />
       </view>
       <!--  暂无图片 -->
       <view class="flex-v flex-c-c status-box" v-else>
         <image
-          src="https://ggllstatic.hpgjzlinfo.com/static/common/status-none2x.png"
+          src="http://192.168.1.187:10088/static/common/status-none2x.png"
           mode="scaleToFill"
         />
         <view class="flex-c-c status-text">暂无内容</view>
@@ -47,7 +47,7 @@
     </view>
     <uni-popup ref="confirmpop" type="center">
       <view class="modal-container showValue" @touchmove.stop @click.stop="close()">
-        <image src="https://ggllstatic.hpgjzlinfo.com/static/common/videoTip.png" mode="widthFix" />
+        <image src="http://192.168.1.187:10088/static/common/videoTip.png" mode="widthFix" />
       </view>
     </uni-popup>
   </view>

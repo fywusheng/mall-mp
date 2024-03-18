@@ -21,11 +21,11 @@
               </view>
               <view class="right" @click.native.stop="handleNoimg(artIndex,artItem.play?'1':'2')">
                 <image v-if="!artItem.play" mode="scaleToFill"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/find/horn2x.png" />
+                  src="http://192.168.1.187:10088/static/find/horn2x.png" />
                 <image v-if="artItem.play && stopPlay" class="playimg" mode="scaleToFill"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/find/list-stop2x.png" />
+                  src="http://192.168.1.187:10088/static/find/list-stop2x.png" />
                 <image v-if="artItem.play && !stopPlay" class="playimg" mode="scaleToFill"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/find/list-play2x.png" />
+                  src="http://192.168.1.187:10088/static/find/list-play2x.png" />
                 <text v-if="!artItem.play">听文章</text>
                 <text v-if="artItem.play && stopPlay">暂停</text>
                 <text v-if="artItem.play && !stopPlay">播放</text>
@@ -49,11 +49,11 @@
               </view>
               <view class="right" @click.native.stop="handleNoimg(artIndex,artItem.play?'1':'2')">
                 <image v-if="!artItem.play" mode="scaleToFill"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/find/horn2x.png" />
+                  src="http://192.168.1.187:10088/static/find/horn2x.png" />
                 <image v-if="artItem.play && stopPlay" class="playimg" mode="scaleToFill"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/find/list-stop2x.png" />
+                  src="http://192.168.1.187:10088/static/find/list-stop2x.png" />
                 <image v-if="artItem.play && !stopPlay" class="playimg" mode="scaleToFill"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/find/list-play2x.png">
+                  src="http://192.168.1.187:10088/static/find/list-play2x.png">
                   <text v-if="!artItem.play">听文章</text>
                   <text v-if="artItem.play && stopPlay">暂停</text>
                   <text v-if="artItem.play && !stopPlay">播放</text>
@@ -80,11 +80,11 @@
               </view>
               <view class="right" @click.native.stop="handleNoimg(artIndex,artItem.play?'1':'2')">
                 <image v-if="!artItem.play" mode="scaleToFill"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/find/horn2x.png" />
+                  src="http://192.168.1.187:10088/static/find/horn2x.png" />
                 <image v-if="artItem.play && stopPlay" class="playimg" mode="scaleToFill"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/find/list-stop2x.png" />
+                  src="http://192.168.1.187:10088/static/find/list-stop2x.png" />
                 <image v-if="artItem.play && !stopPlay" class="playimg" mode="scaleToFill"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/find/list-play2x.png" />
+                  src="http://192.168.1.187:10088/static/find/list-play2x.png" />
                 <text v-if="!artItem.play">听文章</text>
                 <text v-if="artItem.play && stopPlay">暂停</text>
                 <text v-if="artItem.play && !stopPlay">播放</text>
@@ -101,10 +101,10 @@
               </rich-text>
             </view>
             <view class="audio-center">
-              <image class="bg" src="https://ggllstatic.hpgjzlinfo.com/static/find/video2x.png"
+              <image class="bg" src="http://192.168.1.187:10088/static/find/video2x.png"
                 mode="scaleToFill" />
               <image class="play" mode="scaleToFill"
-                src="https://ggllstatic.hpgjzlinfo.com/static/find/audio2x.png" />
+                src="http://192.168.1.187:10088/static/find/audio2x.png" />
             </view>
             <view class="noimg-bottom">
               <view class="left">
@@ -116,7 +116,7 @@
         </block>
         <block v-if="list.length === 0 && isResult ">
           <view class="flex-v flex-c-c status-box">
-            <image src="https://ggllstatic.hpgjzlinfo.com/static/common/status-none2x.png"
+            <image src="http://192.168.1.187:10088/static/common/status-none2x.png"
               mode="scaleToFill" />
             <view class="flex-c-c status-text">没有找到相关资讯，换个词搜搜看吧</view>
             <!-- <view class="flex-c-c status-text">没有找到相关资讯，换个词搜搜看吧</view> -->

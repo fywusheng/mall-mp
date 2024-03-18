@@ -80,7 +80,7 @@
     <view class="status-box flex-v flex-c-s" v-if="list.length === 0">
       <image
         class="icon-img"
-        src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/no-order.png"
+        src="http://192.168.1.187:10088/static/supermarket/no-order.png"
         mode="scaleToFill"
       />
       <view>您还没有相关订单</view>
@@ -102,7 +102,7 @@
       return {
         activeIndex: 0,
         dialogContent: '',
-        icon: 'https://ggllstatic.hpgjzlinfo.com/static/life/warning-circle.png',
+        icon: 'http://192.168.1.187:10088/static/life/warning-circle.png',
         statusList: [
           { id: null, label: '全部' },
           { id: 10, label: '待付款' },

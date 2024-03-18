@@ -4,7 +4,7 @@
       <view class="header">
         <image
           class="sign-time"
-          src="https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/sign-time.png"
+          src="http://192.168.1.187:10088/static/songhui/mine/sign-time.png"
           mode="scaleToFill"
         />
         <text class="bold">每日签到</text>
@@ -19,14 +19,14 @@
           <view :class="{ 'no-sign': index + 1 > signDay }" class="sign-img">
             <image
               class="icon"
-              src="https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/sign-gold.png"
+              src="http://192.168.1.187:10088/static/songhui/mine/sign-gold.png"
               mode="scaleToFill"
             />
             <view class="point">{{ index > 4 ? '+2' : '+1' }}</view>
             <view v-if="item < signDay" class="has-sign">
               <image
                 class="right-icon"
-                src="https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/sign-right.png"
+                src="http://192.168.1.187:10088/static/songhui/mine/sign-right.png"
                 alt=""
               />
             </view>
@@ -79,7 +79,7 @@
     height: 720rpx;
     padding: 100rpx 24rpx 0;
     background-size: 100% 100%;
-    background-image: url('https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/sign-bg.png');
+    background-image: url('http://192.168.1.187:10088/static/songhui/mine/sign-bg.png');
     .header {
       // margin: 100rpx 0 0 24rpx;
       display: flex;

@@ -4,7 +4,7 @@
     <view class="top">
       <image
         class="_img"
-        src="https://ggllstatic.hpgjzlinfo.com/static/services/icon-will-top.png"
+        src="http://192.168.1.187:10088/static/services/icon-will-top.png"
         mode="scaleToFill"
       />
       <view class="line_lable">
@@ -43,7 +43,7 @@
       class="fix_btn"
       mode="widthFix"
       @click="startQuest"
-      src="https://ggllstatic.hpgjzlinfo.com/static/services/icon-will-bottom.png"
+      src="http://192.168.1.187:10088/static/services/icon-will-bottom.png"
     />
   </view>
 </template>
@@ -70,17 +70,17 @@
         ],
         // 案例解析
         imgList2: [
-          'https://ggllstatic.hpgjzlinfo.com/static/services/icon-will-tab2-1.png',
-          'https://ggllstatic.hpgjzlinfo.com/static/services/icon-will-tab2-2.png',
-          'https://ggllstatic.hpgjzlinfo.com/static/services/icon-will-tab2-3.png',
+          'http://192.168.1.187:10088/static/services/icon-will-tab2-1.png',
+          'http://192.168.1.187:10088/static/services/icon-will-tab2-2.png',
+          'http://192.168.1.187:10088/static/services/icon-will-tab2-3.png',
         ],
         // 答疑解惑
         imgList3: [
-          'https://ggllstatic.hpgjzlinfo.com/static/services/icon-will-tab3-1.png',
-          'https://ggllstatic.hpgjzlinfo.com/static/services/icon-will-tab3-2.png',
-          'https://ggllstatic.hpgjzlinfo.com/static/services/icon-will-tab3-3.png',
-          'https://ggllstatic.hpgjzlinfo.com/static/services/icon-will-tab3-4.png',
-          'https://ggllstatic.hpgjzlinfo.com/static/services/icon-will-tab3-5.png',
+          'http://192.168.1.187:10088/static/services/icon-will-tab3-1.png',
+          'http://192.168.1.187:10088/static/services/icon-will-tab3-2.png',
+          'http://192.168.1.187:10088/static/services/icon-will-tab3-3.png',
+          'http://192.168.1.187:10088/static/services/icon-will-tab3-4.png',
+          'http://192.168.1.187:10088/static/services/icon-will-tab3-5.png',
         ],
       };
     },

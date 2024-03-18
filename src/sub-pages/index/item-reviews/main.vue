@@ -1,5 +1,5 @@
 <style lang="scss">
-  @import "~@/styles/base";
+  @import '~@/styles/base';
 
   .page-views {
     width: 100%;
@@ -65,7 +65,7 @@
       .desc {
         text-align: center;
         font-size: rpx(26);
-        color: #25292D;
+        color: #25292d;
       }
     }
   }
@@ -74,25 +74,31 @@
 <template>
   <div class="page-views">
     <ul class="comment-list">
-      <li class="comment border-b" v-for="(comment,index) in dataList" :key="index">
-        <div class="user-logo" :style="{backgroundImage: 'url('+comment.memberPicurl+')'}"></div>
-        <div class="user-name">{{comment.nickName}}</div>
-        <div class="content">{{comment.content}}</div>
+      <li class="comment border-b" v-for="(comment, index) in dataList" :key="index">
+        <div
+          class="user-logo"
+          :style="{ backgroundImage: 'url(' + comment.memberPicurl + ')' }"
+        ></div>
+        <div class="user-name">{{ comment.nickName }}</div>
+        <div class="content">{{ comment.content }}</div>
         <ul class="img-list">
-          <li class="img" :key="subIndex" v-for="(img,subIndex) in comment.imgs"
-              :style="{backgroundImage: 'url('+img.imgUrl+')'}"></li>
+          <li
+            class="img"
+            :key="subIndex"
+            v-for="(img, subIndex) in comment.imgs"
+            :style="{ backgroundImage: 'url(' + img.imgUrl + ')' }"
+          ></li>
         </ul>
       </li>
     </ul>
     <div class="empty" v-if="!loading && !dataList.length">
-      <img src="https://ggllstatic.hpgjzlinfo.com/static/images/no-comment.png">
+      <img src="http://192.168.1.187:10088/static/images/no-comment.png" />
       <div class="desc">暂无评论</div>
     </div>
   </div>
 </template>
 
 <script>
-
   export default {
     name: 'COMMENT_LIST',
     props: {},
@@ -104,11 +110,10 @@
         pageSize: 10,
         disabled: true,
         loading: true,
-      }
+      };
     },
 
     methods: {
-
       async loadData() {
         const result = await Axios.get('', {
           params: {
@@ -116,19 +121,19 @@
             productId: this.$root.$mp.query.id,
             pageNum: this.pageNum++,
             pageSize: this.pageSize,
-          }
-        })
+          },
+        });
         if (result.result.result == 1) {
           this.dataList = this.dataList.concat(result.data.result || []);
           this.disabled = result.data.pageNum >= result.data.totalPage;
         } else {
-          wx.showToast(result.message)
+          wx.showToast(result.message);
         }
         this.loading = false;
-      }
+      },
     },
     async mounted() {
       this.loadData();
-    }
-  }
+    },
+  };
 </script>

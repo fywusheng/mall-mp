@@ -8,7 +8,7 @@
           <image
             class="icon-desc"
             @click="handleHomeBack"
-            src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-index.png"
+            src="http://192.168.1.187:10088/static/supermarket/icon-index.png"
             mode="scaleToFill"
           />
 
@@ -24,13 +24,13 @@
           <image
             class="back-icon"
             @click="handleNavBack"
-            src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-arrow-left.png"
+            src="http://192.168.1.187:10088/static/supermarket/icon-arrow-left.png"
             mode="scaleToFill"
           />
           <image
             class="icon-desc"
             @click="handleHomeBack"
-            src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-index.png"
+            src="http://192.168.1.187:10088/static/supermarket/icon-index.png"
             mode="scaleToFill"
           />
 
@@ -129,7 +129,7 @@
       return {
         // 商店信息
         icon: {
-          arrow: 'https://ggllstatic.hpgjzlinfo.com/static/home/arrow.png',
+          arrow: 'http://192.168.1.187:10088/static/home/arrow.png',
         },
         errorMsg: '',
         // 导航栏高度

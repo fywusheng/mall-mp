@@ -12,7 +12,7 @@
         <image
           class="_left"
           mode="scaleToFill"
-          src="https://ggllstatic.hpgjzlinfo.com/static/home/image-home-article-default.png"
+          src="http://192.168.1.187:10088/static/home/image-home-article-default.png"
           v-if="!artItem.photos"
         />
         <view class="_right">
@@ -48,7 +48,7 @@
         <view class="_item" @click="optionClick(1, artItem, artIndex)">
           <image
             class="icon"
-            src="https://ggllstatic.hpgjzlinfo.com/static/user-center/del.png"
+            src="http://192.168.1.187:10088/static/user-center/del.png"
             mode="scaleToFill"
           />
           <view class="_text">取消收藏</view>
@@ -62,7 +62,7 @@
     <block v-if="list.length === 0">
       <view class="pad-top flex-v flex-c-c status-box">
         <image
-          src="https://ggllstatic.hpgjzlinfo.com/static/common/status-none2x.png"
+          src="http://192.168.1.187:10088/static/common/status-none2x.png"
           mode="scaleToFill"
           class="imgStyle"
         />
@@ -75,34 +75,31 @@
         <view class="title fs-36">分享到</view>
         <view class="flex-h list fs-36">
           <button class="item flex-v flex-c-c" open-type="share">
-            <image src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-wechat.png" mode="" />
+            <image src="http://192.168.1.187:10088/static/common/icon-wechat.png" mode="" />
             <text>微信好友</text>
           </button>
           <!-- #ifdef MP-ALIPAY -->
           <button class="item flex-v flex-c-c" open-type="share">
-            <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-qq.png"
-              mode="scaleToFill"
-            />
+            <image src="http://192.168.1.187:10088/static/common/icon-qq.png" mode="scaleToFill" />
             <text>QQ好友</text>
           </button>
           <button class="item flex-v flex-c-c" open-type="share">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-alipay.png"
+              src="http://192.168.1.187:10088/static/common/icon-alipay.png"
               mode="scaleToFill"
             />
             <text>支付宝好友</text>
           </button>
           <button class="item flex-v flex-c-c" open-type="share">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-message.png"
+              src="http://192.168.1.187:10088/static/common/icon-message.png"
               mode="scaleToFill"
             />
             <text>短信</text>
           </button>
           <!-- #endif -->
           <button class="item flex-v flex-c-c ml-56" @click="handleCopyClick">
-            <image src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-link.png" mode="" />
+            <image src="http://192.168.1.187:10088/static/common/icon-link.png" mode="" />
             <text>复制链接</text>
           </button>
         </view>
@@ -128,8 +125,8 @@
         orgOfficeId: '',
         orgOfficeType: '',
         icons: {
-          0: 'https://ggllstatic.hpgjzlinfo.com/static/user-center/topicon.png',
-          1: 'https://ggllstatic.hpgjzlinfo.com/static/user-center/cancel.png',
+          0: 'http://192.168.1.187:10088/static/user-center/topicon.png',
+          1: 'http://192.168.1.187:10088/static/user-center/cancel.png',
         },
         list2: [
           {

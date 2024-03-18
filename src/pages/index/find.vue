@@ -6,7 +6,7 @@
         <view class="navigation-bar flex-h flex-c-s">
           <image
             class="image"
-            src="https://ggllstatic.hpgjzlinfo.com/static/home/home-logo.png"
+            src="http://192.168.1.187:10088/static/home/home-logo.png"
             mode="scaleToFill"
           />
           <text class="navigation-bar__title fs-32 c-white flex-1">
@@ -32,14 +32,14 @@
           v-if="keyword"
           mode="scaleToFill"
           class="search-bar__icon"
-          src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-input-clear.png"
+          src="http://192.168.1.187:10088/static/common/icon-common-input-clear.png"
         />
         <template v-else>
           <view class="search-bar__line" />
           <image
             class="search-bar__voice ml-16"
             mode="scaleToFill"
-            src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-voice-grey.png"
+            src="http://192.168.1.187:10088/static/common/icon-common-voice-grey.png"
             @click="handleVoiceInputClick"
           />
         </template>
@@ -125,7 +125,7 @@
         // 是否刷新完毕
         refreshOver: true,
         // 设置默认图片
-        videoBg: 'https://ggllstatic.hpgjzlinfo.com/static/find/process_bg2x.png',
+        videoBg: 'http://192.168.1.187:10088/static/find/process_bg2x.png',
         // 作为循环播放时改变的下标
         loopIndex: 0,
         navHeight: uni.getSystemInfoSync().statusBarHeight + 44,
@@ -566,7 +566,7 @@
         if (this.list[currentIndex].content[index].imgs) {
           this.videoBg = this.list[currentIndex].content[index].imgs[0];
         } else {
-          this.videoBg = 'https://ggllstatic.hpgjzlinfo.com/static/find/process_bg2x.png';
+          this.videoBg = 'http://192.168.1.187:10088/static/find/process_bg2x.png';
         }
         // 创建背景音乐实例（拿到播放路径会自动播放
         // this.innerAudioContext =uni.getBackgroundAudioManager();

@@ -30,13 +30,13 @@
                   class="cole"
                   mode="scaleToFill"
                   v-if="artItem.colFlag === '1'"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/map/icon-map-collected.png"
+                  src="http://192.168.1.187:10088/static/map/icon-map-collected.png"
                 />
                 <image
                   class="cole"
                   mode="scaleToFill"
                   v-else
-                  src="https://ggllstatic.hpgjzlinfo.com/static/map/icon-map-uncollect.png"
+                  src="http://192.168.1.187:10088/static/map/icon-map-uncollect.png"
                 />
                 <text>收藏</text>
               </view>
@@ -44,7 +44,7 @@
                 <image
                   class="share"
                   mode="scaleToFill"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-share2x.png"
+                  src="http://192.168.1.187:10088/static/common/icon-share2x.png"
                 />
                 <text>分享</text>
               </view>
@@ -53,13 +53,13 @@
                   class="share"
                   mode="scaleToFill"
                   v-if="artItem.giveAlikeFlag === '0'"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/services/icon-give-like.png"
+                  src="http://192.168.1.187:10088/static/services/icon-give-like.png"
                 />
                 <image
                   class="cole"
                   mode="scaleToFill"
                   v-else
-                  src="https://ggllstatic.hpgjzlinfo.com/static/services/icon-no-like.png"
+                  src="http://192.168.1.187:10088/static/services/icon-no-like.png"
                 />
                 <text>点赞</text>
               </view>
@@ -71,14 +71,14 @@
     <view v-else>
       <view class="flex-v flex-c-c status-box2" v-if="loading == 1">
         <image
-          src="https://ggllstatic.hpgjzlinfo.com/static/common/business_loading.gif"
+          src="http://192.168.1.187:10088/static/common/business_loading.gif"
           mode="scaleToFill"
         />
       </view>
       <!--  暂无图片 -->
       <view class="flex-v flex-c-c status-box" v-else>
         <image
-          src="https://ggllstatic.hpgjzlinfo.com/static/common/status-none2x.png"
+          src="http://192.168.1.187:10088/static/common/status-none2x.png"
           mode="scaleToFill"
         />
         <view class="flex-c-c status-text">暂无内容</view>
@@ -90,29 +90,26 @@
         <view class="flex-h list fs-36">
           <button class="item flex-v flex-c-c" open-type="share">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-wechat.png"
+              src="http://192.168.1.187:10088/static/common/icon-wechat.png"
               mode="scaleToFill"
             />
             <text>微信好友</text>
           </button>
           <!-- #ifdef MP-ALIPAY -->
           <button class="item flex-v flex-c-c" open-type="share">
-            <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-qq.png"
-              mode="scaleToFill"
-            />
+            <image src="http://192.168.1.187:10088/static/common/icon-qq.png" mode="scaleToFill" />
             <text>QQ好友</text>
           </button>
           <button class="item flex-v flex-c-c" open-type="share">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-alipay.png"
+              src="http://192.168.1.187:10088/static/common/icon-alipay.png"
               mode="scaleToFill"
             />
             <text>支付宝好友</text>
           </button>
           <button class="item flex-v flex-c-c" open-type="share">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-message.png"
+              src="http://192.168.1.187:10088/static/common/icon-message.png"
               mode="scaleToFill"
             />
             <text>短信</text>
@@ -120,7 +117,7 @@
           <!-- #endif -->
           <button class="item flex-v flex-c-c" @click="handleCopyClick">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-link.png"
+              src="http://192.168.1.187:10088/static/common/icon-link.png"
               mode="scaleToFill"
             />
             <text>复制链接</text>
@@ -133,7 +130,7 @@
     </uni-popup>
     <uni-popup ref="confirmpop" type="center">
       <view class="modal-container showValue" @touchmove.stop @click.stop="close()">
-        <image src="https://ggllstatic.hpgjzlinfo.com/static/common/videoTip.png" mode="widthFix" />
+        <image src="http://192.168.1.187:10088/static/common/videoTip.png" mode="widthFix" />
       </view>
     </uni-popup>
   </view>
@@ -648,7 +645,7 @@
         position: relative;
         // width: 718rpx;
         // height: 70rpx;
-        // background: url('https://ggllstatic.hpgjzlinfo.com/static/services/icon-title-shadow.png')
+        // background: url('http://192.168.1.187:10088/static/services/icon-title-shadow.png')
         //   no-repeat;
         background-size: 100% 100%;
         background-position: center;
@@ -674,7 +671,7 @@
         width: 100%;
         height: 380rpx;
         border-radius: 10rpx;
-        // background: url("https://ggllstatic.hpgjzlinfo.com/static/logo.png") no-repeat;
+        // background: url("http://192.168.1.187:10088/static/logo.png") no-repeat;
         background-size: 100% 100%;
         margin-top: 22rpx;
         overflow: hidden;

@@ -55,7 +55,7 @@
               @click="share(index)"
               mode="widthFix"
               class="icon"
-              src="https://ggllstatic.hpgjzlinfo.com/static/find/fenxiang.png"
+              src="http://192.168.1.187:10088/static/find/fenxiang.png"
             />
             <view>分享</view>
           </view>
@@ -75,29 +75,26 @@
         <view class="flex-h list fs-36">
           <button class="item flex-v flex-c-c" open-type="share">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-wechat.png"
+              src="http://192.168.1.187:10088/static/common/icon-wechat.png"
               mode="scaleToFill"
             />
             <text>微信好友</text>
           </button>
           <!-- #ifdef MP-ALIPAY -->
           <button class="item flex-v flex-c-c" open-type="share">
-            <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-qq.png"
-              mode="scaleToFill"
-            />
+            <image src="http://192.168.1.187:10088/static/common/icon-qq.png" mode="scaleToFill" />
             <text>QQ好友</text>
           </button>
           <button class="item flex-v flex-c-c" open-type="share">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-alipay.png"
+              src="http://192.168.1.187:10088/static/common/icon-alipay.png"
               mode="scaleToFill"
             />
             <text>支付宝好友</text>
           </button>
           <button class="item flex-v flex-c-c" open-type="share">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-message.png"
+              src="http://192.168.1.187:10088/static/common/icon-message.png"
               mode="scaleToFill"
             />
             <text>短信</text>
@@ -105,7 +102,7 @@
           <!-- #endif -->
           <button class="item flex-v flex-c-c" @click="handleCopyClick">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-link.png"
+              src="http://192.168.1.187:10088/static/common/icon-link.png"
               mode="scaleToFill"
             />
             <text>复制链接</text>
@@ -126,7 +123,7 @@
     props: {
       shareIcon: {
         type: String,
-        default: 'https://ggllstatic.hpgjzlinfo.com/static/find/fenxiang.png',
+        default: 'http://192.168.1.187:10088/static/find/fenxiang.png',
       },
     },
     data() {
@@ -198,7 +195,7 @@
         path:
           '/pages/find/video-swiper?transInfor=' +
           encodeURIComponent(JSON.stringify(this.list[0][this.current])),
-        imageUrl: 'https://ggllstatic.hpgjzlinfo.com/static/common/bg-share.png',
+        imageUrl: 'http://192.168.1.187:10088/static/common/bg-share.png',
         success(res) {
           this.$uni.showToast({
             title: '分享成功',
@@ -218,7 +215,7 @@
         title: this.list[0].ttl,
         path: '/pages/find/video-swiper',
         query: 'transInfor=' + encodeURIComponent(JSON.stringify(this.list[0][this.current])),
-        imageUrl: 'https://ggllstatic.hpgjzlinfo.com/static/common/bg-share.png',
+        imageUrl: 'http://192.168.1.187:10088/static/common/bg-share.png',
         success(res) {
           uni.showToast({
             title: '分享成功',
@@ -235,8 +232,8 @@
     methods: {
       collectIcon(status) {
         const icons = {
-          1: 'https://ggllstatic.hpgjzlinfo.com/static/map/icon-map-collected.png',
-          0: 'https://ggllstatic.hpgjzlinfo.com/static/map/mr_sc.png',
+          1: 'http://192.168.1.187:10088/static/map/icon-map-collected.png',
+          0: 'http://192.168.1.187:10088/static/map/mr_sc.png',
         };
         return icons[status];
       },

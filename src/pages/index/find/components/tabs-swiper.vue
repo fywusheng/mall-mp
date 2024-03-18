@@ -82,19 +82,19 @@
                       >
                         <image
                           v-if="!artItem.play"
-                          src="https://ggllstatic.hpgjzlinfo.com/static/find/horn2x.png"
+                          src="http://192.168.1.187:10088/static/find/horn2x.png"
                           mode="scaleToFill"
                         ></image>
                         <image
                           v-if="artItem.play && stopPlay"
                           class="playimg"
-                          src="https://ggllstatic.hpgjzlinfo.com/static/find/list-stop2x.png"
+                          src="http://192.168.1.187:10088/static/find/list-stop2x.png"
                           mode="scaleToFill"
                         ></image>
                         <image
                           v-if="artItem.play && !stopPlay"
                           class="playimg"
-                          src="https://ggllstatic.hpgjzlinfo.com/static/find/list-play2x.png"
+                          src="http://192.168.1.187:10088/static/find/list-play2x.png"
                           mode="scaleToFill"
                         ></image>
                         <text v-if="!artItem.play">听文章</text>
@@ -131,19 +131,19 @@
                       >
                         <image
                           v-if="!artItem.play"
-                          src="https://ggllstatic.hpgjzlinfo.com/static/find/horn2x.png"
+                          src="http://192.168.1.187:10088/static/find/horn2x.png"
                           mode="scaleToFill"
                         ></image>
                         <image
                           v-if="artItem.play && stopPlay"
                           class="playimg"
-                          src="https://ggllstatic.hpgjzlinfo.com/static/find/list-stop2x.png"
+                          src="http://192.168.1.187:10088/static/find/list-stop2x.png"
                           mode="scaleToFill"
                         ></image>
                         <image
                           v-if="artItem.play && !stopPlay"
                           class="playimg"
-                          src="https://ggllstatic.hpgjzlinfo.com/static/find/list-play2x.png"
+                          src="http://192.168.1.187:10088/static/find/list-play2x.png"
                           mode="scaleToFill"
                         ></image>
                         <text v-if="!artItem.play">听文章</text>
@@ -182,19 +182,19 @@
                       >
                         <image
                           v-if="!artItem.play"
-                          src="https://ggllstatic.hpgjzlinfo.com/static/find/horn2x.png"
+                          src="http://192.168.1.187:10088/static/find/horn2x.png"
                           mode="scaleToFill"
                         ></image>
                         <image
                           v-if="artItem.play && stopPlay"
                           class="playimg"
-                          src="https://ggllstatic.hpgjzlinfo.com/static/find/list-stop2x.png"
+                          src="http://192.168.1.187:10088/static/find/list-stop2x.png"
                           mode="scaleToFill"
                         ></image>
                         <image
                           v-if="artItem.play && !stopPlay"
                           class="playimg"
-                          src="https://ggllstatic.hpgjzlinfo.com/static/find/list-play2x.png"
+                          src="http://192.168.1.187:10088/static/find/list-play2x.png"
                           mode="scaleToFill"
                         ></image>
                         <text v-if="!artItem.play">听文章</text>
@@ -239,7 +239,7 @@
                       <image
                         class="play"
                         mode="scaleToFill"
-                        src="https://ggllstatic.hpgjzlinfo.com/static/find/audio2x.png"
+                        src="http://192.168.1.187:10088/static/find/audio2x.png"
                       ></image>
                     </view>
                     <view class="noimg-bottom">
@@ -253,7 +253,7 @@
                 <block v-if="item.content.length === 0 && item.topList.length === 0">
                   <view class="flex-v flex-c-c status-box">
                     <image
-                      src="https://ggllstatic.hpgjzlinfo.com/static/common/status-none2x.png"
+                      src="http://192.168.1.187:10088/static/common/status-none2x.png"
                       mode="scaleToFill"
                     />
                     <view class="flex-c-c status-text">暂无内容</view>
@@ -856,7 +856,7 @@
         width: 100%;
         height: 380rpx;
         border-radius: 10rpx;
-        // background: url("https://ggllstatic.hpgjzlinfo.com/static/logo.png") no-repeat;
+        // background: url("http://192.168.1.187:10088/static/logo.png") no-repeat;
         background-size: 100% 100%;
         margin-top: 12rpx;
         overflow: hidden;

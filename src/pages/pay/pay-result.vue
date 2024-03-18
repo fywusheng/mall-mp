@@ -8,7 +8,7 @@
           <!-- <view class="back-icon"></view>
           <image class="icon-desc"
           @click="handleHomeBack"
-                 src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-index.png"
+                 src="http://192.168.1.187:10088/static/supermarket/icon-index.png"
                  mode="scaleToFill" /> -->
           <!-- <text class="icon-desc" @click="handleComplete">完成</text> -->
 
@@ -25,12 +25,12 @@
         <view class="navigation-bar flex-h flex-c-s" :style="{ height: '44px' }">
           <!-- <image class="back-icon"
           @click="handleNavBack"
-                 src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-arrow-left.png"
+                 src="http://192.168.1.187:10088/static/supermarket/icon-arrow-left.png"
                  mode="scaleToFill" /> -->
           <!-- <text class="icon-desc" @click="handleComplete">完成</text> -->
           <!-- <image class="icon-desc"
           @click="handleHomeBack"
-                 src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-index.png"
+                 src="http://192.168.1.187:10088/static/supermarket/icon-index.png"
                  mode="scaleToFill" /> -->
 
           <text class="navigation-bar__title fs-44 c-black flex-1">
@@ -101,8 +101,8 @@
         formData: {},
         // iconPath
         icon: {
-          success: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-success.png',
-          fail: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-fail.png',
+          success: 'http://192.168.1.187:10088/static/pay/icon-success.png',
+          fail: 'http://192.168.1.187:10088/static/pay/icon-fail.png',
         },
         // 导航栏高度
         // #ifdef MP-WEIXIN

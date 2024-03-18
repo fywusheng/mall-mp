@@ -13,8 +13,8 @@
         :autoplay="index === 0"
       ></video>
       <!-- <view class="videoImg" >
-                <image src="https://ggllstatic.hpgjzlinfo.com/static/find/video-bg2x.png" mode="widthFix"  class="videobg"  />
-                <image mode="widthFix" src="https://ggllstatic.hpgjzlinfo.com/static/find/audio2x.png" class="play"/>
+                <image src="http://192.168.1.187:10088/static/find/video-bg2x.png" mode="widthFix"  class="videobg"  />
+                <image mode="widthFix" src="http://192.168.1.187:10088/static/find/audio2x.png" class="play"/>
             </view> -->
       <view class="video-text">{{ item.ttl }}</view>
       <view class="video-share">
@@ -22,13 +22,13 @@
           <image
             class="cole"
             v-if="item.colFlag === '1'"
-            src="https://ggllstatic.hpgjzlinfo.com/static/map/icon-map-collected.png"
+            src="http://192.168.1.187:10088/static/map/icon-map-collected.png"
             mode="scaleToFill"
           />
           <image
             class="cole"
             v-else
-            src="https://ggllstatic.hpgjzlinfo.com/static/map/icon-map-uncollect.png"
+            src="http://192.168.1.187:10088/static/map/icon-map-uncollect.png"
             mode="scaleToFill"
           />
           <view>收藏</view>
@@ -37,7 +37,7 @@
           <image
             class="share"
             mode="scaleToFill"
-            src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-share2x.png"
+            src="http://192.168.1.187:10088/static/common/icon-share2x.png"
           />
           <view>分享</view>
         </view>
@@ -63,29 +63,26 @@
         <view class="flex-h list fs-36">
           <button class="item flex-v flex-c-c" open-type="share">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-wechat.png"
+              src="http://192.168.1.187:10088/static/common/icon-wechat.png"
               mode="scaleToFill"
             />
             <text>微信好友</text>
           </button>
           <!-- #ifdef MP-ALIPAY -->
           <button class="item flex-v flex-c-c" open-type="share">
-            <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-qq.png"
-              mode="scaleToFill"
-            />
+            <image src="http://192.168.1.187:10088/static/common/icon-qq.png" mode="scaleToFill" />
             <text>QQ好友</text>
           </button>
           <button class="item flex-v flex-c-c" open-type="share">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-alipay.png"
+              src="http://192.168.1.187:10088/static/common/icon-alipay.png"
               mode="scaleToFill"
             />
             <text>支付宝好友</text>
           </button>
           <button class="item flex-v flex-c-c" open-type="share">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-message.png"
+              src="http://192.168.1.187:10088/static/common/icon-message.png"
               mode="scaleToFill"
             />
             <text>短信</text>
@@ -93,7 +90,7 @@
           <!-- #endif -->
           <button class="item flex-v flex-c-c" @click="handleCopyClick">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-link.png"
+              src="http://192.168.1.187:10088/static/common/icon-link.png"
               mode="scaleToFill"
             />
             <text>复制链接</text>
@@ -284,7 +281,7 @@
         path:
           '/pages/find/video-list?firstVideo=' +
           encodeURIComponent(JSON.stringify(this.firstVideo)),
-        imageUrl: 'https://ggllstatic.hpgjzlinfo.com/static/common/bg-share.png',
+        imageUrl: 'http://192.168.1.187:10088/static/common/bg-share.png',
         success(res) {
           this.$uni.showToast({
             title: '分享成功',
@@ -304,7 +301,7 @@
         title: this.list[0].ttl,
         path: '/pages/find/video-list',
         query: 'firstVideo=' + encodeURIComponent(JSON.stringify(this.firstVideo)),
-        imageUrl: 'https://ggllstatic.hpgjzlinfo.com/static/common/bg-share.png',
+        imageUrl: 'http://192.168.1.187:10088/static/common/bg-share.png',
         success(res) {
           uni.showToast({
             title: '分享成功',

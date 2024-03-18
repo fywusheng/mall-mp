@@ -36,13 +36,13 @@
         <view class="title">
           <image
             class="left"
-            src="https://ggllstatic.hpgjzlinfo.com/static/songhui/services/left.png"
+            src="http://192.168.1.187:10088/static/songhui/services/left.png"
             mode="scaleToFill"
           />
           <text class="txt">省钱明细</text>
           <image
             class="left"
-            src="https://ggllstatic.hpgjzlinfo.com/static/songhui/services/right.png"
+            src="http://192.168.1.187:10088/static/songhui/services/right.png"
             mode="scaleToFill"
           />
         </view>
@@ -63,7 +63,7 @@
                     <text class="price">42.2</text>
                     <image
                       class="icon-bottom icon"
-                      src="https://ggllstatic.hpgjzlinfo.com/static/songhui/services/top.png"
+                      src="http://192.168.1.187:10088/static/songhui/services/top.png"
                       mode="scaleToFill"
                     />
                   </view>
@@ -281,7 +281,7 @@
       .header-wrapper {
         width: 686rpx;
         height: 158rpx;
-        background-image: url('https://ggllstatic.hpgjzlinfo.com/static/songhui/services/top-bg.png');
+        background-image: url('http://192.168.1.187:10088/static/songhui/services/top-bg.png');
         background-size: 100% 100%;
         display: flex;
         align-items: center;
@@ -457,7 +457,7 @@
                 .total {
                   width: 442rpx;
                   height: 72rpx;
-                  background-image: url('https://ggllstatic.hpgjzlinfo.com/static/songhui/services/total.png');
+                  background-image: url('http://192.168.1.187:10088/static/songhui/services/total.png');
                   background-size: 100% 100%;
                   display: flex;
                   align-items: center;
@@ -528,7 +528,7 @@
       left: 32rpx;
       width: 686rpx;
       height: 112rpx;
-      background-image: url('https://ggllstatic.hpgjzlinfo.com/static/songhui/services/xufei-bg.png');
+      background-image: url('http://192.168.1.187:10088/static/songhui/services/xufei-bg.png');
       background-size: 100% 100%;
       display: flex;
       align-items: center;

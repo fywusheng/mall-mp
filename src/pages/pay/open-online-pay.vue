@@ -16,7 +16,7 @@
           <image
             class="back-icon"
             @click="handleNavBack"
-            src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-arrow-left.png"
+            src="http://192.168.1.187:10088/static/supermarket/icon-arrow-left.png"
             mode="scaleToFill"
           />
           <text class="navigation-bar__title fs-44 c-black flex-1">{{ title }}</text>
@@ -34,7 +34,7 @@
       <view class="bank-card" :style="{ background: cardInfo.cardColor }">
         <image
           class="icon-bg"
-          src="https://ggllstatic.hpgjzlinfo.com/static/pay/icon-bank-pattern.png"
+          src="http://192.168.1.187:10088/static/pay/icon-bank-pattern.png"
           mode="scaleToFill"
         />
         <view class="bank-name">
@@ -157,11 +157,11 @@
         // 第一次手机号
         firstPhone: '',
         icon: {
-          auth: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-warn-circle-blue.png',
-          delete: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-input-delete.png',
-          circleGre: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-warn-circle.png',
-          checked: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-radio-checked.png',
-          noChecked: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-radio-default.png',
+          auth: 'http://192.168.1.187:10088/static/pay/icon-warn-circle-blue.png',
+          delete: 'http://192.168.1.187:10088/static/pay/icon-input-delete.png',
+          circleGre: 'http://192.168.1.187:10088/static/pay/icon-warn-circle.png',
+          checked: 'http://192.168.1.187:10088/static/pay/icon-radio-checked.png',
+          noChecked: 'http://192.168.1.187:10088/static/pay/icon-radio-default.png',
         },
         // 导航栏高度
         //#ifdef MP-WEIXIN

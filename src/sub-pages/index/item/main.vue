@@ -5,7 +5,7 @@
       <view class="detail" @click="point(2)" :class="actived == 2 ? 'aclass' : ''">详情</view>
     </view>
     <view class="empty-wrap" v-if="product && product.saleState !== 5">
-      <img class="tip" src="https://ggllstatic.hpgjzlinfo.com/static/images/item-detail/tip.png" />
+      <img class="tip" src="http://192.168.1.187:10088/static/images/item-detail/tip.png" />
       <view class="title">很抱歉，您查看的商品已无效！</view>
       <view class="desc">您可以选择浏览其他商品</view>
       <button type="button" class="btn-view" @click="toHome">看看其他商品</button>
@@ -52,7 +52,7 @@
 
                 <image
                   class="member-price-icon"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/songhui/sub-item/member-price.png"
+                  src="http://192.168.1.187:10088/static/songhui/sub-item/member-price.png"
                   mode="scaleToFill"
                 />
               </template>
@@ -105,14 +105,14 @@
               领券
               <view class="right_icon">
                 <!-- <image class="right_icon"
-                src="https://ggllstatic.hpgjzlinfo.com/static/images/common/right-gray.png?a=1"> -->
+                src="http://192.168.1.187:10088/static/images/common/right-gray.png?a=1"> -->
               </view>
             </view>
           </view>
 
           <!-- 积分兑换计算 -->
           <view v-if="sceneType === '积分兑换'" class="getPrice">
-            <img class="collected" src="https://ggllstatic.hpgjzlinfo.com/static/home/getP.png" />
+            <img class="collected" src="http://192.168.1.187:10088/static/home/getP.png" />
             <view class="flex_line">
               <view class="item">
                 <view class="g">到手价</view>
@@ -147,7 +147,7 @@
           </view>
           <!-- 商品购买计算 -->
           <view v-if="sceneType === '商品购买'" class="getPrice">
-            <img class="collected" src="https://ggllstatic.hpgjzlinfo.com/static/home/getP.png" />
+            <img class="collected" src="http://192.168.1.187:10088/static/home/getP.png" />
             <view class="flex_line">
               <view class="item">
                 <view class="g">{{ member ? '会员到手价' : '到手价' }}</view>
@@ -224,7 +224,7 @@
             <image
               class="icon-right"
               @click="toAttribute"
-              src="https://ggllstatic.hpgjzlinfo.com/static/images/common/right-gray.png?a=1"
+              src="http://192.168.1.187:10088/static/images/common/right-gray.png?a=1"
             />
           </view>
         </view>
@@ -307,16 +307,13 @@
 
       <view class="footer">
         <view class="btn-service" @click="goStoreDetail">
-          <img
-            class="icon-img"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/footer/home.png"
-          />
+          <img class="icon-img" src="http://192.168.1.187:10088/static/images/footer/home.png" />
           首页
         </view>
         <view class="btn-service" @click="toCart">
           <img
             class="icon-img"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/item-detail/cart_new.png"
+            src="http://192.168.1.187:10088/static/images/item-detail/cart_new.png"
           />
           购物车
           <text class="count" v-if="cartCount > 0">{{ cartCount }}</text>

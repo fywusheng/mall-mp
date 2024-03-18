@@ -9,7 +9,7 @@
         <view class="navigation-bar flex-h flex-c-s">
           <image
             class="image"
-            src="https://ggllstatic.hpgjzlinfo.com/static/home/home-logo.png"
+            src="http://192.168.1.187:10088/static/home/home-logo.png"
             mode="scaleToFill"
           />
           <text class="navigation-bar__title fs-32 c-white flex-1">
@@ -29,7 +29,7 @@
           <image
             class="city-icon ml-8"
             mode="scaleToFill"
-            src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-triangle-downward-white.png"
+            src="http://192.168.1.187:10088/static/common/icon-common-triangle-downward-white.png"
           />
         </view>
         <view class="search-bar flex-h flex-c-b flex-1 p-0-32 bg-white">
@@ -41,7 +41,7 @@
             <image
               class="search-bar__voice ml-16"
               mode="scaleToFill"
-              src="https://ggllstatic.hpgjzlinfo.com/static/home/icon-home-voice.png"
+              src="http://192.168.1.187:10088/static/home/icon-home-voice.png"
               @click="handleVoiceSearchClick"
             />
           </template>
@@ -50,7 +50,7 @@
           <image
             class="search-bar__voice ml-16"
             mode="scaleToFill"
-            src="https://ggllstatic.hpgjzlinfo.com/static/home/notice.png"
+            src="http://192.168.1.187:10088/static/home/notice.png"
             @click="handlerClickPop(1)"
           />
         </view>
@@ -139,7 +139,7 @@
           <image
             class="icon bgempt"
             v-if="v.soldOut === 0"
-            src="https://ggllstatic.hpgjzlinfo.com/static/home/empt.png"
+            src="http://192.168.1.187:10088/static/home/empt.png"
           />
           <view class="name">{{ v.name }}</view>
           <!-- <view class="jf">积分抵扣￥{{ v.creditPoints }}</view> -->
@@ -152,13 +152,13 @@
         <!-- <button class="menu" @click="goBuy">
           <image
             class="icon icon-service"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/common/bug.png"
+            src="http://192.168.1.187:10088/static/images/common/bug.png"
           />
         </button> -->
         <div class="menu" @click="toTop">
           <image
             class="icon icon-top"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/common/top.png"
+            src="http://192.168.1.187:10088/static/images/common/top.png"
           />
         </div>
       </view>
@@ -166,7 +166,7 @@
         <view class="menu" @click="toTop">
           <image
             class="icon-top"
-            src="https://ggllstatic.hpgjzlinfo.com/static/common/top.png"
+            src="http://192.168.1.187:10088/static/common/top.png"
           />
         </view>
       </view> -->
@@ -321,7 +321,7 @@
             const temp = data.slice(0, 7);
             temp.push({
               name: '全部分类',
-              iconUrl: 'https://ggllstatic.hpgjzlinfo.com/static/home/all.png?t=1',
+              iconUrl: 'http://192.168.1.187:10088/static/home/all.png?t=1',
             });
             this.parts = temp;
           } else {
@@ -484,7 +484,7 @@
       handleBannerLoadFail(index) {
         // 图片加载失败时显示默认图片
         this.banners[index].bannerUrl =
-          'https://ggllstatic.hpgjzlinfo.com/static/home/banner-home-default.png';
+          'http://192.168.1.187:10088/static/home/banner-home-default.png';
       },
       /**
        * 轮播图 banner 点击事件
@@ -761,7 +761,7 @@
       }
       .jf_bg {
         height: 278rpx;
-        background-image: url('https://ggllstatic.hpgjzlinfo.com/static/home/jf_bj.png');
+        background-image: url('http://192.168.1.187:10088/static/home/jf_bj.png');
         background-size: contain;
         position: relative;
         background-repeat: no-repeat;

@@ -1,36 +1,59 @@
 <template>
   <div class="page-brand">
-    <img mode="aspectFit" :style="{height: height+ 'rpx'}" @load="onLoad" class="brand-cover"
-         :src="brandInfo.brandPictUrl">
+    <img
+      mode="aspectFit"
+      :style="{ height: height + 'rpx' }"
+      @load="onLoad"
+      class="brand-cover"
+      :src="brandInfo.brandPictUrl"
+    />
     <div class="brand-info">
-      <img mode="aspectFit" class="brand-logo" :src="brandInfo.brandLogo">
-      <div class="brand-name">{{brandInfo.brandName}}</div>
-      <div class="btn-attention" @click="changeAttention">{{brandInfo.isAttention == 1 ? '已关注':'关注'}}</div>
+      <img mode="aspectFit" class="brand-logo" :src="brandInfo.brandLogo" />
+      <div class="brand-name">{{ brandInfo.brandName }}</div>
+      <div class="btn-attention" @click="changeAttention">
+        {{ brandInfo.isAttention == 1 ? '已关注' : '关注' }}
+      </div>
     </div>
     <div class="brand-desc">
-      {{brandInfo.brandIntroduce}}
-      <!--<img mode="aspectFit" class="btn-down" src="https://ggllstatic.hpgjzlinfo.com/static/images/common/icon-down.png">-->
+      {{ brandInfo.brandIntroduce }}
+      <!--<img mode="aspectFit" class="btn-down" src="http://192.168.1.187:10088/static/images/common/icon-down.png">-->
     </div>
     <ul class="filter-list">
-      <li class="filter" @click="changeFilter({id: 0})" :class="activeId === 0 ? 'active':''">
+      <li class="filter" @click="changeFilter({ id: 0 })" :class="activeId === 0 ? 'active' : ''">
         <div class="title">默认</div>
       </li>
-      <li class="filter" @click="changeFilter(sort)" :key="sort.id" v-for="sort in sortList"
-          :class="activeId === sort.id ? 'active':''">
-        <div class="title">{{sort.name}}</div>
-        <img v-if="sort.sort === 1" class="filter-status" src="https://ggllstatic.hpgjzlinfo.com/static/images/common/down.png">
-        <img v-else class="filter-status" src="https://ggllstatic.hpgjzlinfo.com/static/images/common/up.png">
+      <li
+        class="filter"
+        @click="changeFilter(sort)"
+        :key="sort.id"
+        v-for="sort in sortList"
+        :class="activeId === sort.id ? 'active' : ''"
+      >
+        <div class="title">{{ sort.name }}</div>
+        <img
+          v-if="sort.sort === 1"
+          class="filter-status"
+          src="http://192.168.1.187:10088/static/images/common/down.png"
+        />
+        <img
+          v-else
+          class="filter-status"
+          src="http://192.168.1.187:10088/static/images/common/up.png"
+        />
       </li>
     </ul>
     <ul class="item-list">
-      <li class="item" @click="toDetail(item)" v-for="(item,index) in itemList" :key="index">
-        <img class="item-logo" mode="aspectFit" :lazy-load="true" :src="item.proPictDir">
+      <li class="item" @click="toDetail(item)" v-for="(item, index) in itemList" :key="index">
+        <img class="item-logo" mode="aspectFit" :lazy-load="true" :src="item.proPictDir" />
         <!--<div class="item-point">{{item.brandName}}</div>-->
-        <div class="item-name">{{item.productName}}</div>
+        <div class="item-name">{{ item.productName }}</div>
         <div class="price-layout">
-          <div class="sale-price">¥{{item.cuPrice}}</div>
-          <div class="market-price">¥{{item.originalPrice}}</div>
-          <img class="icon-cart" src="https://ggllstatic.hpgjzlinfo.com/static/images/common/icon-cart.png">
+          <div class="sale-price">¥{{ item.cuPrice }}</div>
+          <div class="market-price">¥{{ item.originalPrice }}</div>
+          <img
+            class="icon-cart"
+            src="http://192.168.1.187:10088/static/images/common/icon-cart.png"
+          />
         </div>
       </li>
     </ul>
@@ -40,7 +63,7 @@
 </template>
 
 <script>
-  import Top from '@/sub-pages/index/components/top.vue'
+  import Top from '@/sub-pages/index/components/top.vue';
 
   export default {
     data() {
@@ -50,38 +73,40 @@
             id: 1,
             sort: 0,
             name: '按时间',
-          }, {
+          },
+          {
             id: 2,
             sort: 0,
             name: '按销量',
-          }, {
+          },
+          {
             id: 3,
             sort: 0,
             name: '按价格',
-          }
+          },
         ],
         activeId: 0,
         itemList: [],
         scrollTop: 0,
         height: 750,
         brandInfo: {},
-      }
+      };
     },
     components: {
       Top,
     },
     methods: {
-      goHome(){
+      goHome() {
         wx.navigateTo({
-          url: '/sub-pages/index/index/main'
-        })
+          url: '/sub-pages/index/index/main',
+        });
       },
       onUnload() {
         this.brandInfo = {};
         this.itemList = [];
       },
       onLoad(e) {
-        this.height = parseInt(e.mp.detail.height / e.mp.detail.width * 750);
+        this.height = parseInt((e.mp.detail.height / e.mp.detail.width) * 750);
       },
       changeFilter(sort) {
         if (this.activeId === sort.id) {
@@ -90,55 +115,55 @@
         this.activeId = sort.id;
         let sortType;
         switch (this.activeId) {
-        case 1:
-          sortType = sort.sort === 1 ? 12 : 11;
-          break;
-        case 2:
-          sortType = sort.sort === 1 ? 32 : 31;
-          break;
-        case 3:
-          sortType = sort.sort === 1 ? 22 : 21;
-          break;
+          case 1:
+            sortType = sort.sort === 1 ? 12 : 11;
+            break;
+          case 2:
+            sortType = sort.sort === 1 ? 32 : 31;
+            break;
+          case 3:
+            sortType = sort.sort === 1 ? 22 : 21;
+            break;
         }
         this.sortType = sortType;
-        this.loadItem()
+        this.loadItem();
       },
-      async changeAttention(){
+      async changeAttention() {
         wx.showLoading({
-          title: '正在提交...'
-        })
+          title: '正在提交...',
+        });
         const result = await wx.request({
           data: {
             method: this.brandInfo.isAttention == 0 ? 'brand.addconcern' : 'brand.delconcern',
             brandId: this.id,
-          }
-        })
+          },
+        });
         wx.hideLoading();
         if (result.result.result == 1) {
           wx.showToast({
-            title:  this.brandInfo.isAttention == 0 ? '关注成功' : '取消成功',
-            icon: 'none'
-          })
+            title: this.brandInfo.isAttention == 0 ? '关注成功' : '取消成功',
+            icon: 'none',
+          });
           this.brandInfo.isAttention = this.brandInfo.isAttention == 0 ? 1 : 0;
         } else {
           wx.showToast({
             title: result.result.message,
-            icon: 'none'
-          })
+            icon: 'none',
+          });
         }
       },
       toDetail(data) {
         wx.navigateTo({
-          url: `/pages/item/main?id=` + data.productSid
-        })
+          url: `/pages/item/main?id=` + data.productSid,
+        });
       },
-      async loadItem(){
+      async loadItem() {
         const params = {
           pageSize: 100,
           pageNum: 1,
           brandId: this.id,
-        }
-        if(this.sortType){
+        };
+        if (this.sortType) {
           params.sortType = this.sortType;
         }
         // const itemResult = await wx.request({
@@ -153,40 +178,40 @@
         //     icon: 'none'
         //   })
         // }
-      }
+      },
     },
     onPageScroll(e) {
-      this.$refs.toTop.show(e.scrollTop > App.systemInfo.screenHeight)
+      this.$refs.toTop.show(e.scrollTop > App.systemInfo.screenHeight);
     },
     async mounted() {
       this.id = this.$root.$mp.query.id;
-      console.info(this.id)
+      console.info(this.id);
       wx.showLoading({ title: '正在获取数据...', mask: true });
       const result = await wx.request({
         data: {
           method: 'product.brandInfo',
           brandId: this.id,
-        }
-      })
-      wx.hideLoading()
+        },
+      });
+      wx.hideLoading();
       if (result.result.result == 1) {
         this.brandInfo = result.data;
       } else {
         wx.showToast({
           title: result.result.message,
-          icon: 'none'
-        })
+          icon: 'none',
+        });
       }
       wx.setNavigationBarTitle({
-        title: '品牌详情'
-      })
+        title: '品牌详情',
+      });
       this.loadItem();
     },
-  }
+  };
 </script>
 
 <style lang="scss">
-  @import "~@/styles/base";
+  @import '~@/styles/base';
 
   .page-brand {
     padding-bottom: rpx(50);
@@ -236,7 +261,7 @@
       }
     }
     .filter-list {
-      @include filter-list()
+      @include filter-list();
     }
     .item-list {
       @include item-list();

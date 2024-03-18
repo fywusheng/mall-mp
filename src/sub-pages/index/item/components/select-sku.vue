@@ -230,7 +230,7 @@
       <img
         @click="show(false)"
         class="btn-close"
-        src="https://ggllstatic.hpgjzlinfo.com/static/images/item-detail/close.png"
+        src="http://192.168.1.187:10088/static/images/item-detail/close.png"
       />
 
       <div class="sku-header">

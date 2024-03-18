@@ -1,13 +1,17 @@
 <template>
   <div class="page-path-list">
     <ul class="item-list">
-      <li class="item" @click="toItem(item)" v-for="(item,index) in dataList" :key="index">
-        <img class="btn-delete" @click.stop="remove(item)" src="https://ggllstatic.hpgjzlinfo.com/static/images/common/icon-delete.png">
-        <img class="item-logo" mode="aspectFit" :lazy-load="true" :src="item.mainImgUrl">
+      <li class="item" @click="toItem(item)" v-for="(item, index) in dataList" :key="index">
+        <img
+          class="btn-delete"
+          @click.stop="remove(item)"
+          src="http://192.168.1.187:10088/static/images/common/icon-delete.png"
+        />
+        <img class="item-logo" mode="aspectFit" :lazy-load="true" :src="item.mainImgUrl" />
         <div class="item-body">
-          <div class="item-name">{{item.name}}</div>
-          <div class="item-name">编码：{{item.code}}</div>
-          <div v-if="item.saleState==5" class="item-name">状态：在售中</div>
+          <div class="item-name">{{ item.name }}</div>
+          <div class="item-name">编码：{{ item.code }}</div>
+          <div v-if="item.saleState == 5" class="item-name">状态：在售中</div>
           <div v-else class="item-name">状态：已下架</div>
         </div>
       </li>
@@ -16,85 +20,86 @@
 </template>
 
 <script>
-
   export default {
     data() {
       return {
         dataList: [],
         pageLoad: false,
-      }
+      };
     },
     components: {},
     methods: {
-      toItem(item){
-        if(item.saleState!=5){
+      toItem(item) {
+        if (item.saleState != 5) {
           wx.showToast('该商品已下架无法预览详情！');
           return;
         }
         wx.navigateTo({
-          url: `/pages/item/main?id=${item.id}`
-        })
+          url: `/pages/item/main?id=${item.id}`,
+        });
       },
       async remove(item) {
         const result = await wx.showModal({
           title: '',
           content: '确定要删除该关注记录?',
-          confirmColor: '#FB4769'
-        })
+          confirmColor: '#FB4769',
+        });
         if (result.confirm) {
           wx.showLoading({ title: '正在提交...', mask: true });
           const delResult = await Axios.post('/product/deleteFavorites', {
-              id: item.id,
-          })
-          wx.hideLoading()
+            id: item.id,
+          });
+          wx.hideLoading();
           if (delResult.code == 200) {
             wx.showToast({
               title: delResult.msg || '删除成功',
-              icon: 'none'
+              icon: 'none',
             });
             this.loadData();
           } else {
             wx.showToast({
               title: delResult.msg || '删除失败',
-              icon: 'none'
+              icon: 'none',
             });
           }
         }
       },
       async loadData() {
-        const result = await Axios.post('/product/listFavorites', {params: {
-          data: {
-            pageNo: 1,
-            pageSize: 100,
-          }
-        }})
+        const result = await Axios.post('/product/listFavorites', {
+          params: {
+            data: {
+              pageNo: 1,
+              pageSize: 100,
+            },
+          },
+        });
         if (result.code == 200) {
           this.dataList = result.data.list || [];
         } else {
           wx.showToast({
             title: result.msg || '获取数据失败',
-            icon: 'none'
+            icon: 'none',
           });
         }
-      }
+      },
     },
     async mounted() {
       wx.setNavigationBarTitle({
-        title: '收藏'
-      })
-      if(!Store.getters.isLogin){
-        await Store.dispatch('login')
+        title: '收藏',
+      });
+      if (!Store.getters.isLogin) {
+        await Store.dispatch('login');
       }
       wx.showLoading({ title: '正在加载...', mask: true });
-      await this.loadData()
+      await this.loadData();
       this.pageLoad = true;
       wx.hideLoading();
     },
-  }
+  };
 </script>
 
 <style lang="scss">
-  @import "~@/styles/base";
+  @import '~@/styles/base';
 
   .page-path-list {
     padding-bottom: rpx(50);

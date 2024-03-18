@@ -11,7 +11,7 @@
             :src="
               userInfo.userIcon
                 ? userInfo.userIcon
-                : 'https://ggllstatic.hpgjzlinfo.com/static/user-center/icon-user-center-default-avatar.png'
+                : 'http://192.168.1.187:10088/static/user-center/icon-user-center-default-avatar.png'
             "
           />
           <view class="lable">可用积分:</view>
@@ -39,7 +39,7 @@
               <image
                 class="img bgempt"
                 v-if="v.soldOut === 0"
-                src="https://ggllstatic.hpgjzlinfo.com/static/home/empt.png"
+                src="http://192.168.1.187:10088/static/home/empt.png"
               />
             </view>
             <view class="list_r">
@@ -71,7 +71,7 @@
               <image
                 class="img bgempt"
                 v-if="v.soldOut === 0"
-                src="https://ggllstatic.hpgjzlinfo.com/static/home/empt.png"
+                src="http://192.168.1.187:10088/static/home/empt.png"
               />
             </view>
             <view class="jf">积分抵扣￥{{ v.creditPoints }}</view>
@@ -91,7 +91,7 @@
           <image
             class="icon bgempt"
             v-if="v.soldOut === 0"
-            src="https://ggllstatic.hpgjzlinfo.com/static/home/empt.png"
+            src="http://192.168.1.187:10088/static/home/empt.png"
           />
           <view class="name">{{ v.name }}</view>
           <view class="jf">积分抵扣￥{{ v.creditPoints }}</view>
@@ -109,13 +109,13 @@
       <button class="menu" @click="goBuy">
         <image
           class="icon icon-service"
-          src="https://ggllstatic.hpgjzlinfo.com/static/images/common/bug.png"
+          src="http://192.168.1.187:10088/static/images/common/bug.png"
         />
       </button>
       <div class="menu" @click="toTop">
         <image
           class="icon icon-top"
-          src="https://ggllstatic.hpgjzlinfo.com/static/images/common/top.png"
+          src="http://192.168.1.187:10088/static/images/common/top.png"
         />
       </div>
     </view>
@@ -164,7 +164,7 @@
       // 图片加载失败
       handleImageLoadFail(index) {
         this.prodList[index].mainImgUrl =
-          'https://ggllstatic.hpgjzlinfo.com/static/home/image-home-article-default.png';
+          'http://192.168.1.187:10088/static/home/image-home-article-default.png';
       },
       async autoScore(e) {
         const token = uni.getStorageSync('token') || e.token;
@@ -287,7 +287,7 @@
     .top {
       width: 100%;
       height: 762rpx;
-      background-image: url('https://ggllstatic.hpgjzlinfo.com/static/home/ponit3.png');
+      background-image: url('http://192.168.1.187:10088/static/home/ponit3.png');
       background-repeat: no-repeat;
       background-size: contain;
     }
@@ -298,7 +298,7 @@
       .use {
         width: 100%;
         height: 160rpx;
-        background-image: url('https://ggllstatic.hpgjzlinfo.com/static/home/bg_point.png');
+        background-image: url('http://192.168.1.187:10088/static/home/bg_point.png');
         background-size: contain;
         display: flex;
         margin-bottom: 32rpx;
@@ -345,7 +345,7 @@
         margin-bottom: 32rpx;
         ._top {
           padding: 32rpx 0 32rpx 32rpx;
-          background-image: url('https://ggllstatic.hpgjzlinfo.com/static/home/di_kou.png');
+          background-image: url('http://192.168.1.187:10088/static/home/di_kou.png');
           background-size: cover;
           display: flex;
           background-repeat: no-repeat;

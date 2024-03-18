@@ -2,32 +2,56 @@
   <div class="page-category">
     <div class="search-layout">
       <div class="search" @click="toSearch">
-        <img class="icon-search" src="https://ggllstatic.hpgjzlinfo.com/static/images/common/icon-search.png">
+        <img
+          class="icon-search"
+          src="http://192.168.1.187:10088/static/images/common/icon-search.png"
+        />
         输入关键字搜索商品...
       </div>
     </div>
     <div class="category-list-layout">
-      <scroll-view scroll-y class="top-list" :style="{height: height}">
-        <li class="top" @tap="changeCategory(top, index)" :class="currentIndex===index ? 'active':''"
-            v-for="(top,index) in categoryList" :key="index">{{top.name}}
+      <scroll-view scroll-y class="top-list" :style="{ height: height }">
+        <li
+          class="top"
+          @tap="changeCategory(top, index)"
+          :class="currentIndex === index ? 'active' : ''"
+          v-for="(top, index) in categoryList"
+          :key="index"
+        >
+          {{ top.name }}
         </li>
       </scroll-view>
-      <scroll-view scroll-y class="content-layout" :style="{height: height}">
-        <img class="banner" mode="widthFix" :style="{marginBottom: (operation.space_height || 0) + 'px'}"
-             v-for="(banner,index) in bannerList" @tap="toBanner(banner.topic_link)" :key="index"
-             :src="banner.image_url">
+      <scroll-view scroll-y class="content-layout" :style="{ height: height }">
+        <img
+          class="banner"
+          mode="widthFix"
+          :style="{ marginBottom: (operation.space_height || 0) + 'px' }"
+          v-for="(banner, index) in bannerList"
+          @tap="toBanner(banner.topic_link)"
+          :key="index"
+          :src="banner.image_url"
+        />
         <ul class="cate-list">
-          <li class="cate" v-for="(cate,index) in subList" :key="index">
+          <li class="cate" v-for="(cate, index) in subList" :key="index">
             <div class="cate-name" @tap="toCategory(cate)">
-              {{cate.name}}
-              <div class="btn-right">全部<i class="iconfont icon-you"></i></div>
+              {{ cate.name }}
+              <div class="btn-right">
+                全部
+                <i class="iconfont icon-you"></i>
+              </div>
             </div>
             <ul class="sub-cate-list">
-              <li class="sub-cate" @tap="toCategory(subCate)"
-                  v-for="(subCate,subIndex) in cate.children"
-                  :key="subIndex">
-                <div class="sub-cate-logo" :style="{backgroundImage: 'url('+subCate.iconUrl+')'}"></div>
-                <div class="sub-cate-name">{{subCate.name}}</div>
+              <li
+                class="sub-cate"
+                @tap="toCategory(subCate)"
+                v-for="(subCate, subIndex) in cate.children"
+                :key="subIndex"
+              >
+                <div
+                  class="sub-cate-logo"
+                  :style="{ backgroundImage: 'url(' + subCate.iconUrl + ')' }"
+                ></div>
+                <div class="sub-cate-name">{{ subCate.name }}</div>
               </li>
             </ul>
           </li>
@@ -38,7 +62,7 @@
 </template>
 
 <script>
-  import wx from 'utils/wx'
+  import wx from 'utils/wx';
   export default {
     data() {
       return {
@@ -48,19 +72,19 @@
         brandList: [],
         bannerList: [],
         operation: {},
-        height: (App.systemInfo.windowHeight - 37) + 'px' 
-      }
+        height: App.systemInfo.windowHeight - 37 + 'px',
+      };
     },
     components: {},
     methods: {
       toSearch() {
-        uni.upx2px
+        uni.upx2px;
         wx.navigateTo({
-          url: '/sub-pages/index/search/main'
-        })
+          url: '/sub-pages/index/search/main',
+        });
       },
       toBanner(link) {
-        XIU.bridge.genLink(link)
+        XIU.bridge.genLink(link);
       },
       changeCategory(category, index) {
         this.currentIndex = index;
@@ -73,31 +97,31 @@
         wx.showLoading();
         const result = await Axios.post('/category/getCategoryList', {
           // params: {
-            type: 2
+          type: 2,
           // }
         });
         wx.hideLoading();
         if (result.code == 200) {
           this.categoryList = result.data;
-          this.changeCategory(this.categoryList[this.currentIndex], 0)
+          this.changeCategory(this.categoryList[this.currentIndex], 0);
         } else {
-          wx.showToast(result.result.message)
+          wx.showToast(result.result.message);
         }
-      }
+      },
     },
     async mounted() {
-      const result = await Axios.get(`${ENV.CMS}/operationContent/getByCode?code=SEARCH_BANNER`)
+      const result = await Axios.get(`${ENV.CMS}/operationContent/getByCode?code=SEARCH_BANNER`);
       if (result.code === 200) {
         this.bannerList = result.data.contentList;
         this.operation = result.data.operation;
       }
       await this.loadData();
-    }
-  }
+    },
+  };
 </script>
 
 <style lang="scss">
-  @import "~@/styles/base";
+  @import '~@/styles/base';
 
   .page-category {
     height: calc(100vh - 226rpx);
@@ -134,7 +158,7 @@
     .top-list {
       padding-bottom: rpx(50);
       width: rpx(180);
-      background: #F8F8F8;
+      background: #f8f8f8;
       .top {
         position: relative;
         height: rpx(88);
@@ -198,7 +222,7 @@
               i {
                 margin-left: rpx(10);
                 font-size: rpx(24);
-                transform: scale(.9);
+                transform: scale(0.9);
               }
             }
           }

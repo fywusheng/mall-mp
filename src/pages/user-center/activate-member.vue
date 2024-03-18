@@ -8,7 +8,7 @@
           <image
             class="icon-right"
             mode="scaleToFill"
-            src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
+            src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png"
           />
         </view>
       </view>
@@ -19,8 +19,8 @@
             mode="scaleToFill"
             :src="
               cardType === 0
-                ? 'https://ggllstatic.hpgjzlinfo.com/static/songhui/user-center/able.png'
-                : 'https://ggllstatic.hpgjzlinfo.com/static/songhui/user-center/unable.png'
+                ? 'http://192.168.1.187:10088/static/songhui/user-center/able.png'
+                : 'http://192.168.1.187:10088/static/songhui/user-center/unable.png'
             "
           />
 
@@ -37,8 +37,8 @@
             mode="scaleToFill"
             :src="
               cardType === 0
-                ? 'https://ggllstatic.hpgjzlinfo.com/static/songhui/user-center/unable.png'
-                : 'https://ggllstatic.hpgjzlinfo.com/static/songhui/user-center/able.png'
+                ? 'http://192.168.1.187:10088/static/songhui/user-center/unable.png'
+                : 'http://192.168.1.187:10088/static/songhui/user-center/able.png'
             "
           />
           <view class="t">半年卡-商城会员</view>
@@ -59,28 +59,28 @@
         <text class="desc">年卡/半年卡均享有如下特权</text>
       </view>
       <image
-        src="https://ggllstatic.hpgjzlinfo.com/static/songhui/user-center/banner@2x.png"
+        src="http://192.168.1.187:10088/static/songhui/user-center/banner@2x.png"
         mode="scaleToFill"
         class="banner"
       />
       <view class="bene-fit">
         <image
-          src="https://ggllstatic.hpgjzlinfo.com/static/songhui/user-center/baoyou.png"
+          src="http://192.168.1.187:10088/static/songhui/user-center/baoyou.png"
           mode="scaleToFill"
           class="banner1"
         />
         <image
-          src="https://ggllstatic.hpgjzlinfo.com/static/songhui/user-center/huiyuanjifen.png"
+          src="http://192.168.1.187:10088/static/songhui/user-center/huiyuanjifen.png"
           mode="scaleToFill"
           class="banner1"
         />
         <image
-          src="https://ggllstatic.hpgjzlinfo.com/static/songhui/user-center/zhuanshuyouhui.png"
+          src="http://192.168.1.187:10088/static/songhui/user-center/zhuanshuyouhui.png"
           mode="scaleToFill"
           class="banner1"
         />
         <image
-          src="https://ggllstatic.hpgjzlinfo.com/static/songhui/user-center/zhuanshuguwen.png"
+          src="http://192.168.1.187:10088/static/songhui/user-center/zhuanshuguwen.png"
           mode="scaleToFill"
           class="banner1"
         />
@@ -119,8 +119,8 @@
         cardType: 0,
         checked: false,
         icon: {
-          checked: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-radio-checked.png',
-          noChecked: 'https://ggllstatic.hpgjzlinfo.com/static/pay/icon-radio-default.png',
+          checked: 'http://192.168.1.187:10088/static/pay/icon-radio-checked.png',
+          noChecked: 'http://192.168.1.187:10088/static/pay/icon-radio-default.png',
         },
       };
     },

@@ -238,20 +238,20 @@
               v-if="el.checked"
               @click="selectAllStore(el)"
               class="icon-radio"
-              src="https://ggllstatic.hpgjzlinfo.com/static/pay/icon-radio-checked.png"
+              src="http://192.168.1.187:10088/static/pay/icon-radio-checked.png"
               mode="scaleToFill"
             ></image>
             <image
               v-else
               @click="selectAllStore(el)"
               class="icon-radio"
-              src="https://ggllstatic.hpgjzlinfo.com/static/pay/icon-radio-default.png"
+              src="http://192.168.1.187:10088/static/pay/icon-radio-default.png"
               mode="scaleToFill"
             ></image>
             <view class="header-title" @click="goStoreDetail(el)">{{ el.storeName }}</view>
             <image
               class="icon-right"
-              src="https://ggllstatic.hpgjzlinfo.com/static/images/cart/icon-right.png"
+              src="http://192.168.1.187:10088/static/images/cart/icon-right.png"
               mode="scaleToFill"
             ></image>
           </view>
@@ -267,14 +267,14 @@
                   v-if="product.checked"
                   class="icon-radio-no"
                   @click="changeCheck(product)"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/pay/icon-radio-checked.png"
+                  src="http://192.168.1.187:10088/static/pay/icon-radio-checked.png"
                   mode="scaleToFill"
                 ></image>
                 <image
                   v-else
                   class="icon-radio-no"
                   @click="changeCheck(product)"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/pay/icon-radio-default.png"
+                  src="http://192.168.1.187:10088/static/pay/icon-radio-default.png"
                   mode="scaleToFill"
                 ></image>
               </view>
@@ -283,7 +283,7 @@
               <image
                 v-if="!product.soldOut"
                 class="product-img"
-                src="https://ggllstatic.hpgjzlinfo.com/static/images/common/sale-out.png"
+                src="http://192.168.1.187:10088/static/images/common/sale-out.png"
                 mode="scaleToFill"
                 @click="tolDetail(product)"
               ></image>
@@ -317,7 +317,7 @@
               <img
                 class="btn-delete"
                 mode="scaleToFill"
-                src="https://ggllstatic.hpgjzlinfo.com/static/images/cart/delete.png"
+                src="http://192.168.1.187:10088/static/images/cart/delete.png"
                 @click="deleteItem(product)"
               />
             </view>
@@ -330,13 +330,13 @@
               class="icon-img"
               v-if="selectAll"
               mode="scaleToFill"
-              src="https://ggllstatic.hpgjzlinfo.com/static/pay/icon-radio-checked.png"
+              src="http://192.168.1.187:10088/static/pay/icon-radio-checked.png"
             />
             <img
               class="icon-img"
               v-else
               mode="scaleToFill"
-              src="https://ggllstatic.hpgjzlinfo.com/static/pay/icon-radio-default.png"
+              src="http://192.168.1.187:10088/static/pay/icon-radio-default.png"
             />
             全选
           </div>
@@ -360,7 +360,7 @@
       <div v-if="loading && isLogin && !itemList.length" class="empty-wrap">
         <img
           class="icon-img"
-          src="https://ggllstatic.hpgjzlinfo.com/static/images/cart/empty.png"
+          src="http://192.168.1.187:10088/static/images/cart/empty.png"
           mode="scaleToFill"
         />
         <div class="desc">您还没有选购商品</div>
@@ -370,7 +370,7 @@
     <div v-if="loading && !isLogin" class="empty-wrap">
       <image
         class="l_empt"
-        src="https://ggllstatic.hpgjzlinfo.com/static/life/emp.png"
+        src="http://192.168.1.187:10088/static/life/emp.png"
         mode="scaleToFill"
       />
       <div class="desc">您还没有登录</div>

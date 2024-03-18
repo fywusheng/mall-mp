@@ -1,12 +1,12 @@
 <style lang="scss">
-  @import "~@/styles/base";
+  @import '~@/styles/base';
 
   body {
     padding-bottom: rpx(50);
     // background-color: $extra-light-gray;
   }
   .app {
-    background: #F2F2F2;
+    background: #f2f2f2;
   }
 
   .top-banner {
@@ -20,7 +20,7 @@
       box-sizing: border-box;
       height: rpx(280);
       width: rpx(718);
-      background: url(https://ggllstatic.hpgjzlinfo.com/static/images/me/face-bg.png) center no-repeat;
+      background: url(http://192.168.1.187:10088/static/images/me/face-bg.png) center no-repeat;
       background-size: cover;
       color: #fff;
       border-top-left-radius: rpx(16);
@@ -35,7 +35,8 @@
         height: rpx(48);
       }
 
-      .mobile, .login-btn {
+      .mobile,
+      .login-btn {
         padding-left: rpx(124);
         font-size: rpx(24);
         line-height: rpx(33);
@@ -63,7 +64,7 @@
           font-size: rpx(20);
           line-height: rpx(28);
           text-align: center;
-          image{
+          image {
             width: 30rpx;
             height: 30rpx;
           }
@@ -86,7 +87,7 @@
           border-radius: 50%;
           @include background-image();
           background-size: cover;
-          background-image: url(https://ggllstatic.hpgjzlinfo.com/static/images/me/face.png);
+          background-image: url(http://192.168.1.187:10088/static/images/me/face.png);
         }
       }
     }
@@ -97,7 +98,7 @@
       z-index: 2;
       width: 100%;
       height: 32rpx;
-      background: #F2F2F2;
+      background: #f2f2f2;
       border-radius: 56rpx 56rpx 0 0;
     }
   }
@@ -105,7 +106,7 @@
   .menu-list {
     margin-top: rpx(20);
     padding: 20rpx 16rpx;
-    background-color: #F2F2F2;
+    background-color: #f2f2f2;
 
     .menu {
       position: relative;
@@ -147,7 +148,7 @@
   }
 
   .panel {
-    background: #FFFFFF;
+    background: #ffffff;
     border-radius: 16rpx;
     padding: 24rpx;
     margin: rpx(32) rpx(16);
@@ -162,12 +163,12 @@
         display: flex;
         align-items: center;
         &::before {
-          content: "";
+          content: '';
           display: inline-block;
           width: 8rpx;
           height: 38rpx;
           margin-right: 16rpx;
-          background: #FF9500;
+          background: #ff9500;
           border-radius: 4rpx;
         }
       }
@@ -218,7 +219,7 @@
             color: #333333;
             line-height: 66rpx;
             &.warn {
-              color: #FF5500;
+              color: #ff5500;
             }
           }
         }
@@ -240,10 +241,14 @@
     <div class="top-banner">
       <div class="user-info">
         <div class="user-icon">
-          <div class="img" v-if="userInfo.picUrl" :style="{backgroundImage: 'url('+userInfo.picUrl+')'}"></div>
+          <div
+            class="img"
+            v-if="userInfo.picUrl"
+            :style="{ backgroundImage: 'url(' + userInfo.picUrl + ')' }"
+          ></div>
           <div class="img" v-else></div>
         </div>
-        <div class="user-name">{{userInfo.nickName || '-'}}</div>
+        <div class="user-name">{{ userInfo.nickName || '-' }}</div>
         <div v-if="!userInfo.phone" class="mobile" @tap="login">
           <div>尚未绑定手机号,点击绑定</div>
         </div>
@@ -252,8 +257,6 @@
       <view class="top-bg"></view>
     </div>
 
-
-    
     <!-- 我的订单 -->
     <view class="panel m-t-0">
       <view class="panel-header">
@@ -261,9 +264,9 @@
         <view class="panel-header-right" @click="toOrder(0)">
           <view>查看全部</view>
           <image
-            style="width:15rpx;height:30rpx;margin-left:6rpx"
+            style="width: 15rpx; height: 30rpx; margin-left: 6rpx"
             class="panel-header-icon-right"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/me/right.png"
+            src="http://192.168.1.187:10088/static/images/me/right.png"
             mode="scaleToFill"
           />
         </view>
@@ -271,25 +274,45 @@
       <view class="panel-body">
         <view class="flex-list">
           <view class="item" @click="toOrder(10)">
-            <image class="icon" src="https://ggllstatic.hpgjzlinfo.com/static/images/me/wait-zhifu.png" mode="" />
+            <image
+              class="icon"
+              src="http://192.168.1.187:10088/static/images/me/wait-zhifu.png"
+              mode=""
+            />
             <view class="item-text">待付款</view>
           </view>
-           <view class="item" @click="toOrder(20)">
-            <image class="icon" src="https://ggllstatic.hpgjzlinfo.com/static/images/me/wait-fahuo.png" mode="" />
+          <view class="item" @click="toOrder(20)">
+            <image
+              class="icon"
+              src="http://192.168.1.187:10088/static/images/me/wait-fahuo.png"
+              mode=""
+            />
             <view class="item-text">待发货</view>
           </view>
-           <view class="item" @click="toOrder(30)">
-            <image class="icon" src="https://ggllstatic.hpgjzlinfo.com/static/images/me/wait-shouhuo.png" mode="" />
+          <view class="item" @click="toOrder(30)">
+            <image
+              class="icon"
+              src="http://192.168.1.187:10088/static/images/me/wait-shouhuo.png"
+              mode=""
+            />
             <view class="item-text">待收货</view>
           </view>
         </view>
         <view class="flex-list">
           <view class="item" @click="toOrder(40)">
-            <image class="icon" src="https://ggllstatic.hpgjzlinfo.com/static/images/me/wait-pingjia.png" mode="" />
+            <image
+              class="icon"
+              src="http://192.168.1.187:10088/static/images/me/wait-pingjia.png"
+              mode=""
+            />
             <view class="item-text">待评价</view>
           </view>
           <view class="item" @click="toOrder(999)">
-            <image class="icon" src="https://ggllstatic.hpgjzlinfo.com/static/images/me/shouhou.png" mode="" />
+            <image
+              class="icon"
+              src="http://192.168.1.187:10088/static/images/me/shouhou.png"
+              mode=""
+            />
             <view class="item-text">售后服务</view>
           </view>
         </view>
@@ -297,55 +320,54 @@
     </view>
 
     <!-- 我的卡券 -->
-     <view class="panel">
+    <view class="panel">
       <view class="panel-header" @click="toMenu('my-coupon')">
         <view class="panel-header-title">我的卡券</view>
       </view>
       <view class="panel-body">
         <view class="flex-list">
           <view class="item" @click="toMyCoupop(0)">
-            <view class="count warn">{{cardStatus.unUse}}</view>
+            <view class="count warn">{{ cardStatus.unUse }}</view>
             <view class="item-text qrcode-color">未使用</view>
           </view>
-           <view class="item" @click="toMyCoupop(1)">
-             <view class="count">{{cardStatus.used}}</view>
+          <view class="item" @click="toMyCoupop(1)">
+            <view class="count">{{ cardStatus.used }}</view>
             <view class="item-text qrcode-color">已使用</view>
           </view>
-           <view class="item" @click="toMyCoupop(2)">
-             <view class="count">{{cardStatus.expired}}</view>
+          <view class="item" @click="toMyCoupop(2)">
+            <view class="count">{{ cardStatus.expired }}</view>
             <view class="item-text qrcode-color">已过期</view>
           </view>
         </view>
       </view>
     </view>
-   
+
     <ul class="menu-list">
       <li class="menu" @click="toAddress">
         收货地址
-        <img class="icon-right" src="https://ggllstatic.hpgjzlinfo.com/static/images/me/right.png">
+        <img class="icon-right" src="http://192.168.1.187:10088/static/images/me/right.png" />
       </li>
       <!-- <li class="menu" @click="toMenu('my-point')">
         我的积分
-        <img class="icon-right" src="https://ggllstatic.hpgjzlinfo.com/static/images/common/right.png">
+        <img class="icon-right" src="http://192.168.1.187:10088/static/images/common/right.png">
       </li> -->
       <li class="menu" @click="toMenu('my-collect')">
         收藏关注
-        <img class="icon-right" src="https://ggllstatic.hpgjzlinfo.com/static/images/me/right.png">
+        <img class="icon-right" src="http://192.168.1.187:10088/static/images/me/right.png" />
       </li>
       <li class="menu">
-        <button class="contact-btn" open-type="contact"> 联系客服</button>
-        <img class="icon-right" src="https://ggllstatic.hpgjzlinfo.com/static/images/me/right.png">
+        <button class="contact-btn" open-type="contact">联系客服</button>
+        <img class="icon-right" src="http://192.168.1.187:10088/static/images/me/right.png" />
       </li>
       <!-- <li class="menu" @click="toTopic('help_app')">
         帮助中心
-        <img class="icon-right" src="https://ggllstatic.hpgjzlinfo.com/static/images/common/right.png">
+        <img class="icon-right" src="http://192.168.1.187:10088/static/images/common/right.png">
       </li> -->
     </ul>
   </div>
 </template>
 
 <script>
-
   export default {
     name: 'USER_CENTER',
     data() {
@@ -357,78 +379,82 @@
         cardStatus: {
           expired: 0,
           unUse: 0,
-          used: 0
-        }
-      }
+          used: 0,
+        },
+      };
     },
     computed: {
-      isLogin(){
+      isLogin() {
         return Store.getters.isLogin;
-      }
+      },
     },
     components: {},
     methods: {
       toMyCoupop(status) {
         uni.navigateTo({
-          url: `/sub-pages/me/my-coupon/main?status=${status}`
-        })
+          url: `/sub-pages/me/my-coupon/main?status=${status}`,
+        });
       },
       toAddress() {
         wx.navigateTo({
-          url: '/sub-pages/me/address-list/main?type=2'
-        })
+          url: '/sub-pages/me/address-list/main?type=2',
+        });
       },
       toHome() {
-        XIU.bridge.goHome()
+        XIU.bridge.goHome();
       },
       toTopic(id) {
-        XIU.bridge.goTopic(id)
+        XIU.bridge.goTopic(id);
       },
       login() {
         wx.navigateTo({
           // url: '/sub-pages/index/login/main''
-        })
+        });
       },
       toOrder(status) {
-        if(status === 999){
+        if (status === 999) {
           wx.navigateTo({
-            url: '/sub-pages/me/refund-list/main'
-          })
-        }else{
+            url: '/sub-pages/me/refund-list/main',
+          });
+        } else {
           wx.navigateTo({
-            url: '/sub-pages/me/order-list/main?status=' + status || 0
-          })
+            url: '/sub-pages/me/order-list/main?status=' + status || 0,
+          });
         }
       },
       toMenu(name) {
-        if(!Store.getters.isLogin){
+        if (!Store.getters.isLogin) {
           wx.navigateTo({
-           // url: '/sub-pages/index/login/main''
-          })
+            // url: '/sub-pages/index/login/main''
+          });
           return false;
         }
         wx.navigateTo({
-          url: `/sub-pages/me/${name}/main`
-        })
+          url: `/sub-pages/me/${name}/main`,
+        });
       },
     },
     async created() {
-      if(!Store.getters.isLogin){
-        await Store.dispatch('login')
+      if (!Store.getters.isLogin) {
+        await Store.dispatch('login');
       }
-      const orderResult = await Axios.post('/order/get.count')
+      const orderResult = await Axios.post('/order/get.count');
       if (orderResult.code == 200) {
         this.orderResult = orderResult.data;
       }
-      const result = await Axios.post('/member/get.userinfo', {}, {
-        headers: {
-          'content-type': 'application/json;charset=utf-8',
-        }
-      })
+      const result = await Axios.post(
+        '/member/get.userinfo',
+        {},
+        {
+          headers: {
+            'content-type': 'application/json;charset=utf-8',
+          },
+        },
+      );
       if (result.code == 200) {
         this.userInfo = result.data;
       }
-      const pointResult = await Axios.post('/member/points.accumulation')
+      const pointResult = await Axios.post('/member/points.accumulation');
       if (pointResult.code == 200) {
         this.points = pointResult.data.points;
       }
@@ -436,15 +462,15 @@
         pageNum: 1,
         pageSize: 100,
         queryObject: {
-          sessionId: uni.getStorageSync('sessionId')
-        }
-      })
-      this.cardStatus = cardStatusResult.data
+          sessionId: uni.getStorageSync('sessionId'),
+        },
+      });
+      this.cardStatus = cardStatusResult.data;
 
       // const walletAccount = await Axios.post('/member/wallet/getTotalBalance')
       // if (walletAccount.code == 200) {
       //   this.balance = walletAccount.data.balance;
       // }
-    }
-  }
+    },
+  };
 </script>

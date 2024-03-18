@@ -6,7 +6,7 @@
         <view class="navigation-bar flex-h flex-c-s">
           <image
             class="image"
-            src="https://ggllstatic.hpgjzlinfo.com/static/home/home-logo.png"
+            src="http://192.168.1.187:10088/static/home/home-logo.png"
             mode="scaleToFill"
           />
           <text class="navigation-bar__title fs-40 c-white flex-1">国家老龄服务平台</text>
@@ -24,7 +24,7 @@
           <image
             class="city-icon ml-8"
             mode="scaleToFill"
-            src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-triangle-downward-white.png"
+            src="http://192.168.1.187:10088/static/common/icon-common-triangle-downward-white.png"
           />
         </view>
         <view class="search-bar flex-h flex-c-b flex-1 p-0-32 bg-white">
@@ -36,7 +36,7 @@
             <image
               class="search-bar__voice ml-16"
               mode="scaleToFill"
-              src="https://ggllstatic.hpgjzlinfo.com/static/home/icon-home-voice.png"
+              src="http://192.168.1.187:10088/static/home/icon-home-voice.png"
               @click="handleVoiceSearchClick"
             />
           </template>
@@ -45,11 +45,11 @@
           <image
             class="search-bar__voice ml-16"
             mode="scaleToFill"
-            src="https://ggllstatic.hpgjzlinfo.com/static/home/notice.png"
+            src="http://192.168.1.187:10088/static/home/notice.png"
             @click="handlerClickPop(1)"
           />
           <!-- <image class="search-bar__voice ml-16" mode="scaleToFill"
-            src="https://ggllstatic.hpgjzlinfo.com/static/home/round_add.png"
+            src="http://192.168.1.187:10088/static/home/round_add.png"
             @click="handlerClickPop(2)" /> -->
         </view>
       </view>
@@ -92,14 +92,14 @@
       </uni-swiper-dot>
     </view>
     <view class="center_">
-      <image class="fontS" src="https://ggllstatic.hpgjzlinfo.com/static/home/wq_s.png" />
+      <image class="fontS" src="http://192.168.1.187:10088/static/home/wq_s.png" />
       <!-- 老有所养 -->
       <view class="_margin">
         <view class="sy">
           <!-- <view class="_block">
             <image class="image" @click="goPathWay(0)"
-              src="https://ggllstatic.hpgjzlinfo.com/static/home/ylj.png" mode="scaleToFill" />
-            <image class="image" src="https://ggllstatic.hpgjzlinfo.com/static/home/bt.png"
+              src="http://192.168.1.187:10088/static/home/ylj.png" mode="scaleToFill" />
+            <image class="image" src="http://192.168.1.187:10088/static/home/bt.png"
               mode="scaleToFill" @click="goOlder" />
           </view> -->
           <!-- 维权服务 -->
@@ -109,19 +109,19 @@
                 <image
                   class="image"
                   @click="goTab(0)"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/home/pf2.png"
+                  src="http://192.168.1.187:10088/static/home/pf2.png"
                   mode="scaleToFill"
                 />
                 <image
                   class="image"
                   @click="goTab(1)"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/home/sf.png"
+                  src="http://192.168.1.187:10088/static/home/sf.png"
                   mode="scaleToFill"
                 />
                 <image
                   class="image"
                   @click="goTab(2)"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/home/wq.png"
+                  src="http://192.168.1.187:10088/static/home/wq.png"
                   mode="scaleToFill"
                 />
               </view>
@@ -136,7 +136,7 @@
               </view>
               <image
                 class="zx_image"
-                src="https://ggllstatic.hpgjzlinfo.com/static/home/zx.png"
+                src="http://192.168.1.187:10088/static/home/zx.png"
                 mode="scaleToFill"
                 @click="goConsult"
               />
@@ -154,20 +154,20 @@
                 <image
                   class="left_image"
                   @click="goWill(0)"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/home/will-left-1.png"
+                  src="http://192.168.1.187:10088/static/home/will-left-1.png"
                   mode="scaleToFill"
                 />
                 <view class="right-block">
                   <image
                     class="right_image"
                     @click="goWill(1)"
-                    src="https://ggllstatic.hpgjzlinfo.com/static/home/will-right-2.png"
+                    src="http://192.168.1.187:10088/static/home/will-right-2.png"
                     mode="scaleToFill"
                   />
                   <image
                     class="right_image"
                     @click="goWill(2)"
-                    src="https://ggllstatic.hpgjzlinfo.com/static/home/will-right-1.png"
+                    src="http://192.168.1.187:10088/static/home/will-right-1.png"
                     mode="scaleToFill"
                   />
                 </view>
@@ -196,19 +196,19 @@
                 <image
                   class="image"
                   @click="goOlder(0)"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/home/subsidy-1.png"
+                  src="http://192.168.1.187:10088/static/home/subsidy-1.png"
                   mode="widthFix"
                 />
                 <image
                   class="image"
                   @click="goOlder(1)"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/home/subsidy-2.png"
+                  src="http://192.168.1.187:10088/static/home/subsidy-2.png"
                   mode="widthFix"
                 />
                 <image
                   class="image"
                   @click="goOlder(2)"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/home/subsidy-3.png"
+                  src="http://192.168.1.187:10088/static/home/subsidy-3.png"
                   mode="widthFix"
                 />
               </view>
@@ -233,19 +233,19 @@
               <view class="contain" @click="seeDoctorTip">
                 <image
                   class="image"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/home/see-doctor-1.png"
+                  src="http://192.168.1.187:10088/static/home/see-doctor-1.png"
                   mode="scaleToFill"
                 />
                 <image
                   class="image"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/home/see-doctor-2.png"
+                  src="http://192.168.1.187:10088/static/home/see-doctor-2.png"
                   mode="scaleToFill"
                 />
               </view>
               <image
                 class="bottom-image"
                 @click="seeDoctorTip"
-                src="https://ggllstatic.hpgjzlinfo.com/static/home/see-doctor-3.png"
+                src="http://192.168.1.187:10088/static/home/see-doctor-3.png"
                 mode="scaleToFill"
               />
             </view>
@@ -253,7 +253,7 @@
           <!-- 在线中医 -->
           <image
             class="zy_image"
-            src="https://ggllstatic.hpgjzlinfo.com/static/home/line_zy.png"
+            src="http://192.168.1.187:10088/static/home/line_zy.png"
             mode="widthFix"
             @click="goShop(2)"
           />
@@ -271,9 +271,9 @@
           </view>
           <!-- <view class="_block">
             <image class="image" @click="seeDoctor"
-              src="https://ggllstatic.hpgjzlinfo.com/static/home/kb.png" mode="scaleToFill" />
+              src="http://192.168.1.187:10088/static/home/kb.png" mode="scaleToFill" />
             <image class="image" @click="goPathWay(1)"
-              src="https://ggllstatic.hpgjzlinfo.com/static/home/yb.png" mode="scaleToFill" />
+              src="http://192.168.1.187:10088/static/home/yb.png" mode="scaleToFill" />
           </view> -->
           <!-- 智慧中医 -->
           <view class="zh_zy">
@@ -290,20 +290,20 @@
             </view>
             <image
               class="widthImg"
-              src="https://ggllstatic.hpgjzlinfo.com/static/home/jk_shop.png"
+              src="http://192.168.1.187:10088/static/home/jk_shop.png"
               mode="widthFix"
               @click="goShop(1)"
             />
           </view>
           <image
             class="sw_image"
-            src="https://ggllstatic.hpgjzlinfo.com/static/home/wj.png"
+            src="http://192.168.1.187:10088/static/home/wj.png"
             mode="scaleToFill"
             @click="goQuestions"
           />
           <image
             class="sw_image"
-            src="https://ggllstatic.hpgjzlinfo.com/static/home/xl.png"
+            src="http://192.168.1.187:10088/static/home/xl.png"
             mode="scaleToFill"
             @click="goOlderTrain"
           />
@@ -317,32 +317,32 @@
         </view>
         <image
           class="zhao_ping"
-          src="https://ggllstatic.hpgjzlinfo.com/static/home/zhao_p.png"
+          src="http://192.168.1.187:10088/static/home/zhao_p.png"
           mode="widthFix"
           @click="fingWork"
         />
         <view class="tabs">
           <image
             class="img"
-            src="https://ggllstatic.hpgjzlinfo.com/static/home/sx-1.png"
+            src="http://192.168.1.187:10088/static/home/sx-1.png"
             mode="scaleToFill"
             @click="handleOlder(0)"
           />
           <image
             class="img"
-            src="https://ggllstatic.hpgjzlinfo.com/static/home/sx-3.png"
+            src="http://192.168.1.187:10088/static/home/sx-3.png"
             mode="scaleToFill"
             @click="handleOlder(1)"
           />
           <image
             class="img"
-            src="https://ggllstatic.hpgjzlinfo.com/static/home/sx-2.png"
+            src="http://192.168.1.187:10088/static/home/sx-2.png"
             mode="scaleToFill"
             @click="handleOlder(2)"
           />
         </view>
         <!-- <view class="sy" @click="handleOlder">
-          <image class="sw_image" src="https://ggllstatic.hpgjzlinfo.com/static/home/sw.png"
+          <image class="sw_image" src="http://192.168.1.187:10088/static/home/sw.png"
             mode="scaleToFill" />
         </view> -->
       </view>
@@ -355,7 +355,7 @@
           <view class="left_name">老有所乐</view>
         </view>
         <view class="sy">
-          <image class="sw_image" src="https://ggllstatic.hpgjzlinfo.com/static/home/sl.png"
+          <image class="sw_image" src="http://192.168.1.187:10088/static/home/sl.png"
             mode="scaleToFill" />
         </view>
       </view> -->
@@ -371,7 +371,7 @@
             <image
               class="_icon"
               mode="scaleToFill"
-              src="https://ggllstatic.hpgjzlinfo.com/static/home/upIcon.png"
+              src="http://192.168.1.187:10088/static/home/upIcon.png"
             />
             <view>继续上滑进入优惠</view>
           </swiper-item>
@@ -379,7 +379,7 @@
             <image
               class="_icon"
               mode="scaleToFill"
-              src="https://ggllstatic.hpgjzlinfo.com/static/home/upIcon.png"
+              src="http://192.168.1.187:10088/static/home/upIcon.png"
             />
             <view>继续上滑进入优惠</view>
           </swiper-item>
@@ -397,7 +397,7 @@
     <uni-popup ref="tipPopup" background="none">
       <image
         class="img-bg"
-        src="https://ggllstatic.hpgjzlinfo.com/static/life/icon-kanbing.png"
+        src="http://192.168.1.187:10088/static/life/icon-kanbing.png"
         @click="closeTipPop"
       />
     </uni-popup>
@@ -408,13 +408,13 @@
         <view class="content">
           <image
             class="get-point-bg"
-            src="https://ggllstatic.hpgjzlinfo.com/static/home/member-card.png"
+            src="http://192.168.1.187:10088/static/home/member-card.png"
             mode="scaleToFill"
           />
           <view class="card-btn" @click="showMemberCard">查看会员卡</view>
           <!-- <image
             class="card-btn"
-            src="https://ggllstatic.hpgjzlinfo.com/static/home/card-button.png"
+            src="http://192.168.1.187:10088/static/home/card-button.png"
             mode="scaleToFill"
             @click="showMemberCard"
           /> -->
@@ -423,7 +423,7 @@
         <image
           class="icon-close"
           @click="memberPopclose"
-          src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-close.png"
+          src="http://192.168.1.187:10088/static/common/icon-close.png"
           mode="scaleToFill"
         />
       </view>
@@ -435,7 +435,7 @@
         <view class="content" @click="getPoint">
           <image
             class="get-point-bg"
-            src="https://ggllstatic.hpgjzlinfo.com/static/home/member-card-bg.png"
+            src="http://192.168.1.187:10088/static/home/member-card-bg.png"
             mode="scaleToFill"
           />
           <view class="info">持卡人：{{ name }} &nbsp; &nbsp;&nbsp;&nbsp;年龄：{{ age }}</view>
@@ -448,14 +448,14 @@
         <image
           class="save-btn"
           @click="extraImage"
-          src="https://ggllstatic.hpgjzlinfo.com/static/home/save-btn.png"
+          src="http://192.168.1.187:10088/static/home/save-btn.png"
           mode="scaleToFill"
         />
 
         <image
           class="icon-close"
           @click="memberCardPopclose"
-          src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-close.png"
+          src="http://192.168.1.187:10088/static/common/icon-close.png"
           mode="scaleToFill"
         />
         <view class="line"></view>
@@ -510,27 +510,27 @@
       return {
         type: 2, //维权推荐
         zyImages: [
-          { src: 'https://ggllstatic.hpgjzlinfo.com/static/home/yangsheng.png', flag: 1 },
-          { src: 'https://ggllstatic.hpgjzlinfo.com/static/home/mifang.png', flag: 2 },
-          { src: 'https://ggllstatic.hpgjzlinfo.com/static/home/jiankang.png', flag: 3 },
-          { src: 'https://ggllstatic.hpgjzlinfo.com/static/home/jieqi.png', flag: 4 },
+          { src: 'http://192.168.1.187:10088/static/home/yangsheng.png', flag: 1 },
+          { src: 'http://192.168.1.187:10088/static/home/mifang.png', flag: 2 },
+          { src: 'http://192.168.1.187:10088/static/home/jiankang.png', flag: 3 },
+          { src: 'http://192.168.1.187:10088/static/home/jieqi.png', flag: 4 },
         ],
         showPop: false,
         notices: [
           {
             type: 1,
             name: '扫一扫',
-            icon: 'https://ggllstatic.hpgjzlinfo.com/static/home/sao.png',
+            icon: 'http://192.168.1.187:10088/static/home/sao.png',
           },
           {
             type: 2,
             name: '亮  证',
-            icon: 'https://ggllstatic.hpgjzlinfo.com/static/home/liang_zheng.png',
+            icon: 'http://192.168.1.187:10088/static/home/liang_zheng.png',
           },
           {
             type: 3,
             name: '亮  码',
-            icon: 'https://ggllstatic.hpgjzlinfo.com/static/home/liang_ma.png',
+            icon: 'http://192.168.1.187:10088/static/home/liang_ma.png',
           },
         ],
         showDots: false,
@@ -560,9 +560,7 @@
         // 通知公告列表
         // bulletins: [],
         // 轮播图列表
-        banners: [
-          { bannerUrl: 'https://ggllstatic.hpgjzlinfo.com/static/home/banner-home-default.png' },
-        ],
+        banners: [{ bannerUrl: 'http://192.168.1.187:10088/static/home/banner-home-default.png' }],
         // 惠老服务列表
         services: [],
         // 惠老推荐列表
@@ -1274,7 +1272,7 @@
       handleBannerLoadFail(index) {
         // 图片加载失败时显示默认图片
         this.banners[index].bannerUrl =
-          'https://ggllstatic.hpgjzlinfo.com/static/home/banner-home-default.png';
+          'http://192.168.1.187:10088/static/home/banner-home-default.png';
       },
       /**
        * 轮播图 banner 点击事件
@@ -1664,7 +1662,7 @@
       }
     }
     .zh_zy {
-      background-image: url('https://ggllstatic.hpgjzlinfo.com/static/home/zy_bg.png');
+      background-image: url('http://192.168.1.187:10088/static/home/zy_bg.png');
       background-size: 100% 100%;
       padding: 24rpx 20rpx 24rpx 20rpx;
       margin-bottom: 32rpx;
@@ -1702,7 +1700,7 @@
     }
     .wq {
       width: 100%;
-      background: url('https://ggllstatic.hpgjzlinfo.com/static/home/wq_bg.png');
+      background: url('http://192.168.1.187:10088/static/home/wq_bg.png');
       background-size: 100% 100%;
       border-radius: 32rpx;
       margin-bottom: 32rpx;
@@ -1751,7 +1749,7 @@
         }
       }
       &.will {
-        background: url('https://ggllstatic.hpgjzlinfo.com/static/home/will-bg.png');
+        background: url('http://192.168.1.187:10088/static/home/will-bg.png');
         background-size: 100% 100%;
         .left_name {
           color: #755d40;
@@ -1772,7 +1770,7 @@
         }
       }
       &.pension {
-        background: url('https://ggllstatic.hpgjzlinfo.com/static/home/pension-bg.png');
+        background: url('http://192.168.1.187:10088/static/home/pension-bg.png');
         background-size: 100% 100%;
         .title {
           font-size: 40rpx;
@@ -1797,7 +1795,7 @@
         }
       }
       &.subsidy {
-        background: url('https://ggllstatic.hpgjzlinfo.com/static/home/subsidy-bg.png');
+        background: url('http://192.168.1.187:10088/static/home/subsidy-bg.png');
         background-size: 100% 100%;
         .title {
           .left_name {
@@ -1810,7 +1808,7 @@
         }
       }
       &.see-doctor {
-        background: url('https://ggllstatic.hpgjzlinfo.com/static/home/see-doctor-bg.png');
+        background: url('http://192.168.1.187:10088/static/home/see-doctor-bg.png');
         background-size: 100% 100%;
         margin-bottom: 32rpx;
         .left_name {
@@ -1831,7 +1829,7 @@
         }
       }
       &.insurance {
-        background: url('https://ggllstatic.hpgjzlinfo.com/static/home/insurance-bg.png');
+        background: url('http://192.168.1.187:10088/static/home/insurance-bg.png');
         background-size: 100% 100%;
         .left_name {
           color: #367fa3;
@@ -1869,7 +1867,7 @@
       .sy {
         .wq,
         .zh_zy {
-          background: url('https://ggllstatic.hpgjzlinfo.com/static/home/icon-gray-bg.png');
+          background: url('http://192.168.1.187:10088/static/home/icon-gray-bg.png');
           background-repeat: no-repeat;
         }
         .wq {

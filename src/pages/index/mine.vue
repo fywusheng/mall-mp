@@ -9,14 +9,14 @@
     ></canvas>
     <view class="blank" :style="{ height: navigationBarHeight + 'px' }" />
     <view @click="setting" class="iconSet">
-      <image class="icon_set" src="https://ggllstatic.hpgjzlinfo.com/static/life/shezhi.png" />
+      <image class="icon_set" src="http://192.168.1.187:10088/static/life/shezhi.png" />
     </view>
     <view class="user-info flex-h flex-c-s">
       <view class="imgbox" @click="handleChooseImageClick">
         <image class="avatar" mode="scaleToFill" :src="header" />
         <image
           class="photo"
-          src="https://ggllstatic.hpgjzlinfo.com/static/mine/icon-photo2x.png"
+          src="http://192.168.1.187:10088/static/mine/icon-photo2x.png"
           mode="scaleToFill"
         />
       </view>
@@ -30,7 +30,7 @@
           <image
             v-if="userInfo.memberStatus === 1"
             class="member-icon"
-            src="https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/member-icon.png"
+            src="http://192.168.1.187:10088/static/songhui/mine/member-icon.png"
             mode="scaleToFill"
           />
         </view>
@@ -42,7 +42,7 @@
           <view class="r" @click="signClick">
             <image
               class="sign"
-              src="https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/sign.png"
+              src="http://192.168.1.187:10088/static/songhui/mine/sign.png"
               mode="scaleToFill"
             />
             <view class="sign-txt">每日签到</view>
@@ -59,7 +59,7 @@
       </view> -->
     </view>
     <!-- <view @click="setting" class="iconSet">
-      <image class="icon_set" src="https://ggllstatic.hpgjzlinfo.com/static/life/shezhi.png" />
+      <image class="icon_set" src="http://192.168.1.187:10088/static/life/shezhi.png" />
     </view> -->
 
     <view class="statistics">
@@ -68,14 +68,14 @@
           <text>累计已省(元)</text>
           <image
             class="icon-right"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/checkout/right.png"
+            src="http://192.168.1.187:10088/static/images/checkout/right.png"
           />
         </view>
         <view class="l" @click="openMemberRecord">
           <text>会员开通记录</text>
           <image
             class="icon-right"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/checkout/right.png"
+            src="http://192.168.1.187:10088/static/images/checkout/right.png"
           />
         </view>
       </view>
@@ -96,7 +96,7 @@
         <!-- <view class="_item" @click="handleServiceClick(5)">
           <img
             class="img"
-            src="https://ggllstatic.hpgjzlinfo.com/static/mine/huilao.png"
+            src="http://192.168.1.187:10088/static/mine/huilao.png"
             mode="scaleToFill"
           />
           <text class="text cards">惠老钱包</text>
@@ -104,7 +104,7 @@
         <view class="_item" @click="handleServiceClick(6)">
           <img
             class="img"
-            src="https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/card.png"
+            src="http://192.168.1.187:10088/static/songhui/mine/card.png"
             mode="scaleToFill"
           />
           <text class="text family">我的券包</text>
@@ -112,7 +112,7 @@
         <view class="_item" @click="handleIntegralClick">
           <img
             class="img"
-            src="https://ggllstatic.hpgjzlinfo.com/static/mine/jifeng.png"
+            src="http://192.168.1.187:10088/static/mine/jifeng.png"
             mode="scaleToFill"
           />
           <text class="text cards">我的积分</text>
@@ -121,7 +121,7 @@
         <view class="_item" @click="handleServiceClick(7)">
           <img
             class="img"
-            src="https://ggllstatic.hpgjzlinfo.com/static/life/order_icon.png"
+            src="http://192.168.1.187:10088/static/life/order_icon.png"
             mode="scaleToFill"
           />
           <text class="text family">我的订单</text>
@@ -133,7 +133,7 @@
       <view class="user-item flex-v flex-c-c" @click="handleServiceClick(2)">
         <image
           class="img"
-          src="https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/profile.png"
+          src="http://192.168.1.187:10088/static/songhui/mine/profile.png"
           mode="scaleToFill"
         />
         <text>用户资料</text>
@@ -141,7 +141,7 @@
       <view class="user-item flex-v flex-c-c" @click="handleUserClick(2)">
         <image
           class="img"
-          src="https://ggllstatic.hpgjzlinfo.com/static/mine/icon-invoice2x.png"
+          src="http://192.168.1.187:10088/static/mine/icon-invoice2x.png"
           mode="scaleToFill"
         />
         <text>我的发票</text>
@@ -149,7 +149,7 @@
       <view class="user-item flex-v flex-c-c" @click="handleUserClick(3)">
         <image
           class="img"
-          src="https://ggllstatic.hpgjzlinfo.com/static/mine/icon-news2x.png"
+          src="http://192.168.1.187:10088/static/mine/icon-news2x.png"
           mode="scaleToFill"
         />
         <text>消息中心</text>
@@ -160,7 +160,7 @@
       <view class="user-item flex-v flex-c-c" @click="handleUserClick(4)">
         <image
           class="img"
-          src="https://ggllstatic.hpgjzlinfo.com/static/mine/icon-collection2x.png"
+          src="http://192.168.1.187:10088/static/mine/icon-collection2x.png"
           mode="scaleToFill"
         />
         <text>收藏中心</text>
@@ -168,7 +168,7 @@
       <view class="user-item flex-v flex-c-c" @click="handleServiceClick(1)">
         <image
           class="img"
-          src="https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/address.png"
+          src="http://192.168.1.187:10088/static/songhui/mine/address.png"
           mode="scaleToFill"
         />
         <text>收货地址</text>
@@ -176,7 +176,7 @@
       <view class="user-item flex-v flex-c-c" @click="handleFeedbackClick()">
         <image
           class="img"
-          src="https://ggllstatic.hpgjzlinfo.com/static/mine/icon-tip2x.png"
+          src="http://192.168.1.187:10088/static/mine/icon-tip2x.png"
           mode="scaleToFill"
         />
         <text>意见反馈</text>
@@ -188,13 +188,13 @@
     <real-name-pop
       ref="realpop"
       @succFlag="succFlag"
-      :headImg="'https://ggllstatic.hpgjzlinfo.com/static/common/loginAttest.png'"
+      :headImg="'http://192.168.1.187:10088/static/common/loginAttest.png'"
     ></real-name-pop>
     <!-- 首次登录 -->
     <real-name-pop
       ref="firstLogin"
       @succFlag="loginSuccess"
-      :headImg="'https://ggllstatic.hpgjzlinfo.com/static/common/firstLogin-top-bg.png'"
+      :headImg="'http://192.168.1.187:10088/static/common/firstLogin-top-bg.png'"
     ></real-name-pop>
   </view>
 </template>
@@ -223,31 +223,30 @@
         // 图片地址，控件展示条件
         url: '',
         // 获取默认头像
-        header:
-          'https://ggllstatic.hpgjzlinfo.com/static/user-center/icon-user-center-default-avatar.png',
+        header: 'http://192.168.1.187:10088/static/user-center/icon-user-center-default-avatar.png',
         // 积分
         score: '',
         // 录入方式是否有图片
         showImg: false,
         benefitList: [
           {
-            icon: 'https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/benefit-1.png',
+            icon: 'http://192.168.1.187:10088/static/songhui/mine/benefit-1.png',
             name: '单笔最高千 元购物优惠',
           },
           {
-            icon: 'https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/benefit-2.png',
+            icon: 'http://192.168.1.187:10088/static/songhui/mine/benefit-2.png',
             name: '有效期内享 无限次包邮',
           },
           {
-            icon: 'https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/benefit-3.png',
+            icon: 'http://192.168.1.187:10088/static/songhui/mine/benefit-3.png',
             name: '积分兑换 0元拿好物',
           },
           {
-            icon: 'https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/benefit-4.png',
+            icon: 'http://192.168.1.187:10088/static/songhui/mine/benefit-4.png',
             name: '不定期发放 专属优惠券',
           },
           {
-            icon: 'https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/benefit-5.png',
+            icon: 'http://192.168.1.187:10088/static/songhui/mine/benefit-5.png',
             name: '1对1专属顾问 为您答疑解惑',
           },
         ],
@@ -603,7 +602,7 @@
               }
               this.header =
                 this.userInfo.userIcon ||
-                'https://ggllstatic.hpgjzlinfo.com/static/user-center/icon-user-center-default-avatar.png';
+                'http://192.168.1.187:10088/static/user-center/icon-user-center-default-avatar.png';
               // 没有实名
               // if (this.userInfo.crtfStas !== '2') {
               //   this.$refs.firstLogin.open()
@@ -747,7 +746,7 @@
     min-height: 100vh;
     padding-bottom: 150rpx;
     background: #f2f2f2;
-    background-image: url('https://ggllstatic.hpgjzlinfo.com/static/mine/icon-mine-bg.png');
+    background-image: url('http://192.168.1.187:10088/static/mine/icon-mine-bg.png');
     .iconSet {
       padding: 10rpx 30rpx 36rpx;
       display: flex;
@@ -880,7 +879,7 @@
     .statistics {
       width: 688rpx;
       height: 420rpx;
-      background-image: url('https://ggllstatic.hpgjzlinfo.com/static/songhui/mine/member-bg.png');
+      background-image: url('http://192.168.1.187:10088/static/songhui/mine/member-bg.png');
       background-size: 100% 100%;
       margin: 0 auto;
       padding: 24rpx 20rpx;
@@ -972,7 +971,7 @@
       margin-left: 15rpx;
       margin-right: 15rpx;
       .area_top {
-        background-image: url('https://ggllstatic.hpgjzlinfo.com/static/mine/minebg.png');
+        background-image: url('http://192.168.1.187:10088/static/mine/minebg.png');
         display: flex;
         justify-content: space-around;
         padding-top: 56rpx;

@@ -4,7 +4,7 @@
     <view class="top">
       <image
         class="_img"
-        src="https://ggllstatic.hpgjzlinfo.com/static/home/saft.png"
+        src="http://192.168.1.187:10088/static/home/saft.png"
         mode="scaleToFill"
         @click="handleSuperMarket"
       />
@@ -28,7 +28,7 @@
       class="fix_btn"
       mode="widthFix"
       @click="startQuest"
-      src="https://ggllstatic.hpgjzlinfo.com/static/home/zixun.png"
+      src="http://192.168.1.187:10088/static/home/zixun.png"
     />
   </view>
 </template>

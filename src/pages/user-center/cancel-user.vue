@@ -2,7 +2,7 @@
   <view class="cancel">
     <image
       class="_img"
-      src="https://ggllstatic.hpgjzlinfo.com/static/user-center/cancel_infor.png"
+      src="http://192.168.1.187:10088/static/user-center/cancel_infor.png"
       mode="widthFix"
     />
     <view class="footer">

@@ -456,10 +456,7 @@
 <template>
   <div id="app">
     <div class="search-header">
-      <img
-        class="icon"
-        src="https://ggllstatic.hpgjzlinfo.com/static/images/common/icon-search.png"
-      />
+      <img class="icon" src="http://192.168.1.187:10088/static/images/common/icon-search.png" />
       <input
         confirm-type="search"
         @confirm="search"
@@ -468,7 +465,7 @@
       />
       <img
         class="btn-clear"
-        src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/clear.png"
+        src="http://192.168.1.187:10088/static/images/item-list/clear.png"
         @click="clear"
       />
     </div>
@@ -481,33 +478,24 @@
       >
         时间
         <div class="img-wrap" v-if="sortType !== 11 && sortType !== 12">
+          <img class="image" src="http://192.168.1.187:10088/static/images/item-list/up_n@2x.png" />
           <img
             class="image"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/up_n@2x.png"
-          />
-          <img
-            class="image"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/down_n@2x.png"
+            src="http://192.168.1.187:10088/static/images/item-list/down_n@2x.png"
           />
         </div>
         <div class="img-wrap" v-if="sortType === 11">
+          <img class="image" src="http://192.168.1.187:10088/static/images/item-list/up_h@2x.png" />
           <img
             class="image"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/up_h@2x.png"
-          />
-          <img
-            class="image"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/down_n@2x.png"
+            src="http://192.168.1.187:10088/static/images/item-list/down_n@2x.png"
           />
         </div>
         <div class="img-wrap" v-if="sortType === 12">
+          <img class="image" src="http://192.168.1.187:10088/static/images/item-list/up_n@2x.png" />
           <img
             class="image"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/up_n@2x.png"
-          />
-          <img
-            class="image"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/down_h@2x.png"
+            src="http://192.168.1.187:10088/static/images/item-list/down_h@2x.png"
           />
         </div>
       </li>
@@ -518,53 +506,41 @@
       >
         价格
         <div class="img-wrap" v-if="sortType !== 21 && sortType !== 22">
+          <img class="image" src="http://192.168.1.187:10088/static/images/item-list/up_n@2x.png" />
           <img
             class="image"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/up_n@2x.png"
-          />
-          <img
-            class="image"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/down_n@2x.png"
+            src="http://192.168.1.187:10088/static/images/item-list/down_n@2x.png"
           />
         </div>
         <div class="img-wrap" v-if="sortType === 21">
+          <img class="image" src="http://192.168.1.187:10088/static/images/item-list/up_h@2x.png" />
           <img
             class="image"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/up_h@2x.png"
-          />
-          <img
-            class="image"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/down_n@2x.png"
+            src="http://192.168.1.187:10088/static/images/item-list/down_n@2x.png"
           />
         </div>
         <div class="img-wrap" v-if="sortType === 22">
+          <img class="image" src="http://192.168.1.187:10088/static/images/item-list/up_n@2x.png" />
           <img
             class="image"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/up_n@2x.png"
-          />
-          <img
-            class="image"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/down_h@2x.png"
+            src="http://192.168.1.187:10088/static/images/item-list/down_h@2x.png"
           />
         </div>
       </li>
       <li class="sort" @click="showFilter">
         筛选
-        <img
-          class="filter"
-          src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/filter.png"
-        />
+        <img class="filter" src="http://192.168.1.187:10088/static/images/item-list/filter.png" />
       </li>
       <li class="sort" @click="changeListType">
         <img
           class="filter"
           v-if="listType === 0"
-          src="https://ggllstatic.hpgjzlinfo.com/static/images/common/card-type.png"
+          src="http://192.168.1.187:10088/static/images/common/card-type.png"
         />
         <img
           class="filter"
           v-if="listType === 1"
-          src="https://ggllstatic.hpgjzlinfo.com/static/images/common/list-type.png"
+          src="http://192.168.1.187:10088/static/images/common/list-type.png"
         />
       </li>
     </ul>
@@ -587,10 +563,7 @@
             >
               <div class="item-logo" :style="{ backgroundImage: 'url(' + item.proPictDir + ')' }">
                 <div class="sale-out-wrap" v-if="item.soldOut === 0">
-                  <img
-                    class="sale-out"
-                    src="https://ggllstatic.hpgjzlinfo.com/static/home/empt.png"
-                  />
+                  <img class="sale-out" src="http://192.168.1.187:10088/static/home/empt.png" />
                 </div>
               </div>
               <div class="brand-name" v-if="item.brandName">
@@ -622,10 +595,7 @@
             >
               <div class="item-logo" :style="{ backgroundImage: 'url(' + item.proPictDir + ')' }">
                 <div class="sale-out-wrap" v-if="item.soldOut === 0">
-                  <img
-                    class="sale-out"
-                    src="https://ggllstatic.hpgjzlinfo.com/static/home/empt.png"
-                  />
+                  <img class="sale-out" src="http://192.168.1.187:10088/static/home/empt.png" />
                 </div>
               </div>
               <view class="right">
@@ -654,7 +624,7 @@
       </scroll-view>
     </view>
     <div v-if="empty" class="empty">
-      <img src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/empty.png" />
+      <img src="http://192.168.1.187:10088/static/images/item-list/empty.png" />
       没有搜到您想要的商品
       <div class="btn-home" @click="toHome">再去逛逛</div>
     </div>

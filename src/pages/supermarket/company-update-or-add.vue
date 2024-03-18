@@ -10,7 +10,7 @@
     <view class="tip flex-h flex-c-s" :style="{ top: navigationBarHeight + 'px' }">
       <image
         class="img"
-        src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-tip.png"
+        src="http://192.168.1.187:10088/static/supermarket/icon-tip.png"
         mode="scaleToFill"
       />
       <view class="fs-32 lh-40">请认真核对开票信息</view>
@@ -25,13 +25,13 @@
               <image
                 class="icon-check"
                 v-if="params.invoiceType === '1'"
-                src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-unselect.png"
+                src="http://192.168.1.187:10088/static/common/icon-common-unselect.png"
                 mode="scaleToFill"
               />
               <image
                 class="icon-check"
                 v-if="params.invoiceType === '0'"
-                src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-selected.png"
+                src="http://192.168.1.187:10088/static/common/icon-common-selected.png"
                 mode="scaleToFill"
               />
               <view>个人</view>
@@ -40,13 +40,13 @@
               <image
                 class="icon-check"
                 v-if="params.invoiceType === '0'"
-                src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-unselect.png"
+                src="http://192.168.1.187:10088/static/common/icon-common-unselect.png"
                 mode="scaleToFill"
               />
               <image
                 class="icon-check"
                 v-if="params.invoiceType === '1'"
-                src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-selected.png"
+                src="http://192.168.1.187:10088/static/common/icon-common-selected.png"
                 mode="scaleToFill"
               />
               <view>单位</view>
@@ -72,7 +72,7 @@
           <image
             class="icon-tip"
             @click="showTaxNoPop"
-            src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/icon-tip-grey.png"
+            src="http://192.168.1.187:10088/static/supermarket/icon-tip-grey.png"
             mode="scaleToFill"
           />
           <view class="input">
@@ -188,7 +188,7 @@
           <image
             class="icon-tips"
             mode="scaleToFill"
-            src="https://ggllstatic.hpgjzlinfo.com/static/songhui/supermarket/icon-tips.png"
+            src="http://192.168.1.187:10088/static/songhui/supermarket/icon-tips.png"
           />
         </view>
         <view class="item flex-h flex-c-b">
@@ -196,7 +196,7 @@
           <image
             class="icon-right"
             mode="scaleToFill"
-            src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
+            src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png"
           />
         </view>
       </view>

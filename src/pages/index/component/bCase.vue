@@ -20,20 +20,20 @@
             <view class="right" @click.native.stop="handleNoimg(artItem, artIndex)">
               <image
                 v-if="playIndex != artItem.contId"
-                src="https://ggllstatic.hpgjzlinfo.com/static/find/horn2x.png"
+                src="http://192.168.1.187:10088/static/find/horn2x.png"
                 mode="scaleToFill"
               ></image>
               <template v-else>
                 <image
                   v-if="mapState[artItem.contId]"
                   class="playimg"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/find/list-stop2x.png"
+                  src="http://192.168.1.187:10088/static/find/list-stop2x.png"
                   mode="scaleToFill"
                 ></image>
                 <image
                   v-if="!mapState[artItem.contId]"
                   class="playimg"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/find/list-play2x.png"
+                  src="http://192.168.1.187:10088/static/find/list-play2x.png"
                   mode="scaleToFill"
                 ></image>
               </template>
@@ -70,20 +70,20 @@
             <view class="right" @click.native.stop="handleNoimg(artItem, artIndex)">
               <image
                 v-if="playIndex != artItem.contId"
-                src="https://ggllstatic.hpgjzlinfo.com/static/find/horn2x.png"
+                src="http://192.168.1.187:10088/static/find/horn2x.png"
                 mode="scaleToFill"
               ></image>
               <template v-else>
                 <image
                   v-if="mapState[artItem.contId]"
                   class="playimg"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/find/list-stop2x.png"
+                  src="http://192.168.1.187:10088/static/find/list-stop2x.png"
                   mode="scaleToFill"
                 ></image>
                 <image
                   v-if="!mapState[artItem.contId]"
                   class="playimg"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/find/list-play2x.png"
+                  src="http://192.168.1.187:10088/static/find/list-play2x.png"
                   mode="scaleToFill"
                 ></image>
               </template>
@@ -122,20 +122,20 @@
             <view class="right" @click.native.stop="handleNoimg(artItem, artIndex)">
               <image
                 v-if="playIndex != artItem.contId"
-                src="https://ggllstatic.hpgjzlinfo.com/static/find/horn2x.png"
+                src="http://192.168.1.187:10088/static/find/horn2x.png"
                 mode="scaleToFill"
               ></image>
               <template v-else>
                 <image
                   v-if="mapState[artItem.contId]"
                   class="playimg"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/find/list-stop2x.png"
+                  src="http://192.168.1.187:10088/static/find/list-stop2x.png"
                   mode="scaleToFill"
                 ></image>
                 <image
                   v-if="!mapState[artItem.contId]"
                   class="playimg"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/find/list-play2x.png"
+                  src="http://192.168.1.187:10088/static/find/list-play2x.png"
                   mode="scaleToFill"
                 ></image>
               </template>
@@ -168,7 +168,7 @@
             <image
               class="play"
               mode="scaleToFill"
-              src="https://ggllstatic.hpgjzlinfo.com/static/find/audio2x.png"
+              src="http://192.168.1.187:10088/static/find/audio2x.png"
             ></image>
           </view>
           <view class="noimg-bottom">
@@ -182,12 +182,12 @@
     </view>
     <view v-else>
       <!-- <view class="flex-v flex-c-c status-box2" v-if="loading == 1">
-        <image src="https://ggllstatic.hpgjzlinfo.com/static/common/business_loading.gif"
+        <image src="http://192.168.1.187:10088/static/common/business_loading.gif"
           mode="scaleToFill" />
       </view> -->
       <!--  暂无图片 -->
       <!-- <view class="flex-v flex-c-c status-box" v-else>
-        <image src="https://ggllstatic.hpgjzlinfo.com/static/common/status-none2x.png"
+        <image src="http://192.168.1.187:10088/static/common/status-none2x.png"
           mode="scaleToFill" />
         <view class="flex-c-c status-text">暂无内容</view>
       </view> -->
@@ -208,7 +208,7 @@
     </view>
     <uni-popup ref="confirmpop" type="center">
       <view class="modal-container showValue" @touchmove.stop @click.stop="close()">
-        <image src="https://ggllstatic.hpgjzlinfo.com/static/common/videoTip.png" mode="widthFix" />
+        <image src="http://192.168.1.187:10088/static/common/videoTip.png" mode="widthFix" />
       </view>
     </uni-popup>
   </view>
@@ -620,7 +620,7 @@
         width: 100%;
         height: 380rpx;
         border-radius: 10rpx;
-        // background: url("https://ggllstatic.hpgjzlinfo.com/static/logo.png") no-repeat;
+        // background: url("http://192.168.1.187:10088/static/logo.png") no-repeat;
         background-size: 100% 100%;
         margin-top: 12rpx;
         overflow: hidden;

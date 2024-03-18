@@ -105,7 +105,7 @@
     <view class="status-box flex-v flex-c-s" v-if="list.length === 0">
       <image
         class="icon-img"
-        src="https://ggllstatic.hpgjzlinfo.com/static/supermarket/no-order.png"
+        src="http://192.168.1.187:10088/static/supermarket/no-order.png"
         mode="scaleToFill"
       />
       <view>您还没有相关订单</view>

@@ -10,13 +10,13 @@
         <view class="flex-v flex-c-c flex-1" @click="handleCollect">
           <image
             class="icon"
-            src="https://ggllstatic.hpgjzlinfo.com/static/map/icon-map-collected.png"
+            src="http://192.168.1.187:10088/static/map/icon-map-collected.png"
             mode="scaleToFill"
             v-if="dataDetail.isCollected == 1"
           />
           <image
             class="icon"
-            src="https://ggllstatic.hpgjzlinfo.com/static/map/icon-map-uncollect.png"
+            src="http://192.168.1.187:10088/static/map/icon-map-uncollect.png"
             mode="scaleToFill"
             v-else
           />
@@ -25,7 +25,7 @@
         <view class="flex-v flex-c-c flex-1" @click="handleAroundClick">
           <image
             class="icon"
-            src="https://ggllstatic.hpgjzlinfo.com/static/map/icon-map-search-around.png"
+            src="http://192.168.1.187:10088/static/map/icon-map-search-around.png"
             mode="scaleToFill"
           />
           <text class="fs-36 c-lightgrey mt-8">周边</text>
@@ -33,7 +33,7 @@
         <view class="flex-v flex-c-c flex-1" @click="handleShareClick(dataDetail)">
           <image
             class="icon"
-            src="https://ggllstatic.hpgjzlinfo.com/static/map/icon-map-share.png"
+            src="http://192.168.1.187:10088/static/map/icon-map-share.png"
             mode="scaleToFill"
           />
           <text class="fs-36 c-lightgrey mt-8">分享</text>
@@ -41,7 +41,7 @@
         <view class="flex-v flex-c-c flex-1" @click="handleCarClick">
           <image
             class="icon"
-            src="https://ggllstatic.hpgjzlinfo.com/static/map/icon-map-take-taxi.png"
+            src="http://192.168.1.187:10088/static/map/icon-map-take-taxi.png"
             mode="scaleToFill"
           />
           <text class="fs-36 c-lightgrey mt-8">打车</text>
@@ -71,7 +71,7 @@
           <button class="share_icon" open-type="share">
             <image
               class="_img"
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-wechat.png"
+              src="http://192.168.1.187:10088/static/common/icon-wechat.png"
               mode=""
             />
             <text>微信好友</text>
@@ -80,7 +80,7 @@
           <button class="share_icon" open-type="share">
             <image
               class="_img"
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-qq.png"
+              src="http://192.168.1.187:10088/static/common/icon-qq.png"
               mode="scaleToFill"
             />
             <text>QQ好友</text>
@@ -88,7 +88,7 @@
           <button class="share_icon" open-type="share">
             <image
               class="_img"
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-alipay.png"
+              src="http://192.168.1.187:10088/static/common/icon-alipay.png"
               mode="scaleToFill"
             />
             <text>支付宝好友</text>
@@ -96,7 +96,7 @@
           <button class="share_icon" open-type="share">
             <image
               class="_img"
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-message.png"
+              src="http://192.168.1.187:10088/static/common/icon-message.png"
               mode="scaleToFill"
             />
             <text>短信</text>
@@ -104,7 +104,7 @@
           <!-- #endif -->
           <button class="share_icon" @click="handleCopyClick">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-link.png"
+              src="http://192.168.1.187:10088/static/common/icon-link.png"
               class="_img"
               mode=""
             />
@@ -517,7 +517,7 @@
         imageUrl:
           this.dataDetail.photoShop.length > 0
             ? this.dataDetail.photoShop[0]
-            : 'https://ggllstatic.hpgjzlinfo.com/static/common/bg-share.png',
+            : 'http://192.168.1.187:10088/static/common/bg-share.png',
         success(res) {
           this.$uni.showToast({
             title: '分享成功',
@@ -540,7 +540,7 @@
         imageUrl:
           this.dataDetail.photoShop.length > 0
             ? this.dataDetail.photoShop[0]
-            : 'https://ggllstatic.hpgjzlinfo.com/static/common/bg-share.png',
+            : 'http://192.168.1.187:10088/static/common/bg-share.png',
         success(res) {
           uni.showToast({
             title: '分享成功',

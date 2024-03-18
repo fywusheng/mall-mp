@@ -19,14 +19,14 @@
     <image
       class="rights-instructions bg-white br-16"
       mode="scaleToFill"
-      src="https://ggllstatic.hpgjzlinfo.com/static/family-account/image-family-account-rights-instructions.png"
+      src="http://192.168.1.187:10088/static/family-account/image-family-account-rights-instructions.png"
     />
     <text class="type-title fs-40 fw-500 c-black">请选择亲情账号绑定方式</text>
     <image
       @click="imgRead"
       class="illustration m-0-32"
       mode="scaleToFill"
-      src="https://ggllstatic.hpgjzlinfo.com/static/family-account/banner-family-account-illustration.png"
+      src="http://192.168.1.187:10088/static/family-account/banner-family-account-illustration.png"
     />
     <view class="types">
       <view class="type flex-h flex-c-b m-32 br-16" @click="selectedTypeIndex = 0">
@@ -35,7 +35,7 @@
         <image
           class="phone-icon mr-40"
           mode="scaleToFill"
-          src="https://ggllstatic.hpgjzlinfo.com/static/family-account/icon-family-account-phone.png"
+          src="http://192.168.1.187:10088/static/family-account/icon-family-account-phone.png"
         />
       </view>
       <text class="_line">被绑定人无手机号请下载国家老龄服务平台APP进行添加</text>
@@ -45,7 +45,7 @@
                :src="getStateIconURL(1)" />
         <text class="fs-40 fw-500 c-black flex-1">被绑定人无手机号</text>
         <image class="phone-icon mr-40" mode="scaleToFill"
-               src="https://ggllstatic.hpgjzlinfo.com/static/family-account/icon-family-account-no-phone.png" />
+               src="http://192.168.1.187:10088/static/family-account/icon-family-account-no-phone.png" />
       </view> -->
     </view>
     <view class="blank" style="height: 200rpx" />
@@ -221,9 +221,9 @@
        */
       getStateIconURL(index) {
         if (index === this.selectedTypeIndex) {
-          return 'https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-selected.png';
+          return 'http://192.168.1.187:10088/static/common/icon-common-selected.png';
         } else {
-          return 'https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-unselect.png';
+          return 'http://192.168.1.187:10088/static/common/icon-common-unselect.png';
         }
       },
       // 点击确定

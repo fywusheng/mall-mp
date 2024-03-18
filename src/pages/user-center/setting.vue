@@ -10,7 +10,7 @@
             <!-- <image
               class="item__accessory"
               mode="scaleToFill"
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
+              src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png"
             /> -->
           </view>
         </view>
@@ -21,7 +21,7 @@
             <image
               class="item__accessory"
               mode="scaleToFill"
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
+              src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png"
             />
           </view>
         </view>
@@ -36,7 +36,7 @@
             <image
               class="item__accessory"
               mode="scaleToFill"
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
+              src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png"
             />
           </view>
         </view>
@@ -46,7 +46,7 @@
             <image
               class="item__accessory"
               mode="scaleToFill"
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-arrow-rightward-grey.png"
+              src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png"
             />
           </view>
         </view>

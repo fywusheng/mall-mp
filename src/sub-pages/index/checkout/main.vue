@@ -4,7 +4,7 @@
       <template v-if="settlement.addressId">
         <img
           class="icon-address"
-          src="https://ggllstatic.hpgjzlinfo.com/static/images/checkout/address-icon.png"
+          src="http://192.168.1.187:10088/static/images/checkout/address-icon.png"
         />
         <view class="userInfo">
           <div class="user-info">
@@ -17,16 +17,13 @@
         <div class="add-tip" @click.stop="selectAddress">
           <image
             class="img"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/checkout/icon-plus.png"
+            src="http://192.168.1.187:10088/static/images/checkout/icon-plus.png"
           />
           请选择收货地址
         </div>
       </template>
       <div v-if="isDefault" class="default-black">默认</div>
-      <img
-        class="icon-you"
-        src="https://ggllstatic.hpgjzlinfo.com/static/images/common/right.png"
-      />
+      <img class="icon-you" src="http://192.168.1.187:10088/static/images/common/right.png" />
     </div>
     <div class="item-list-wrap" v-for="(store, index) in storeList" :key="index">
       <div class="store-name border-b">{{ store.storeName }}</div>
@@ -179,7 +176,7 @@
           </template>
           <img
             class="icon-you"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/common/right-gray.png"
+            src="http://192.168.1.187:10088/static/images/common/right-gray.png"
           />
         </div>
       </li>
@@ -192,7 +189,7 @@
           <template v-else>不开发票</template>
           <img
             class="icon-you"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/common/right-gray.png"
+            src="http://192.168.1.187:10088/static/images/common/right-gray.png"
           />
         </div>
       </li>
@@ -670,7 +667,7 @@
         }
         .has-sale {
           @include middle-center-y();
-          background: url('https://ggllstatic.hpgjzlinfo.com/static/images/cart/bug-none.png');
+          background: url('http://192.168.1.187:10088/static/images/cart/bug-none.png');
           background-size: 100% 100%;
           left: 0;
           width: rpx(160);

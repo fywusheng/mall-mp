@@ -30,7 +30,7 @@
         <view class="img-box flex-h">
           <image
             class="avatar animated"
-            src="https://ggllstatic.hpgjzlinfo.com/static/family-account/icon-young-man2x.png"
+            src="http://192.168.1.187:10088/static/family-account/icon-young-man2x.png"
             mode="scaleToFill"
             :class="{ 'avatar--selected': index === selectedAccountIndex }"
           />
@@ -42,7 +42,7 @@
         <image
           v-if="index === selectedAccountIndex"
           class="triangle"
-          src="https://ggllstatic.hpgjzlinfo.com/static/family-account/icon-triangle2x.png"
+          src="http://192.168.1.187:10088/static/family-account/icon-triangle2x.png"
           mode="scaleToFill"
         />
       </view>
@@ -95,12 +95,12 @@
               <image
                 class="bg"
                 mode="scaleToFill"
-                src="https://ggllstatic.hpgjzlinfo.com/static/family-account/family-bg2x.png"
+                src="http://192.168.1.187:10088/static/family-account/family-bg2x.png"
               />
               <view class="top flex-h flex-c-c">
                 <image
                   class="emblem"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/family-account/icon-emblem2x.png"
+                  src="http://192.168.1.187:10088/static/family-account/icon-emblem2x.png"
                   mode="scaleToFill"
                 />
                 <text class="title">中华人民共和国老年人证</text>
@@ -148,7 +148,7 @@
               <image
                 class="bg"
                 mode="scaleToFill"
-                src="https://ggllstatic.hpgjzlinfo.com/static/family-account/family-bg2x.png"
+                src="http://192.168.1.187:10088/static/family-account/family-bg2x.png"
               />
               <view class="main flex-h">
                 <view class="main-l flex-1">
@@ -193,7 +193,7 @@
           <view v-if="!haveCard && authState == 3" class="nocard flex-v flex-c-c">
             <image
               class="img"
-              src="https://ggllstatic.hpgjzlinfo.com/static/family-account/no-card2x.png"
+              src="http://192.168.1.187:10088/static/family-account/no-card2x.png"
               mode="scaleToFill"
             />
             <view class="text">领取电子证照老年人证后可以使用更多功能</view>
@@ -206,7 +206,7 @@
           <view v-if="!haveCard && authState == 4" class="nocard flex-v flex-c-c">
             <image
               class="img-card"
-              src="https://ggllstatic.hpgjzlinfo.com/static/family-account/card-check.png"
+              src="http://192.168.1.187:10088/static/family-account/card-check.png"
               mode="scaleToFill"
             />
             <view class="fail-reason">
@@ -220,7 +220,7 @@
           <view v-if="!haveCard && authState == 5" class="nocard failcard flex-v flex-c-c">
             <image
               class="img-card"
-              src="https://ggllstatic.hpgjzlinfo.com/static/family-account/card-fail.png"
+              src="http://192.168.1.187:10088/static/family-account/card-fail.png"
               mode="scaleToFill"
             />
             <view class="fail-reason check-reason">
@@ -242,7 +242,7 @@
           <view v-if="!haveCard && authState == 6" class="have-card flex-v flex-c-c">
             <image
               class="img-card"
-              src="https://ggllstatic.hpgjzlinfo.com/static/family-account/card-have.png"
+              src="http://192.168.1.187:10088/static/family-account/card-have.png"
               mode="scaleToFill"
             />
             <view class="btn-box mt-60 mb-32">
@@ -304,7 +304,7 @@
             <image
               class="warning-icon mt-4"
               mode="scaleToFill"
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-common-warning.png"
+              src="http://192.168.1.187:10088/static/common/icon-common-warning.png"
             />
             <text class="fs-36 c-lightgrey flex-1 ml-12">
               平台将会以短信通知和站内消息的方式将您的绑定请求发送给被绑定人确认

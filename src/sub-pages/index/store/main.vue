@@ -4,10 +4,7 @@
     <!-- <view class="bg"></view> -->
     <view class="_search">
       <view class="search-header _left">
-        <img
-          class="icon"
-          src="https://ggllstatic.hpgjzlinfo.com/static/images/common/icon-search.png"
-        />
+        <img class="icon" src="http://192.168.1.187:10088/static/images/common/icon-search.png" />
         <input
           confirm-type="search"
           @blur="blurInput"
@@ -20,7 +17,7 @@
           <img
             class="btn-clear"
             v-if="showIcon"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/clear.png"
+            src="http://192.168.1.187:10088/static/images/item-list/clear.png"
           />
         </view>
 
@@ -28,7 +25,7 @@
           <image
             class="_img"
             mode="scaleToFill"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/store/pop.png"
+            src="http://192.168.1.187:10088/static/images/store/pop.png"
           />
           <view v-if="showPop" class="pop" ref="popNotice">
             <view class="line" @click="clickItem(item)" v-for="(item, i) in notices" :key="i">
@@ -52,7 +49,7 @@
           <img
             @click="handleShareClick"
             class="share"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/store/share.png"
+            src="http://192.168.1.187:10088/static/images/store/share.png"
           />
         </view>
       </view>
@@ -61,7 +58,7 @@
           <img
             mode="scaleToFill"
             class="_img"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/store/storeIcon.png"
+            src="http://192.168.1.187:10088/static/images/store/storeIcon.png"
           />
           <view class="label">门店</view>
         </view>
@@ -70,7 +67,7 @@
           <img
             mode="scaleToFill"
             class="_img"
-            src="https://ggllstatic.hpgjzlinfo.com/static/images/store/right.png"
+            src="http://192.168.1.187:10088/static/images/store/right.png"
           />
         </view>
       </view>
@@ -103,31 +100,31 @@
               <div class="img-wrap" v-if="sortType !== 11 && sortType !== 12">
                 <img
                   class="image"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/up_n@2x.png"
+                  src="http://192.168.1.187:10088/static/images/item-list/up_n@2x.png"
                 />
                 <img
                   class="image"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/down_n@2x.png"
+                  src="http://192.168.1.187:10088/static/images/item-list/down_n@2x.png"
                 />
               </div>
               <div class="img-wrap" v-if="sortType === 11">
                 <img
                   class="image"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/up_h@2x.png"
+                  src="http://192.168.1.187:10088/static/images/item-list/up_h@2x.png"
                 />
                 <img
                   class="image"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/down_n@2x.png"
+                  src="http://192.168.1.187:10088/static/images/item-list/down_n@2x.png"
                 />
               </div>
               <div class="img-wrap" v-if="sortType === 12">
                 <img
                   class="image"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/up_n@2x.png"
+                  src="http://192.168.1.187:10088/static/images/item-list/up_n@2x.png"
                 />
                 <img
                   class="image"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/down_h@2x.png"
+                  src="http://192.168.1.187:10088/static/images/item-list/down_h@2x.png"
                 />
               </div>
             </li>
@@ -136,31 +133,31 @@
               <div class="img-wrap" v-if="sortType !== 21 && sortType !== 22">
                 <img
                   class="image"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/up_n@2x.png"
+                  src="http://192.168.1.187:10088/static/images/item-list/up_n@2x.png"
                 />
                 <img
                   class="image"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/down_n@2x.png"
+                  src="http://192.168.1.187:10088/static/images/item-list/down_n@2x.png"
                 />
               </div>
               <div class="img-wrap" v-if="sortType === 21">
                 <img
                   class="image"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/up_h@2x.png"
+                  src="http://192.168.1.187:10088/static/images/item-list/up_h@2x.png"
                 />
                 <img
                   class="image"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/down_n@2x.png"
+                  src="http://192.168.1.187:10088/static/images/item-list/down_n@2x.png"
                 />
               </div>
               <div class="img-wrap" v-if="sortType === 22">
                 <img
                   class="image"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/up_n@2x.png"
+                  src="http://192.168.1.187:10088/static/images/item-list/up_n@2x.png"
                 />
                 <img
                   class="image"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/down_h@2x.png"
+                  src="http://192.168.1.187:10088/static/images/item-list/down_h@2x.png"
                 />
               </div>
             </li>
@@ -168,7 +165,7 @@
               筛选
               <img
                 class="filter"
-                src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/filter.png"
+                src="http://192.168.1.187:10088/static/images/item-list/filter.png"
               />
             </li>
           </ul>
@@ -208,14 +205,14 @@
               <div class="sale-out-wrap" v-if="item.saleState !== 5 || item.availableStock === 0">
                 <img
                   class="sale-out"
-                  src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/sale-out.png"
+                  src="http://192.168.1.187:10088/static/images/item-list/sale-out.png"
                 />
               </div>
             </li>
           </ul>
         </scroll-view>
         <div v-if="empty" class="empty">
-          <img src="https://ggllstatic.hpgjzlinfo.com/static/images/item-list/empty.png" />
+          <img src="http://192.168.1.187:10088/static/images/item-list/empty.png" />
           没有搜到您想要的商品
           <div class="btn-home" @click="toHome">再去逛逛</div>
         </div>
@@ -240,36 +237,33 @@
         <view class="flex-h list fs-36">
           <button class="item flex-v flex-c-c" open-type="share">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-wechat.png"
+              src="http://192.168.1.187:10088/static/common/icon-wechat.png"
               mode="scaleToFill"
             />
             <text>微信好友</text>
           </button>
           <!-- #ifdef MP-ALIPAY -->
           <button class="item flex-v flex-c-c" open-type="share">
-            <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-qq.png"
-              mode="scaleToFill"
-            />
+            <image src="http://192.168.1.187:10088/static/common/icon-qq.png" mode="scaleToFill" />
             <text>QQ好友</text>
           </button>
           <button class="item flex-v flex-c-c" open-type="share">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-alipay.png"
+              src="http://192.168.1.187:10088/static/common/icon-alipay.png"
               mode="scaleToFill"
             />
             <text>支付宝好友</text>
           </button>
           <button class="item flex-v flex-c-c" open-type="share">
             <image
-              src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-message.png"
+              src="http://192.168.1.187:10088/static/common/icon-message.png"
               mode="scaleToFill"
             />
             <text>短信</text>
           </button>
           <!-- #endif -->
           <!-- <button  class="item flex-v flex-c-c" @click="handleCopyClick">
-                    <image src="https://ggllstatic.hpgjzlinfo.com/static/common/icon-link.png"  mode="scaleToFill" />
+                    <image src="http://192.168.1.187:10088/static/common/icon-link.png"  mode="scaleToFill" />
                     <text>复制链接</text>
                   </button> -->
         </view>
@@ -320,17 +314,17 @@
           {
             type: 1,
             name: '消息',
-            icon: 'https://ggllstatic.hpgjzlinfo.com/static/images/store/mess.png',
+            icon: 'http://192.168.1.187:10088/static/images/store/mess.png',
           },
           {
             type: 2,
             name: '首页',
-            icon: 'https://ggllstatic.hpgjzlinfo.com/static/images/store/home.png',
+            icon: 'http://192.168.1.187:10088/static/images/store/home.png',
           },
           {
             type: 3,
             name: '钱包',
-            icon: 'https://ggllstatic.hpgjzlinfo.com/static/images/store/card.png',
+            icon: 'http://192.168.1.187:10088/static/images/store/card.png',
           },
         ],
         isCollected: false,

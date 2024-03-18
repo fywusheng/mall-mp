@@ -16,79 +16,81 @@
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      icon: {
-        bg: 'https://ggllstatic.hpgjzlinfo.com/static/images/common/icon-get-point.png',
-        close: 'https://ggllstatic.hpgjzlinfo.com/static/common/icon-close.png'
+  export default {
+    data() {
+      return {
+        icon: {
+          bg: 'http://192.168.1.187:10088/static/images/common/icon-get-point.png',
+          close: 'http://192.168.1.187:10088/static/common/icon-close.png',
+        },
+        content: {
+          popUpTitle: '领积分,抵现金',
+          popUpDesc: '加入官方本地福利群，领积分领福利',
+          popUpImg: 'http://192.168.1.187:10088/static/images/common/icon-get-point.png',
+          popUpTargetUrl: '',
+          popUpTimes: 0,
+        },
+      };
+    },
+    computed: {
+      popCont() {
+        return this.content.popUpDesc.split('，');
       },
-      content: {
-        popUpTitle: '领积分,抵现金',
-        popUpDesc: '加入官方本地福利群，领积分领福利',
-        popUpImg: 'https://ggllstatic.hpgjzlinfo.com/static/images/common/icon-get-point.png',
-        popUpTargetUrl: '',
-        popUpTimes: 0
-      }
-    }
-  },
-  computed: {
-    popCont() {
-      return this.content.popUpDesc.split('，')
-    }
-  },
-  methods: {
-    getPoint() {
-      uni.navigateTo({ url: `/pages/common/webpage?url=${this.content.popUpTargetUrl}` })
     },
-    open(data) {
-      Object.keys(this.content).map(key => {
-        if (data[key]) { this.content[key] = data[key] }
-      })
-      this.$refs.popup.open()
+    methods: {
+      getPoint() {
+        uni.navigateTo({ url: `/pages/common/webpage?url=${this.content.popUpTargetUrl}` });
+      },
+      open(data) {
+        Object.keys(this.content).map((key) => {
+          if (data[key]) {
+            this.content[key] = data[key];
+          }
+        });
+        this.$refs.popup.open();
+      },
+      close() {
+        this.$refs.popup.close();
+      },
     },
-    close() {
-      this.$refs.popup.close()
-    }
-  }
-}
+  };
 </script>
 
 <style lang="scss" scope>
-.pop-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  .content {
-    width: 560rpx;
-    height: 650rpx;
-    position: relative;
+  .pop-content {
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: red;
-    .title {
-      font-size: 50rpx;
-      font-weight: 500;
-      margin-top: 40rpx;
-      margin-bottom: 32rpx;
-    }
-    .cont {
-      font-size: 36rpx;
-    }
-    .get-point-bg {
-      position: absolute;
-      left: 0;
-      top: 0;
+    .content {
       width: 560rpx;
       height: 650rpx;
-      z-index: -1;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: red;
+      .title {
+        font-size: 50rpx;
+        font-weight: 500;
+        margin-top: 40rpx;
+        margin-bottom: 32rpx;
+      }
+      .cont {
+        font-size: 36rpx;
+      }
+      .get-point-bg {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 560rpx;
+        height: 650rpx;
+        z-index: -1;
+      }
+    }
+    .icon-close {
+      width: 72rpx;
+      height: 72rpx;
+      margin-top: 36rpx;
     }
   }
-  .icon-close {
-    width: 72rpx;
-    height: 72rpx;
-    margin-top: 36rpx;
-  }
-}
 </style>

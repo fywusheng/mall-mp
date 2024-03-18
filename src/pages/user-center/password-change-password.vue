@@ -1,7 +1,7 @@
 <template>
   <view class="modify-password">
     <view class="title">
-      <text class="fs-64 c-black"> 修改密码</text>
+      <text class="fs-64 c-black">修改密码</text>
     </view>
     <view class="row flex-h flex-c-s m-0-60">
       <text class="fs-40 c-black">原密码：</text>
@@ -13,7 +13,8 @@
       />
       <image
         class="row__icon"
-        :src="oldPasswordIconURL" mode="scaleToFill"
+        :src="oldPasswordIconURL"
+        mode="scaleToFill"
         @click="showsOldPasswordText = !showsOldPasswordText"
       />
     </view>
@@ -27,7 +28,8 @@
       />
       <image
         class="row__icon"
-        :src="newPasswordIconURL" mode="scaleToFill"
+        :src="newPasswordIconURL"
+        mode="scaleToFill"
         @click="showsNewPasswordText = !showsNewPasswordText"
       />
     </view>
@@ -41,130 +43,129 @@
       />
       <image
         class="row__icon"
-        :src="confirmPasswordIconURL" mode="scaleToFill"
+        :src="confirmPasswordIconURL"
+        mode="scaleToFill"
         @click="showsConfirmPasswordText = !showsConfirmPasswordText"
       />
     </view>
-    <button class="modify-button fs-44 c-white" @click="handleModifyClick">
-      修改
-    </button>
+    <button class="modify-button fs-44 c-white" @click="handleModifyClick">修改</button>
   </view>
 </template>
 
 <script>
-let  Icon1  = "https://ggllstatic.hpgjzlinfo.com/static/user-center/icon-user-center-show-password.png";
-let Icon2  = "https://ggllstatic.hpgjzlinfo.com/static/user-center/icon-user-center-hide-password.png";
-import api from "@/apis/index.js";
-import sha256 from "crypto-js/sha256";
-export default {
-  data() {
-    return {
-      // 是否明文显示原密码
-      showsOldPasswordText: false,
-      // 是否明文显示新密码
-      showsNewPasswordText: false,
-      // 是否明文显示确认密码
-      showsConfirmPasswordText: false,
-      // 表单数据
-      params: {
-        oldPassword: "",
-        newPassword: "",
-        confirmPassword: "",
+  let Icon1 = 'http://192.168.1.187:10088/static/user-center/icon-user-center-show-password.png';
+  let Icon2 = 'http://192.168.1.187:10088/static/user-center/icon-user-center-hide-password.png';
+  import api from '@/apis/index.js';
+  import sha256 from 'crypto-js/sha256';
+  export default {
+    data() {
+      return {
+        // 是否明文显示原密码
+        showsOldPasswordText: false,
+        // 是否明文显示新密码
+        showsNewPasswordText: false,
+        // 是否明文显示确认密码
+        showsConfirmPasswordText: false,
+        // 表单数据
+        params: {
+          oldPassword: '',
+          newPassword: '',
+          confirmPassword: '',
+        },
+      };
+    },
+    computed: {
+      // 原密码图标地址
+      oldPasswordIconURL() {
+        return this.showsOldPasswordText ? Icon1 : Icon2;
       },
-    };
-  },
-  computed: {
-    // 原密码图标地址
-    oldPasswordIconURL() {
-      return this.showsOldPasswordText ? Icon1 : Icon2;
+      // 新密码图标地址
+      newPasswordIconURL() {
+        return this.showsNewPasswordText ? Icon1 : Icon2;
+      },
+      // 确认密码图标地址
+      confirmPasswordIconURL() {
+        return this.showsConfirmPasswordText ? Icon1 : Icon2;
+      },
     },
-    // 新密码图标地址
-    newPasswordIconURL() {
-      return this.showsNewPasswordText ? Icon1 : Icon2;
-    },
-    // 确认密码图标地址
-    confirmPasswordIconURL() {
-      return this.showsConfirmPasswordText ? Icon1 : Icon2;
-    },
-  },
-  methods: {
-    /**
-     * 修改点击事件
-     */
-    handleModifyClick() {
-      if (this.params.oldPassword.length === 0) {
-        this.$uni.showToast("请输入原密码");
-        return;
-      }
-      if (this.params.newPassword.length === 0) {
-        this.$uni.showToast("请输入新密码");
-        return;
-      }
-      if (this.params.confirmPassword.length === 0) {
-        this.$uni.showToast("请确认密码");
-        return;
-      }
-      if (this.params.newPassword !== this.params.confirmPassword) {
-        this.$uni.showToast("两次输入的密码不一致");
-        return;
-      }
-      if (this.params.oldPassword === this.params.newPassword) {
-        this.$uni.showToast("原密码与新密码一致，无需修改");
-        return;
-      }
+    methods: {
+      /**
+       * 修改点击事件
+       */
+      handleModifyClick() {
+        if (this.params.oldPassword.length === 0) {
+          this.$uni.showToast('请输入原密码');
+          return;
+        }
+        if (this.params.newPassword.length === 0) {
+          this.$uni.showToast('请输入新密码');
+          return;
+        }
+        if (this.params.confirmPassword.length === 0) {
+          this.$uni.showToast('请确认密码');
+          return;
+        }
+        if (this.params.newPassword !== this.params.confirmPassword) {
+          this.$uni.showToast('两次输入的密码不一致');
+          return;
+        }
+        if (this.params.oldPassword === this.params.newPassword) {
+          this.$uni.showToast('原密码与新密码一致，无需修改');
+          return;
+        }
 
-      api.validateOldPassword({
-        data: {
-          oldPwd: sha256(this.params.oldPassword).toString(),
-        },
-        success: () => {
-          api.modifyPassword({
-            data: {
-              oldPwd: sha256(this.params.oldPassword).toString(),
-              newPwd: sha256(this.params.newPassword).toString(),
-            },
-            success: () => {
-              this.$uni.showToast("修改成功");
-              setTimeout(() => {
-                 uni.redirectTo({
-                   url: '/pages/user-center/login?goUrl='+'/pages/index/index?index=4'
-                });
-              }, 1500);
-            },
-          });
-        },
-      });
+        api.validateOldPassword({
+          data: {
+            oldPwd: sha256(this.params.oldPassword).toString(),
+          },
+          success: () => {
+            api.modifyPassword({
+              data: {
+                oldPwd: sha256(this.params.oldPassword).toString(),
+                newPwd: sha256(this.params.newPassword).toString(),
+              },
+              success: () => {
+                this.$uni.showToast('修改成功');
+                setTimeout(() => {
+                  uni.redirectTo({
+                    url: '/pages/user-center/login?goUrl=' + '/pages/index/index?index=4',
+                  });
+                }, 1500);
+              },
+            });
+          },
+        });
+      },
     },
-  },
-};
+  };
 </script>
 
 <style lang="scss" scoped>
-.modify-password {
-  background-color:#fff;  
-  .title{
-    padding:60rpx;
-  }
-  .row {
-    height: 120rpx;
-    &__input {
-      height: 88rpx;
-      line-height: 88rpx;
-      border-bottom: 2rpx solid #dbdbdb;
+  .modify-password {
+    background-color: #fff;
+    .title {
+      padding: 60rpx;
     }
-    &__icon {
-      @include square(66);
-      position: absolute;
-      right: 60rpx;
-      z-index: 9;
+    .row {
+      height: 120rpx;
+      &__input {
+        height: 88rpx;
+        line-height: 88rpx;
+        border-bottom: 2rpx solid #dbdbdb;
+      }
+      &__icon {
+        @include square(66);
+        position: absolute;
+        right: 60rpx;
+        z-index: 9;
+      }
+    }
+    .modify-button {
+      margin: 72rpx 32rpx;
+      height: 108rpx;
+      line-height: 108rpx;
+      border-radius: 54rpx;
+      background: linear-gradient(to right, $color-secondary, $color-primary);
     }
   }
-  .modify-button {
-    margin: 72rpx 32rpx;
-    height: 108rpx;
-    line-height: 108rpx;
-    border-radius: 54rpx;
-    background: linear-gradient(to right, $color-secondary, $color-primary);
-  }
-}
 </style>
