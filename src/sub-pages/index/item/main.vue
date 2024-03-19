@@ -319,7 +319,9 @@
           <text class="count" v-if="cartCount > 0">{{ cartCount }}</text>
         </view>
         <view class="btn-add-cart" @click="addCart">加入购物车</view>
-        <view class="btn-buy" @click="checkout">立即兑换</view>
+        <view class="btn-buy" @click="checkout">
+          {{ sceneType === '积分兑换' ? '立即兑换' : '立即购买' }}
+        </view>
       </view>
     </template>
     <select-sku
@@ -534,15 +536,18 @@
           });
           return false;
         }
-        if (this.sceneType === '积分兑换') {
-          uni.navigateTo({
-            url: '/sub-pages/point/cart/main?sceneType=' + this.sceneType,
-          });
-        } else {
-          uni.navigateTo({
-            url: '/sub-pages/index/index/main?index=4&&sceneType' + this.sceneType,
-          });
-        }
+        uni.navigateTo({
+          url: '/sub-pages/point/cart/main?sceneType=' + this.sceneType,
+        });
+        // if (this.sceneType === '积分兑换') {
+        //   uni.navigateTo({
+        //     url: '/sub-pages/point/cart/main?sceneType=' + this.sceneType,
+        //   });
+        // } else {
+        //   uni.navigateTo({
+        //     url: '/sub-pages/index/index/main?index=4&&sceneType' + this.sceneType,
+        //   });
+        // }
       },
       async changeFavor() {
         if (!Store.getters.isLogin) {
