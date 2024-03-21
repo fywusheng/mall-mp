@@ -28,14 +28,14 @@
         <view class="fs-60 c-black name-wrapper">
           <view class="name">{{ nameFilter(userInfo.name) }}</view>
           <image
-            v-if="userInfo.memberStatus === 1"
+            v-if="userInfo.memberStatus === '1'"
             class="member-icon"
             src="http://192.168.1.187:10088/static/songhui/mine/member-icon.png"
             mode="scaleToFill"
           />
         </view>
         <view class="fs-30 time-wrapper">
-          <view v-if="userInfo.memberStatus === 1" class="end-time">
+          <view v-if="userInfo.memberStatus === '1'" class="end-time">
             {{ userInfo.expirationTime }}
             会员到期
           </view>
@@ -62,7 +62,7 @@
       <image class="icon_set" src="http://192.168.1.187:10088/static/life/shezhi.png" />
     </view> -->
 
-    <view class="statistics">
+    <view v-if="userInfo.memberStatus === '1'" class="statistics">
       <view class="row">
         <view class="l" @click="goSaveMoney">
           <text>累计已省(元)</text>
@@ -80,7 +80,7 @@
         </view>
       </view>
       <view class="row">
-        <view class="price">555.55</view>
+        <view class="price">{{ totalMoney }}</view>
         <view class="btn" @click="openMember">立即续费</view>
       </view>
       <view class="benefit">
@@ -206,6 +206,7 @@
   import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
   import SignPop from './component/sign.vue';
   import { mapState } from 'vuex';
+  import dayjs from 'dayjs';
   export default {
     components: { PopEntryMethod, RealNamePop, SignPop },
     data() {
@@ -250,7 +251,7 @@
             name: '1对1专属顾问 为您答疑解惑',
           },
         ],
-
+        totalMoney: 0,
         // canvas的宽高
         imgWidth: '',
         imgHeight: '',
@@ -262,6 +263,7 @@
     mounted() {
       // 监听登录回调
       // uni.$on('didLogin', this.handleLogin);
+      this.getTotalSaveMoney();
     },
     destroyed() {
       uni.$off('didLogin');
@@ -272,6 +274,17 @@
       }),
     },
     methods: {
+      // 获取累计省钱详情
+      async getTotalSaveMoney() {
+        const result = await Axios.post('/order/getMemberSaveMoney', {
+          memberSaveMoneyFlag: true,
+          startTime: dayjs().subtract(5, 'year').format('YYYY-MM-DD'),
+          endTime: dayjs().format('YYYY-MM-DD'),
+        });
+        if (result.code === '200') {
+          this.totalMoney = result.data;
+        }
+      },
       // 自动签到
       async signClick() {
         // 签到

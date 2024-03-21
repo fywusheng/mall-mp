@@ -521,6 +521,47 @@
         this.loading = false;
         this.itemList = [];
         uni.showLoading();
+
+        uni.request({
+          url: ENV.API + '/cart/list',
+          data: {
+            deviceNumber: uni.getStorageSync('deviceNumber'),
+            sessionId: uni.getStorageSync('sessionId'),
+            sceneType: this.sceneType,
+          },
+          header: {
+            'content-type': 'application/json;charset=utf-8',
+            accessToken: uni.getStorageSync('token'),
+            channel: uni.getSystemInfoSync().host.env,
+          },
+          method: 'POST',
+          success: (res) => {
+            uni.hideLoading();
+            const result = res.data;
+            if (result.code == 200) {
+              if (!result.data.carts) {
+                this.itemList = [];
+              } else {
+                this.itemList = result.data.carts;
+              }
+              this.totalAmountPrice = result.data.totalAmountPrice;
+              this.discountAmount = result.data.discountAmount;
+              this.discountCreditPoints = result.data.discountCreditPoints;
+              this.totalPayablePrice = result.data.totalPayablePrice;
+              this.totalNum = result.data.totalNum;
+              this.recountCheck();
+            } else if (result.code === '1001') {
+            } else {
+              this.$uni.showToast(result.msg || '获取购物车信息失败');
+            }
+            this.loading = true;
+          },
+          fail(error) {
+            uni.hideLoading();
+            console.log('error: ', error);
+          },
+        });
+        return;
         const result = await Axios.post('/cart/list', {
           sceneType: this.sceneType,
         });

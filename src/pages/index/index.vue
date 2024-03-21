@@ -217,7 +217,7 @@
         // 城市信息
         city: uni.getStorageSync('city'),
         // 用户信息
-        userInfo: {},
+        // userInfo: {},
         // 轮播图列表
         banners: [],
         poptype: '0',
@@ -272,7 +272,7 @@
       }),
       // 是否会员
       member() {
-        return this.userInfo && this.userInfo.memberStatus === 1;
+        return this.userInfo && this.userInfo.memberStatus === '1';
       },
     },
     onUnload() {
