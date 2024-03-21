@@ -642,7 +642,7 @@
             break;
           case 2:
             uni.navigateTo({
-              url: '/pages/user-center/applicant-info',
+              url: '/pages/user-center/applicant-info?soure=mine',
             });
             break;
           case 3:

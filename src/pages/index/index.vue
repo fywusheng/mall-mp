@@ -143,7 +143,10 @@
           />
           <view class="name">{{ v.name }}</view>
           <!-- <view class="jf">积分抵扣￥{{ v.creditPoints }}</view> -->
-          <view class="_p">￥{{ v.salePrice }}</view>
+          <view class="_p">
+            ￥{{ member ? v.memberPrice : v.finalPrice }}
+            <text class="fs-32 label">{{ member ? '会员到手价' : '到手价' }}</text>
+          </view>
         </view>
       </view>
       <!-- <uni-load-more :status="status" /> -->
@@ -184,6 +187,7 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex';
   import api from '@/apis/index.js';
   import NavigationBars from '../../components/common/navigation-bar.vue';
   import ServicePop from '@/components/common/service-pop.vue';
@@ -261,6 +265,15 @@
       // uni.$on('didLogin', this.handleLogin);
       // // 监听退出登录回调
       // uni.$on('didLogout', this.handleLogout);
+    },
+    computed: {
+      ...mapState({
+        userInfo: (state) => state.user.userInfo,
+      }),
+      // 是否会员
+      member() {
+        return this.userInfo && this.userInfo.memberStatus === 1;
+      },
     },
     onUnload() {
       // 取消监听登录回调
@@ -981,6 +994,9 @@
           display: flex;
           height: 50rpx;
           line-height: 50rpx;
+          .label {
+            margin-left: 8rpx;
+          }
           .getPrice {
             font-size: 28rpx;
             font-family: PingFangSC-Medium, PingFang SC;

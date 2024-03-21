@@ -157,6 +157,7 @@
       return {
         showDisease: [],
         selectDisease: [],
+        soure: '',
         diseaseList: [
           { name: '高血压', value: 0 },
           { name: '高血脂', value: 1 },
@@ -185,7 +186,8 @@
         },
       };
     },
-    async onLoad() {
+    async onLoad(e) {
+      if (e && e.soure) this.soure = e.soure;
       await this.$store.dispatch('getUserInfo');
       this.fillParams(this.params);
     },
@@ -199,7 +201,7 @@
       }),
       // 页面操作  true 新增， false修改
       add() {
-        if (this.userInfo && this.userInfo.id) {
+        if (this.userInfo && this.userInfo.idCard) {
           return false;
         } else {
           return true;
@@ -274,7 +276,9 @@
           if (result.code == 200) {
             this.$uni.showToast('保存成功');
             this.$store.dispatch('getUserInfo');
-            uni.navigateTo({ url: '/pages/user-center/register-userInfo-result' });
+            if (this.soure !== 'mine') {
+              uni.navigateTo({ url: '/pages/user-center/register-userInfo-result' });
+            }
           } else {
             this.$uni.showToast(result.msg || result.data);
           }
