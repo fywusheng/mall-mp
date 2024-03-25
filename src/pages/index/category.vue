@@ -50,7 +50,7 @@
       // 去列表页
       toCategory(cate) {
         uni.navigateTo({
-          url: '/sub-pages/index/item-list/main?dispId=' + cate.id,
+          url: '/sub-pages/index/item-list/main?dispId=' + cate.code,
         });
       },
 

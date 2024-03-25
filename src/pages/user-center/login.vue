@@ -2,8 +2,8 @@
   <view class="login">
     <image
       class="image"
-      mode="scaleToFill"
-      src="http://192.168.1.187:10088/static/user-center/icon-login-logo.png"
+      mode="widthFix"
+      src="http://192.168.1.187:10088/static/songhui/common/logo.jpg"
     />
     <view class="row flex-h flex-c-s m-0-60 b-b-line">
       <!-- <text class="row__label fs-40 c-black">账&nbsp;&nbsp;&nbsp;号：</text> -->
@@ -127,6 +127,7 @@
   import { ActionSheet } from '@/components/common/action-sheet';
   import Modal from '@/components/common/modal.vue';
   import api from '@/apis/index.js';
+  import { sendSMSCode } from '@/api/modules/sms.js';
   import sha256 from 'crypto-js/sha256';
   import { validatePhoneNumber, validateIDCardNumber } from '@/utils/validation.js';
   export default {
@@ -233,17 +234,23 @@
       /**
        * 发送验证码点击事件
        */
-      handleSencSMSCodeClick() {
+      async handleSencSMSCodeClick() {
         if (this.params.account.length !== 11) {
           this.$uni.showToast('请输入正确的手机号');
           return;
         }
-        api.sendSMSCode({
+
+        sendSMSCode({
           data: {
             mobile: this.params.account,
-            sceneFlag: '4',
-            source: 'source',
-            tmplId: '340701587045712968',
+            sceneFlag: 4,
+            // source: '',
+            // source: 'source',
+            tmplId: '',
+            // tmplId: '340701587045712968',
+          },
+          header: {
+            channel: 'msg',
           },
           success: (data) => {
             this.$uni.showToast('发送成功');
@@ -470,7 +477,8 @@
     padding-top: 32rpx;
     box-sizing: border-box;
     .image {
-      @include size(354, 262);
+      // @include size(354, 262);
+      width: 328rpx;
       margin: 32rpx auto;
       display: block;
       margin-bottom: 32rpx;

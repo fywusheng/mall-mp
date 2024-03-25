@@ -3,7 +3,7 @@
     <view class="logon">
       <image src="http://192.168.1.187:10088/static/user-center/logo.png" class="logoicon" />
     </view>
-    <view class="title">松辉云康｜国家老龄服务平台</view>
+    <view class="title">松辉云康</view>
     <view class="v-num">版本号 {{ version }}</view>
     <view class="bottom">
       <view class="xieyi">

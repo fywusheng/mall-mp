@@ -9,12 +9,10 @@
         <view class="navigation-bar flex-h flex-c-s">
           <image
             class="image"
-            src="http://192.168.1.187:10088/static/home/home-logo.png"
+            src="http://192.168.1.187:10088/static/songhui/common/logo.jpg"
             mode="scaleToFill"
           />
-          <text class="navigation-bar__title fs-32 c-white flex-1">
-            松辉医疗 | 国家老龄服务平台
-          </text>
+          <text class="navigation-bar__title fs-32 c-white flex-1">松辉云康</text>
         </view>
       </template>
     </navigation-bars>
@@ -36,7 +34,7 @@
           <text class="search-bar__text fs-36 flex-1 c-lightgrey" @click="handleVoiceSearchClick">
             搜索商品
           </text>
-          <template>
+          <!-- <template>
             <view class="search-bar__line" />
             <image
               class="search-bar__voice ml-16"
@@ -44,7 +42,7 @@
               src="http://192.168.1.187:10088/static/home/icon-home-voice.png"
               @click="handleVoiceSearchClick"
             />
-          </template>
+          </template> -->
         </view>
         <view class="_right">
           <image
@@ -323,7 +321,7 @@
           return;
         }
         uni.navigateTo({
-          url: '/sub-pages/index/item-list/main?dispId=' + v.id,
+          url: '/sub-pages/index/item-list/main?dispId=' + v.code,
         });
         // uni.navigateTo({ url: `/sub-pages/index/category/main?code=${v.code}` });
       },
