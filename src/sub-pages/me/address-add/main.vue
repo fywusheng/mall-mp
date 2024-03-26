@@ -26,7 +26,7 @@
       <input class="form-control" v-model="dataForm.address" placeholder="请输入"
         placeholder-style="color:#999999">
     </div>
-    <div class="btn-bottom-fixed" :class="{isIphoneHair}" @click="save">确认添加</div>
+    <div class="btn-bottom-fixed" :class="{isIphoneHair}" @click="save">确认{{dataForm.id?'修改':'添加'}} </div>
   </div>
 </template>
 
@@ -134,10 +134,11 @@ export default {
       )
       wx.hideLoading()
       if (result.code == 200) {
-        wx.showToast(result.msg || '保存成功')
+        wx.showToast('保存成功')
         Store.commit(VUEX.CHECKOUT.SET_ADDRESS, result.data.id)
         Store.dispatch('getCheckoutData', true)
-        uni.navigateBack({ delta: 2 })
+        return
+        uni.navigateBack({ delta: 1 })
         // this.type == 1 && Store.commit(VUEX.CHECKOUT.SET_ADDRESS, result.data.id)
         // wx.navigateBack({ delta: this.type == 3 ? 2 : 1 })
       } else {

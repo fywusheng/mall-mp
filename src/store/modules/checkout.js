@@ -196,9 +196,9 @@ export default {
         params.num = state.num
         params.skuId = state.skuId
       }
-      uni.showLoading({
-        title: '加载中'
-      })
+      // uni.showLoading({
+      //   title: '加载中'
+      // })
       console.log(params, '参数---')
 
       const result = await Axios.post(state.type === 1 ? '/order/settlement' : '/order/settlement.direct', params)
@@ -239,7 +239,7 @@ export default {
           commit('CHECKOUT_SET_IS_DEFAULT', false)
         }
       } else {
-        wx.showToast(result.msg)
+        // wx.showToast(result.msg)
       }
       dispatch('getGlobalCoupon')
       return result

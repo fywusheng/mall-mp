@@ -41,6 +41,7 @@ export function validateBankNo(cardId, rule) {
  */
 export function validateIDCardNumber(idCardNumber) {
   if (typeof idCardNumber !== 'string') return false
+  return idCardNumber.length === 18
   var city = {
     11: '北京',
     12: '天津',

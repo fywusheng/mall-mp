@@ -26,15 +26,25 @@
 
       <view v-else class="flex-v ml-12 avatar-r">
         <view class="fs-60 c-black name-wrapper">
-          <view class="name">{{ nameFilter(userInfo.name) }}</view>
+          <view class="name">
+            {{
+              userInfo.name !== '' && userInfo.name !== ' '
+                ? nameFilter(userInfo.name)
+                : userInfo.phone
+            }}
+          </view>
           <image
             v-if="userInfo.memberStatus === '1'"
             class="member-icon"
             src="http://192.168.1.187:10088/static/songhui/mine/member-icon.png"
             mode="scaleToFill"
           />
+          <!-- <view v-if="userInfo.memberStatus === '0'">开通商城会员 尊享会员权益</view> -->
         </view>
         <view class="fs-30 time-wrapper">
+          <view v-if="userInfo.memberStatus === '0'" @click="goOpenMember">
+            开通商城会员 尊享会员权益
+          </view>
           <view v-if="userInfo.memberStatus === '1'" class="end-time">
             {{ userInfo.expirationTime }}
             会员到期
@@ -274,6 +284,27 @@
       }),
     },
     methods: {
+      goOpenMember() {
+        uni.navigateTo({
+          url: '/pages/user-center/activate-member',
+        });
+      },
+      // 用户头像报存
+      async saveUserBanner(iconUrl) {
+        const params = { ...this.userInfo, iconUrl };
+
+        try {
+          const result = await Axios.post('/member/sh/memberInformation/saveMemberInfo', params);
+          if (result.code == 200) {
+            this.$uni.showToast('修改成功');
+            this.$store.dispatch('getUserInfo');
+          } else {
+            this.$uni.showToast(result.msg || result.data);
+          }
+        } catch (error) {
+          this.$uni.showToast('保存失败');
+        }
+      },
       // 获取累计省钱详情
       async getTotalSaveMoney() {
         const result = await Axios.post('/order/getMemberSaveMoney', {
@@ -463,7 +494,7 @@
 
       // 点击积分
       handleIntegralClick() {
-        if (!this.userInfo.tel) {
+        if (!this.userInfo.phone) {
           // 未登录, 跳转到登录页面
           uni.navigateTo({
             url: '/pages/user-center/login',
@@ -509,29 +540,38 @@
             uni.getFileSystemManager().readFile({
               filePath: res.tempFilePaths[0],
               encoding: 'base64',
-              success: (rs) => {
-                // console.log('rs:', rs)
-                //   const par = {
-                //         base64String: base64,
-                //         imageName,
-                //         imageExt,
-                //       }
-                //       const res = await Axios.post('https://api.hpgjzlinfo.com/nepsp-api/cms/iep/web/cms/imgUpload', par)
-                //       console.log("===结果---", res)
+              success: async (rs) => {
+                console.log('rs:', rs);
 
-                api.imgUpload({
+                // 线上环境
+                uni.request({
+                  url: 'https://api.hpgjzlinfo.com/nepsp-api/cms/iep/web/cms/imgUpload',
                   data: {
                     base64String: rs.data,
                     imageName,
                     imageExt,
                   },
-                  showsLoading: true,
+                  method: 'POST',
                   success: (imgres) => {
-                    console.log('图片上传成功res：', imgres);
-                    this.header = imgres.absoluteUrl;
-                    this.updateUserHeader(imgres.absoluteUrl);
+                    const fileData = imgres.data.data;
+                    this.header = fileData.absoluteUrl;
+                    this.saveUserBanner(fileData.absoluteUrl);
                   },
                 });
+
+                // api.imgUpload({
+                //   data: {
+                //     base64String: rs.data,
+                //     imageName,
+                //     imageExt,
+                //   },
+                //   showsLoading: true,
+                //   success: (imgres) => {
+                //     console.log('图片上传成功res：', imgres);
+                //     this.header = imgres.absoluteUrl;
+                //     this.updateUserHeader(imgres.absoluteUrl);
+                //   },
+                // });
               },
             });
 

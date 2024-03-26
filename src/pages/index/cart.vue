@@ -364,7 +364,7 @@
           mode="scaleToFill"
         />
         <div class="desc">您还没有选购商品</div>
-        <button type="button" @click="toHome" class="btn-home">去挑选</button>
+        <!-- <button type="button" @click="toHome" class="btn-home">去挑选</button> -->
       </div>
     </template>
     <div v-if="loading && !isLogin" class="empty-wrap">

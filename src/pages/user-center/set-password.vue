@@ -121,12 +121,10 @@
           },
           success: (data) => {
             uni.setStorageSync('token', data.accessToken);
-            uni.$emit('didLogin');
-            //  uni.navigateBack({ delta: 9 });//home
-            uni.reLaunch({ url: '/pages/index/index', index: 0 });
-            // uni.navigateTo({
-            //   url: "/pages/user-center/register-result",
-            // });
+            Store.dispatch('setToken', data.accessToken);
+            Store.dispatch('login').then((result) => {
+              uni.navigateTo({ url: '/pages/user-center/register-result' });
+            });
           },
         });
       },

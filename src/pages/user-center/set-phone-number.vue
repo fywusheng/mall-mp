@@ -71,7 +71,7 @@
     },
     onLoad() {
       const userInfo = uni.getStorageSync('userInfo');
-      this.currentPhoneNumber = userInfo.tel;
+      this.currentPhoneNumber = userInfo.phone;
     },
     methods: {
       /**

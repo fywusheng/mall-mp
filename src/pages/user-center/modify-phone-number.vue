@@ -24,7 +24,7 @@
         />
       </view>
     </view>
-    <view class="section flex-v">
+    <!-- <view class="section flex-v">
       <view class="section-header flex-h flex-c-s">
         <text class="fs-32 c-grey ml-48">原手机号不可用</text>
       </view>
@@ -36,7 +36,7 @@
           src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png"
         />
       </view>
-    </view>
+    </view> -->
     <real-name-pop ref="realpop" :showTop="showTop" @succFlag="succFlag" />
   </view>
 </template>

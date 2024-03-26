@@ -6,7 +6,7 @@
         <view class="item flex-h flex-c-b" @click="realClick">
           <text class="fs-40 c-black flex-1">实名认证</text>
           <view class="item__text flex-h flex-c-e">
-            <text>{{ userInfo.name ? '已实名' : '未实名' }}</text>
+            <text>{{ realName }}</text>
             <!-- <image
               class="item__accessory"
               mode="scaleToFill"
@@ -81,6 +81,12 @@
       ...mapState({
         userInfo: (state) => state.user.userInfo,
       }),
+      realName() {
+        if (this.userInfo && this.userInfo.name !== '' && this.userInfo.name !== ' ') {
+          return '已实名';
+        }
+        return '未实名';
+      },
     },
     methods: {
       exitLoad() {
