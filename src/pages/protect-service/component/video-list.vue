@@ -187,7 +187,7 @@
             data: {
               contId: item.contId,
               giveAlike: '1',
-              userId: userInfo.uactId,
+              userId: userInfo.memberId,
             },
             success: (data) => {
               this.list[index].giveAlikeFlag = '1';
@@ -199,7 +199,7 @@
             data: {
               contId: item.contId,
               giveAlike: '0',
-              userId: userInfo.uactId,
+              userId: userInfo.memberId,
             },
             success: (data) => {
               this.list[index].giveAlikeFlag = '0';

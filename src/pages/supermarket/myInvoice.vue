@@ -192,7 +192,7 @@
         this.list = [];
         api.getInvoiceNum({
           data: {
-            uactId: this.userInfo.uactId,
+            uactId: this.userInfo.memberId,
           },
           showsLoading: true,
           success: (res) => {
@@ -266,7 +266,7 @@
       //加载数据接口（分页接口）
       getInvoiceList(index) {
         const data = {
-          uactId: this.userInfo.uactId,
+          uactId: this.userInfo.memberId,
           invoiceFlag: this.classList[index].invoiceFlag,
           pageSize: this.pageSize,
           pageNum: this.pageNum,

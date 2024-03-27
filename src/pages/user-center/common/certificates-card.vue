@@ -206,7 +206,7 @@
       // 查询是否弹出过500积分
       findPopoverList() {
         api.findPopoverList({
-          data: { userId: this.userInfo.uactId },
+          data: { userId: this.userInfo.memberId },
           success: (res) => {
             let msgId = '';
             const popStatus = res.some((popItem, popIndex) => {
@@ -218,7 +218,7 @@
             if (popStatus) {
               // 弹出弹框
               api.checkLogOutUser({
-                data: { uactId: this.userInfo.uactId },
+                data: { uactId: this.userInfo.memberId },
                 success: (data) => {
                   console.log('===是否注销过---', data);
                   if (!data) {
@@ -270,7 +270,7 @@
               // 卡状态为 2, 请求获取授权码接口
               api.getAuthorizationCode({
                 data: {
-                  uactId: this.userInfo.uactId,
+                  uactId: this.userInfo.memberId,
                   psnName: this.userInfo.psnName,
                   certNo: this.userInfo.idCard,
                   appId: '53928a083adb4a7dad2eecf05564873f',

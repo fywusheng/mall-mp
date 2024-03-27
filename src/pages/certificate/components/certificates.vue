@@ -285,7 +285,7 @@
               // 查询是否弹出过500积分
               api.findPopoverList({
                 data: {
-                  userId: this.userInfo.uactId,
+                  userId: this.userInfo.memberId,
                 },
                 success: (res) => {
                   let msgId = '';
@@ -305,7 +305,7 @@
               // 卡状态为 2, 请求获取授权码接口
               api.getAuthorizationCode({
                 data: {
-                  uactId: this.userInfo.uactId,
+                  uactId: this.userInfo.memberId,
                   psnName: this.userInfo.psnName,
                   certNo: this.userInfo.idCard,
                   appId: '53928a083adb4a7dad2eecf05564873f',
@@ -319,7 +319,7 @@
                   // 查询是否弹出过500积分
                   api.findPopoverList({
                     data: {
-                      userId: this.userInfo.uactId,
+                      userId: this.userInfo.memberId,
                     },
                     success: (res) => {
                       let msgId = '';

@@ -1389,7 +1389,7 @@
                 api.getAuthorizationCode({
                   showsLoading: true,
                   data: {
-                    uactId: this.userInfo.uactId,
+                    uactId: this.userInfo.memberId,
                     psnName: this.userInfo.psnName,
                     certNo: this.userInfo.idCard,
                     appId: '53928a083adb4a7dad2eecf05564873f',

@@ -61,7 +61,7 @@
       confirm() {
         const userInfo = uni.getStorageSync('userInfo');
         api.cancel({
-          data: { uactId: userInfo.uactId },
+          data: { uactId: userInfo.memberId },
           success: (data) => {
             this.$refs.tipModal.close();
             if (data) {

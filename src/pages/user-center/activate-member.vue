@@ -4,7 +4,7 @@
       <view class="row">
         <view class="title">卡种选择</view>
         <view class="right" @click="handleAddClick">
-          <text class="label">发票信息</text>
+          <text class="label">{{ invoice ? invoice.showContent : '发票信息' }}</text>
           <image
             class="icon-right"
             mode="scaleToFill"
@@ -111,12 +111,13 @@
 <script>
   import ScanOrInputPopup from './common/scan-or-input-popup.vue';
   import { putHotelOrder } from '@/api/life.js';
+  import { mapState } from 'vuex';
   export default {
     components: { ScanOrInputPopup },
     data() {
       return {
-        // 卡类型 0 年卡，1 半年卡
-        cardType: 0,
+        cardType: 0, // 卡类型 0 年卡，1 半年卡
+        invoice: null, // 发票信息
         checked: false,
         icon: {
           checked: 'http://192.168.1.187:10088/static/pay/icon-radio-checked.png',
@@ -124,8 +125,16 @@
         },
       };
     },
-    onLoad() {},
+    onLoad() {
+      uni.$on('didSelectHeader', this.handleSelectInvoce);
+    },
+    onUnload() {
+      uni.$off('didSelectHeader', this.handleSelectInvoce);
+    },
     computed: {
+      ...mapState({
+        userInfo: (state) => state.user.userInfo,
+      }),
       paymentAmount() {
         return this.cardType === 0 ? 0.01 : 0.02;
       },
@@ -134,11 +143,16 @@
       },
     },
     methods: {
-      // 添加
+      // 选中发票
+      handleSelectInvoce(data) {
+        this.invoice = data;
+      },
+      // 添加发票
       handleAddClick() {
-        uni.navigateTo({
-          url: '/pages/supermarket/company-update-or-add',
-        });
+        uni.navigateTo({ url: '/pages/supermarket/company-list' });
+        // uni.navigateTo({
+        //   url: '/pages/supermarket/company-update-or-add',
+        // });
       },
       handleCheckXieyi() {
         this.checked = !this.checked;
@@ -166,11 +180,11 @@
           orderSource: 6, //订单类型
           productPrice: price, //单价
           payNumber: 1, //数量
-          uactId: 13261890779, // 用户memberId
+          uactId: this.userInfo.memberId, // 用户memberId
           usageTime: '', // 出发日期
           expirationTime: '', //返程日期
-          crterName: '仝江飞', //联系人
-          updterName: '13261890779', //联系电话
+          crterName: this.userInfo.name, //联系人
+          updterName: this.userInfo.phone, //联系电话
           scopeOfApplication: this.remark, //备注
         });
         const url = `${ENV.H5}/#/checkstand?cashId=${result}`;

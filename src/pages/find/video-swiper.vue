@@ -387,7 +387,7 @@
         });
         api.getRandomVideo({
           data: {
-            userId: userInfo.uactId ? userInfo.uactId : '',
+            userId: userInfo.memberId ? userInfo.memberId : '',
             contId: params.contId,
             pageNum: params.pageNum,
             pageSize: params.pageSize,

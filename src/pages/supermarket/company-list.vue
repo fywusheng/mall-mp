@@ -121,7 +121,7 @@
         const data = {
           pageNum: this.pageNum,
           pageSize: this.pageSize,
-          uactId: this.userInfo.uactId,
+          uactId: this.userInfo.memberId,
         };
         // uni.showLoading({
         //   title: '加载中',

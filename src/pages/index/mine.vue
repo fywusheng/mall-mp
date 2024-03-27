@@ -270,10 +270,13 @@
         signDay: 5,
       };
     },
-    mounted() {
+    async onLoad() {
+      await this.$store.dispatch('getUserInfo');
+      this.getTotalSaveMoney();
+    },
+    async mounted() {
       // 监听登录回调
       // uni.$on('didLogin', this.handleLogin);
-      this.getTotalSaveMoney();
     },
     destroyed() {
       uni.$off('didLogin');
@@ -365,7 +368,7 @@
       loginSuccess(loginfirst) {
         if (loginfirst == 1) {
           const data = {
-            uactId: this.userInfo.uactId,
+            uactId: this.userInfo.memberId,
             pageNum: 1,
             pageSize: 5,
           };
@@ -435,7 +438,7 @@
         api.updateUserInfo({
           data: {
             psnId: this.userInfo.psnId,
-            uactId: this.userInfo.uactId,
+            uactId: this.userInfo.memberId,
             userIcon: url,
           },
           success: (res) => {
@@ -450,7 +453,7 @@
       findFamilyMemberList() {
         return new Promise((resolve, reject) => {
           const data = {
-            uactId: this.userInfo.uactId,
+            uactId: this.userInfo.memberId,
             pageNum: 1,
             pageSize: 5,
           };
@@ -510,7 +513,7 @@
       handleScoreInfo() {
         api.scoreInfo({
           data: {
-            userId: this.userInfo.uactId,
+            userId: this.userInfo.memberId,
           },
           success: (res) => {
             this.score = res.score;
@@ -771,7 +774,7 @@
        */
       handleFeedbackClick() {
         // 备注：目前只有登录后才可以进行问题填报
-        if (!this.userInfo.tel) {
+        if (!this.userInfo.phone) {
           // 未登录, 跳转到登录页面
           uni.navigateTo({
             url: '/pages/user-center/login',

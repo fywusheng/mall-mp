@@ -377,7 +377,7 @@
             data: {
               data: {
                 faceImg: '', // TODO  添加亲情账号人脸识别照片提供--微信暂无
-                fromUactId: userInfo.uactId,
+                fromUactId: userInfo.memberId,
                 fromName: userInfo.psnName,
                 toName: this.params.name,
                 idCard: this.params.idCardNumber,
@@ -468,7 +468,7 @@
             data: {
               data: {
                 faceImg: getbase64, // 后期替换
-                fromUactId: userInfo.uactId,
+                fromUactId: userInfo.memberId,
                 fromName: userInfo.psnName,
                 toName: this.params.name,
                 idCard: this.params.idCardNumber,

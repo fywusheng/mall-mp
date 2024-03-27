@@ -237,10 +237,10 @@
       },
       handleScoreInfo() {
         this.userInfo = uni.getStorageSync('userInfo');
-        if (!this.userInfo.uactId) return;
+        if (!this.userInfo.memberId) return;
         api.scoreInfo({
           data: {
-            userId: this.userInfo.uactId,
+            userId: this.userInfo.memberId,
           },
           success: (res) => {
             this.score = res.score;

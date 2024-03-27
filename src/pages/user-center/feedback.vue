@@ -70,7 +70,7 @@
     },
     onLoad() {
       const userInfo = uni.getStorageSync('userInfo');
-      if (userInfo) this.contact = userInfo.tel;
+      if (userInfo) this.contact = userInfo.phone;
     },
     methods: {
       /**
@@ -81,12 +81,34 @@
           count: 9 - this.images.length,
           success: (res) => {
             res.tempFilePaths.forEach((item) => {
+              // 名称
+              const imageName = item.split('/').pop();
+              const arr = imageName.split('.');
+              // 后缀
+              const imageExt = arr[arr.length - 1];
+
               uni.getFileSystemManager().readFile({
                 filePath: item,
                 encoding: 'base64',
-                success: (res) => {
-                  const data = 'data:image/jpeg;base64,' + res.data;
-                  this.images.push(data);
+                success: (rs) => {
+                  const data = 'data:image/jpeg;base64,' + rs.data;
+
+                  // 线上环境
+                  uni.request({
+                    url: 'https://api.hpgjzlinfo.com/nepsp-api/cms/iep/web/cms/imgUpload',
+                    data: {
+                      base64String: rs.data,
+                      imageName,
+                      imageExt,
+                    },
+                    method: 'POST',
+                    success: (imgres) => {
+                      const fileData = imgres.data.data;
+                      this.images.push(fileData.absoluteUrl);
+                    },
+                  });
+
+                  // this.images.push(data);
                 },
               });
             });
@@ -104,12 +126,29 @@
        */
       handleSubmitClick() {
         // uni.navigateBack();
-        this.images.length > 0 ? this.upload() : this.submit();
+        // this.images.length > 0 ? this.upload() :
+        this.submit();
       },
       /**
        * 上传文件
        */
       upload() {
+        // 线上环境
+        uni.request({
+          url: 'https://api.hpgjzlinfo.com/nepsp-api/common/app/imgRpc/batchUpload',
+          data: {
+            base64Strings: this.images,
+            fileExt: 'png',
+          },
+          method: 'POST',
+          success: (imgres) => {
+            const fileData = imgres.data.data;
+
+            this.imageURLs = fileData.absoluteUrl;
+            this.submit();
+          },
+        });
+        return;
         api.uploadImages({
           data: {
             base64Strings: this.images,
@@ -136,7 +175,7 @@
         api.feedback({
           data: {
             prbDscr: this.content,
-            img: this.imageURLs,
+            img: this.images.join(','),
             crterMob: this.contact,
           },
           success: (data) => {
@@ -183,9 +222,11 @@
       .input {
         // text-align: right;
         width: 50%;
-        padding-top: 20rpx;
+        // padding-top: 20rpx;
         text-align: right;
         margin-right: 68rpx;
+        height: 80rpx;
+        line-height: 80rpx;
       }
     }
     .tips {

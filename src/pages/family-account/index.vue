@@ -530,7 +530,7 @@
       findFamilyMemberList() {
         return new Promise((resolve, reject) => {
           const data = {
-            uactId: this.userInfo.uactId,
+            uactId: this.userInfo.memberId,
             pageNum: 1,
             pageSize: 5,
           };

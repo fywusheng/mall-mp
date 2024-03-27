@@ -122,7 +122,7 @@
         // const userInfo = uni.getStorageSync('userInfo') || {}
         api.getCategoryList({
           data: {
-            // userId: userInfo.uactId ? userInfo.uactId : '',
+            // userId: userInfo.memberId ? userInfo.memberId : '',
             contId: contId,
             pageNum: this.pageNum,
             pageSize: this.pageSize,

@@ -137,7 +137,6 @@ export default {
         wx.showToast('保存成功')
         Store.commit(VUEX.CHECKOUT.SET_ADDRESS, result.data.id)
         Store.dispatch('getCheckoutData', true)
-        return
         uni.navigateBack({ delta: 1 })
         // this.type == 1 && Store.commit(VUEX.CHECKOUT.SET_ADDRESS, result.data.id)
         // wx.navigateBack({ delta: this.type == 3 ? 2 : 1 })

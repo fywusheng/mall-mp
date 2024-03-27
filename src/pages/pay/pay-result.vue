@@ -121,7 +121,7 @@
       this.resultType = this.formData.type;
       this.orderId = this.formData.orderId;
       this.payAmount = this.formData.payAmount;
-      this.checkNeedPopUp();
+      // this.checkNeedPopUp();
       console.log(this.formData, 'form信息=======');
     },
     onShow() {},

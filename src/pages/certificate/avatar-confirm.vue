@@ -132,7 +132,7 @@
         // 查询剩余次数
         // api.getUserPenCount({
         //   data: {
-        //     userId: this.userInfo.uactId,
+        //     userId: this.userInfo.memberId,
         //   },
         //   showsLoading: true,
         //   success: (res) => {
@@ -155,14 +155,14 @@
         //     //         psnName: this.params.name,
         //     //         image64: this.resinfo.photoBase64,
         //     //         certNo: this.params.idCardNumber,
-        //     //         userId: this.userInfo.uactId,
+        //     //         userId: this.userInfo.memberId,
         //     //       })
         //     //       api.authComparison({
         //     //         data: {
         //     //           psnName: this.params.name,
         //     //           image64: this.resinfo.photoBase64,
         //     //           certNo: this.params.idCardNumber,
-        //     //           userId: this.userInfo.uactId,
+        //     //           userId: this.userInfo.memberId,
         //     //         },
         //     //         showsLoading: true,
         //     //         success: (res) => {
@@ -205,7 +205,7 @@
       zfb_auth_face(nowfaceImg) {
         api.getUserPenCount({
           data: {
-            userId: this.userInfo.uactId,
+            userId: this.userInfo.memberId,
           },
           showsLoading: true,
           success: (res) => {
@@ -228,14 +228,14 @@
                     psnName: this.params.name,
                     image64: this.resinfo.photoBase64,
                     certNo: this.params.idCardNumber,
-                    userId: this.userInfo.uactId,
+                    userId: this.userInfo.memberId,
                   });
                   api.authComparison({
                     data: {
                       psnName: this.params.name,
                       image64: this.resinfo.photoBase64,
                       certNo: this.params.idCardNumber,
-                      userId: this.userInfo.uactId,
+                      userId: this.userInfo.memberId,
                     },
                     showsLoading: true,
                     success: (res) => {
@@ -407,7 +407,7 @@
             psnName: this.params.name, // this.params.name, //'韩晓亚',// this.params.name,//TODO test
             image64: this.resinfo.photoBase64,
             certNo: this.params.idCardNumber, // this.params.idCardNumber, //'140621198908070546',//,//this.params.idCardNumber, //TODO test
-            userId: this.userInfo.uactId,
+            userId: this.userInfo.memberId,
           },
           success: (res) => {
             this.loading = false;

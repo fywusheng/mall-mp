@@ -245,14 +245,14 @@
               // 卡状态为 2, 请求获取授权码接口
 
               console.log('请求获取授权码接口data', {
-                uactId: userInfo.uactId,
+                uactId: userInfo.memberId,
                 psnName: params.name,
                 certNo: params.idCardNumber,
                 appId: '53928a083adb4a7dad2eecf05564873f',
               });
               api.getAuthorizationCode({
                 data: {
-                  uactId: userInfo.uactId,
+                  uactId: userInfo.memberId,
                   psnName: params.name,
                   certNo: params.idCardNumber,
                   appId: '53928a083adb4a7dad2eecf05564873f',

@@ -321,12 +321,12 @@
           return;
         }
         uni.navigateTo({
-          url: '/sub-pages/index/item-list/main?dispId=' + v.code,
+          url: '/sub-pages/index/item-list/main?dispId=' + v.id,
         });
         // uni.navigateTo({ url: `/sub-pages/index/category/main?code=${v.code}` });
       },
       async getCateGoryList() {
-        const { data, code, msg } = await Axios.post('/category/getCategoryList', { type: 2 });
+        const { data, code, msg } = await Axios.post('/category/getCategoryList', { type: 1 });
         if (code === '200') {
           if (data.length >= 8) {
             const temp = data.slice(0, 7);

@@ -9,7 +9,7 @@
           placeholder="请输入真实姓名"
           :adjust-position="false"
           placeholder-class="placeholder"
-          v-model="params.name"
+          v-model.trim="params.name"
         />
       </view>
       <view class="row flex-h flex-c-s p-20-0">
@@ -21,7 +21,7 @@
           :adjust-position="false"
           placeholder="请输入正确的身份证号"
           placeholder-class="placeholder"
-          v-model="params.idCard"
+          v-model.trim="params.idCard"
         />
       </view>
       <view class="row flex-h flex-c-s p-20-0">
@@ -219,6 +219,7 @@
       closePop() {
         this.$refs.popup.close();
       },
+
       selectDis(item) {
         if (this.selectDisease.includes(item.name)) return;
         this.selectDisease.push(item.name);
@@ -227,9 +228,11 @@
         for (let key in data) {
           this.params[key] = this.userInfo[key];
         }
-        this.showDisease = this.userInfo.disease.split(',');
-        this.selectDisease = this.userInfo.disease.split(',');
-        this.params.disease = this.userInfo.disease.split(',');
+        if (this.userInfo.disease !== '') {
+          this.showDisease = this.userInfo.disease.split(',');
+          this.selectDisease = this.userInfo.disease.split(',');
+          this.params.disease = this.userInfo.disease.split(',');
+        }
       },
       /**
        * 身份证号输入完成事件

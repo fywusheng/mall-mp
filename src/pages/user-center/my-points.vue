@@ -257,7 +257,7 @@
       handleScoreInfo() {
         api.scoreInfo({
           data: {
-            userId: this.userInfo.uactId,
+            userId: this.userInfo.memberId,
           },
           success: (res) => {
             console.log('用户积分：', res);
@@ -270,7 +270,7 @@
       getUserTaskInfoByPage() {
         api.getUserTaskInfoByPage({
           data: {
-            userId: this.userInfo.uactId,
+            userId: this.userInfo.memberId,
             pageNum: 1,
             pageSize: 100,
           },

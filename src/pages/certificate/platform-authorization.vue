@@ -97,7 +97,7 @@
             success: (res) => {
               api.findPopoverList({
                 data: {
-                  userId: this.userInfo.uactId,
+                  userId: this.userInfo.memberId,
                 },
                 success: (res) => {
                   let msgId = '';

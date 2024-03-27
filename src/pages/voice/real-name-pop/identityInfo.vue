@@ -434,7 +434,7 @@
               success: (res) => {
                 const userInfo = uni.getStorageSync('userInfo');
                 api.checkLogOutUser({
-                  data: { uactId: userInfo.uactId },
+                  data: { uactId: userInfo.memberId },
                   success: (data) => {
                     console.log('===是否注销过---', data);
                     if (!data) {

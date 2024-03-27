@@ -142,7 +142,7 @@
       handleScoreInfo() {
         api.scoreInfo({
           data: {
-            userId: this.userInfo.uactId,
+            userId: this.userInfo.memberId,
           },
           success: (res) => {
             console.log('用户积分：', res);
@@ -157,7 +157,7 @@
         api.getScoreList({
           showsLoading: true,
           data: {
-            userId: this.userInfo.uactId,
+            userId: this.userInfo.memberId,
             chgType: this.selectedIndex < 2 ? this.selectedIndex + '' : '', // 变更类型(0-减少 1新增)
             pageNum: this.pageNum,
             pageSize: this.pageSize,
