@@ -46,7 +46,7 @@
             开通商城会员 尊享会员权益
           </view>
           <view v-if="userInfo.memberStatus === '1'" class="end-time">
-            {{ userInfo.expirationTime }}
+            {{ expirationTime }}
             会员到期
           </view>
           <view class="r" @click="signClick">
@@ -285,6 +285,12 @@
       ...mapState({
         userInfo: (state) => state.user.userInfo,
       }),
+      expirationTime() {
+        if (this.userInfo) {
+          return dayjs(this.userInfo.expirationTime).format('YYYY-MM-DD');
+        }
+        return '';
+      },
     },
     methods: {
       goOpenMember() {

@@ -170,8 +170,13 @@
        * 立即开通
        */
       async handleApplyClick() {
+        if (!this.checked) {
+          this.$uni.showToast('请阅读并勾选页面协议哦');
+          return false;
+        }
         const price = this.paymentAmount * 100;
         const result = await putHotelOrder({
+          invoiceId: this.invoice ? this.invoice.invoiceHeaderId : '', // 发票抬头id
           productId: this.cardType === 0 ? 'VIP001' : 'VIP002',
           supermarketName: '商城会员卡', // 标题
           orderAmount: price, // 原总金额
@@ -189,19 +194,16 @@
         });
         const url = `${ENV.H5}/#/checkstand?cashId=${result}`;
         // #ifdef MP-ALIPAY
-        uni.reLaunch({
+        uni.navigateTo({
           url: `/pages/common/webpage?url=${url}`,
         });
         // #endif
 
         // #ifdef MP-WEIXIN
-        uni.reLaunch({
+        uni.navigateTo({
           url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
         });
         // #endif
-        // uni.navigateTo({
-        //   url: '/pages/user-center/activate-member',
-        // });
       },
       // 设置卡类型
       setCardType(cardType) {

@@ -18,7 +18,7 @@
           <view class="num">{{ score ? score : '--' }}</view>
         </view>
         <view class="_right">
-          <view class="j" @click="goHandler">{{ userInfo.tel ? '赚取积分' : '去登录' }}</view>
+          <view class="j" @click="goHandler">{{ userInfo.phone ? '赚取积分' : '去登录' }}</view>
         </view>
       </view>
       <view class="di_kou">
@@ -123,6 +123,7 @@
 </template>
 <script>
   import api from '@/apis/index.js';
+  import { mapState } from 'vuex';
   // import { reportCmPV } from '@/plugins/cloudMonitorHelper';
 
   export default {
@@ -134,7 +135,7 @@
         prodList: [],
         pageSize: 20,
         pageNum: 1,
-        userInfo: {},
+        // userInfo: {},
         score: '',
       };
     },
@@ -150,7 +151,7 @@
     async onLoad(e) {
       // this.autoScore(e)
       // 监听登录事件，更新用户信息
-      uni.$on('didLogin', this.autoScore);
+      // uni.$on('didLogin', this.autoScore);
     },
     // 下拉刷新
     onPullDownRefresh() {
@@ -160,6 +161,11 @@
     onReachBottom() {
       this.getProdList();
     },
+    computed: {
+      ...mapState({
+        userInfo: (state) => state.user.userInfo,
+      }),
+    },
     methods: {
       // 图片加载失败
       handleImageLoadFail(index) {
@@ -167,34 +173,11 @@
           'http://192.168.1.187:10088/static/home/image-home-article-default.png';
       },
       async autoScore(e) {
-        const token = uni.getStorageSync('token') || e.token;
-        if (token) {
-          uni.setStorageSync('token', token);
-          this.userInfo = await this.getUserInfo();
-          uni.setStorageSync('userInfo', this.userInfo);
-        } else {
-          Store.dispatch('logout');
+        if (this.userInfo && this.userInfo.phone) {
+          this.handleScoreInfo();
         }
-        this.handleScoreInfo();
       },
-      /**
-       * 获取用户信息
-       */
-      getUserInfo() {
-        return new Promise((resolve, reject) => {
-          api.getUserInfo({
-            data: {
-              accessToken: uni.getStorageSync('token'),
-            },
-            success: (data) => {
-              resolve(data);
-            },
-            fail: (error) => {
-              reject(error);
-            },
-          });
-        });
-      },
+
       toTop() {
         uni.pageScrollTo({
           scrollTop: 0,
@@ -228,7 +211,7 @@
         });
       },
       goHandler() {
-        if (this.userInfo.tel) {
+        if (this.userInfo.phone) {
           uni.navigateTo({ url: '/pages/user-center/my-points' });
         } else {
           uni.navigateTo({ url: '/pages/user-center/login' });
@@ -236,7 +219,6 @@
         }
       },
       handleScoreInfo() {
-        this.userInfo = uni.getStorageSync('userInfo');
         if (!this.userInfo.memberId) return;
         api.scoreInfo({
           data: {

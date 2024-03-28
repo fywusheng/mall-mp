@@ -2,10 +2,10 @@
   <view class="save-money">
     <view class="header">
       <view class="header-wrapper">
-        <image class="avatar" src="" mode="scaleToFill" />
+        <image class="avatar" :src="userInfo.iconUrl" mode="scaleToFill" />
         <view class="right">
           <view class="name">你好，{{ userInfo.name }}</view>
-          <view>您已尊享商城会员服务123天</view>
+          <view>您已尊享商城会员服务12345天</view>
         </view>
       </view>
     </view>
@@ -27,7 +27,7 @@
           <view class="bottom">
             <view class="point"></view>
             <text>购物</text>
-            <view class="price">省¥584.54</view>
+            <view class="price">省¥{{ totalMoney.toFixed(2) }}</view>
           </view>
         </view>
       </view>
@@ -47,12 +47,12 @@
           />
         </view>
         <view class="product">
-          <view v-for="item in list" :key="item.id" class="product-list">
+          <view v-for="(item, index) in list" :key="item.id" class="product-list">
             <view class="timer">
               <text>{{ item.createdTime }}</text>
               <text>共 {{ item.itemList.length }} 件商品</text>
             </view>
-            <view v-for="subOrder in item.itemList" :key="subOrder.id">
+            <view v-for="(subOrder, subIndex) in item.itemList" :key="subOrder.id">
               <view class="product-info">
                 <image class="logo" :src="subOrder.imgUrl" mode="scaleToFill" />
                 <view class="right">
@@ -62,14 +62,16 @@
                     <text class="unit">¥</text>
                     <text class="price">42.2</text>
                     <image
-                      class="icon-bottom icon"
+                      :class="{ 'icon-bottom': !subOrder.showBenefit }"
+                      class="icon"
                       src="http://192.168.1.187:10088/static/songhui/services/top.png"
                       mode="scaleToFill"
+                      @click="handleChangeShowBenefit(index, subIndex)"
                     />
                   </view>
                 </view>
               </view>
-              <view class="benefit-info">
+              <view v-if="subOrder.showBenefit" class="benefit-info">
                 <view class="item">
                   <view class="desc">购物优惠</view>
                   <view class="benefit-price">
@@ -132,6 +134,12 @@
       }),
     },
     methods: {
+      handleChangeShowBenefit(index, subIndex) {
+        // console.log('index, subIndex, showBenefit: ', index, subIndex, showBenefit);
+        // console.log('showBenefit: ', showBenefit);
+        this.list[index].itemList[subIndex].showBenefit =
+          !this.list[index].itemList[subIndex].showBenefit;
+      },
       openMember() {
         uni.navigateTo({ url: '/pages/user-center/activate-member' });
       },
@@ -220,7 +228,6 @@
           memberSaveMoneyFlag: true,
           startTime: this.startTime,
           endTime: this.endTime,
-          // status: this.currentIndex == 1 ? 3 : this.pageOption[this.currentIndex]['orderStatus'],
         };
         const result = await Axios.post('/order/list', params);
         uni.hideLoading();
@@ -232,6 +239,7 @@
             if (data.storeOrderItems) {
               data.storeOrderItems.forEach((orderItemModel) => {
                 orderItemModel.items.forEach((item) => {
+                  item.showBenefit = false;
                   itemList.push(item);
                 });
               });
@@ -307,7 +315,7 @@
         .avatar {
           width: 116rpx;
           height: 116rpx;
-          background: gold;
+          // background: gold;
         }
       }
     }

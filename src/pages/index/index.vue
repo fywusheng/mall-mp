@@ -214,8 +214,6 @@
         // #endif
         // 城市信息
         city: uni.getStorageSync('city'),
-        // 用户信息
-        // userInfo: {},
         // 轮播图列表
         banners: [],
         poptype: '0',
@@ -243,26 +241,13 @@
         prodList: [],
       };
     },
-    onLoad(e) {},
     mounted() {
       uni.removeStorageSync('current_city');
       this.getLocation();
-
-      // 若存在 token 缓存, 则请求用户信息
-      // if (uni.getStorageSync('token')) {
-      //   this.handleLogin();
-      //   this.getHomePop();
-      // }
-
       this.getCateGoryList();
       this.recommend1(21);
-
       // 监听城市选择回调
       uni.$on('didSelectCity', this.handleSelectCity);
-      // 监听登录回调
-      // uni.$on('didLogin', this.handleLogin);
-      // // 监听退出登录回调
-      // uni.$on('didLogout', this.handleLogout);
     },
     computed: {
       ...mapState({
@@ -272,12 +257,6 @@
       member() {
         return this.userInfo && this.userInfo.memberStatus === '1';
       },
-    },
-    onUnload() {
-      // 取消监听登录回调
-      // uni.$off('didLogin');
-      // 取消监听退出登录回调
-      // uni.$off('didLogout');
     },
     onShow() {
       const curPages = getCurrentPages()[0];
@@ -323,16 +302,15 @@
         uni.navigateTo({
           url: '/sub-pages/index/item-list/main?dispId=' + v.id,
         });
-        // uni.navigateTo({ url: `/sub-pages/index/category/main?code=${v.code}` });
       },
       async getCateGoryList() {
         const { data, code, msg } = await Axios.post('/category/getCategoryList', { type: 1 });
         if (code === '200') {
-          if (data.length >= 8) {
+          if (data.length >= 7) {
             const temp = data.slice(0, 7);
             temp.push({
               name: '全部分类',
-              iconUrl: 'http://192.168.1.187:10088/static/home/all.png?t=1',
+              iconUrl: 'http://192.168.1.187:10088/static/home/all.png',
             });
             this.parts = temp;
           } else {
@@ -443,35 +421,6 @@
         this.city = city;
         uni.setStorageSync('city', city);
         this.requestData();
-      },
-      /**
-       * 登录回调
-       */
-      handleLogin(userInfo) {
-        if (userInfo) {
-          this.userInfo = userInfo;
-          uni.setStorageSync('userInfo', userInfo);
-        } else {
-          api.getUserInfo({
-            data: {
-              accessToken: uni.getStorageSync('token'),
-            },
-            success: (data) => {
-              this.userInfo = data;
-              uni.setStorageSync('userInfo', data);
-            },
-            fail: () => {
-              uni.removeStorageSync('token');
-              uni.removeStorageSync('userInfo');
-            },
-          });
-        }
-      },
-      /**
-       * 退出登录回调
-       */
-      handleLogout() {
-        this.userInfo = null;
       },
       /**
        * 城市点击事件

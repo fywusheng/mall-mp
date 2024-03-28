@@ -60,17 +60,19 @@
   .open-record {
     background: #ffffff;
     min-height: 100vh;
+    padding: 20rpx;
     .open-list {
       display: flex;
       align-items: center;
       justify-content: center;
       flex-direction: column;
+      margin-bottom: 20rpx;
       .list-item {
         display: flex;
         flex-direction: column;
         width: 686rpx;
         height: 300rpx;
-        padding: 32rpx 22rpx;
+        padding: 32rpx 20rpx;
         font-family: PingFangSC, PingFang SC;
         font-weight: 400;
         color: #271d1a;

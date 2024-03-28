@@ -1,6 +1,11 @@
 <style lang="scss" scoped>
   @import '~@/styles/base';
 
+  .app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
   .search-header {
     // @include middle-center-x(fixed);
     // top: 0;
@@ -253,6 +258,8 @@
 
   .shop_list {
     // position: fixed;
+    flex: 1;
+    background: #f2f2f2;
     .scroll-container {
       overflow: hidden;
     }
@@ -454,7 +461,7 @@
 </style>
 
 <template>
-  <div id="app">
+  <div class="app">
     <div class="search-header">
       <img class="icon" src="http://192.168.1.187:10088/static/images/common/icon-search.png" />
       <input
