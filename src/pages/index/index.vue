@@ -300,11 +300,11 @@
           return;
         }
         uni.navigateTo({
-          url: '/sub-pages/index/item-list/main?dispId=' + v.id,
+          url: `/sub-pages/index/item-list/main?cateId=${v.id}&level=${v.level}`,
         });
       },
       async getCateGoryList() {
-        const { data, code, msg } = await Axios.post('/category/getCategoryList', { type: 1 });
+        const { data, code, msg } = await Axios.post('/category/getCategoryList', { type: 2 });
         if (code === '200') {
           if (data.length >= 7) {
             const temp = data.slice(0, 7);
@@ -317,7 +317,7 @@
             this.parts = data;
           }
         } else {
-          this.uni.showToast(msg);
+          this.$uni.showToast(msg);
         }
       },
       // 精选商品列表

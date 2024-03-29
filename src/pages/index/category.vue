@@ -38,7 +38,7 @@
       // 请求数据
       async loadData() {
         const { data, code, msg } = await Axios.post('/category/getCategoryList', {
-          type: 1,
+          type: 2,
         });
         if (code === '200') {
           this.categoryList = data;
@@ -48,9 +48,9 @@
       },
 
       // 去列表页
-      toCategory(cate) {
+      toCategory(v) {
         uni.navigateTo({
-          url: '/sub-pages/index/item-list/main?dispId=' + cate.id,
+          url: `/sub-pages/index/item-list/main?cateId=${v.id}&level=${v.level}`,
         });
       },
 

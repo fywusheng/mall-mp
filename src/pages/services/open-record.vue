@@ -72,7 +72,7 @@
         flex-direction: column;
         width: 686rpx;
         height: 300rpx;
-        padding: 32rpx 20rpx;
+        padding: 32rpx 16rpx;
         font-family: PingFangSC, PingFang SC;
         font-weight: 400;
         color: #271d1a;

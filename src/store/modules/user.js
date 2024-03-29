@@ -80,6 +80,9 @@ export default {
       const params = {token: state.token}
       const result = await Axios.post('/member/sh/memberInformation/getMemberInfoById', params);
       if (result.code == 200) {
+        if(result.data.iconUrl===''){
+          result.data.iconUrl = 'http://192.168.1.187:10088/static/user-center/icon-user-center-default-avatar.png'
+        }
         commit('setUserInfo', result.data)
         uni.setStorageSync('userInfo', result.data)
       } else {

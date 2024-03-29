@@ -186,7 +186,7 @@
           <view class="wuliu-info">
             <text class="m-r-24">发货地</text>
             <text class="m-r-24">
-              {{ supplierDTO.actualCityName }}
+              {{ supplierDTO ? supplierDTO.actualCityName : '' }}
               <!-- {{ product.deliveryRegion }} 预计
               <template v-if="product.deliveryMinDays < product.deliveryMaxDays">
                 {{ product.deliveryMinDays }}-{{ product.deliveryMaxDays }}
@@ -272,7 +272,7 @@
         <button class="btn" v-if="storeList.length > 1" @click="watchMore">查看更多</button>
       </view>
       <view class="line"></view>
-      <view class="in-store">
+      <!-- <view class="in-store">
         <view class="left">
           <img mode="scaleToFill" class="_img" :src="product.supplierDTO.supplierStorePicUrl" />
           <view class="_right">
@@ -283,7 +283,7 @@
         <view class="right">
           <button class="btn-into" @click="goStoreDetail">进店逛逛</button>
         </view>
-      </view>
+      </view> -->
 
       <view class="product-detail">
         <view class="left-line"></view>

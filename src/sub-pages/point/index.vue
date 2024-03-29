@@ -215,7 +215,6 @@
           uni.navigateTo({ url: '/pages/user-center/my-points' });
         } else {
           uni.navigateTo({ url: '/pages/user-center/login' });
-          // reportCmPV({ title: '去登录' });
         }
       },
       handleScoreInfo() {

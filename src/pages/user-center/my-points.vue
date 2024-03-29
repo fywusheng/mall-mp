@@ -113,6 +113,7 @@
   import NavigationBars from '../../components/common/navigation-bar.vue';
   import api from '@/apis/index.js';
   import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
+  import { mapState } from 'vuex';
   export default {
     components: { NavigationBars, RealNamePop },
     data() {
@@ -153,15 +154,20 @@
       },
     },
     onLoad() {
-      this.userInfo = uni.getStorageSync('userInfo');
+      // this.userInfo = uni.getStorageSync('userInfo');
       // this.setData();
     },
     onShow() {
-      this.userInfo = uni.getStorageSync('userInfo');
-      if (this.userInfo.tel) {
+      // this.userInfo = uni.getStorageSync('userInfo');
+      if (this.userInfo.phone) {
         this.handleScoreInfo();
       }
       this.getUserTaskInfoByPage();
+    },
+    computed: {
+      ...mapState({
+        userInfo: (state) => state.user.userInfo,
+      }),
     },
     methods: {
       goShop() {
