@@ -3,7 +3,7 @@
     <view class="nearby-list" v-if="list.length > 0">
       <template v-for="(item, index) in list">
         <!-- 附近优惠 -->
-        <view
+        <!-- <view
           v-if="![4, 9, 13].includes(item.orderSource)"
           class="item"
           @click="handleOrderInfo(item)"
@@ -27,10 +27,10 @@
             </view>
           </view>
           <view class="address">{{ item.orderTime | dateFilter }}</view>
-        </view>
+        </view> -->
 
         <!-- 酒店 -->
-        <view
+        <!-- <view
           v-if="item.orderSource === 4"
           class="hotel-item"
           :key="index"
@@ -87,12 +87,12 @@
               取消预定
             </button>
           </view>
-        </view>
+        </view> -->
 
         <!-- 保险 -->
-        <view class="insurance-item" v-if="item.orderSource === 13" :key="index">
+        <!-- <view class="insurance-item" v-if="item.orderSource === 13" :key="index">
           <insurance-order-item :item="item" :key="item.id"></insurance-order-item>
-        </view>
+        </view> -->
 
         <!-- 商城 -->
         <shop-order-item
