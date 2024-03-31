@@ -739,12 +739,12 @@
     async onShow() {
       // if (this.id) this.loadData()
       this.id = this.$mp.query.id;
-      this.popUpType = this.$mp.query.popUpType;
+      // this.popUpType = this.$mp.query.popUpType;
       if (!Store.getters.isLogin) {
         await Store.dispatch('login');
       }
       await this.loadData();
-      await this.checkNeedPopUp(this.popUpType);
+      // await this.checkNeedPopUp(this.popUpType);
     },
     async onLoad(e) {
       // this.id = e.id
