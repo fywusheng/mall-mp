@@ -250,7 +250,8 @@
           numPerPage: 20,
           sceneType:
             this.items[this.currentIndex].name === '全部' ? '' : this.items[this.currentIndex].name,
-          status: this.currentIndex == 1 ? 3 : this.pageOption[this.currentIndex]['orderStatus'],
+          // status: this.currentIndex == 1 ? 3 : this.pageOption[this.currentIndex]['orderStatus'],
+          status: this.pageOption[this.currentIndex]['orderStatus'],
         };
         const result = await Axios.post('/order/list', params);
         uni.hideLoading();
