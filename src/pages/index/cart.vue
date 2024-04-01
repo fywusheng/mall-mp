@@ -666,6 +666,10 @@
           return;
         }
 
+        uni.navigateTo({
+          url: `/sub-pages/index/checkout/main?type=1&sceneType=${this.sceneType}`,
+        });
+        return;
         const skuIds = [];
         this.itemList.forEach((item) => {
           item.carts.forEach((el) => {

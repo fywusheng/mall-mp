@@ -388,10 +388,15 @@
           font-weight: 400;
           padding-top: rpx(10);
           font-size: rpx(36);
-          line-height: rpx(42);
           color: $color-grey;
-          @include ellipsis();
+          white-space: unset;
           margin-left: 16rpx;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          word-break: break-all;
         }
 
         .item-price {
@@ -578,9 +583,7 @@
               </div>
               <div class="item-price">
                 <view class="jf" v-if="item.isCreditPoints == 1">
-                  积分抵扣￥{{
-                    item.creditPoints || item.creditPoints == 0 ? item.creditPoints : ''
-                  }}
+                  积分抵扣￥{{ item.pointDiscountPoint }}
                 </view>
                 <view v-else class="_line_height"></view>
                 <!-- &yen;{{item.costPriceStr}} -->
@@ -611,9 +614,7 @@
                 </div>
                 <div class="item-price">
                   <view class="jf" v-if="item.isCreditPoints == 1">
-                    积分抵扣￥{{
-                      item.creditPoints || item.creditPoints == 0 ? item.creditPoints : ''
-                    }}
+                    积分抵扣￥{{ item.pointDiscountPoint }}
                   </view>
                   <view v-else class="_line_height"></view>
                   <!-- &yen;{{item.costPriceStr}} -->
@@ -784,7 +785,7 @@
         const params = {
           pageSize: this.pageSize,
           pageNum: this.pageNo++,
-          isCreditPoints: 0,
+          // isCreditPoints: 0,
         };
         if (this.sortType) {
           params.sortType = this.sortType;
@@ -876,6 +877,7 @@
               'price',
               'stockBlance',
               'saleState',
+              'pointDiscountPoint',
             ]);
             let availableStock = 0;
             let minMarkOffPrice = 0;
