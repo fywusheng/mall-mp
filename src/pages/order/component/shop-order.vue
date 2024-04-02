@@ -212,7 +212,8 @@
                 icon: 'none',
               });
             }, 1500);
-            this.changeStatus(this.status);
+            // 触发订单刷新事件
+            uni.$emit('reloadOrderList');
           } else {
             wx.showToast(delResult.msg || '确认失败');
           }

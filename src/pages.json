@@ -1575,11 +1575,6 @@
     "mp-alipay": {
       "scrollIndicator": "none",
       "allowsBounceVertical": "NO"
-    },
-    "mp-weixin": {
-      "usingComponents": {
-        "wxml-to-canvas": "/wxcomponents/wxml-to-canvas/index"
-      }
     }
   }
 }

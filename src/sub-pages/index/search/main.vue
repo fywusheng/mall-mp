@@ -59,15 +59,22 @@
 
       .title {
         position: relative;
-        font-size: rpx(36);
+        font-size: rpx(32);
         color: $black;
         font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
 
-        img {
-          @include middle-center-y();
-          right: rpx(30);
-          width: rpx(36);
-          height: rpx(36);
+        .del {
+          display: flex;
+          align-items: center;
+          img {
+            margin-right: 20rpx;
+            right: rpx(30);
+            width: rpx(36);
+            height: rpx(36);
+          }
         }
       }
 
@@ -82,7 +89,33 @@
           margin-right: rpx(30);
           height: rpx(68);
           line-height: rpx(68);
-          width: rpx(110);
+          // width: rpx(110);
+          padding: 0 10rpx;
+          font-size: rpx(36);
+          text-align: center;
+          background-color: #f6f6f6;
+          color: $black;
+          @include ellipsis();
+        }
+      }
+    }
+    .hot-list {
+      padding: 0 30rpx;
+      .title {
+        font-size: 32rpx;
+        font-weight: bold;
+      }
+      .list {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        .label {
+          position: relative;
+          margin-top: rpx(40);
+          margin-right: rpx(30);
+          height: rpx(68);
+          line-height: rpx(68);
+          padding: 0 10rpx;
           font-size: rpx(36);
           text-align: center;
           background-color: #f6f6f6;
@@ -109,12 +142,18 @@
         :placeholder="key"
         v-model="key"
       />
-      <div class="btn-clear" @click="cancel">取消</div>
+      <div class="btn-clear" @click="search('')">搜索</div>
     </div>
     <div class="label-list-wrap" v-if="showHistory">
       <div class="title">
-        历史搜索
-        <img src="http://192.168.1.187:10088/static/images/icon-delete.png" @click="clearHistory" />
+        最近搜索
+        <view class="del">
+          <img
+            src="http://192.168.1.187:10088/static/images/icon-delete.png"
+            @click="clearHistory"
+          />
+          <view>删除</view>
+        </view>
       </div>
       <ul class="label-list">
         <li
@@ -127,10 +166,14 @@
         </li>
       </ul>
     </div>
-    <!--<ul class="label-list mt-20">-->
-    <!--<li class="title label">热门标签</li>-->
-    <!--<li class="label" @click="search(hot)" v-for="(hot,index) in hotList" :key="index">{{hot}}</li>-->
-    <!--</ul>-->
+    <ul class="hot-list">
+      <li class="title">热搜商品</li>
+      <view class="list">
+        <li class="label" @click="search(hot)" v-for="(hot, index) in hotList" :key="index">
+          {{ hot }}
+        </li>
+      </view>
+    </ul>
   </div>
 </template>
 
@@ -142,6 +185,7 @@
         key: '搜索你想找的商品',
         historyList: uni.getStorageSync('SEARCH_HISTORY_LIST') || [],
         resultList: [],
+        hotList: ['洗衣液', '奶粉', '拖鞋', '睡衣'],
       };
     },
     loadDefaultData: true,
@@ -150,8 +194,6 @@
         return this.historyList && this.historyList.length;
       },
     },
-    components: {},
-    filters: {},
     methods: {
       cancel() {
         uni.navigateBack();

@@ -203,12 +203,12 @@
       </li>
       <li class="price">
         <div class="title">会员优惠</div>
-        <div class="price-value red">-¥{{ formateNum(settlement.discountCreditPoints) }}</div>
-      </li>
-      <li class="price" v-if="settlement.totalDiscountAmount > 0">
-        <div class="title">优惠金额</div>
         <div class="price-value red">-¥{{ formateNum(settlement.totalDiscountAmount) }}</div>
       </li>
+      <!-- <li class="price" v-if="settlement.totalDiscountAmount > 0">
+        <div class="title">优惠金额</div>
+        <div class="price-value red">-¥{{ formateNum(settlement.totalDiscountAmount) }}</div>
+      </li> -->
     </ul>
     <view class="empty"></view>
 
@@ -256,7 +256,7 @@
         // canuseList: [],
         // notuseList: [],
         usePoint: false,
-        type: null,
+        // type: null,
       };
     },
 

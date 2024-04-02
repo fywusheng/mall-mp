@@ -531,6 +531,10 @@
        * 点击上传头像
        */
       handleChooseImageClick() {
+        if (!this.userInfo) {
+          uni.navigateTo({ url: '/pages/user-center/login' });
+          return false;
+        }
         uni.chooseImage({
           sourceType: ['album', 'camera'],
           count: 1,

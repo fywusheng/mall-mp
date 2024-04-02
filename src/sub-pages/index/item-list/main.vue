@@ -383,6 +383,37 @@
           line-height: rpx(42);
         }
 
+        .coupon {
+          display: flex;
+          align-items: center;
+          height: 48rpx;
+          width: fit-content;
+          border-radius: 4rpx;
+          border: 2rpx solid #ff2600;
+          margin-left: 16rpx;
+          margin-top: 22rpx;
+          font-family: PingFangSC, PingFang SC;
+          font-weight: 400;
+          font-size: 32rpx;
+          .label {
+            width: 48rpx;
+            height: 48rpx;
+            line-height: 48rpx;
+            text-align: center;
+            background: #ff2600;
+            border-radius: 4rpx 0rpx 0rpx 4rpx;
+            border: 2rpx solid #ff2600;
+            color: #ffffff;
+          }
+          .coupon-price {
+            padding: 0 8rpx;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff2600;
+          }
+        }
+
         .item-name {
           font-family: PingFangSC-Regular, PingFang SC;
           font-weight: 400;
@@ -572,10 +603,17 @@
                   <img class="sale-out" src="http://192.168.1.187:10088/static/home/empt.png" />
                 </div>
               </div>
-              <div class="brand-name" v-if="item.brandName">
+              <!-- <div class="brand-name" v-if="item.brandName">
                 {{ item.brandName }}
-              </div>
+              </div> -->
+
               <div class="item-name">{{ item.name }}||{{ item.soldOut }}</div>
+              <!-- 优惠券 -->
+              <!-- <view class="coupon">
+                <view class="label">券</view>
+                <view class="coupon-price">¥10</view>
+              </view> -->
+
               <div class="item-price">
                 {{ member ? '会员到手价' : '到手价' }}:&yen;{{
                   member ? item.memberPrice : item.finalPrice

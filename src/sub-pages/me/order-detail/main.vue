@@ -427,7 +427,7 @@
       </div>
       <div class="cost">
         会员优惠:
-        <span class="value red">-¥{{ order.pointsPrice | formatNum }}</span>
+        <span class="value red">-¥{{ order.memberSaveMoney | formatNum }}</span>
       </div>
       <div class="cost">
         优惠券:
