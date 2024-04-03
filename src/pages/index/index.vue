@@ -142,8 +142,8 @@
           <view class="name">{{ v.name }}</view>
           <!-- <view class="jf">积分抵扣￥{{ v.creditPoints }}</view> -->
           <view class="_p">
-            ￥{{ member ? v.memberPrice : v.finalPrice }}
             <text class="fs-32 label">{{ member ? '会员到手价' : '到手价' }}</text>
+            <text>￥{{ member ? v.memberPrice : v.finalPrice }}</text>
           </view>
         </view>
       </view>

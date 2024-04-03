@@ -607,7 +607,7 @@
                 {{ item.brandName }}
               </div> -->
 
-              <div class="item-name">{{ item.name }}||{{ item.soldOut }}</div>
+              <div class="item-name">{{ item.name }}</div>
               <!-- 优惠券 -->
               <!-- <view class="coupon">
                 <view class="label">券</view>
@@ -823,7 +823,7 @@
         const params = {
           pageSize: this.pageSize,
           pageNum: this.pageNo++,
-          // isCreditPoints: 0,
+          isCreditPoints: 0,
         };
         if (this.sortType) {
           params.sortType = this.sortType;

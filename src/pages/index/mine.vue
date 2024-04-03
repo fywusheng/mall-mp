@@ -13,7 +13,7 @@
     </view>
     <view class="user-info flex-h flex-c-s">
       <view class="imgbox" @click="handleChooseImageClick">
-        <image class="avatar" mode="scaleToFill" :src="header" />
+        <image class="avatar" mode="scaleToFill" :src="userInfo ? userInfo.iconUrl : header" />
         <image
           class="photo"
           src="http://192.168.1.187:10088/static/mine/icon-photo2x.png"
@@ -567,7 +567,6 @@
                   method: 'POST',
                   success: (imgres) => {
                     const fileData = imgres.data.data;
-                    this.header = fileData.absoluteUrl;
                     this.saveUserBanner(fileData.absoluteUrl);
                   },
                 });

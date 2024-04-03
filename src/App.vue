@@ -1,7 +1,13 @@
 <script>
   import UUID from 'uuid-js';
   import wx from 'utils/wx';
+  import { mapState } from 'vuex';
   export default {
+    computed: {
+      ...mapState({
+        userInfo: (state) => state.user.userInfo,
+      }),
+    },
     async onLaunch() {
       // console.log('app created')
       // console.log('App Launch')
@@ -73,6 +79,16 @@
           title: '提示',
           content: '当前微信版本过低，部分功能无法使用，请升级到最新微信版本后重试。',
         });
+      }
+
+      // 若用户处于【登录状态】，但没有提交【用户信息】，
+      // 则用户关闭商城小程序，再次打开商城小程序，自动跳转至【用户信息完善】页面，用户已填信息保留至登录失效
+      if (this.userInfo && this.userInfo.memberId === '') {
+        setTimeout(() => {
+          uni.navigateTo({
+            url: '/pages/user-center/applicant-info',
+          });
+        }, 500);
       }
     },
   };
