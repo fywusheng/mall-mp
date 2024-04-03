@@ -108,6 +108,7 @@
         returnsTypeLabel: '',
         reasonTypeName: '',
         reasonTypeList: [],
+        reasonList: [],
         goodsStateName: '',
         goodsStates: [
           {
@@ -173,6 +174,11 @@
       },
       changeType(e) {
         const index = e.mp.detail.value;
+        if (index === '0' && this.returnsTypeLabel === '退货退款') {
+          this.reasonTypeList = this.reasonList.filter((e) => e.name === '其他');
+        } else {
+          this.reasonTypeList = this.reasonList;
+        }
         this.goodsStateName = this.goodsStates[index].name;
         this.dataForm.goodsState = this.goodsStates[index].id;
       },
@@ -291,6 +297,7 @@
             name: result.data.reasonType[key],
           });
         });
+        this.reasonList = this.reasonTypeList;
         this.dataForm.orderItemId = result.data.orderItemId;
         this.dataForm.orderId = result.data.orderId;
         this.dataForm.price = result.data.price;
