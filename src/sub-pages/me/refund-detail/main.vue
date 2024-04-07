@@ -159,12 +159,12 @@
             title: result.msg,
             icon: 'none',
           });
-          uni.reLaunch({
-            url: '/pages/order/orderList',
+          // uni.navigateTo({
+          //   url: '/pages/order/orderList',
+          // });
+          wx.navigateTo({
+            url: `../refund-detail/main?orderId=${this.orderId}&productId=${this.productId}&skuId=${this.skuId}`,
           });
-          // wx.navigateTo({
-          //   url: `../refund-detail/main?orderId=${this.orderId}&productId=${this.productId}&skuId=${this.skuId}`
-          // })
         } else {
           wx.showToast({
             title: result.msg,

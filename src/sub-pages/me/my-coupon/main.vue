@@ -102,12 +102,16 @@
             }
           }
           .coupon__name {
-            // padding-top: rpx(30);
             padding-bottom: rpx(10);
             font-size: rpx(32);
-            line-height: rpx(40);
-            @include ellipsis();
+            height: 98rpx;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
+            text-overflow: ellipsis;
             font-weight: bold;
+            word-break: break-all;
           }
           .coupon__rule {
             padding-top: rpx(10);
@@ -118,23 +122,23 @@
             font-weight: bold;
           }
           .coupon__time {
-            padding-top: rpx(44);
+            // padding-top: rpx(44);
             font-size: rpx(32);
             line-height: rpx(30);
             color: #999;
           }
         }
         .coupon__description {
+          margin-top: 24rpx;
           display: flex;
           align-items: center;
-          padding: rpx(20) rpx(20) rpx(20);
           background-color: #fff;
-          color: #999;
-          font-size: rpx(25);
+          color: #333333;
+          font-size: rpx(32);
           image {
             margin-left: rpx(10);
-            width: rpx(26);
-            height: rpx(26);
+            width: rpx(30);
+            height: rpx(30);
           }
         }
         .coupon__description-content {
@@ -190,23 +194,24 @@
           <div class="coupon-body">
             <div class="money">
               <span class="unit">¥</span>
-
               <span v-if="coupon.type == 0">{{ coupon.denominationStr }}</span>
               <span v-else-if="coupon.type == 1">{{ coupon.denominationStr }}折</span>
-              <div class="desc">满{{ coupon.thresholdValue }}可用</div>
+              <div v-if="coupon.checkThreshold == 0" class="desc">无门槛</div>
+              <div v-else-if="coupon.checkThreshold == 1" class="desc">
+                满{{ coupon.thresholdValue }}元可用
+              </div>
             </div>
             <div class="coupon__name">{{ coupon.name }}</div>
-            <div class="coupon__rule">{{ coupon.description }}</div>
             <div class="coupon__time">{{ coupon.beginTime }} 至 {{ coupon.endTime }}</div>
+            <div class="coupon__description" @click="changeDesc(coupon)">
+              使用规则
+              <image
+                class="icon-right"
+                mode="scaleToFill"
+                src="http://192.168.1.187:10088/static/images/checkout/right.png"
+              />
+            </div>
           </div>
-          <!-- <div class="coupon__description" @click="changeDesc(coupon)">
-            使用描述
-            <img v-if="coupon.showDesc" src="/static/images/me/up.png" />
-            <img v-else src="/static/images/me/down.png" />
-          </div>
-          <div class="coupon__description-content" v-if="coupon.showDesc">
-            {{ coupon.description }}
-          </div> -->
         </li>
       </ul>
       <div class="empty-wrap" v-if="status === 0 && !couponList1.length">
@@ -222,21 +227,23 @@
             <div class="money">
               <span class="unit">¥</span>
               <span v-if="coupon.type == 0">{{ coupon.denominationStr }}</span>
-              <span v-else-if="coupon.type == 1">{{ coupon.denominationStr }} 折</span>
-              <div class="desc">满{{ coupon.thresholdValue }}可用</div>
+              <span v-else-if="coupon.type == 1">{{ coupon.denominationStr }}折</span>
+              <div v-if="coupon.checkThreshold == 0" class="desc">无门槛</div>
+              <div v-else-if="coupon.checkThreshold == 1" class="desc">
+                满{{ coupon.thresholdValue }}元可用
+              </div>
             </div>
             <div class="coupon__name">{{ coupon.name }}</div>
-            <div class="coupon__rule">{{ coupon.description }}</div>
             <div class="coupon__time">{{ coupon.beginTime }} 至 {{ coupon.endTime }}</div>
+            <div class="coupon__description" @click="changeDesc(coupon)">
+              使用规则
+              <image
+                class="icon-right"
+                mode="scaleToFill"
+                src="http://192.168.1.187:10088/static/images/checkout/right.png"
+              />
+            </div>
           </div>
-          <!-- <div class="coupon__description" @click="changeDesc(coupon)">
-            规则描述
-            <img v-if="coupon.showDesc" src="/static/images/me/up.png" />
-            <img v-else src="/static/images/me/down.png" />
-          </div>
-          <div class="coupon__description-content" v-if="coupon.showDesc">
-            {{ coupon.description }}
-          </div> -->
         </li>
       </ul>
       <div class="empty-wrap" v-if="status === 1 && !couponList2.length">
@@ -252,20 +259,22 @@
               <span class="unit">¥</span>
               <span v-if="coupon.type == 0">{{ coupon.denominationStr }}</span>
               <span v-else-if="coupon.type == 1">{{ coupon.denominationStr }}折</span>
-              <div class="desc">满{{ coupon.thresholdValue }}可用</div>
+              <div v-if="coupon.checkThreshold == 0" class="desc">无门槛</div>
+              <div v-else-if="coupon.checkThreshold == 1" class="desc">
+                满{{ coupon.thresholdValue }}元可用
+              </div>
             </div>
             <div class="coupon__name">{{ coupon.name }}</div>
-            <div class="coupon__rule">{{ coupon.description }}</div>
             <div class="coupon__time">{{ coupon.beginTime }} 至 {{ coupon.endTime }}</div>
+            <div class="coupon__description" @click="changeDesc(coupon)">
+              使用规则
+              <image
+                class="icon-right"
+                mode="scaleToFill"
+                src="http://192.168.1.187:10088/static/images/checkout/right.png"
+              />
+            </div>
           </div>
-          <!-- <div class="coupon__description" @click="changeDesc(coupon)">
-            使用描述
-            <img v-if="coupon.showDesc" src="/static/images/me/up.png" />
-            <img v-else src="/static/images/me/down.png" />
-          </div>
-          <div class="coupon__description-content" v-if="coupon.showDesc">
-            {{ coupon.description }}
-          </div> -->
         </li>
       </ul>
       <div class="empty-wrap" v-if="status === 2 && !couponList3.length">
@@ -273,15 +282,17 @@
         <div class="desc">暂无已过期的优惠券</div>
       </div>
     </template>
+    <rule-model ref="ruleModel"></rule-model>
   </div>
 </template>
 
 <script>
   import wx from 'utils/wx';
-  // import Image from '@/sub-pages/index/components/image.vue'
+  import RuleModel from './components/rule-model.vue';
 
   export default {
     name: 'COUPON_LIST',
+    components: { RuleModel },
     data() {
       return {
         status: 0,
@@ -305,13 +316,12 @@
         });
       },
     },
-    // components: { Image },
     onLoad(e) {
       this.status = Number(e.status) || 0;
     },
     methods: {
       changeDesc(data) {
-        data.showDesc = !data.showDesc;
+        this.$refs.ruleModel.open(data.description);
       },
       changeStatus(index) {
         this.status = index;

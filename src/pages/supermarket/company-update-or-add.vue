@@ -185,19 +185,19 @@
       <view class="receive box">
         <view class="item flex-h flex-c-b">
           <view class="label">发票内容</view>
-          <image
+          <!-- <image
             class="icon-tips"
             mode="scaleToFill"
             src="http://192.168.1.187:10088/static/songhui/supermarket/icon-tips.png"
-          />
+          /> -->
         </view>
         <view class="item flex-h flex-c-b">
           <view class="label">会员服务</view>
-          <image
+          <!-- <image
             class="icon-right"
             mode="scaleToFill"
             src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png"
-          />
+          /> -->
         </view>
       </view>
     </view>
