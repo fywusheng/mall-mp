@@ -589,7 +589,7 @@
     </ul>
 
     <view v-if="itemList.length || loading" class="shop_list">
-      <scroll-view scroll-y class="item-list-wrap" @scrolltolower="loadData" :lower-threshold="400">
+      <scroll-view scroll-y class="item-list-wrap" :lower-threshold="400">
         <ul class="item-list">
           <template v-if="listType === 0">
             <li
@@ -603,16 +603,12 @@
                   <img class="sale-out" src="http://192.168.1.187:10088/static/home/empt.png" />
                 </div>
               </div>
-              <!-- <div class="brand-name" v-if="item.brandName">
-                {{ item.brandName }}
-              </div> -->
-
               <div class="item-name">{{ item.name }}</div>
               <!-- 优惠券 -->
-              <!-- <view class="coupon">
+              <view v-if="item.denomination" class="coupon">
                 <view class="label">券</view>
-                <view class="coupon-price">¥10</view>
-              </view> -->
+                <view class="coupon-price">¥{{ item.denomination }}</view>
+              </view>
 
               <div class="item-price">
                 {{ member ? '会员到手价' : '到手价' }}:&yen;{{
@@ -650,12 +646,16 @@
                     member ? item.memberPrice : item.finalPrice
                   }}
                 </div>
+                <!-- 优惠券 -->
+                <view v-if="item.denomination" class="coupon">
+                  <view class="label">券</view>
+                  <view class="coupon-price">¥{{ item.denomination }}</view>
+                </view>
                 <div class="item-price">
                   <view class="jf" v-if="item.isCreditPoints == 1">
                     积分抵扣￥{{ item.pointDiscountPoint }}
                   </view>
                   <view v-else class="_line_height"></view>
-                  <!-- &yen;{{item.costPriceStr}} -->
                 </div>
               </view>
             </li>
@@ -790,9 +790,12 @@
         this.pageNo = 1;
         this.itemList = [];
         this.disabled = false;
-        this.loadData();
+        this.searchData();
       },
       changePrice(priceRange) {
+        this.priceList.forEach((e) => {
+          e.check = false;
+        });
         priceRange.check = !priceRange.check;
         this.$set(this.priceList, priceRange.id, priceRange);
       },
@@ -1020,9 +1023,152 @@
           this.empty = true;
         }
       },
+      async searchData() {
+        if (this.disabled) {
+          return false;
+        }
+        const params = {
+          pageSize: this.pageSize,
+          pageNum: this.pageNo++,
+          isCreditPoints: 0,
+        };
+        if (this.sortType) {
+          params.sortType = this.sortType;
+        }
+        if (this.brandId) {
+          params.brandIds = this.brandId.join(',');
+        }
+        if (this.planId) {
+          params.planId = this.planId;
+        }
+        if (this.dispId) {
+          params.categoryCodes = this.dispId;
+        }
+        if (this.level) {
+          const s = ['firstCategoryId', 'twoCategoryId', 'threeCategoryId'];
+          params[s[this.level - 1]] = this.cateId;
+        }
+        if (this.key) {
+          params.name = this.key;
+        }
+        const attrList = [];
+        this.attrList.forEach((attr) => {
+          attr.dataList.forEach((condition) => {
+            if (condition.check) {
+              attrList.push(condition.value);
+            }
+          });
+        });
+        if (attrList.length) {
+          params.attrValIds = attrList.join(',');
+        }
+        const dispIds = [];
+        this.categoryList.forEach((cate) => {
+          if (cate.check) {
+            dispIds.push(cate.id);
+          }
+        });
+        if (dispIds.length) {
+          params.categoryCodes = dispIds.join(',');
+        }
+        const brandIds = [];
+        this.brandList.forEach((brand) => {
+          if (brand.check) {
+            brandIds.push(brand.brandId);
+          }
+        });
+        if (brandIds.length) {
+          params.brandIds = brandIds.join(',');
+        }
+        const priceIds = [];
+        this.priceList.forEach((price) => {
+          if (price.check) {
+            priceIds.push(price.name);
+          }
+        });
+        if (priceIds.length) {
+          params.priceRange = priceIds.join(',');
+        }
+        const targetAudiences = [];
+        this.targetAudienceList.forEach((target) => {
+          if (target.check) {
+            targetAudiences.push(target.name);
+          }
+        });
+        if (targetAudiences.length) {
+          params.targetAudience = targetAudiences.join(',');
+        }
+        this.disabled = true;
+        uni.showLoading();
+        // console.log("params: " + JSON.stringify(params))
+        let searchResult = await Axios.post('/product/getProductSearchList', {
+          ...Object.assign(params, this.searchParams),
+        });
+        // console.log('searchResult: ', searchResult);
+
+        searchResult = searchResult.data;
+        uni.hideLoading();
+        this.loading = false;
+        if (searchResult.esProducts) {
+          this.disabled = searchResult.pageNum >= searchResult.totalPage;
+          const list = [];
+          searchResult.esProducts.forEach((data) => {
+            const tempData = _.pick(data, [
+              'id',
+              'skuList',
+              'mainImgUrl',
+              'brandName',
+              'name',
+              'price',
+              'stockBlance',
+              'saleState',
+              'pointDiscountPoint',
+            ]);
+            let availableStock = 0;
+            let minMarkOffPrice = 0;
+            let maxMarkOffPrice = 0;
+            let minCostPrice = 0;
+            let maxCostPrice = 0;
+            tempData.skuList &&
+              tempData.skuList.forEach((sku) => {
+                availableStock += sku.availableStock;
+                if (minMarkOffPrice === 0 || minMarkOffPrice > sku.markOffPrice) {
+                  minMarkOffPrice = sku.markOffPrice;
+                }
+                if (maxMarkOffPrice === 0 || maxMarkOffPrice < sku.markOffPrice) {
+                  maxMarkOffPrice = sku.markOffPrice;
+                }
+                if (minCostPrice === 0 || minCostPrice > sku.sellingPrice) {
+                  minCostPrice = sku.sellingPrice;
+                }
+                if (maxCostPrice === 0 || maxCostPrice < sku.sellingPrice) {
+                  maxCostPrice = sku.sellingPrice;
+                }
+              });
+            if (minMarkOffPrice !== maxMarkOffPrice) {
+              tempData.markOffPriceStr = `${minMarkOffPrice}-${maxMarkOffPrice}`;
+            } else {
+              tempData.markOffPriceStr = minMarkOffPrice;
+            }
+            if (minCostPrice !== maxCostPrice) {
+              tempData.costPriceStr = `${minCostPrice}-${maxCostPrice}`;
+            } else {
+              tempData.costPriceStr = minCostPrice;
+            }
+            tempData.availableStock = availableStock;
+            tempData.proPictDir = XIU.getImgFormat(tempData.mainImgUrl, '/resize,w_750');
+            Object.assign(tempData, data);
+            list.push(tempData);
+          });
+          this.itemList = this.itemList.concat(list);
+          this.empty = !this.itemList;
+        } else {
+          this.empty = true;
+        }
+      },
     },
     onReachBottom() {
-      this.loadData();
+      this.searchData();
     },
     onPageScroll(e) {
       // this.$refs.toTop.show(e.scrollTop > App.systemInfo.screenHeight);

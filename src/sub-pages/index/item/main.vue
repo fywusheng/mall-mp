@@ -735,6 +735,10 @@
       console.info('query:', this);
       this.productId = this.$scope.options.id;
       this.sceneType = this.$scope.options.sceneType;
+      if (this.userInfo && this.userInfo.memberId === '') {
+        uni.navigateTo({ url: '/pages/user-center/applicant-info' });
+        return false;
+      }
       this.loadData();
     },
   };
@@ -748,7 +752,7 @@
 
   .page-item {
     overflow-y: auto;
-    padding-bottom: rpx(150);
+    padding-bottom: rpx(170);
     background: #f2f2f2;
     position: relative;
 

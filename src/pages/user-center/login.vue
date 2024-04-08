@@ -208,6 +208,7 @@
       },
       reduceFocusHandle() {
         //  this.fouceTime = this.fouceTime - 1;
+        return;
 
         if (this.params.account.length !== 11) return;
         api.registerVerify({

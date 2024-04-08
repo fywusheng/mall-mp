@@ -9,8 +9,8 @@
             class="img"
             mode="scaleToFill"
             :src="
-              userInfo.userIcon
-                ? userInfo.userIcon
+              userInfo
+                ? userInfo.iconUrl
                 : 'http://192.168.1.187:10088/static/user-center/icon-user-center-default-avatar.png'
             "
           />

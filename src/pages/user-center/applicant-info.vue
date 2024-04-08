@@ -281,6 +281,8 @@
             this.$store.dispatch('getUserInfo');
             if (this.soure !== 'mine') {
               uni.navigateTo({ url: '/pages/user-center/register-userInfo-result' });
+            } else {
+              uni.navigateBack();
             }
           } else {
             this.$uni.showToast(result.msg || result.data);
