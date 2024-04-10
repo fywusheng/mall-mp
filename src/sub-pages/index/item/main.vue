@@ -54,6 +54,7 @@
                   class="member-price-icon"
                   src="http://192.168.1.187:10088/static/songhui/sub-item/member-price.png"
                   mode="scaleToFill"
+                  @click="openMember"
                 />
               </template>
             </template>
@@ -420,6 +421,9 @@
       },
     },
     methods: {
+      openMember() {
+        uni.navigateTo({ url: '/pages/user-center/activate-member' });
+      },
       handleBannerChange(e) {
         this.currentIndex = e.detail.current + 1;
       },
@@ -600,6 +604,10 @@
           });
           return false;
         }
+        if (this.userInfo && this.userInfo.storeNo === '') {
+          uni.navigateTo({ url: '/pages/user-center/applicant-info' });
+          return false;
+        }
         this.$refs.selectSku.show(true, 1, this.sceneType);
         // reportCmPV({ title: "加入购物车" });
       },
@@ -609,6 +617,10 @@
           uni.navigateTo({
             url: '/pages/user-center/login',
           });
+          return false;
+        }
+        if (this.userInfo && this.userInfo.storeNo === '') {
+          uni.navigateTo({ url: '/pages/user-center/applicant-info' });
           return false;
         }
         this.$refs.selectSku.show(true, 2, this.sceneType);
@@ -732,13 +744,8 @@
       this.$refs.toTop.show(e.scrollTop > App.systemInfo.screenHeight);
     },
     async onShow() {
-      console.info('query:', this);
       this.productId = this.$scope.options.id;
       this.sceneType = this.$scope.options.sceneType;
-      if (this.userInfo && this.userInfo.memberId === '') {
-        uni.navigateTo({ url: '/pages/user-center/applicant-info' });
-        return false;
-      }
       this.loadData();
     },
   };

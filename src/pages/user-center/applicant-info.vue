@@ -255,8 +255,22 @@
           this.params.address = result.data.list[0].address;
           this.params.districtArea = result.data.list[0].districtAreaStr;
         } else {
-          this.params.districtArea = '';
-          this.params.address = '';
+          const res = await Axios.post('/srm/sh/stores/listByPageNo', {
+            queryObject: { storeType: 2 },
+          });
+          if (res.code == 200 && res.data.list.length) {
+            if (e.target.value !== res.data.list[0].storeNo) {
+              this.$uni.showToast('输入有误，请重新输入');
+              this.params.storeNo = '';
+              this.params.address = '';
+              this.params.districtArea = '';
+            }
+          } else {
+            this.$uni.showToast('输入有误，请重新输入');
+            this.params.storeNo = '';
+            this.params.address = '';
+            this.params.districtArea = '';
+          }
         }
       },
       /**

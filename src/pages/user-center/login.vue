@@ -99,7 +99,6 @@
         <!-- <text v-if="loginType=== 'password'">, 未注册的手机号将自动创建国家老龄平台账号</text> -->
       </view>
     </view>
-    <action-sheet ref="actionSheet" :items="actionSheetItems" @click="handleActionSheetItemClick" />
     <!--人脸识别未通过提示 -->
     <modal
       ref="tipModal"
@@ -124,14 +123,13 @@
 </template>
 
 <script>
-  import { ActionSheet } from '@/components/common/action-sheet';
   import Modal from '@/components/common/modal.vue';
   import api from '@/apis/index.js';
   import { sendSMSCode } from '@/api/modules/sms.js';
   import sha256 from 'crypto-js/sha256';
   import { validatePhoneNumber, validateIDCardNumber } from '@/utils/validation.js';
   export default {
-    components: { ActionSheet, Modal },
+    components: { Modal },
     data() {
       return {
         focus: false,
@@ -142,8 +140,6 @@
           checked: 'http://192.168.1.187:10088/static/pay/icon-radio-checked.png',
           noChecked: 'http://192.168.1.187:10088/static/pay/icon-radio-default.png',
         },
-        // 登录方式选项
-        loginTypes: [],
         // 是否明文显示密码
         showsPasswordText: false,
         // 发送验证码倒计时
@@ -156,8 +152,6 @@
         },
         // 输入框是否聚焦(0不聚焦，大于0聚焦)
         fouceTime: 0,
-        // 弹窗选项
-        actionSheetItems: [],
         goUrl: '',
       };
     },
@@ -297,23 +291,16 @@
        * 切换登录方式点击事件
        */
       handleSwitchTypeClick() {
-        this.loginTypes = [];
-        if (this.loginType !== 'smsCode') {
-          this.loginTypes.push({ value: 'smsCode', text: '验证码登录' });
-        }
-        if (this.loginType !== 'password') {
-          this.loginTypes.push({ value: 'password', text: '密码登录' });
-        }
-
-        this.actionSheetItems = this.loginTypes.map((item) => item.text);
-        this.$refs.actionSheet.open();
-      },
-      /**
-       * action sheet 弹窗点击回调
-       */
-      handleActionSheetItemClick(index) {
-        this.loginType = this.loginTypes[index].value;
-        this.checked = false;
+        uni.showActionSheet({
+          itemList: this.loginType !== 'smsCode' ? ['验证码登录'] : ['密码登录'],
+          success: (res) => {
+            this.loginType = this.loginType !== 'smsCode' ? 'smsCode' : 'password';
+            this.checked = false;
+          },
+          fail: function (res) {
+            console.log(res.errMsg);
+          },
+        });
       },
       /**
        * 忘记密码点击事件
@@ -480,6 +467,7 @@
     .image {
       // @include size(354, 262);
       width: 328rpx;
+      height: 328rpx;
       margin: 32rpx auto;
       display: block;
       margin-bottom: 32rpx;

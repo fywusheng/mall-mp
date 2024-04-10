@@ -421,7 +421,7 @@
           font-size: rpx(36);
           color: $color-grey;
           white-space: unset;
-          margin-left: 16rpx;
+          margin: 0 16rpx;
           display: -webkit-box;
           -webkit-box-orient: vertical;
           -webkit-line-clamp: 2;
@@ -826,7 +826,7 @@
         const params = {
           pageSize: this.pageSize,
           pageNum: this.pageNo++,
-          isCreditPoints: 0,
+          // isCreditPoints: 0,
         };
         if (this.sortType) {
           params.sortType = this.sortType;
@@ -1030,7 +1030,7 @@
         const params = {
           pageSize: this.pageSize,
           pageNum: this.pageNo++,
-          isCreditPoints: 0,
+          // isCreditPoints: 0,
         };
         if (this.sortType) {
           params.sortType = this.sortType;

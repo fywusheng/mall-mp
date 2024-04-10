@@ -44,7 +44,7 @@
             </div>
             <div class="number">x{{ item.quantity }}</div>
           </li>
-          <div class="point-wrap">
+          <div v-if="item.isCreditPoints === 1" class="point-wrap">
             <view class="use-point">
               <span class="_span">是否积分抵扣</span>
               <switch
@@ -201,7 +201,7 @@
         <div class="title">运费</div>
         <div class="price-value red">+¥{{ formateNum(settlement.totalFreightAmount) }}</div>
       </li>
-      <li class="price">
+      <li v-if="member" class="price">
         <div class="title">会员优惠</div>
         <div class="price-value red">-¥{{ formateNum(settlement.totalDiscountAmount) }}</div>
       </li>
@@ -243,6 +243,7 @@
 </template>
 
 <script>
+  import { mapState } from 'vuex';
   export default {
     name: 'CHECKOUT',
     data() {
@@ -252,7 +253,7 @@
         loading: true,
         isInvoice: false,
         userPoint: false,
-        userInfo: null,
+        // userInfo: null,
         // canuseList: [],
         // notuseList: [],
         usePoint: false,
@@ -261,6 +262,13 @@
     },
 
     computed: {
+      ...mapState({
+        userInfo: (state) => state.user.userInfo,
+      }),
+      // 是否会员
+      member() {
+        return this.userInfo && this.userInfo.memberStatus === '1';
+      },
       addressInfo() {
         const settlement = this.settlement;
         return (

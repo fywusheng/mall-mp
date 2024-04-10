@@ -31,7 +31,7 @@
       </view> -->
       <view class="progress-bar mt-16">
         <view class="total br-6" />
-        <view class="current br-6" :style="{ width: progressBarWidth + 'rpx' }" />
+        <view class="current br-6 animated" :style="{ width: progressBarWidth + 'rpx' }" />
       </view>
       <view class="flex-h flex-c-b mt-16">
         <text class="fs-36 c-lightgrey">0</text>
@@ -129,7 +129,7 @@
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
         // #endif
         // // 当前可用积分进度条宽度
-        // progressBarWidth: 234,
+        progressBarWidth: 0,
         // 选中的下标
         selectedIndex: 0,
         // 赚积分任务列表
@@ -144,14 +144,15 @@
       indicatorClass() {
         return ['indicator--left', 'indicator--right'][this.selectedIndex];
       },
-      progressBarWidth() {
-        if (this.score > 1000) {
-          return 636;
-        }
+      // progressBarWidth() {
+      //   console.log('12312');
+      //   if (this.score > 1000) {
+      //     return 636;
+      //   }
 
-        // 当前可用积分进度条宽度
-        return Math.ceil((this.score / 1000) * 636);
-      },
+      //   // 当前可用积分进度条宽度
+      //   return Math.ceil((this.score / 1000) * 636);
+      // },
     },
     onLoad() {
       // this.userInfo = uni.getStorageSync('userInfo');
@@ -269,6 +270,11 @@
             console.log('用户积分：', res);
             this.score = res.score;
             this.fixScore = res.fixScore;
+            // 当前可用积分进度条宽度
+            if (this.score > 1000) {
+              this.progressBarWidth = 636;
+            }
+            this.progressBarWidth = Math.ceil((this.score / 1000) * 636);
           },
         });
       },
