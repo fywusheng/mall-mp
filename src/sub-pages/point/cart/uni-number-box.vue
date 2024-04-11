@@ -134,7 +134,8 @@
         const scale = this._getDecimalScale();
         this.inputValue = value.toFixed(String(scale).length - 1);
         this.$emit('change', +this.inputValue);
-        this.$emit('onChange', { type, value: +this.inputValue });
+        this.$emit('onChange', { type: '', value: +this.inputValue });
+        // this.$emit('onChange', { type, value: +this.inputValue });
         this.$emit('input', +this.inputValue);
       },
       _onFocus(event) {

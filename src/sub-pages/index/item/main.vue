@@ -142,7 +142,7 @@
               </view>
               <view v-if="product.couponAmount" class="item_p">
                 <view class="g">优惠券</view>
-                <view class="g_n">￥{{ product.couponAmount ? product.discountAmount : 0 }}</view>
+                <view class="g_n">￥{{ product.couponAmount ? product.couponAmount : 0 }}</view>
               </view>
             </view>
           </view>
@@ -177,7 +177,7 @@
               </view>
               <view v-if="product.couponAmount" class="item_p">
                 <view class="g">优惠券</view>
-                <view class="g_n">￥{{ product.couponAmount ? product.discountAmount : 0 }}</view>
+                <view class="g_n">￥{{ product.couponAmount ? product.couponAmount : 0 }}</view>
               </view>
             </view>
           </view>

@@ -286,7 +286,7 @@
       align-items: center;
       overflow: scroll;
       .status-label {
-        width: 140rpx;
+        width: 184rpx;
         height: 80rpx;
         color: #333333;
         background: #eeeeee;

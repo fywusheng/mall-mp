@@ -10,6 +10,7 @@
           :adjust-position="false"
           placeholder-class="placeholder"
           v-model.trim="params.name"
+          :disabled="userInfo.crtfStas"
         />
       </view>
       <view class="row flex-h flex-c-s p-20-0">
@@ -22,6 +23,7 @@
           placeholder="请输入正确的身份证号"
           placeholder-class="placeholder"
           v-model.trim="params.idCard"
+          :disabled="userInfo.crtfStas"
         />
       </view>
       <view class="row flex-h flex-c-s p-20-0">

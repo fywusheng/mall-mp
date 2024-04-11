@@ -335,7 +335,7 @@
           }
           .right {
             width: 402rpx;
-            height: 228rpx;
+            // height: 228rpx;
             .item-name {
               white-space: pre-wrap;
               width: 402rpx;

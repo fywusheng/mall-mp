@@ -240,7 +240,7 @@
       justify-content: space-around;
       align-items: center;
       .status-label {
-        width: 140rpx;
+        width: 184rpx;
         height: 80rpx;
         color: #333333;
         background: #eeeeee;
