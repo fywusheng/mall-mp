@@ -84,7 +84,12 @@ export default {
           result.data.iconUrl = 'http://192.168.1.187:10088/static/user-center/icon-user-center-default-avatar.png'
         }
         // 已实名用户
-        result.data.crtfStas = !!result.data.idCard
+        if(result.data.idCard === '' ||result.data.idCard === ' '){
+          result.data.crtfStas = false
+        }else{
+          result.data.crtfStas  = true
+        }
+        
         commit('setUserInfo', result.data)
         uni.setStorageSync('userInfo', result.data)
       } else {

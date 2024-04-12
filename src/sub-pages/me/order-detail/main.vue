@@ -372,10 +372,7 @@
           <div class="item-name">{{ item.productName }}</div>
           <div class="sku-name">
             {{ item.skuName }}
-            <div
-              class="item-state"
-              v-if="order.orderStatus == 30 || order.orderStatus == 40 || order.orderStatus == 50"
-            >
+            <div class="item-state" v-if="[30, 40, 50, 110, 120].includes(order.orderStatus)">
               <button
                 v-if="item.itemStatus == 1 && !order.hzhH5"
                 type="button"

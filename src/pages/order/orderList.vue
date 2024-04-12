@@ -31,32 +31,37 @@
         >
           <!-- 全部订单 -->
           <all-order v-if="currentIndex === 0" :list="tablist[currentIndex]" />
+          <!-- 商品购买 -->
+          <shop-order
+            v-if="orderSource === '8'"
+            :list="tablist[currentIndex]"
+            @resetOptions="resetOptions"
+          />
+          <!-- 积分兑换 -->
+          <shop-order
+            v-if="orderSource === '9'"
+            :list="tablist[currentIndex]"
+            @resetOptions="resetOptions"
+          />
+
           <!-- 其余订单 -->
 
           <!-- 目前只显示附近优惠 -->
           <!-- <my-order v-if="[1].includes(currentIndex)" :list="tablist[currentIndex]" /> -->
           <!-- <my-order v-if="[1,2,3,4].includes(currentIndex)" :list="tablist[currentIndex]" /> -->
           <!-- 酒店订单 -->
-          <hotel-order
+          <!-- <hotel-order
             v-if="currentIndex === 5"
             :list="tablist[currentIndex]"
             @resetOptions="resetOptions"
-          />
+          /> -->
 
           <!-- 保险订单 -->
-          <insurance-order
+          <!-- <insurance-order
             v-if="orderSource === '3'"
             :list="tablist[currentIndex]"
             @resetOptions="resetOptions"
-          />
-
-          <!-- 商城订单 -->
-          <shop-order
-            :key="orderSource"
-            v-if="orderSource === '8' || orderSource === '9'"
-            :list="tablist[currentIndex]"
-            @resetOptions="resetOptions"
-          />
+          /> -->
         </hr-pull-load>
       </view>
     </view>
@@ -85,9 +90,6 @@
         bottomTips: '',
         tabName: '',
         loading: 0,
-        userinfor: {},
-        navHeight: uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        scrollToLeft: 0,
         currentIndex: 0,
         orderSource: '',
         items: [],

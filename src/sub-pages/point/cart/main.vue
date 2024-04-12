@@ -446,11 +446,11 @@
           this.loadData();
           // this.itemList[index].carts[subIndex].num = num
         } else {
-          if (type === 'plus') {
-            num--;
-          } else {
-            num++;
-          }
+          // if (type === 'plus') {
+          //   num--;
+          // } else {
+          //   num++;
+          // }
           this.itemList[index].carts[subIndex].num = num;
           this.$uni.showToast(result.msg || result.data);
         }

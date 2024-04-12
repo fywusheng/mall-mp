@@ -96,7 +96,6 @@
       </view>
     </view>
 
-    <!-- <view class="d-line"></view> -->
     <!-- 积分兑换 -->
     <view class="benefit ml-32 mr-32 mt-24 mb-48 br-16" @click="goPath(0)">
       <view class="benefit-top title-top flex-h flex-c-b" @click="goPath(0)">
@@ -119,7 +118,6 @@
         </view>
       </view>
     </view>
-    <!-- <view class="d-line"></view> -->
     <!-- 商品推荐 -->
     <view class="benefit ml-32 mr-32 mt-24 br-16">
       <view class="benefit-top title-top flex-h flex-c-b">
@@ -173,14 +171,14 @@
       </view> -->
     </view>
 
-    <service-pop
+    <!-- <service-pop
       ref="popup"
       :modImg="modal.modImg"
       :cancelText="modal.cancelText"
       :confirmText="modal.confirmText"
     />
     <scan-or-input-popup ref="cardPopup" :showImg="false" />
-    <real-name-pop ref="realpop" @succFlag="succFlag" />
+    <real-name-pop ref="realpop" @succFlag="succFlag" /> -->
   </view>
 </template>
 
