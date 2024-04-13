@@ -96,22 +96,25 @@
         </div>
       </li>
     </ul>
-    <div
-      class="btn-submit"
-      v-if="
-        dataForm.returnsStatus != -3 && dataForm.returnsStatus < 1 && dataForm.expressStatus == 0
-      "
-      @click="cancel"
-    >
-      取消
-    </div>
-    <div
-      class="btn-submit"
-      v-if="dataForm.returnsStatus == 0 && dataForm.expressStatus == 0"
-      @click="save"
-    >
-      提交
-    </div>
+    <view class="footer">
+      <view class="home-btn" @click="goHome">返回首页</view>
+      <div
+        class="btn-submit"
+        v-if="
+          dataForm.returnsStatus != -3 && dataForm.returnsStatus < 1 && dataForm.expressStatus == 0
+        "
+        @click="cancel"
+      >
+        取消
+      </div>
+      <div
+        class="btn-submit"
+        v-if="dataForm.returnsStatus == 0 && dataForm.expressStatus == 0"
+        @click="save"
+      >
+        提交
+      </div>
+    </view>
   </div>
 </template>
 
@@ -150,6 +153,9 @@
     },
     components: {},
     methods: {
+      goHome() {
+        uni.switchTab({ url: '/pages/index/index' });
+      },
       async cancel() {
         wx.showLoading({ title: '正在取消...', mask: true });
         const result = await Axios.post('/aftersale/returns/cancel', this.dataForm);
@@ -438,19 +444,31 @@
       }
     }
 
-    .btn-submit {
+    .footer {
       position: fixed;
       left: 0;
       bottom: 0;
       width: 100%;
-      height: calc(env(safe-area-inset-bottom) + 100rpx);
-      line-height: rpx(100);
-      text-align: center;
-      font-size: rpx(40);
-      background: linear-gradient(135deg, #ff8800 0%, #ff5000 100%);
-      color: #fff;
-      z-index: 1000;
-      padding-bottom: env(safe-area-inset-bottom);
+      .btn-submit {
+        height: 100rpx;
+        line-height: rpx(100);
+        text-align: center;
+        font-size: rpx(40);
+        background: linear-gradient(135deg, #ff8800 0%, #ff5000 100%);
+        color: #fff;
+        z-index: 1000;
+        margin-top: 24rpx;
+      }
+      .home-btn {
+        height: 100rpx;
+        line-height: rpx(100);
+        text-align: center;
+        font-size: rpx(40);
+        background: #ffffff;
+        color: #333333;
+        z-index: 1000;
+        margin-top: 24rpx;
+      }
     }
   }
 </style>
