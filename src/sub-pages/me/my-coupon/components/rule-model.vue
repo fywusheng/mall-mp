@@ -3,7 +3,7 @@
     <uni-popup type="center" ref="popupM">
       <view class="notice">
         <view class="title">使用规则</view>
-        <view class="_t">{{ desc }}</view>
+        <view class="cont">{{ desc }}</view>
         <view class="spaceLine"></view>
         <view class="know" @click="close">知道了</view>
       </view>
@@ -45,6 +45,17 @@
       line-height: 54rpx;
       text-align: center;
       font-style: normal;
+    }
+    .cont {
+      word-break: break-all;
+      font-family: PingFangSC, PingFang SC;
+      font-weight: 400;
+      font-size: 36rpx;
+      color: #333333;
+      line-height: 54rpx;
+      text-align: justify;
+      font-style: normal;
+      padding: 20rpx 64rpx;
     }
     ._t {
       font-family: PingFangSC, PingFang SC;

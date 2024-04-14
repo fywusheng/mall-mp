@@ -59,10 +59,10 @@
     <div class="empty" v-if="empty">
       <img src="http://192.168.1.187:10088/static/images/common/empty.png" />
       暂无收货地址
-      <div class="btn-home" @click="add">新建收货地址</div>
+      <div class="btn-home" @click="add">添加收货地址</div>
     </div>
     <button v-else type="button" class="btn-bottom-fixed" :class="{ isIphoneHair }" @click="add">
-      +添加新的收货地址
+      添加收货地址
     </button>
   </div>
 </template>

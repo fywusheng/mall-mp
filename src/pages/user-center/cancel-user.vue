@@ -23,7 +23,7 @@
         <view class="confirm-main" style="height: auto; line-height: 1.5">
           <view class="content">
             <text class="c-code" @click="handleUserAgreementClick">
-              账号注销后，将无法找回，请再次确认，是否继续申请注销国家老龄服务平台账号
+              账号注销后，将无法找回，请再次确认，是否继续申请注销松辉云康平台账号
             </text>
           </view>
         </view>

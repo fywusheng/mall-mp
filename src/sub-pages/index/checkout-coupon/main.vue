@@ -136,7 +136,7 @@
 
     .coupon-list {
       padding-top: rpx(30);
-      padding-left: rpx(40);
+      padding-left: rpx(20);
       padding-right: rpx(20);
       .coupon {
         position: relative;

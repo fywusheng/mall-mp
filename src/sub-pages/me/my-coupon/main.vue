@@ -158,8 +158,10 @@
         display: block;
         margin-left: auto;
         margin-right: auto;
-        width: rpx(210);
-        height: rpx(130);
+        width: 440rpx;
+        height: 234rpx;
+        // width: rpx(210);
+        // height: rpx(130);
       }
       .title {
         padding-top: rpx(30);
@@ -169,7 +171,7 @@
       .desc {
         padding-top: rpx(10);
         color: #999;
-        font-size: rpx(24);
+        font-size: rpx(32);
       }
     }
   }
@@ -215,7 +217,7 @@
         </li>
       </ul>
       <div class="empty-wrap" v-if="status === 0 && !couponList1.length">
-        <img src="https://xiu-obs.obs.cn-south-1.myhuaweicloud.com/1556375797799.png" />
+        <img src="http://192.168.1.187:10088/static/common/status-none2x.png" />
         <div class="title">很遗憾</div>
         <div class="desc">您暂时无可用的优惠券</div>
       </div>
@@ -247,7 +249,7 @@
         </li>
       </ul>
       <div class="empty-wrap" v-if="status === 1 && !couponList2.length">
-        <img src="https://xiu-obs.obs.cn-south-1.myhuaweicloud.com/1556375797799.png" />
+        <img src="http://192.168.1.187:10088/static/common/status-none2x.png" />
         <div class="desc">暂无已使用的优惠券</div>
       </div>
     </template>
@@ -278,7 +280,7 @@
         </li>
       </ul>
       <div class="empty-wrap" v-if="status === 2 && !couponList3.length">
-        <img src="https://xiu-obs.obs.cn-south-1.myhuaweicloud.com/1556375797799.png" />
+        <img src="http://192.168.1.187:10088/static/common/status-none2x.png" />
         <div class="desc">暂无已过期的优惠券</div>
       </div>
     </template>
@@ -296,26 +298,28 @@
     data() {
       return {
         status: 0,
-        couponCouponList: [],
+        couponList1: [],
+        couponList2: [],
+        couponList3: [],
       };
     },
-    computed: {
-      couponList1() {
-        return this.couponCouponList.filter((coupon) => {
-          return coupon.usedState === 0;
-        });
-      },
-      couponList2() {
-        return this.couponCouponList.filter((coupon) => {
-          return coupon.usedState === 1;
-        });
-      },
-      couponList3() {
-        return this.couponCouponList.filter((coupon) => {
-          return coupon.usedState === 2;
-        });
-      },
-    },
+    // computed: {
+    //   couponList1() {
+    //     return this.couponCouponList.filter((coupon) => {
+    //       return coupon.usedState === 0;
+    //     });
+    //   },
+    //   couponList2() {
+    //     return this.couponCouponList.filter((coupon) => {
+    //       return coupon.usedState === 1;
+    //     });
+    //   },
+    //   couponList3() {
+    //     return this.couponCouponList.filter((coupon) => {
+    //       return coupon.usedState === 2;
+    //     });
+    //   },
+    // },
     onLoad(e) {
       this.status = Number(e.status) || 0;
     },
@@ -337,10 +341,9 @@
         });
         wx.hideLoading();
         if (couponResult.code == 200) {
-          this.couponCouponList = couponResult.data.list.map((data) => {
-            data.showDesc = false;
-            return data;
-          });
+          this.couponList1 = couponResult.data.canUsedList;
+          this.couponList2 = couponResult.data.usedList;
+          this.couponList3 = couponResult.data.cannotUsedList;
         } else {
           wx.showToast(couponResult.msg);
         }

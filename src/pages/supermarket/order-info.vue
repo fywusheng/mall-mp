@@ -65,14 +65,14 @@
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">门店号</view>
-          <view class="msg-right" v-if="userInfo.storeNo">
-            {{ userInfo.storeNo }}
+          <view class="msg-right" v-if="info.storeNo">
+            {{ info.storeNo }}
           </view>
         </view>
         <view class="msg-item flex-h fs-36">
           <view class="msg-left">门店名称</view>
-          <view class="msg-right" v-if="info.supermarketStoreName">
-            {{ info.supermarketStoreName }}
+          <view class="msg-right" v-if="info.storeName">
+            {{ info.storeName }}
           </view>
         </view>
         <view v-if="info.paymentCardNo" class="msg-item flex-h fs-36">

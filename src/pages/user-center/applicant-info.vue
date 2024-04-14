@@ -203,7 +203,7 @@
       }),
       // 页面操作  true 新增， false修改
       add() {
-        if (this.userInfo && this.userInfo.idCard) {
+        if (this.userInfo && this.userInfo.memberId !== '' && this.userInfo.memberId !== ' ') {
           return false;
         } else {
           return true;
