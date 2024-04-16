@@ -5,15 +5,7 @@
     <view class="_c">
       <view class="use">
         <view class="_left">
-          <image
-            class="img"
-            mode="scaleToFill"
-            :src="
-              userInfo
-                ? userInfo.iconUrl
-                : 'http://192.168.1.187:10088/static/user-center/icon-user-center-default-avatar.png'
-            "
-          />
+          <image class="img" mode="scaleToFill" :src="userInfo.iconUrl" />
           <view class="lable">可用积分:</view>
           <view class="num">{{ score ? score : '--' }}</view>
         </view>
@@ -48,11 +40,11 @@
               </view>
               <view class="line">
                 <view class="p">到手价</view>
-                <view class="m">￥{{ v.presentPrice }}</view>
+                <view class="m">￥{{ member ? v.memberPrice : v.finalPrice }}</view>
                 <view class="del">￥{{ v.salePrice }}</view>
               </view>
               <view class="endP">
-                <view class="widthAuto">积分抵扣￥{{ v.creditPoints }}</view>
+                <view class="widthAuto">积分抵扣￥{{ v.pointDiscountPoint }}</view>
               </view>
             </view>
           </view>
@@ -74,8 +66,8 @@
                 src="http://192.168.1.187:10088/static/home/empt.png"
               />
             </view>
-            <view class="jf">积分抵扣￥{{ v.creditPoints }}</view>
-            <view class="price">￥{{ v.presentPrice }}</view>
+            <view class="jf">积分抵扣￥{{ v.pointDiscountPoint }}</view>
+            <view class="price">￥{{ member ? v.memberPrice : v.finalPrice }}</view>
           </view>
         </view>
       </view>
@@ -94,13 +86,11 @@
             src="http://192.168.1.187:10088/static/home/empt.png"
           />
           <view class="name">{{ v.name }}</view>
-          <view class="jf">积分抵扣￥{{ v.creditPoints }}</view>
+          <view class="jf">积分抵扣￥{{ v.pointDiscountPoint }}</view>
           <!--  isCreditPoints == 1 时显示到手价格-->
           <view class="_p">
-            <view class="getPrice">到手价</view>
-            ￥{{
-              v.isCreditPoints == 1 && (v.presentPrice || v.presentPrice == 0) ? v.presentPrice : ''
-            }}
+            <view class="getPrice">{{ member ? '到手价' : '到手价' }}</view>
+            ￥{{ member ? v.memberPrice : v.finalPrice }}
           </view>
         </view>
       </view>
@@ -165,6 +155,10 @@
       ...mapState({
         userInfo: (state) => state.user.userInfo,
       }),
+      // 是否会员
+      member() {
+        return this.userInfo && this.userInfo.memberStatus === '1';
+      },
     },
     methods: {
       // 图片加载失败
