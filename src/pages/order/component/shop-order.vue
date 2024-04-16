@@ -307,11 +307,12 @@
     }
     .hotel-list {
       overflow: hidden;
-      padding: 0 32rpx;
+      padding: 24rpx 32rpx;
       .item {
         background-color: #fff;
-        margin: 16rpx 0;
-        padding: 0 32rpx 16rpx;
+        // margin: 16rpx 0;
+        margin-bottom: 24rpx;
+        padding: 0 20rpx 16rpx;
         box-sizing: border-box;
         color: #333;
         border-radius: 16rpx;

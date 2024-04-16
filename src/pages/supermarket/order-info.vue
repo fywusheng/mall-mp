@@ -16,7 +16,7 @@
           <view class="msg-right"
                 v-if="info.bankOrderNo">{{info.bankOrderNo}}</view>
         </view> -->
-        <view class="msg-item flex-h fs-36">
+        <!-- <view class="msg-item flex-h fs-36">
           <view class="msg-left">交易参考号</view>
           <view class="msg-right" v-if="info.transactionReferenceNo">
             {{ info.transactionReferenceNo }}
@@ -27,7 +27,7 @@
           <view class="msg-right" v-if="info.transactionSerialNo">
             {{ info.transactionSerialNo }}
           </view>
-        </view>
+        </view> -->
         <view class="msg-item flex-h fs-36">
           <view class="msg-left" v-if="info.voucherNo">凭证号</view>
           <view class="msg-right" v-if="info.voucherNo">{{ info.voucherNo }}</view>
@@ -252,7 +252,7 @@
           }
           .msg-right {
             flex-shrink: 0;
-            width: 360rpx;
+            width: 375rpx;
             text-align: right;
             color: #333;
             word-break: break-all;

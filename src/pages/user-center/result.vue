@@ -44,6 +44,7 @@
     text-align: center;
     & > image {
       width: 220rpx;
+      margin: 0 auto;
       margin-top: 160rpx;
       margin-bottom: 32rpx;
     }

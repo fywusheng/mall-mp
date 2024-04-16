@@ -91,6 +91,7 @@
           width: 80rpx;
           height: 80rpx;
           margin-right: 20rpx;
+          flex-shrink: 0;
         }
         .name {
           position: relative;
@@ -107,6 +108,7 @@
           padding-top: rpx(10);
           font-size: rpx(36);
           color: #666666;
+          word-break: break-all;
         }
       }
     }
@@ -177,13 +179,14 @@
             position: relative;
             margin-top: rpx(17);
             font-size: rpx(36);
-            color: $black;
+            color: #ff5500;
             font-weight: 500;
 
             .item-qty {
               @include middle-center-y();
               right: rpx(30);
               color: $extra-black;
+              font-weight: 400;
             }
           }
           .btn-link {
@@ -223,17 +226,19 @@
     }
 
     .cost-list {
-      // padding-left: rpx(30);
       margin: 0 32rpx;
+      padding: 24rpx;
+      color: #333333;
       background: #ffffff;
       border-radius: 16rpx;
 
       .cost {
-        height: rpx(70);
-        line-height: rpx(70);
         font-size: rpx(32);
         font-weight: normal;
-        padding: 0 rpx(32);
+        margin-bottom: 24rpx;
+        &:last-child {
+          margin-bottom: 0;
+        }
         .right {
           text-align: right;
         }
@@ -254,19 +259,23 @@
 
     .info-list {
       margin: 0 32rpx;
-      padding: 0 24rpx;
+      padding: 24rpx;
       background: #ffffff;
       border-radius: 16rpx;
       font-size: 32rpx;
 
       .info-list-title {
         line-height: rpx(70);
-        font-weight: 500;
+        // font-weight: 500;
       }
 
       .info {
-        line-height: rpx(70);
+        // line-height: rpx(70);
+        margin-bottom: 24rpx;
         color: $extra-light-black;
+        &:last-child {
+          margin-bottom: 0;
+        }
       }
     }
 
@@ -326,9 +335,9 @@
         </div>
         <div v-if="order.orderStatus == 20">我们会尽快安排发货，请您耐心等待哦！</div>
         <div v-if="order.orderStatus == 30">
-          请确认收货，系统将于
-          <span style="color: #ff5500">&nbsp;{{ hours }}小时{{ minutes }}分</span>
-          后自动确认
+          还剩
+          <span style="color: #ff5500">&nbsp;{{ day }}天{{ hours }}小时{{ minutes }}分</span>
+          自动确认
         </div>
         <!-- <div v-if="order.orderStatus == 40"></div>
         <div v-if="order.orderStatus == 50"></div> -->
@@ -388,7 +397,7 @@
           </div>
           <div class="item-price">
             ¥{{ item.sellingPrice | formatNum }}
-            <div class="item-qty">X{{ item.skuQuantity }}</div>
+            <div class="item-qty">x{{ item.skuQuantity }}</div>
           </div>
         </li>
       </ul>
@@ -527,6 +536,7 @@
       return {
         loading: true,
         order: {},
+        day: 0,
         hours: 0,
         minutes: 0,
         seconds: 0,
@@ -703,13 +713,15 @@
         this.countDownTask = setInterval(() => {
           if (this.countDown <= 0) {
             clearInterval(this.countDownTask);
-            // this.loadData()
             this.cancelOrder();
             return;
           }
-          this.hours = parseInt(this.countDown / 1000 / 60 / 60);
-          this.minutes = parseInt(this.countDown / 1000 / 60) % 60;
-          this.seconds = parseInt(this.countDown / 1000) % 60;
+
+          this.seconds = Math.floor((this.countDown / 1000) % 60);
+          this.minutes = Math.floor((this.countDown / (1000 * 60)) % 60);
+          this.hours = Math.floor((this.countDown / (1000 * 60 * 60)) % 24);
+          this.day = Math.floor(this.countDown / (1000 * 60 * 60 * 24));
+
           this.countDown -= 1000;
         }, 1000);
       },

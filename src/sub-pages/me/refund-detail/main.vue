@@ -97,7 +97,7 @@
       </li>
     </ul>
     <view class="footer">
-      <view class="home-btn" @click="goHome">返回首页</view>
+      <view class="btn-submit" @click="goHome">返回首页</view>
       <div
         class="btn-submit"
         v-if="
@@ -327,7 +327,6 @@
   $light-black: #eee;
   .page-service-type {
     padding-bottom: calc(env(safe-area-inset-bottom) + 150rpx);
-    height: 100vh;
     background: #f5f5f5;
     .info-list {
       border-top: rpx(1) solid $light-black;
@@ -449,7 +448,11 @@
       left: 0;
       bottom: 0;
       width: 100%;
+      z-index: 10;
+      display: flex;
+      flex-direction: row;
       .btn-submit {
+        flex: 1;
         height: 100rpx;
         line-height: rpx(100);
         text-align: center;

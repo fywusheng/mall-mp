@@ -4,8 +4,8 @@
       <view class="header-wrapper">
         <image class="avatar" :src="userInfo.iconUrl" mode="scaleToFill" />
         <view class="right">
-          <view class="name">你好，{{ userInfo.name }}</view>
-          <view>您已尊享商城会员服务12345天</view>
+          <view class="name">你好，{{ nameFilter(userInfo.name) }}</view>
+          <view>您已尊享商城会员服务{{ day }}天</view>
         </view>
       </view>
     </view>
@@ -60,7 +60,7 @@
                   <view class="total">
                     <text>合计省钱</text>
                     <text class="unit">¥</text>
-                    <text class="price">42.2</text>
+                    <text class="price">{{ (item.orderAmount - item.paidAmount).toFixed(2) }}</text>
                     <image
                       :class="{ 'icon-bottom': !subOrder.showBenefit }"
                       class="icon"
@@ -83,7 +83,7 @@
                   <view class="desc">专享优惠券</view>
                   <view class="benefit-price">
                     <text class="unit">¥</text>
-                    <text class="number">12.00</text>
+                    <text class="number">{{ item.couponAmount }}</text>
                   </view>
                 </view>
                 <view class="item">
@@ -110,9 +110,12 @@
 <script>
   import { mapState } from 'vuex';
   import dayjs from 'dayjs';
+  import { desensitizeName } from '@/utils/desensitization.js';
   export default {
     data() {
       return {
+        day: 0, // 成为会员天数
+        memberStartTime: '', // 成为会员开始时间
         startTime: '',
         endTime: '',
         percent: 100,
@@ -134,9 +137,11 @@
       }),
     },
     methods: {
+      // 姓名过滤器, 用于姓名脱敏
+      nameFilter(value) {
+        return desensitizeName(value);
+      },
       handleChangeShowBenefit(index, subIndex) {
-        // console.log('index, subIndex, showBenefit: ', index, subIndex, showBenefit);
-        // console.log('showBenefit: ', showBenefit);
         this.list[index].itemList[subIndex].showBenefit =
           !this.list[index].itemList[subIndex].showBenefit;
       },
@@ -152,10 +157,17 @@
         });
       },
       setTime() {
-        this.startTime = dayjs()
-          .subtract(this.select == 0 ? 5 : 1, 'year')
-          .format('YYYY-MM-DD');
-        this.endTime = dayjs().format('YYYY-MM-DD');
+        // this.startTime = dayjs()
+        //   .subtract(this.select == 0 ? 5 : 1, 'year')
+        //   .format('YYYY-MM-DD');
+        // this.endTime = dayjs().format('YYYY-MM-DD');
+
+        // if (this.select == 0) {
+        this.startTime = this.userInfo.usageTime;
+        this.endTime = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
+        // }
+
+        this.day = dayjs().diff(this.userInfo.usageTime, 'day');
       },
       // canvas
       initCanvas() {
@@ -243,19 +255,20 @@
                   itemList.push(item);
                 });
               });
-              const tempData = _.pick(data, [
-                'createdTime',
-                'orderId',
-                'orderStatus',
-                'totalQuantity',
-                'orderType',
-                'orderAmount',
-                'orderStatusLabel',
-                'payableAmount',
-                'storeName',
-                'storeId',
-                'hzhH5',
-              ]);
+              // const tempData = _.pick(data, [
+              //   'createdTime',
+              //   'orderId',
+              //   'orderStatus',
+              //   'totalQuantity',
+              //   'orderType',
+              //   'orderAmount',
+              //   'orderStatusLabel',
+              //   'payableAmount',
+              //   'storeName',
+              //   'storeId',
+              //   'hzhH5',
+              // ]);
+              const tempData = data;
               tempData.itemList = itemList;
               tempData.orderMallIcon = data.storeOrderItems[0].orderMallIcon;
               res.push(tempData);
@@ -438,7 +451,7 @@
               .logo {
                 width: 224rpx;
                 height: 224rpx;
-                background: gold;
+                // background: gold;
               }
               .right {
                 width: 442rpx;

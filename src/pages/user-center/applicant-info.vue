@@ -116,7 +116,7 @@
       </view>
     </view>
     <button class="next-step-button bg-primary fs-44 c-white" @click="handleNextStepClick">
-      {{ add ? '提交' : '修改' }}
+      {{ userInfo.crtfStas ? '修改' : '保存' }}
     </button>
     <!-- 疾病选择弹窗 -->
     <uni-popup ref="popup" type="bottom">

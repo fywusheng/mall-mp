@@ -316,13 +316,16 @@
       },
       // 获取累计省钱详情
       async getTotalSaveMoney() {
+        if (this.userInfo.memberStatus === '0') {
+          return;
+        }
         const result = await Axios.post('/order/getMemberSaveMoney', {
           memberSaveMoneyFlag: true,
-          startTime: dayjs().subtract(5, 'year').format('YYYY-MM-DD'),
-          endTime: dayjs().format('YYYY-MM-DD'),
+          startTime: this.userInfo.usageTime,
+          endTime: dayjs().subtract(1, 'day').format('YYYY-MM-DD'),
         });
         if (result.code === '200') {
-          this.totalMoney = result.data;
+          this.totalMoney = result.data.toFixed(2);
         }
       },
       // 自动签到
