@@ -18,22 +18,22 @@
   </view>
 </template>
 <script>
-  import uniPopup from '@/components/uni-popup/uni-popup.vue';
-  export default {
-    components: { uniPopup },
-    data() {
-      return {};
+import uniPopup from '@/components/uni-popup/uni-popup.vue'
+export default {
+  components: { uniPopup },
+  data() {
+    return {}
+  },
+  methods: {
+    close() {
+      this.$refs.popupM.close()
+      this.$emit('close', 1)
     },
-    methods: {
-      close() {
-        this.$refs.popupM.close();
-        this.$emit('close', 1);
-      },
-      open() {
-        this.$refs.popupM.open();
-      },
-    },
-  };
+    open() {
+      this.$refs.popupM.open()
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .notice {

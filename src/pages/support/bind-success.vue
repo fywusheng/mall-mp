@@ -51,131 +51,131 @@
 </template>
 
 <script>
-  import NavigationBar from '../../components/common/navigation-bar.vue';
-  import { startFacialRecognitionVerify } from '@/utils/utils.js';
-  import api from '@/apis/index.js';
-  export default {
-    components: { NavigationBar },
-    data() {
-      return {
-        // 标题
-        title: '',
-        // 副标题
-        subtitle: '',
-        // 姓名列表
-        names: [],
-        // 按钮文字
-        buttonText: '',
-        // 关联账户id(无手机号id
-        uactId: '',
-        // 关联账户id（无手机号姓名
-        name: '',
-        // 关联账户id（无手机号身份证
-        idCard: '',
-        //是否已领卡(0-未领 1-已领)
-        isReceive: '1',
-        //本次操作是否领取到积分 (0-没领到积分 1-已领到)
-        isItgl: '0',
-        // 是否显示积分弹窗
-        showsCreditsPopup: false,
-      };
-    },
-    onLoad(options) {
-      // 有手机号添加
+import NavigationBar from '../../components/common/navigation-bar.vue'
+import { startFacialRecognitionVerify } from '@/utils/utils.js'
+import api from '@/apis/index.js'
+export default {
+  components: { NavigationBar },
+  data() {
+    return {
+      // 标题
+      title: '',
+      // 副标题
+      subtitle: '',
+      // 姓名列表
+      names: [],
+      // 按钮文字
+      buttonText: '',
+      // 关联账户id(无手机号id
+      uactId: '',
+      // 关联账户id（无手机号姓名
+      name: '',
+      // 关联账户id（无手机号身份证
+      idCard: '',
+      // 是否已领卡(0-未领 1-已领)
+      isReceive: '1',
+      // 本次操作是否领取到积分 (0-没领到积分 1-已领到)
+      isItgl: '0',
+      // 是否显示积分弹窗
+      showsCreditsPopup: false
+    }
+  },
+  onLoad(options) {
+    // 有手机号添加
 
-      if (options.names !== undefined) {
-        //有手机号绑定(赡养绑定)（需要等待短信验证）
+    if (options.names !== undefined) {
+      // 有手机号绑定(赡养绑定)（需要等待短信验证）
 
-        this.title = '已发送';
-        this.buttonText = '知道了';
-        this.names = options.names.split(',');
-        console.log('this.names:', this.names);
-      }
+      this.title = '已发送'
+      this.buttonText = '知道了'
+      this.names = options.names.split(',')
+      console.log('this.names:', this.names)
+    }
 
-      // 无手机号添加, 可领取
-      // this.title = "恭喜您绑定亲友成功";
-      // this.subtitle = "对方还未领取电子老年人证，请为对方领取";
-      // this.buttonText = "为ta领取电子老年人证";
+    // 无手机号添加, 可领取
+    // this.title = "恭喜您绑定亲友成功";
+    // this.subtitle = "对方还未领取电子老年人证，请为对方领取";
+    // this.buttonText = "为ta领取电子老年人证";
 
-      // 无手机号添加, 已领取
-      // this.title = "恭喜您绑定亲友成功";
-      // this.subtitle = "您现在可以享受亲友账号专属权利哦";
-      // this.buttonText = "知道了";
-    },
-    methods: {
-      /**
+    // 无手机号添加, 已领取
+    // this.title = "恭喜您绑定亲友成功";
+    // this.subtitle = "您现在可以享受亲友账号专属权利哦";
+    // this.buttonText = "知道了";
+  },
+  methods: {
+    /**
        * 按钮点击事件
        */
-      handleButtonClick() {
-        // 根据不同情况进行不同处理
-        if (this.names.length > 0) {
-          //有手机号（点击【返回】【知道了】按钮，进入【我的】页面
-          uni.reLaunch({
-            url: '/pages/index/index?index=4',
-          });
-        } else if (this.isReceive === '1') {
-          //是否已领卡(0-未领 1-已领)
-          //已领 点击【返回】【知道了】按钮，进入【我的】页面
-          uni.reLaunch({
-            url: '/pages/index/index?index=4',
-          });
-        } else if (this.isReceive === '0') {
-          console.log('====未领证不做处理？===');
-          this.$uni.showToast('功能建设中');
-          return;
+    handleButtonClick() {
+      // 根据不同情况进行不同处理
+      if (this.names.length > 0) {
+        // 有手机号（点击【返回】【知道了】按钮，进入【我的】页面
+        uni.reLaunch({
+          url: '/pages/index/index?index=4'
+        })
+      } else if (this.isReceive === '1') {
+        // 是否已领卡(0-未领 1-已领)
+        // 已领 点击【返回】【知道了】按钮，进入【我的】页面
+        uni.reLaunch({
+          url: '/pages/index/index?index=4'
+        })
+      } else if (this.isReceive === '0') {
+        console.log('====未领证不做处理？===')
+        this.$uni.showToast('功能建设中')
+        return
 
-          //人脸识别成功
-          params.success = () => {
-            console.log('人脸识别成功：');
-            let userInfo = uni.getStorageSync('userInfo');
-            uni.getFileSystemManager().readFile({
-              filePath:
+        // 人脸识别成功
+        params.success = () => {
+          console.log('人脸识别成功：')
+          const userInfo = uni.getStorageSync('userInfo')
+          uni.getFileSystemManager().readFile({
+            filePath:
                 'http://192.168.1.187:10088/static/support/05f08ce3a4c8ce77b5c0af61c35619c.jpg',
-              encoding: 'base64',
-              success: (res) => {
-                api.clearBg({
-                  data: { photoBase64: res.data },
-                  showsLoading: true,
-                  success: (resInfo) => {
-                    // 保存第一次人脸识别图片
-                    uni.setStorageSync('other-first-face-img', JSON.stringify(resInfo));
-                    // 拿到头像图片
-                    // 进入帮领证流程
-                    let data = {
-                      name: this.name,
-                      uactId: this.uactId,
-                      idCardNumber: this.idCard,
-                      idCardNumber: '',
-                      gender: '',
-                      nation: '',
-                      birthday: '',
-                      city: '',
-                      address: '',
-                    };
-                    const info = {
-                      ...data,
-                      faceImg: res.data,
-                    };
-                    // 去背景图片
+            encoding: 'base64',
+            success: (res) => {
+              api.clearBg({
+                data: { photoBase64: res.data },
+                showsLoading: true,
+                success: (resInfo) => {
+                  // 保存第一次人脸识别图片
+                  uni.setStorageSync('other-first-face-img', JSON.stringify(resInfo))
+                  // 拿到头像图片
+                  // 进入帮领证流程
+                  const data = {
+                    name: this.name,
+                    uactId: this.uactId,
+                    idCardNumber: this.idCard,
+                    idCardNumber: '',
+                    gender: '',
+                    nation: '',
+                    birthday: '',
+                    city: '',
+                    address: ''
+                  }
+                  const info = {
+                    ...data,
+                    faceImg: res.data
+                  }
+                  // 去背景图片
 
-                    uni.navigateTo({
-                      url: '/pages/certificate/avatar-confirm',
-                      success: (res) => {
-                        res.eventChannel.emit('didOpenPageFinish', info);
-                      },
-                    });
-                  },
-                });
-              },
-            });
-          };
-
-          // 开启人脸识别
-          startFacialRecognitionVerify(params);
+                  uni.navigateTo({
+                    url: '/pages/certificate/avatar-confirm',
+                    success: (res) => {
+                      res.eventChannel.emit('didOpenPageFinish', info)
+                    }
+                  })
+                }
+              })
+            }
+          })
         }
-      },
-    },
-  };
+
+        // 开启人脸识别
+        startFacialRecognitionVerify(params)
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

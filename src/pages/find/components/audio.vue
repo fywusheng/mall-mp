@@ -62,79 +62,79 @@
 </template>
 
 <script>
-  import cmdProgress from './cmd-progress.vue';
-  import { debounce } from '@/utils/utils.js';
-  export default {
-    components: { cmdProgress },
-    props: {
-      title: {
-        type: String,
-        default: '',
-      },
-      stopPlay: {
-        type: Boolean,
-        default: true,
-      },
-      closeAudio: {
-        type: Boolean,
-        default: true,
-      },
-      videoBg: {
-        type: String,
-        default: 'http://192.168.1.187:10088/static/find/process_bg2x.png',
-      },
+import cmdProgress from './cmd-progress.vue'
+import { debounce } from '@/utils/utils.js'
+export default {
+  components: { cmdProgress },
+  props: {
+    title: {
+      type: String,
+      default: ''
     },
-    data() {
-      return {
-        process: 0,
-      };
+    stopPlay: {
+      type: Boolean,
+      default: true
     },
-    mounted() {
-      uni.$emit('mounted');
-      // this.timer=setInterval(()=>{
-      //     this.process=this.process+2;
-      //     if(this.process>100){
-      //         this.process=0;
-      //     }
-      // },100);
+    closeAudio: {
+      type: Boolean,
+      default: true
     },
-    methods: {
-      /*
+    videoBg: {
+      type: String,
+      default: 'http://192.168.1.187:10088/static/find/process_bg2x.png'
+    }
+  },
+  data() {
+    return {
+      process: 0
+    }
+  },
+  mounted() {
+    uni.$emit('mounted')
+    // this.timer=setInterval(()=>{
+    //     this.process=this.process+2;
+    //     if(this.process>100){
+    //         this.process=0;
+    //     }
+    // },100);
+  },
+  methods: {
+    /*
        * 前一篇文章按钮点击事件
        */
-      // prePlay() {
-      //   this.$emit("prePlay")
-      // },
-      prePlay: debounce(function () {
-        this.$emit('prePlay');
-      }, 400),
-      /*
+    // prePlay() {
+    //   this.$emit("prePlay")
+    // },
+    prePlay: debounce(function () {
+      this.$emit('prePlay')
+    }, 400),
+    /*
        * 暂停文章按钮点击事件
        */
-      handleSwitchPlay() {
-        this.$emit('handleSwitchPlay');
-      },
-      /*
+    handleSwitchPlay() {
+      this.$emit('handleSwitchPlay')
+    },
+    /*
        * 后一篇文章按钮点击事件
        */
-      nextPlay: debounce(function () {
-        this.$emit('nextPlay');
-      }, 400),
-      /*
+    nextPlay: debounce(function () {
+      this.$emit('nextPlay')
+    }, 400),
+    /*
        * 关闭按钮事件
        */
-      handleClose() {
-        this.$emit('handleClose');
-      },
-      /*
+    handleClose() {
+      this.$emit('handleClose')
+    },
+    /*
        * 切换背景板隐藏展示
        */
-      triggle() {
-        console.log('切换背景板');
-        this.$emit('triggleBg', !this.closeAudio);
-      },
-    },
-  };
+    triggle() {
+      console.log('切换背景板')
+      this.$emit('triggleBg', !this.closeAudio)
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .process {

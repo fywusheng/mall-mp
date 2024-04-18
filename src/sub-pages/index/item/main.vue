@@ -339,418 +339,418 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
-  import Top from '@/sub-pages/index/components/top.vue';
-  import SelectSku from './components/select-sku';
-  import CouponList from './components/coupon-list';
+import { mapState } from 'vuex'
+import Top from '@/sub-pages/index/components/top.vue'
+import SelectSku from './components/select-sku'
+import CouponList from './components/coupon-list'
 
-  export default {
-    data() {
-      return {
-        isIphoneHair: App.isIphoneHair,
-        showContact: false,
-        sceneType: '', // 场景类型：适老用品、积分兑换
-        productId: '',
-        freight: {}, // 运费模版
-        product: null,
-        supplierDTO: null, // 供应商
-        productImgList: [],
-        skuImg: {},
-        colorList: [],
-        saleTypeList: [
-          { name: '预售', id: 1 },
-          { name: '现货', id: 2 },
-        ],
-        sizeList: [],
-        selectSaleType: {},
-        selectColor: {},
-        selectSize: {},
-        detailContents: '',
-        detailImageList: [],
-        attributeList: [],
-        couponList: [],
-        isAttention: false,
-        cartCount: 0,
-        loading: true,
-        storeList: [],
-        fixTop: false,
-        actived: 1,
-        currentIndex: 1,
-      };
+export default {
+  data() {
+    return {
+      isIphoneHair: App.isIphoneHair,
+      showContact: false,
+      sceneType: '', // 场景类型：适老用品、积分兑换
+      productId: '',
+      freight: {}, // 运费模版
+      product: null,
+      supplierDTO: null, // 供应商
+      productImgList: [],
+      skuImg: {},
+      colorList: [],
+      saleTypeList: [
+        { name: '预售', id: 1 },
+        { name: '现货', id: 2 }
+      ],
+      sizeList: [],
+      selectSaleType: {},
+      selectColor: {},
+      selectSize: {},
+      detailContents: '',
+      detailImageList: [],
+      attributeList: [],
+      couponList: [],
+      isAttention: false,
+      cartCount: 0,
+      loading: true,
+      storeList: [],
+      fixTop: false,
+      actived: 1,
+      currentIndex: 1
+    }
+  },
+  components: {
+    Top,
+    SelectSku,
+    CouponList
+  },
+  watch: {
+    selectColor() {
+      this.productImgList = []
+      this.sizeList = this.selectColor.skuAndPriceList
+      this.sizeList.some((size) => {
+        if (size.availableStock) {
+          this.selectSize = size
+          return true
+        }
+      })
+      // 如果首次属性子属性的库存都为0的话默认显示第一个子属性的sku
+      const empt = this.sizeList.every((size) => {
+        return size.availableStock == 0
+      })
+      if (empt) {
+        this.selectSize = this.sizeList[0]
+      }
+      this.$nextTick(() => {
+        const list = [this.product.mainImgUrl];
+        (this.selectColor.imgUrlList || []).forEach((img) => {
+          list.push(img)
+        })
+        this.productImgList = list
+      })
+    }
+  },
+  computed: {
+    ...mapState({
+      userInfo: (state) => state.user.userInfo
+    }),
+    // 是否会员
+    member() {
+      return this.userInfo && this.userInfo.memberStatus === '1'
     },
-    components: {
-      Top,
-      SelectSku,
-      CouponList,
+    // 积分抵扣金额
+    pointDiscountPoint() {
+      return this.member ? this.product.pointDiscountPoint : this.product.registerPoint
+    }
+  },
+  methods: {
+    openMember() {
+      uni.navigateTo({ url: '/pages/user-center/activate-member' })
     },
-    watch: {
-      selectColor() {
-        this.productImgList = [];
-        this.sizeList = this.selectColor.skuAndPriceList;
+    handleBannerChange(e) {
+      this.currentIndex = e.detail.current + 1
+    },
+    point(flag) {
+      this.actived = flag
+      const flags = { 1: 0, 2: 1200 }
+      uni.pageScrollTo({
+        scrollTop: flags[flag]
+      })
+    },
+    toAttribute() {
+      uni.setStorageSync('attribute', this.attributeList)
+      uni.navigateTo({
+        url: '/sub-pages/index/item-attribute/main'
+      })
+    },
+    toComment() {
+      uni.navigateTo({
+        url: '/sub-pages/index/item-reviews/main?id=' + this.productId
+      })
+    },
+    previewImg(index) {
+      uni.previewImage({
+        urls: this.productImgList,
+        current: this.productImgList[index]
+      })
+    },
+    toHome() {
+      if (this.sceneType === '适老用品') {
+        uni.navigateTo({
+          url: '/sub-pages/index/index/main'
+        })
+      } else {
+        uni.navigateTo({
+          url: '/sub-pages/point/index/index'
+        })
+      }
+    },
+    // 门店列表
+    async getStoreList() {
+      const location = uni.getStorageSync('location')
+      const params = {
+        supplierId: this.product.supplierId,
+        pageNum: 1,
+        pageSize: 15,
+        queryObject: {
+          cusLt: location.longitude,
+          cusLat: location.latitude
+        },
+        ids: this.product.storeIds
+      }
+      const result = await Axios.post('/srm/stores/listByPageNo', params)
+      if (result.code == '200') {
+        const data = result.data
+        this.storeList = data.list || []
+      } else {
+        this.$uni.showToast(result.msg)
+      }
+    },
+    async updateCart() {
+      const result = await Axios.post('/cart/getNum', {
+        sceneType: this.sceneType
+      })
+      if (result.code == 200) {
+        this.cartCount = result.data.cartNum
+        // result.data > 0 ? wx.setTabBarBadge({
+        //   index: 2,
+        //   text: `${result.data.cartNum}`
+        // }) : wx.removeTabBarBadge({
+        //   index: 2
+        // })
+      }
+    },
+    async loadCoupon() {
+      const couponResult = await Axios.get('/coupon/getByProduct', {
+        params: {
+          pId: this.productId
+        }
+      })
+      if (couponResult.code == 200) {
+        this.couponList = couponResult.data || []
+      }
+    },
+    async changeAttention() {
+      if (!Store.getters.isLogin) {
+        uni.navigate({
+          // url: '/sub-pages/index/login/main'
+        })
+        return false
+      }
+      uni.showLoading('正在提交...')
+      const result = await Axios.get(
+        !this.isAttention ? 'brand/addconcern' : 'brand/delconcern',
+        {
+          params: {
+            id: this.product.brand.id
+          }
+        }
+      )
+      uni.hideLoading()
+      if (result.code == 200) {
+        this.isAttention = !this.isAttention
+        this.$uni.showToast(this.isAttention ? '收藏成功' : '取消成功')
+      } else {
+        this.$uni.showToast(result.msg || '操作失败')
+      }
+    },
+    toCart() {
+      if (!Store.getters.isLogin) {
+        Store.dispatch('logout')
+        uni.navigateTo({
+          url: '/pages/user-center/login'
+          // url: '/sub-pages/index/login/main''
+        })
+        return false
+      }
+      uni.navigateTo({
+        url: '/sub-pages/point/cart/main?sceneType=' + this.sceneType
+      })
+      // if (this.sceneType === '积分兑换') {
+      //   uni.navigateTo({
+      //     url: '/sub-pages/point/cart/main?sceneType=' + this.sceneType,
+      //   });
+      // } else {
+      //   uni.navigateTo({
+      //     url: '/sub-pages/index/index/main?index=4&&sceneType' + this.sceneType,
+      //   });
+      // }
+    },
+    async changeFavor() {
+      if (!Store.getters.isLogin) {
+        uni.navigate({
+          url: '/pages/user-center/login'
+        })
+        return false
+      }
+      uni.showLoading('正在提交...')
+      const result = await Axios.post(
+        this.product.isCollected == 1 ? '/product/deleteFavorites' : '/product/addFavorites',
+        {
+          id: this.productId
+        }
+      )
+      uni.hideLoading()
+      if (result.code == 200) {
+        this.product.isCollected = this.product.isCollected == 1 ? 0 : 1
+        this.$uni.showToast(result.msg)
+      } else {
+        this.$uni.showToast(result.msg || '操作失败')
+      }
+    },
+    showModal(name) {
+      this.$refs[name].show(true, 1, this.sceneType)
+    },
+    changeSku(type, value) {
+      this[type] = value
+    },
+    goStoreDetail() {
+      // 店铺详情
+      uni.reLaunch({ url: '/pages/index/index' })
+      // uni.navigateTo({
+      //   url: '/sub-pages/index/store/main?supplierId=' + this.product.supplierId,
+      // });
+    },
+    watchMore() {
+      // 门店
+      uni.navigateTo({
+        url: '/sub-pages/index/shop/main?supplierId=' + this.product.supplierId
+      })
+      // wx.navigateTo({url:'/pages/supermarket/other-market'})
+    },
+    addCart() {
+      if (!Store.getters.isLogin) {
+        Store.dispatch('logout')
+        uni.navigateTo({
+          url: '/pages/user-center/login'
+          // url: '/sub-pages/index/login/main''
+        })
+        return false
+      }
+      if (this.userInfo && this.userInfo.storeNo === '') {
+        uni.navigateTo({ url: '/pages/user-center/applicant-info' })
+        return false
+      }
+      this.$refs.selectSku.show(true, 1, this.sceneType)
+      // reportCmPV({ title: "加入购物车" });
+    },
+    checkout() {
+      if (!Store.getters.isLogin) {
+        Store.dispatch('logout')
+        uni.navigateTo({
+          url: '/pages/user-center/login'
+        })
+        return false
+      }
+      if (this.userInfo && this.userInfo.storeNo === '') {
+        uni.navigateTo({ url: '/pages/user-center/applicant-info' })
+        return false
+      }
+      this.$refs.selectSku.show(true, 2, this.sceneType)
+      // reportCmPV({ title: "立即购买" });
+    },
+    async loadData() {
+      uni.showLoading()
+      this.loading = true
+      const result = await Axios.post('/product/get', { id: this.productId })
+      uni.hideLoading()
+      this.loading = false
+      if (result.code == 200) {
+        uni.setNavigationBarTitle({
+          title: result.data.name
+        })
+        if (result.data.productDetail) {
+          const imgReg = /<img.*?(?:>|\/>)/gi // 匹配src属性
+          const srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i
+          const detailImageList = [];
+          (result.data.productDetail.match(imgReg) || []).map((imageTag) => {
+            const img = imageTag.match(srcReg)[1]
+            if (/^http/.test(img)) {
+              // 获取图片地址
+              detailImageList.push(imageTag.match(srcReg)[1])
+            }
+          })
+          this.detailImageList = detailImageList
+          if (this.detailImageList.length == 0) {
+            this.detailContents = result.data.productDetail
+          }
+        }
+        result.data.firstClassName = result.data.firstClassName || '颜色'
+        result.data.subClassName = result.data.subClassName || '尺码'
+        this.product = result.data
+        this.isAttention = this.product.brand.isConcerned == 1
+        this.title = this.product.name
+        this.colorList = []
+        this.product.skuList &&
+            this.product.skuList.forEach((skuPriceAndStock) => {
+              this.colorList.push(skuPriceAndStock)
+            })
+        this.selectSaleType = this.saleTypeList[0]
+        if (this.colorList.length) {
+          this.selectColor = this.colorList[0]
+          this.sizeList = this.colorList[0].skuAndPriceList
+          const list = [this.product.mainImgUrl]
+          this.productImgList = list.concat(this.colorList[0].imgUrlList || [])
+        }
         this.sizeList.some((size) => {
           if (size.availableStock) {
-            this.selectSize = size;
-            return true;
+            this.selectSize = size
+            return true
           }
-        });
+        })
         // 如果首次属性子属性的库存都为0的话默认显示第一个子属性的sku
         const empt = this.sizeList.every((size) => {
-          return size.availableStock == 0;
-        });
+          return size.availableStock == 0
+        })
         if (empt) {
-          this.selectSize = this.sizeList[0];
+          this.selectSize = this.sizeList[0]
         }
-        this.$nextTick(() => {
-          const list = [this.product.mainImgUrl];
-          (this.selectColor.imgUrlList || []).forEach((img) => {
-            list.push(img);
-          });
-          this.productImgList = list;
-        });
-      },
-    },
-    computed: {
-      ...mapState({
-        userInfo: (state) => state.user.userInfo,
-      }),
-      // 是否会员
-      member() {
-        return this.userInfo && this.userInfo.memberStatus === '1';
-      },
-      // 积分抵扣金额
-      pointDiscountPoint() {
-        return this.member ? this.product.pointDiscountPoint : this.product.registerPoint;
-      },
-    },
-    methods: {
-      openMember() {
-        uni.navigateTo({ url: '/pages/user-center/activate-member' });
-      },
-      handleBannerChange(e) {
-        this.currentIndex = e.detail.current + 1;
-      },
-      point(flag) {
-        this.actived = flag;
-        const flags = { 1: 0, 2: 1200 };
-        uni.pageScrollTo({
-          scrollTop: flags[flag],
-        });
-      },
-      toAttribute() {
-        uni.setStorageSync('attribute', this.attributeList);
-        uni.navigateTo({
-          url: '/sub-pages/index/item-attribute/main',
-        });
-      },
-      toComment() {
-        uni.navigateTo({
-          url: '/sub-pages/index/item-reviews/main?id=' + this.productId,
-        });
-      },
-      previewImg(index) {
-        uni.previewImage({
-          urls: this.productImgList,
-          current: this.productImgList[index],
-        });
-      },
-      toHome() {
-        if (this.sceneType === '适老用品') {
-          uni.navigateTo({
-            url: '/sub-pages/index/index/main',
-          });
-        } else {
-          uni.navigateTo({
-            url: '/sub-pages/point/index/index',
-          });
-        }
-      },
-      // 门店列表
-      async getStoreList() {
-        const location = uni.getStorageSync('location');
-        const params = {
-          supplierId: this.product.supplierId,
-          pageNum: 1,
-          pageSize: 15,
-          queryObject: {
-            cusLt: location.longitude,
-            cusLat: location.latitude,
-          },
-          ids: this.product.storeIds,
-        };
-        const result = await Axios.post('/srm/stores/listByPageNo', params);
-        if (result.code == '200') {
-          const data = result.data;
-          this.storeList = data.list || [];
-        } else {
-          this.$uni.showToast(result.msg);
-        }
-      },
-      async updateCart() {
-        const result = await Axios.post('/cart/getNum', {
-          sceneType: this.sceneType,
-        });
-        if (result.code == 200) {
-          this.cartCount = result.data.cartNum;
-          // result.data > 0 ? wx.setTabBarBadge({
-          //   index: 2,
-          //   text: `${result.data.cartNum}`
-          // }) : wx.removeTabBarBadge({
-          //   index: 2
-          // })
-        }
-      },
-      async loadCoupon() {
-        const couponResult = await Axios.get('/coupon/getByProduct', {
-          params: {
-            pId: this.productId,
-          },
-        });
-        if (couponResult.code == 200) {
-          this.couponList = couponResult.data || [];
-        }
-      },
-      async changeAttention() {
-        if (!Store.getters.isLogin) {
-          uni.navigate({
-            // url: '/sub-pages/index/login/main'
-          });
-          return false;
-        }
-        uni.showLoading('正在提交...');
-        const result = await Axios.get(
-          !this.isAttention ? 'brand/addconcern' : 'brand/delconcern',
-          {
-            params: {
-              id: this.product.brand.id,
-            },
-          },
-        );
-        uni.hideLoading();
-        if (result.code == 200) {
-          this.isAttention = !this.isAttention;
-          this.$uni.showToast(this.isAttention ? '收藏成功' : '取消成功');
-        } else {
-          this.$uni.showToast(result.msg || '操作失败');
-        }
-      },
-      toCart() {
-        if (!Store.getters.isLogin) {
-          Store.dispatch('logout');
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-            // url: '/sub-pages/index/login/main''
-          });
-          return false;
-        }
-        uni.navigateTo({
-          url: '/sub-pages/point/cart/main?sceneType=' + this.sceneType,
-        });
-        // if (this.sceneType === '积分兑换') {
-        //   uni.navigateTo({
-        //     url: '/sub-pages/point/cart/main?sceneType=' + this.sceneType,
-        //   });
-        // } else {
-        //   uni.navigateTo({
-        //     url: '/sub-pages/index/index/main?index=4&&sceneType' + this.sceneType,
-        //   });
-        // }
-      },
-      async changeFavor() {
-        if (!Store.getters.isLogin) {
-          uni.navigate({
-            url: '/pages/user-center/login',
-          });
-          return false;
-        }
-        uni.showLoading('正在提交...');
-        const result = await Axios.post(
-          this.product.isCollected == 1 ? '/product/deleteFavorites' : '/product/addFavorites',
-          {
-            id: this.productId,
-          },
-        );
-        uni.hideLoading();
-        if (result.code == 200) {
-          this.product.isCollected = this.product.isCollected == 1 ? 0 : 1;
-          this.$uni.showToast(result.msg);
-        } else {
-          this.$uni.showToast(result.msg || '操作失败');
-        }
-      },
-      showModal(name) {
-        this.$refs[name].show(true, 1, this.sceneType);
-      },
-      changeSku(type, value) {
-        this[type] = value;
-      },
-      goStoreDetail() {
-        // 店铺详情
-        uni.reLaunch({ url: '/pages/index/index' });
-        // uni.navigateTo({
-        //   url: '/sub-pages/index/store/main?supplierId=' + this.product.supplierId,
-        // });
-      },
-      watchMore() {
-        // 门店
-        uni.navigateTo({
-          url: '/sub-pages/index/shop/main?supplierId=' + this.product.supplierId,
-        });
-        // wx.navigateTo({url:'/pages/supermarket/other-market'})
-      },
-      addCart() {
-        if (!Store.getters.isLogin) {
-          Store.dispatch('logout');
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-            // url: '/sub-pages/index/login/main''
-          });
-          return false;
-        }
-        if (this.userInfo && this.userInfo.storeNo === '') {
-          uni.navigateTo({ url: '/pages/user-center/applicant-info' });
-          return false;
-        }
-        this.$refs.selectSku.show(true, 1, this.sceneType);
-        // reportCmPV({ title: "加入购物车" });
-      },
-      checkout() {
-        if (!Store.getters.isLogin) {
-          Store.dispatch('logout');
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return false;
-        }
-        if (this.userInfo && this.userInfo.storeNo === '') {
-          uni.navigateTo({ url: '/pages/user-center/applicant-info' });
-          return false;
-        }
-        this.$refs.selectSku.show(true, 2, this.sceneType);
-        // reportCmPV({ title: "立即购买" });
-      },
-      async loadData() {
-        uni.showLoading();
-        this.loading = true;
-        const result = await Axios.post('/product/get', { id: this.productId });
-        uni.hideLoading();
-        this.loading = false;
-        if (result.code == 200) {
-          uni.setNavigationBarTitle({
-            title: result.data.name,
-          });
-          if (result.data.productDetail) {
-            const imgReg = /<img.*?(?:>|\/>)/gi; // 匹配src属性
-            const srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
-            const detailImageList = [];
-            (result.data.productDetail.match(imgReg) || []).map((imageTag) => {
-              const img = imageTag.match(srcReg)[1];
-              if (/^http/.test(img)) {
-                // 获取图片地址
-                detailImageList.push(imageTag.match(srcReg)[1]);
-              }
-            });
-            this.detailImageList = detailImageList;
-            if (this.detailImageList.length == 0) {
-              this.detailContents = result.data.productDetail;
-            }
-          }
-          result.data.firstClassName = result.data.firstClassName || '颜色';
-          result.data.subClassName = result.data.subClassName || '尺码';
-          this.product = result.data;
-          this.isAttention = this.product.brand.isConcerned == 1;
-          this.title = this.product.name;
-          this.colorList = [];
-          this.product.skuList &&
-            this.product.skuList.forEach((skuPriceAndStock) => {
-              this.colorList.push(skuPriceAndStock);
-            });
-          this.selectSaleType = this.saleTypeList[0];
-          if (this.colorList.length) {
-            this.selectColor = this.colorList[0];
-            this.sizeList = this.colorList[0].skuAndPriceList;
-            const list = [this.product.mainImgUrl];
-            this.productImgList = list.concat(this.colorList[0].imgUrlList || []);
-          }
-          this.sizeList.some((size) => {
-            if (size.availableStock) {
-              this.selectSize = size;
-              return true;
-            }
-          });
-          // 如果首次属性子属性的库存都为0的话默认显示第一个子属性的sku
-          const empt = this.sizeList.every((size) => {
-            return size.availableStock == 0;
-          });
-          if (empt) {
-            this.selectSize = this.sizeList[0];
-          }
-          this.attributeList = [];
-          this.product.attributes &&
+        this.attributeList = []
+        this.product.attributes &&
             this.product.attributes.forEach((attribute) => {
               this.attributeList.push({
                 name: attribute.attrName,
-                value: attribute.attrValContent,
-              });
-            });
-          if (this.product.storeIds.length > 0) {
-            this.getStoreList();
-          }
-          this.supplierDTO = result.data.supplierDTO;
-          // 获取商家运费模版
-          this.getTempBySupplierId(result.data.supplierId);
-        } else {
-          this.$uni.showToast(result.msg || '获取商品信息失败');
+                value: attribute.attrValContent
+              })
+            })
+        if (this.product.storeIds.length > 0) {
+          this.getStoreList()
         }
-        if (Store.getters.isLogin) {
-          this.updateCart();
-        }
-        // TODO 等待后端处理，不需要登录就能使用  先注释
-        this.loadCoupon();
-      },
-      // 获取商家运费模版
-      async getTempBySupplierId(supplierId) {
-        const result = await Axios.post('/freightTemplate/getTempBySupplierId', {
-          supplierId,
-        });
-        if (result.code == 200) {
-          this.freight = result.data;
-        } else {
-          this.$uni.showToast(result.msg);
-        }
-      },
+        this.supplierDTO = result.data.supplierDTO
+        // 获取商家运费模版
+        this.getTempBySupplierId(result.data.supplierId)
+      } else {
+        this.$uni.showToast(result.msg || '获取商品信息失败')
+      }
+      if (Store.getters.isLogin) {
+        this.updateCart()
+      }
+      // TODO 等待后端处理，不需要登录就能使用  先注释
+      this.loadCoupon()
     },
-    onUnload() {
-      this.$refs.selectSku.show(false);
-      this.product = {};
-      this.productImgList = [];
-      this.detailImageList = [];
-      this.colorList = [];
-    },
-    onShareAppMessage() {
-      return {
-        path: 'sub-pages/index/item/main?id=' + this.productId + '&sceneType=' + this.sceneType,
-        title: this.product.name,
-        imageUrl: this.product.mainImgUrl,
-      };
-    },
-    onPageScroll(e) {
-      var query = uni.createSelectorQuery();
-      query.select('.sell-price').boundingClientRect();
-      query.exec((res) => {
-        if (res && res[0].top < 86) {
-          this.fixTop = true;
-        } else {
-          this.fixTop = false;
-        }
-      });
-      this.$refs.toTop.show(e.scrollTop > App.systemInfo.screenHeight);
-    },
-    async onShow() {
-      this.productId = this.$scope.options.id;
-      this.sceneType = this.$scope.options.sceneType;
-      this.loadData();
-    },
-  };
+    // 获取商家运费模版
+    async getTempBySupplierId(supplierId) {
+      const result = await Axios.post('/freightTemplate/getTempBySupplierId', {
+        supplierId
+      })
+      if (result.code == 200) {
+        this.freight = result.data
+      } else {
+        this.$uni.showToast(result.msg)
+      }
+    }
+  },
+  onUnload() {
+    this.$refs.selectSku.show(false)
+    this.product = {}
+    this.productImgList = []
+    this.detailImageList = []
+    this.colorList = []
+  },
+  onShareAppMessage() {
+    return {
+      path: 'sub-pages/index/item/main?id=' + this.productId + '&sceneType=' + this.sceneType,
+      title: this.product.name,
+      imageUrl: this.product.mainImgUrl
+    }
+  },
+  onPageScroll(e) {
+    var query = uni.createSelectorQuery()
+    query.select('.sell-price').boundingClientRect()
+    query.exec((res) => {
+      if (res && res[0].top < 86) {
+        this.fixTop = true
+      } else {
+        this.fixTop = false
+      }
+    })
+    this.$refs.toTop.show(e.scrollTop > App.systemInfo.screenHeight)
+  },
+  async onShow() {
+    this.productId = this.$scope.options.id
+    this.sceneType = this.$scope.options.sceneType
+    this.loadData()
+  }
+}
 </script>
 
 <style lang="scss">

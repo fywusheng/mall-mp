@@ -43,7 +43,7 @@ export default {
       state.token = payload
     },
     logout(state) {
-      const map = ['sessionId', 'session_key', 'openid', 'unionid','userInfo', 'token']
+      const map = ['sessionId', 'session_key', 'openid', 'unionid', 'userInfo', 'token']
       map.forEach(key => {
         state[key] = ''
       })
@@ -62,13 +62,13 @@ export default {
     },
     // 退出登录
     logout(ctx) {
-      ['token', 'userInfo','sessionId'].forEach((key) => {
+      ['token', 'userInfo', 'sessionId'].forEach((key) => {
         uni.removeStorageSync(key)
       })
       ctx.commit('logout')
     },
     // 登录
-    async login({commit, dispatch}) {
+    async login({ commit, dispatch }) {
       // const {code} = await wx.login();
       const authData = await Axios.post(`/user/login`, {})
       commit('setWxAuthId', authData.data)
@@ -77,25 +77,25 @@ export default {
     },
     // 获取用户信息
     async getUserInfo({ commit, state }) {
-      if(!state.token) return
-      const params = {token: state.token}
-      const result = await Axios.post('/member/sh/memberInformation/getMemberInfoById', params);
-      if (result&&result.code == 200) {
-        if(result.data.iconUrl===''){
+      if (!state.token) return
+      const params = { token: state.token }
+      const result = await Axios.post('/member/sh/memberInformation/getMemberInfoById', params)
+      if (result && result.code == 200) {
+        if (result.data.iconUrl === '') {
           result.data.iconUrl = 'http://192.168.1.187:10088/static/user-center/icon-user-center-default-avatar.png'
         }
         // 已实名用户
-        if(result.data.idCard === '' ||result.data.idCard === ' '){
+        if (result.data.idCard === '' || result.data.idCard === ' ') {
           result.data.crtfStas = false
-        }else{
-          result.data.crtfStas  = true
+        } else {
+          result.data.crtfStas = true
         }
-        
+
         commit('setUserInfo', result.data)
         uni.setStorageSync('userInfo', result.data)
       } else {
-        uni.showToast({icon:'none',title: result.msg || result.data});
+        uni.showToast({ icon: 'none', title: result.msg || result.data })
       }
-    },
+    }
   }
 }

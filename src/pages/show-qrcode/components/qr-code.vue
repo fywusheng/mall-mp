@@ -58,83 +58,83 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import generator from 'uniapp-qrcode';
-  import { desensitizeName, desensitizeInfo } from '@/utils/desensitization.js';
-  export default {
-    data() {
-      return {
-        // 是否展示条形码大图
-        showsBarCode: false,
-        // 是否展示二维码大图
-        showsQRCode: false,
-        // 自动刷新定时器
-        timer: null,
-        // 用户信息
-        info: {},
-      };
+import api from '@/apis/index.js'
+import generator from 'uniapp-qrcode'
+import { desensitizeName, desensitizeInfo } from '@/utils/desensitization.js'
+export default {
+  data() {
+    return {
+      // 是否展示条形码大图
+      showsBarCode: false,
+      // 是否展示二维码大图
+      showsQRCode: false,
+      // 自动刷新定时器
+      timer: null,
+      // 用户信息
+      info: {}
+    }
+  },
+  filters: {
+    // 姓名过滤器, 用于姓名脱敏
+    nameFilter(value) {
+      return desensitizeName(value)
     },
-    filters: {
-      // 姓名过滤器, 用于姓名脱敏
-      nameFilter(value) {
-        return desensitizeName(value);
-      },
-      // 身份证号过滤器, 用于身份证号脱敏
-      idCardNumberFilter(value) {
-        return desensitizeInfo(value);
-      },
+    // 身份证号过滤器, 用于身份证号脱敏
+    idCardNumberFilter(value) {
+      return desensitizeInfo(value)
+    }
+  },
+  onLoad() {
+    this.handleRefreshClick()
+  },
+  onUnload() {
+    // 退出页面时销毁定时器
+    this.timer = null
+  },
+  methods: {
+    // 立即领取
+    handleReceive() {
+      this.$emit('receiveClick')
     },
-    onLoad() {
-      this.handleRefreshClick();
-    },
-    onUnload() {
-      // 退出页面时销毁定时器
-      this.timer = null;
-    },
-    methods: {
-      //立即领取
-      handleReceive() {
-        this.$emit('receiveClick');
-      },
-      /**
+    /**
        * 刷新点击事件
        */
-      handleRefreshClick() {
-        this.setTimer();
-        this.requestData();
-      },
-      /**
+    handleRefreshClick() {
+      this.setTimer()
+      this.requestData()
+    },
+    /**
        * 请求数据
        */
-      requestData() {
-        const userInfo = uni.getStorageSync('userInfo');
-        if (!userInfo.authCode) return;
-        api.getQRCodeInfo({
-          showsLoading: false,
-          data: {
-            appId: '53928a083adb4a7dad2eecf05564873f',
-            authCode: userInfo.authCode,
-          },
-          success: (data) => {
-            this.info = data;
-            generator.barcode('bar-code', data.ecQrCode, 560, 128);
-            generator.barcode('bar-code-big', data.ecQrCode, 1120, 256);
-            generator.qrcode('qr-code', data.ecQrCode, 500, 500);
-            generator.qrcode('qr-code-big', data.ecQrCode, 720, 720);
-          },
-        });
-      },
-      /**
+    requestData() {
+      const userInfo = uni.getStorageSync('userInfo')
+      if (!userInfo.authCode) return
+      api.getQRCodeInfo({
+        showsLoading: false,
+        data: {
+          appId: '53928a083adb4a7dad2eecf05564873f',
+          authCode: userInfo.authCode
+        },
+        success: (data) => {
+          this.info = data
+          generator.barcode('bar-code', data.ecQrCode, 560, 128)
+          generator.barcode('bar-code-big', data.ecQrCode, 1120, 256)
+          generator.qrcode('qr-code', data.ecQrCode, 500, 500)
+          generator.qrcode('qr-code-big', data.ecQrCode, 720, 720)
+        }
+      })
+    },
+    /**
        * 设置定时器
        */
-      setTimer() {
-        this.timer = null;
-        this.timer = setInterval(() => {
-          this.requestData();
-        }, 60000);
-      },
-    },
-  };
+    setTimer() {
+      this.timer = null
+      this.timer = setInterval(() => {
+        this.requestData()
+      }, 60000)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

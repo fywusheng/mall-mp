@@ -59,101 +59,101 @@
   </view>
 </template>
 <script>
-  import UniCollapse from './components/uni-collapse.vue';
-  import api from '@/apis/index.js';
-  export default {
-    components: { UniCollapse },
-    data() {
-      return {
-        tabList: [
-          //   {label: '全部', id: 0},
-          //   {label: '心血管内科', id: 2},
-          //   {label: '内分泌科', id: 3},
-          //   {label: '消化内科', id: 4},
-          //   {label: '感染内科', id: 5},
-          //   {label: '骨科', id: 6},
-          //   {label: '肿瘤科', id: 7},
-          //   {label: '风湿免疫科', id: 8},
-          //   {label: '肾内科', id: 9},
-          //   {label: '神经内科', id: 10},
-          //   {label: '血液内科', id: 11},
-        ],
-        doctorList: [],
-        showLoadMore: false,
-        loadTxt: '',
-        top: 0,
-        pageNum: 1,
-      };
+import UniCollapse from './components/uni-collapse.vue'
+import api from '@/apis/index.js'
+export default {
+  components: { UniCollapse },
+  data() {
+    return {
+      tabList: [
+        //   {label: '全部', id: 0},
+        //   {label: '心血管内科', id: 2},
+        //   {label: '内分泌科', id: 3},
+        //   {label: '消化内科', id: 4},
+        //   {label: '感染内科', id: 5},
+        //   {label: '骨科', id: 6},
+        //   {label: '肿瘤科', id: 7},
+        //   {label: '风湿免疫科', id: 8},
+        //   {label: '肾内科', id: 9},
+        //   {label: '神经内科', id: 10},
+        //   {label: '血液内科', id: 11},
+      ],
+      doctorList: [],
+      showLoadMore: false,
+      loadTxt: '',
+      top: 0,
+      pageNum: 1
+    }
+  },
+  created() {
+    this.userInfor = uni.getStorageSync('userInfo')
+    this.getInquiryDepartList()
+    this.getIDoctorList('全部')
+  },
+  onReachBottom() {
+    console.log('滚动')
+    this.pageNum++
+    this.getIDoctorList(this.name)
+  },
+  methods: {
+    // 获取科室列表
+    getInquiryDepartList() {
+      api.getInquiryDepartList({
+        data: {},
+        success: (data) => {
+          this.tabList = [{ departmentName: '全部' }].concat(data)
+        }
+      })
     },
-    created() {
-      this.userInfor = uni.getStorageSync('userInfo');
-      this.getInquiryDepartList();
-      this.getIDoctorList('全部');
+    // 获取医生列表
+    getIDoctorList(name) {
+      this.name = name === '全部' ? '' : name
+      this.showLoadMore = true
+      this.loadTxt = '加载中'
+      api.getIDoctorList({
+        data: {
+          departmentName: this.name,
+          pageNum: this.pageNum,
+          pageSize: 10
+        },
+        success: (data) => {
+          //   this.showLoadMore = false
+          if (data.records && data.records.length) {
+            this.showLoadMore = false
+            this.doctorList = this.doctorList.concat(data.records)
+          } else {
+            this.loadTxt = '无更多数据'
+          }
+          //   uni.hideLoading()
+          //   console.log(this.doctorList)
+        }
+      })
     },
-    onReachBottom() {
-      console.log('滚动');
-      this.pageNum++;
-      this.getIDoctorList(this.name);
+    // 医生详情
+    goDoctorPage(src) {
+      api.getInquiryReturnUrl({
+        data: {
+          ext_user_id: this.userInfor.uactId, // 用户id
+          target: src,
+          mobile: this.userInfor.tel
+        },
+        success: (data) => {
+          const url = data
+          uni.navigateTo({ url: `/pages/common/webpage?url=${encodeURIComponent(url)}` })
+        }
+      })
     },
-    methods: {
-      // 获取科室列表
-      getInquiryDepartList() {
-        api.getInquiryDepartList({
-          data: {},
-          success: (data) => {
-            this.tabList = [{ departmentName: '全部' }].concat(data);
-          },
-        });
-      },
-      // 获取医生列表
-      getIDoctorList(name) {
-        this.name = name === '全部' ? '' : name;
-        this.showLoadMore = true;
-        this.loadTxt = '加载中';
-        api.getIDoctorList({
-          data: {
-            departmentName: this.name,
-            pageNum: this.pageNum,
-            pageSize: 10,
-          },
-          success: (data) => {
-            //   this.showLoadMore = false
-            if (data.records && data.records.length) {
-              this.showLoadMore = false;
-              this.doctorList = this.doctorList.concat(data.records);
-            } else {
-              this.loadTxt = '无更多数据';
-            }
-            //   uni.hideLoading()
-            //   console.log(this.doctorList)
-          },
-        });
-      },
-      // 医生详情
-      goDoctorPage(src) {
-        api.getInquiryReturnUrl({
-          data: {
-            ext_user_id: this.userInfor.uactId, //用户id
-            target: src,
-            mobile: this.userInfor.tel,
-          },
-          success: (data) => {
-            const url = data;
-            uni.navigateTo({ url: `/pages/common/webpage?url=${encodeURIComponent(url)}` });
-          },
-        });
-      },
-      handleResize(top) {
-        this.top = top + 'px';
-      },
-      hanldTabClick(index) {
-        this.pageNum = 1;
-        this.doctorList = [];
-        uni.pageScrollTo({ scrollTop: 0 });
-        this.getIDoctorList(this.tabList[index].departmentName);
-      },
+    handleResize(top) {
+      this.top = top + 'px'
     },
-  };
+    hanldTabClick(index) {
+      this.pageNum = 1
+      this.doctorList = []
+      uni.pageScrollTo({ scrollTop: 0 })
+      this.getIDoctorList(this.tabList[index].departmentName)
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .topArea {

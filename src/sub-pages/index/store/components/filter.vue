@@ -187,68 +187,68 @@
 
 <script>
 
-  export default {
-    name: 'SEARCH-FILTER',
-    props: {
-      attrList: {
-        type: Array,
-        default: [],
-      },
-      brandList: {
-        type: Array,
-        default: [],
-      },
-      categoryList: {
-        type: Array,
-        default: [],
-      },
-      priceList: {
-        type: Array,
-        default: [],
-      },
+export default {
+  name: 'SEARCH-FILTER',
+  props: {
+    attrList: {
+      type: Array,
+      default: []
     },
-    data() {
-      return {
-        showPopup: false,
-        params: {
-          brandId: '',
-        },
-        dataList: [],
-        showMoreBrand: false,
-        showMoreCate: false,
-        showMorePrice: false,
-      }
+    brandList: {
+      type: Array,
+      default: []
     },
-    components: {},
-    filters: {},
-    methods: {
-      changePrice(price) {
-        this.$emit('changePrice', price)
-      },
-      reset() {
-        this.$emit('reset');
-        this.showPopup = false;
-      },
-      search() {
-        this.$emit('search');
-        this.showPopup = false;
-      },
-      changeCate(cate) {
-        //类别
-        this.$emit('changeCate', cate)
-      },
-      changeBrand(brand) {
-        //品牌
-        this.$emit('changeBrand', brand)
-      },
-      changeCheck(conditionList, condition) {
-        condition.check = !condition.check;
-      },
-      show(flag) {
-        this.showPopup = flag;
-      }
+    categoryList: {
+      type: Array,
+      default: []
     },
-    async mounted() {
+    priceList: {
+      type: Array,
+      default: []
     }
+  },
+  data() {
+    return {
+      showPopup: false,
+      params: {
+        brandId: ''
+      },
+      dataList: [],
+      showMoreBrand: false,
+      showMoreCate: false,
+      showMorePrice: false
+    }
+  },
+  components: {},
+  filters: {},
+  methods: {
+    changePrice(price) {
+      this.$emit('changePrice', price)
+    },
+    reset() {
+      this.$emit('reset')
+      this.showPopup = false
+    },
+    search() {
+      this.$emit('search')
+      this.showPopup = false
+    },
+    changeCate(cate) {
+      // 类别
+      this.$emit('changeCate', cate)
+    },
+    changeBrand(brand) {
+      // 品牌
+      this.$emit('changeBrand', brand)
+    },
+    changeCheck(conditionList, condition) {
+      condition.check = !condition.check
+    },
+    show(flag) {
+      this.showPopup = flag
+    }
+  },
+  async mounted() {
   }
+}
 </script>

@@ -46,121 +46,121 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import { sendSMSCode } from '@/api/modules/sms.js';
-  import { desensitizeInfo } from '@/utils/desensitization.js';
-  import { validatePhoneNumber } from '@/utils/validation.js';
-  export default {
-    data() {
-      return {
-        // 发送验证码倒计时
-        seconds: 0,
-        currentPhoneNumber: '',
-        // 表单数据
-        params: {
-          phoneNumber: '',
-          smsCode: '',
-        },
-      };
-    },
-    filters: {
-      // 手机号过滤器, 用于手机号脱敏
-      phoneNumberFilter(value) {
-        return desensitizeInfo(value);
-      },
-    },
-    onLoad() {
-      const userInfo = uni.getStorageSync('userInfo');
-      this.currentPhoneNumber = userInfo.phone;
-    },
-    methods: {
-      /**
+import api from '@/apis/index.js'
+import { sendSMSCode } from '@/api/modules/sms.js'
+import { desensitizeInfo } from '@/utils/desensitization.js'
+import { validatePhoneNumber } from '@/utils/validation.js'
+export default {
+  data() {
+    return {
+      // 发送验证码倒计时
+      seconds: 0,
+      currentPhoneNumber: '',
+      // 表单数据
+      params: {
+        phoneNumber: '',
+        smsCode: ''
+      }
+    }
+  },
+  filters: {
+    // 手机号过滤器, 用于手机号脱敏
+    phoneNumberFilter(value) {
+      return desensitizeInfo(value)
+    }
+  },
+  onLoad() {
+    const userInfo = uni.getStorageSync('userInfo')
+    this.currentPhoneNumber = userInfo.phone
+  },
+  methods: {
+    /**
        * 发送验证码点击事件
        */
-      handleSencSMSCodeClick() {
-        if (!this.params.phoneNumber) {
-          this.$uni.showToast('请输入手机号');
-          return;
+    handleSencSMSCodeClick() {
+      if (!this.params.phoneNumber) {
+        this.$uni.showToast('请输入手机号')
+        return
+      }
+      if (!validatePhoneNumber(this.params.phoneNumber)) {
+        this.$uni.showToast('手机号格式错误，请重新输入')
+        return
+      }
+      sendSMSCode({
+        data: {
+          mobile: this.params.phoneNumber,
+          sceneFlag: '2',
+          source: 'source',
+          tmplId: '340701587045712968'
+        },
+        success: () => {
+          this.$uni.showToast('发送成功')
+          this.seconds = 60
+          this.timer = setInterval(() => {
+            this.seconds -= 1
+            if (this.seconds < 0) clearInterval(this.timer)
+          }, 1000)
         }
-        if (!validatePhoneNumber(this.params.phoneNumber)) {
-          this.$uni.showToast('手机号格式错误，请重新输入');
-          return;
-        }
-        sendSMSCode({
-          data: {
-            mobile: this.params.phoneNumber,
-            sceneFlag: '2',
-            source: 'source',
-            tmplId: '340701587045712968',
-          },
-          success: () => {
-            this.$uni.showToast('发送成功');
-            this.seconds = 60;
-            this.timer = setInterval(() => {
-              this.seconds -= 1;
-              if (this.seconds < 0) clearInterval(this.timer);
-            }, 1000);
-          },
-        });
-      },
-      /**
+      })
+    },
+    /**
        * 下一步点击事件
        */
-      handleNextStepClick() {
-        if (!this.params.phoneNumber) {
-          this.$uni.showToast('请输入手机号');
-          return;
+    handleNextStepClick() {
+      if (!this.params.phoneNumber) {
+        this.$uni.showToast('请输入手机号')
+        return
+      }
+      if (!validatePhoneNumber(this.params.phoneNumber)) {
+        this.$uni.showToast('手机号格式错误，请重新输入')
+        return
+      }
+      if (this.params.smsCode.length !== 6) {
+        this.$uni.showToast('请输入正确的验证码')
+        return
+      }
+      api.updateMobile({
+        data: {
+          newMobile: this.params.phoneNumber,
+          verifyCode: this.params.smsCode
+        },
+        success: (res) => {
+          this.$uni.showToast('手机号修改成功，请重新登录')
+          setTimeout(() => {
+            uni.redirectTo({
+              url: '/pages/user-center/login?goUrl=' + '/pages/index/index?index=4'
+            })
+          }, 1500)
         }
-        if (!validatePhoneNumber(this.params.phoneNumber)) {
-          this.$uni.showToast('手机号格式错误，请重新输入');
-          return;
-        }
-        if (this.params.smsCode.length !== 6) {
-          this.$uni.showToast('请输入正确的验证码');
-          return;
-        }
-        api.updateMobile({
-          data: {
-            newMobile: this.params.phoneNumber,
-            verifyCode: this.params.smsCode,
-          },
-          success: (res) => {
-            this.$uni.showToast('手机号修改成功，请重新登录');
-            setTimeout(() => {
-              uni.redirectTo({
-                url: '/pages/user-center/login?goUrl=' + '/pages/index/index?index=4',
-              });
-            }, 1500);
-          },
-        });
-        // api.checkSMSCode({
-        //   data: {
-        //     mobile: this.params.phoneNumber,
-        //     code: this.params.smsCode,
-        //     sceneFlag: "4",
-        //   },
-        //   success: () => {
-        //     api.updateMobile({
-        //       data: {
-        //         newMobile: this.params.phoneNumber,
-        //         verifyCode: this.params.smsCode,
-        //       },
-        //       success:(res)=>{
-        //         this.$uni.showToast("手机号修改成功，请重新登录");
-        //         setTimeout(()=>{
-        //           uni.reLaunch({
-        //             url: '/pages/user-center/login'
-        //         });
-        //         },1500)
+      })
+      // api.checkSMSCode({
+      //   data: {
+      //     mobile: this.params.phoneNumber,
+      //     code: this.params.smsCode,
+      //     sceneFlag: "4",
+      //   },
+      //   success: () => {
+      //     api.updateMobile({
+      //       data: {
+      //         newMobile: this.params.phoneNumber,
+      //         verifyCode: this.params.smsCode,
+      //       },
+      //       success:(res)=>{
+      //         this.$uni.showToast("手机号修改成功，请重新登录");
+      //         setTimeout(()=>{
+      //           uni.reLaunch({
+      //             url: '/pages/user-center/login'
+      //         });
+      //         },1500)
 
-        //       }
-        //     })
+      //       }
+      //     })
 
-        //   },
-        // });
-      },
-    },
-  };
+      //   },
+      // });
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

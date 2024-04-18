@@ -34,100 +34,100 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      show: {
-        type: Boolean,
-        default: false,
-      },
-    },
-    data() {
-      return {
-        // 是否显示
-        shouldDisplay: false,
-        // 蒙版透明度
-        alpha: 0,
-        // 语音输入面板高度
-        height: 0,
-        // 是否正在说话
-        isSpeaking: false,
-      };
-    },
-    watch: {
-      show(newValue) {
-        newValue ? this.open() : this.close();
-      },
-    },
-    onReady() {
-      // #ifdef MP-WEIXIN
-      this.initRecordRecognitionManager();
-      // #endif
-    },
-    methods: {
-      /**
+export default {
+  props: {
+    show: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      // 是否显示
+      shouldDisplay: false,
+      // 蒙版透明度
+      alpha: 0,
+      // 语音输入面板高度
+      height: 0,
+      // 是否正在说话
+      isSpeaking: false
+    }
+  },
+  watch: {
+    show(newValue) {
+      newValue ? this.open() : this.close()
+    }
+  },
+  onReady() {
+    // #ifdef MP-WEIXIN
+    this.initRecordRecognitionManager()
+    // #endif
+  },
+  methods: {
+    /**
        * 语音输入图标点击开始
        */
-      handleTouchStart() {
-        console.log('start');
-        this.$emit('start');
-        this.manager.start();
-      },
-      /**
+    handleTouchStart() {
+      console.log('start')
+      this.$emit('start')
+      this.manager.start()
+    },
+    /**
        * 语音输入图标点击结束
        */
-      handleTouchEnd() {
-        console.log('end');
-        this.$emit('end');
-        this.manager.stop();
-      },
-      /**
+    handleTouchEnd() {
+      console.log('end')
+      this.$emit('end')
+      this.manager.stop()
+    },
+    /**
        * 打开语音输入面板
        */
-      open() {
-        this.shouldDisplay = true;
-        setTimeout(() => {
-          this.alpha = 0.1;
-          this.height = 540;
-        }, 100);
-      },
-      /**
+    open() {
+      this.shouldDisplay = true
+      setTimeout(() => {
+        this.alpha = 0.1
+        this.height = 540
+      }, 100)
+    },
+    /**
        * 关闭语音输入面板
        */
-      close() {
-        this.alpha = 0;
-        this.height = 0;
-        setTimeout(() => {
-          this.shouldDisplay = false;
-        }, 300);
-      },
-      /**
+    close() {
+      this.alpha = 0
+      this.height = 0
+      setTimeout(() => {
+        this.shouldDisplay = false
+      }, 300)
+    },
+    /**
        * 初始化微信语音转文字插件
        */
-      initRecordRecognitionManager() {
-        // eslint-disable-next-line no-undef
-        const plugin = requirePlugin('WechatSI');
-        const manager = plugin.getRecordRecognitionManager();
-        const self = this;
-        manager.onStart = function () {
-          console.log('语音输入开始');
-          self.isSpeaking = true;
-        };
-        manager.onRecognize = function (res) {
-          self.$emit('change', res.result);
-        };
-        manager.onStop = function (res) {
-          console.log('语音输入结束');
-          self.isSpeaking = false;
-          self.$emit('change', res.result);
-          self.close();
-        };
-        manager.onError = function (res) {
-          console.error('语音输入报错: ', res.msg);
-        };
-        this.manager = manager;
-      },
-    },
-  };
+    initRecordRecognitionManager() {
+      // eslint-disable-next-line no-undef
+      const plugin = requirePlugin('WechatSI')
+      const manager = plugin.getRecordRecognitionManager()
+      const self = this
+      manager.onStart = function () {
+        console.log('语音输入开始')
+        self.isSpeaking = true
+      }
+      manager.onRecognize = function (res) {
+        self.$emit('change', res.result)
+      }
+      manager.onStop = function (res) {
+        console.log('语音输入结束')
+        self.isSpeaking = false
+        self.$emit('change', res.result)
+        self.close()
+      }
+      manager.onError = function (res) {
+        console.error('语音输入报错: ', res.msg)
+      }
+      this.manager = manager
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

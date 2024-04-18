@@ -348,617 +348,617 @@
 </template>
 
 <script>
-  import generator from 'uniapp-qrcode';
-  import api from '@/apis/index.js';
-  import dayjs from 'dayjs';
-  import { showPoints } from './components/showPoints.vue';
-  import { desensitizeName, desensitizeInfo } from '@/utils/desensitization.js';
-  import NavigationBar from '../../components/common/navigation-bar.vue';
-  import { startFacialRecognitionVerify } from '@/utils/utils.js';
-  import staticData from '@/utils/dataBase64.js';
-  export default {
-    components: { NavigationBar, showPoints },
-    data() {
-      return {
-        // 导航栏高度
-        // #ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        // #endif
-        // #ifdef MP-ALIPAY
-        navigationBarHeight:
+import generator from 'uniapp-qrcode'
+import api from '@/apis/index.js'
+import dayjs from 'dayjs'
+import { showPoints } from './components/showPoints.vue'
+import { desensitizeName, desensitizeInfo } from '@/utils/desensitization.js'
+import NavigationBar from '../../components/common/navigation-bar.vue'
+import { startFacialRecognitionVerify } from '@/utils/utils.js'
+import staticData from '@/utils/dataBase64.js'
+export default {
+  components: { NavigationBar, showPoints },
+  data() {
+    return {
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        // #endif
-        // 亲情账号列表
-        list: [
-          // {
-          //   name: '赵*萌',
-          //   relation: '待确认',
-          // },
-        ],
-        // 页码
-        pageNum: 1,
-        // 显示条数
-        pageSize: 5,
-        // 是否已绑定
-        hasBinded: true,
-        // 重新发送提示语
-        tips: '',
-        // 重新发送倒计时
-        seconds: 0,
-        // 倒计时定时器
-        timer: '',
-        // 选中的亲情账号下标
-        selectedAccountIndex: 0,
-        // 选中的 TabBar 下标
-        selectedTabIndex: 0,
-        // 是否展示条形码大图
-        showsBarCode: false,
-        // 是否展示二维码大图
-        showsQRCode: false,
-        // 自动刷新定时器
-        timer: null,
-        // 用户uactId，用于接口请求
-        uactId: null,
-        // 证件信息
-        info: {},
-        // 证件号码
-        cardNumber: '',
-        // 头像链接地址
-        avatar: '',
-        // 展码信息
-        codeInfo: {},
-        // 该亲友是否领卡
-        haveCard: false,
-        // 亲友卡状态
-        authState: 0,
-        // 申领时间
-        submitTime: '',
-      };
+      // #endif
+      // 亲情账号列表
+      list: [
+        // {
+        //   name: '赵*萌',
+        //   relation: '待确认',
+        // },
+      ],
+      // 页码
+      pageNum: 1,
+      // 显示条数
+      pageSize: 5,
+      // 是否已绑定
+      hasBinded: true,
+      // 重新发送提示语
+      tips: '',
+      // 重新发送倒计时
+      seconds: 0,
+      // 倒计时定时器
+      timer: '',
+      // 选中的亲情账号下标
+      selectedAccountIndex: 0,
+      // 选中的 TabBar 下标
+      selectedTabIndex: 0,
+      // 是否展示条形码大图
+      showsBarCode: false,
+      // 是否展示二维码大图
+      showsQRCode: false,
+      // 自动刷新定时器
+      timer: null,
+      // 用户uactId，用于接口请求
+      uactId: null,
+      // 证件信息
+      info: {},
+      // 证件号码
+      cardNumber: '',
+      // 头像链接地址
+      avatar: '',
+      // 展码信息
+      codeInfo: {},
+      // 该亲友是否领卡
+      haveCard: false,
+      // 亲友卡状态
+      authState: 0,
+      // 申领时间
+      submitTime: ''
+    }
+  },
+  computed: {
+    tabBackgroundClass() {
+      const classes = ['tab-background--left', 'tab-background--middle', 'tab-background--right']
+      return classes[this.selectedTabIndex]
+    }
+  },
+  onLoad() {
+    uni.setStorageSync('reflash', true)
+    this.userInfo = uni.getStorageSync('userInfo')
+    // 提取用户信息uactId
+    // this.uactId = uni.getStorageSync('userInfo').uactId
+  },
+  onShow() {
+    if (uni.getStorageSync('reflash')) {
+      uni.setStorageSync('reflash', false)
+      // 获取亲情账户列表
+      this.findFamilyMemberList().then(() => {
+        if (this.list.length > 0) {
+          this.changeFamily(0)
+          // this.handleTabClick(this.selectedTabIndex)
+        }
+      })
+    }
+  },
+  onUnload() {
+    // 退出页面时销毁定时器
+    if (this.timer) {
+      clearInterval(this.timer)
+      this.timer = null
+    }
+    if (this.msgtimer) {
+      clearInterval(this.msgtimer)
+      this.msgtimer = null
+    }
+  },
+  methods: {
+    success_flag(successFlag) {
+      // this.$emit("success_flag",successFlag)
     },
-    computed: {
-      tabBackgroundClass() {
-        const classes = ['tab-background--left', 'tab-background--middle', 'tab-background--right'];
-        return classes[this.selectedTabIndex];
-      },
+    handleUserAgreementClick(type) {
+      const url = `${ENV.H5}/#/agreement?type=${ENV.H5}`
+      uni.navigateTo({
+        url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
+      })
     },
-    onLoad() {
-      uni.setStorageSync('reflash', true);
-      this.userInfo = uni.getStorageSync('userInfo');
-      // 提取用户信息uactId
-      // this.uactId = uni.getStorageSync('userInfo').uactId
-    },
-    onShow() {
-      if (uni.getStorageSync('reflash')) {
-        uni.setStorageSync('reflash', false);
-        // 获取亲情账户列表
-        this.findFamilyMemberList().then(() => {
-          if (this.list.length > 0) {
-            this.changeFamily(0);
-            // this.handleTabClick(this.selectedTabIndex)
-          }
-        });
-      }
-    },
-    onUnload() {
-      // 退出页面时销毁定时器
-      if (this.timer) {
-        clearInterval(this.timer);
-        this.timer = null;
-      }
-      if (this.msgtimer) {
-        clearInterval(this.msgtimer);
-        this.msgtimer = null;
-      }
-    },
-    methods: {
-      success_flag(successFlag) {
-        // this.$emit("success_flag",successFlag)
-      },
-      handleUserAgreementClick(type) {
-        const url = `${ENV.H5}/#/agreement?type=${ENV.H5}`;
-        uni.navigateTo({
-          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-        });
-      },
-      /**
+    /**
        * 是否已添加过情亲
        */
-      findUserIsAddSup() {
-        const data = {
-          selectType: '1',
-        };
-        api.findUserIsAddSup({
-          data,
-          success: (res) => {
-            if (!res) {
-              // 如果未添加过亲情账号, 重定向到添加页面
-              uni.redirectTo({
-                url: '/pages/family-account/select-type',
-              });
-            }
-          },
-        });
-      },
-      /**
+    findUserIsAddSup() {
+      const data = {
+        selectType: '1'
+      }
+      api.findUserIsAddSup({
+        data,
+        success: (res) => {
+          if (!res) {
+            // 如果未添加过亲情账号, 重定向到添加页面
+            uni.redirectTo({
+              url: '/pages/family-account/select-type'
+            })
+          }
+        }
+      })
+    },
+    /**
        * 查询亲友的老龄卡是否领取
        */
-      getCertificateState() {
-        const item = this.list[this.selectedAccountIndex];
-        return new Promise((resolve, reject) => {
-          // 已绑定并且有证则请求老年证信息
-          api.getCertificateState({
-            data: {
-              idNo: item.toIdCard,
-              idType: '身份证',
-              userName: item.userName,
-              appId: '53928a083adb4a7dad2eecf05564873f',
-            },
-            success: (res) => {
-              // 1：已授权已激活 2：未授权已激活 3：未激活 4.审核中 5.审核失败 6.其它渠道已经领取，在老龄委使用，需要进行用户授权
-              this.authState = res.authState;
-              // this.authState = 6
-              if (res.authState === '1' || res.authState === '2') {
-                this.haveCard = true;
-                api.getAuthorizationCode({
-                  data: {
-                    uactId: item.uactId,
-                    psnName: item.userName,
-                    certNo: item.toIdCard,
-                    appId: '53928a083adb4a7dad2eecf05564873f',
-                  },
-                  showsLoading: true,
-                  success: (data) => {
-                    // 卡状态为 2, 请求获取授权码接口
-                    this.haveCard = true;
-                    this.list[this.selectedAccountIndex].authCode = data.authCode;
-                    resolve();
-                  },
-                });
-              } else {
-                this.haveCard = false;
-                if (res.submitTime) {
-                  this.submitTime = res.submitTime;
+    getCertificateState() {
+      const item = this.list[this.selectedAccountIndex]
+      return new Promise((resolve, reject) => {
+        // 已绑定并且有证则请求老年证信息
+        api.getCertificateState({
+          data: {
+            idNo: item.toIdCard,
+            idType: '身份证',
+            userName: item.userName,
+            appId: '53928a083adb4a7dad2eecf05564873f'
+          },
+          success: (res) => {
+            // 1：已授权已激活 2：未授权已激活 3：未激活 4.审核中 5.审核失败 6.其它渠道已经领取，在老龄委使用，需要进行用户授权
+            this.authState = res.authState
+            // this.authState = 6
+            if (res.authState === '1' || res.authState === '2') {
+              this.haveCard = true
+              api.getAuthorizationCode({
+                data: {
+                  uactId: item.uactId,
+                  psnName: item.userName,
+                  certNo: item.toIdCard,
+                  appId: '53928a083adb4a7dad2eecf05564873f'
+                },
+                showsLoading: true,
+                success: (data) => {
+                  // 卡状态为 2, 请求获取授权码接口
+                  this.haveCard = true
+                  this.list[this.selectedAccountIndex].authCode = data.authCode
+                  resolve()
                 }
+              })
+            } else {
+              this.haveCard = false
+              if (res.submitTime) {
+                this.submitTime = res.submitTime
               }
-            },
-          });
-        });
-      },
-      /**
-       * 获取亲情账号列表
-       */
-      findFamilyMemberList() {
-        return new Promise((resolve, reject) => {
-          const data = {
-            uactId: this.userInfo.memberId,
-            pageNum: 1,
-            pageSize: 5,
-          };
-          uni.showLoading({
-            title: '加载中',
-          });
-          api.findFamilyMemberList({
-            data,
-            showsLoading: true,
-            success: (res) => {
-              resolve();
-              console.log('接口所得res：', res);
-              if (res.list) {
-                this.list = res.list;
-              }
-
-              //
-            },
-            fail: (err) => {
-              reject();
-              console.log('错误err：', err);
-              uni.hideLoading();
-              uni.showToast(err.message);
-            },
-          });
-        });
-      },
-
-      /**
-       *   切换亲人
-       */
-      changeFamily(index) {
-        this.selectedAccountIndex = index;
-        const item = this.list[this.selectedAccountIndex];
-        // 清除定时器
-        if (this.msgtimer) {
-          clearInterval(this.msgtimer);
-          this.msgtimer = null;
-          this.tips = '';
-        }
-        console.log('亲人item:', item);
-        // 是否已绑定(连接状态02 待确认 00 已关联)
-        if (item.linkState === '02') {
-          this.hasBinded = false;
-          if (item.retryNum < 1) {
-            this.tips = '今日次数已用尽';
-          } else {
-            // 判断短信
-            // 重新发送倒计时
-            this.tips = '';
-            if (this.list[index].expireTime) {
-              this.seconds = Math.ceil(
-                60 - (Date.parse(new Date()) - this.list[index].expireTime) / 1000,
-              );
-              this.msgtimer = setInterval(() => {
-                this.tips = `请${this.seconds}s后重新尝试`;
-                this.seconds -= 1;
-                if (this.seconds < 0) {
-                  this.tips = '';
-                  clearInterval(this.msgtimer);
-                  console.log('this.list[index].retryNum:', this.list[index].retryNum);
-                  if (this.list[index].retryNum < 1) {
-                    this.tips = '今日次数已用尽';
-                  }
-                }
-              }, 1000);
             }
           }
-          return;
-        } else {
-          this.hasBinded = true;
+        })
+      })
+    },
+    /**
+       * 获取亲情账号列表
+       */
+    findFamilyMemberList() {
+      return new Promise((resolve, reject) => {
+        const data = {
+          uactId: this.userInfo.memberId,
+          pageNum: 1,
+          pageSize: 5
         }
+        uni.showLoading({
+          title: '加载中'
+        })
+        api.findFamilyMemberList({
+          data,
+          showsLoading: true,
+          success: (res) => {
+            resolve()
+            console.log('接口所得res：', res)
+            if (res.list) {
+              this.list = res.list
+            }
 
-        this.selectedTabIndex = 0;
-        console.log('知悉');
-        // 默认选择展证
-        this.handleTabClick(this.selectedTabIndex);
-      },
-      /**
+            //
+          },
+          fail: (err) => {
+            reject()
+            console.log('错误err：', err)
+            uni.hideLoading()
+            uni.showToast(err.message)
+          }
+        })
+      })
+    },
+
+    /**
+       *   切换亲人
+       */
+    changeFamily(index) {
+      this.selectedAccountIndex = index
+      const item = this.list[this.selectedAccountIndex]
+      // 清除定时器
+      if (this.msgtimer) {
+        clearInterval(this.msgtimer)
+        this.msgtimer = null
+        this.tips = ''
+      }
+      console.log('亲人item:', item)
+      // 是否已绑定(连接状态02 待确认 00 已关联)
+      if (item.linkState === '02') {
+        this.hasBinded = false
+        if (item.retryNum < 1) {
+          this.tips = '今日次数已用尽'
+        } else {
+          // 判断短信
+          // 重新发送倒计时
+          this.tips = ''
+          if (this.list[index].expireTime) {
+            this.seconds = Math.ceil(
+              60 - (Date.parse(new Date()) - this.list[index].expireTime) / 1000
+            )
+            this.msgtimer = setInterval(() => {
+              this.tips = `请${this.seconds}s后重新尝试`
+              this.seconds -= 1
+              if (this.seconds < 0) {
+                this.tips = ''
+                clearInterval(this.msgtimer)
+                console.log('this.list[index].retryNum:', this.list[index].retryNum)
+                if (this.list[index].retryNum < 1) {
+                  this.tips = '今日次数已用尽'
+                }
+              }
+            }, 1000)
+          }
+        }
+        return
+      } else {
+        this.hasBinded = true
+      }
+
+      this.selectedTabIndex = 0
+      console.log('知悉')
+      // 默认选择展证
+      this.handleTabClick(this.selectedTabIndex)
+    },
+    /**
        * 电子老年证展证
        */
-      getCertificateInfo() {
-        const item = this.list[this.selectedAccountIndex];
+    getCertificateInfo() {
+      const item = this.list[this.selectedAccountIndex]
 
-        // 是否已领证（电子证授权码 非null代表已领卡
-        // if (item.authCode === null) {
-        //   this.haveCard = false
-        //   return
-        // } else {
-        //   this.haveCard = true
-        // }
-        // 已绑定并且有证则请求老年证信息
-        api.getCertificateInfo({
-          data: {
-            chnlId: '53928a083adb4a7dad2eecf05564873f',
-            authCode: item.authCode,
-          },
-          success: (data) => {
-            this.cardNumber = data.ecShowCardNo;
-            this.avatar = data.ecCertPhoto;
-            this.info = data.ecCertExtendDTO;
-            // this.handleTabClick(this.selectedTabIndex)
-            generator.qrcode('qr-code-copy', this.cardNumber, 112, 112);
-          },
-        });
-      },
-      /**
+      // 是否已领证（电子证授权码 非null代表已领卡
+      // if (item.authCode === null) {
+      //   this.haveCard = false
+      //   return
+      // } else {
+      //   this.haveCard = true
+      // }
+      // 已绑定并且有证则请求老年证信息
+      api.getCertificateInfo({
+        data: {
+          chnlId: '53928a083adb4a7dad2eecf05564873f',
+          authCode: item.authCode
+        },
+        success: (data) => {
+          this.cardNumber = data.ecShowCardNo
+          this.avatar = data.ecCertPhoto
+          this.info = data.ecCertExtendDTO
+          // this.handleTabClick(this.selectedTabIndex)
+          generator.qrcode('qr-code-copy', this.cardNumber, 112, 112)
+        }
+      })
+    },
+    /**
        * 请求展码数据
        */
-      getQRCodeInfo() {
-        const item = this.list[this.selectedAccountIndex];
-        return new Promise((resolve, reject) => {
-          api.getQRCodeInfo({
-            showsLoading: false,
-            data: {
-              appId: '53928a083adb4a7dad2eecf05564873f',
-              authCode: item.authCode,
-            },
-            success: (data) => {
-              this.codeInfo = data;
-              generator.barcode('bar-code', this.codeInfo.ecQrCode, 560, 128);
-              generator.barcode('bar-code-big', this.codeInfo.ecQrCode, 1120, 256);
-              generator.qrcode('qr-code', this.codeInfo.ecQrCode, 400, 400);
-              generator.qrcode('qr-code-big', this.codeInfo.ecQrCode, 720, 720);
-              resolve();
-            },
-          });
-        });
-      },
+    getQRCodeInfo() {
+      const item = this.list[this.selectedAccountIndex]
+      return new Promise((resolve, reject) => {
+        api.getQRCodeInfo({
+          showsLoading: false,
+          data: {
+            appId: '53928a083adb4a7dad2eecf05564873f',
+            authCode: item.authCode
+          },
+          success: (data) => {
+            this.codeInfo = data
+            generator.barcode('bar-code', this.codeInfo.ecQrCode, 560, 128)
+            generator.barcode('bar-code-big', this.codeInfo.ecQrCode, 1120, 256)
+            generator.qrcode('qr-code', this.codeInfo.ecQrCode, 400, 400)
+            generator.qrcode('qr-code-big', this.codeInfo.ecQrCode, 720, 720)
+            resolve()
+          }
+        })
+      })
+    },
 
-      /**
+    /**
        * 亲情账号列表末尾添加图标点击事件
        */
-      handleAddIconClick() {
-        uni.navigateTo({
-          url: '/pages/family-account/select-type?family=1',
-        });
-      },
-      /**
+    handleAddIconClick() {
+      uni.navigateTo({
+        url: '/pages/family-account/select-type?family=1'
+      })
+    },
+    /**
        * 点击管理按钮
        */
-      goList() {
-        uni.navigateTo({
-          url: '/pages/family-account/family-list',
-        });
-      },
-      handleAgreeClick() {
-        const item = this.list[this.selectedAccountIndex];
-        const params = {
-          name: item.userName,
-          idCard: item.toIdCard,
-        };
-        console.log('提交的参数params:', params);
-        params.success = async () => {
-          // 其他渠道授權接口
-          api.executeActivation({
-            data: {
-              idNo: item.toIdCard,
-              userName: item.userName,
-            },
-            showsLoading: true,
-            success: (res) => {
-              // this.$refs.showPoints.showsCreditsPopup = true
-            },
-          });
-
-          // 进行实名认证 身份信息+头像
-        };
-        // this.demo();
-        // 开启人脸识别
-        startFacialRecognitionVerify(params);
-      },
-
-      // 点击返回
-      handleNavigationBack() {
-        uni.navigateBack({
-          delta: 1,
-        });
-      },
-      /**
-       * TabBar 点击事件（亮证，扫描，老年码切换）
-       */
-      handleTabClick(index) {
-        if (index == 2) return;
-        const item = this.list[this.selectedAccountIndex];
-        switch (index) {
-          case 0:
-            this.selectedTabIndex = index;
-            // 获取该亲友的领证状态
-            this.getCertificateState().then(() => {
-              // 获取展证信息
-              this.getCertificateInfo();
-            });
-            break;
-          case 1:
-            uni.scanCode({
-              onlyFromCamera: true,
-              scanType: ['qrCode'],
-              success: (res) => {
-                console.log(res);
-              },
-            });
-            break;
-          case 2:
-            // 是否已绑定(连接状态02 待确认 00 已关联)
-            if (item.linkState === '02') {
-              return;
-            }
-            // 是否已领证（电子证授权码 非null代表已领卡
-            if (item.authCode === null) {
-              return;
-            }
-            this.selectedTabIndex = index;
-            // 请求用户的展码数据
-            this.getQRCodeInfo().then(() => {
-              // 设置定时器
-              // this.handleRefreshClick()
-              this.setTimer();
-            });
-            break;
-        }
-      },
-      /**
-       * 刷新点击事件
-       */
-      handleRefreshClick() {
-        // 清楚定时器
-        if (this.timer) {
-          clearInterval(this.timer);
-          this.timer = null;
-        }
-        this.handleTabClick(2);
-      },
-      /**
-       * 设置定时器
-       */
-      setTimer() {
-        if (this.timer) {
-          clearInterval(this.timer);
-          this.timer = null;
-        }
-        this.timer = setInterval(() => {
-          this.getQRCodeInfo();
-        }, 60000);
-      },
-      /**
-       * 发送短信
-       */
-      sendMessage() {
-        const item = this.list[this.selectedAccountIndex];
-        this.msgtimer = null;
-        this.list[this.selectedAccountIndex].retryNum = item.retryNum - 1;
-        api.retryFamilyInfo({
+    goList() {
+      uni.navigateTo({
+        url: '/pages/family-account/family-list'
+      })
+    },
+    handleAgreeClick() {
+      const item = this.list[this.selectedAccountIndex]
+      const params = {
+        name: item.userName,
+        idCard: item.toIdCard
+      }
+      console.log('提交的参数params:', params)
+      params.success = async () => {
+        // 其他渠道授權接口
+        api.executeActivation({
           data: {
-            regChnl: 'miniprogram',
-            familyId: item.familyId,
-            toUactId: item.uactId,
+            idNo: item.toIdCard,
+            userName: item.userName
           },
           showsLoading: true,
           success: (res) => {
-            if (res) {
-              // 发送成功
-              // 重新发送倒计时
+            // this.$refs.showPoints.showsCreditsPopup = true
+          }
+        })
 
-              this.list[this.selectedAccountIndex].expireTime = Date.parse(new Date());
-              console.log(
-                'this.list[this.selectedAccountIndex]:',
-                this.list[this.selectedAccountIndex],
-              );
-              this.seconds = 60;
-              this.msgtimer = setInterval(() => {
-                this.tips = `请${this.seconds}s后重新尝试`;
-                this.seconds -= 1;
-                if (this.seconds < 0) {
-                  this.tips = '';
-                  clearInterval(this.msgtimer);
+        // 进行实名认证 身份信息+头像
+      }
+      // this.demo();
+      // 开启人脸识别
+      startFacialRecognitionVerify(params)
+    },
 
-                  if (this.list[this.selectedAccountIndex].retryNum < 1) {
-                    this.tips = '今日次数已用尽';
-                  }
-                }
-              }, 1000);
-            }
-          },
-        });
-      },
-      // 点击立即领取
-      handleAddButtonClick() {
-        this.$uni.showToast('当前所在地区功能开通中');
-        return;
-        // 未领 点击【返回】【知道了】按钮，进入【我的】页面
-        const item = this.list[this.selectedAccountIndex];
-        console.log('亲情关系---', item);
-        const params = {
-          name: item.userName,
-          idCard: item.toIdCard,
-          returnUrl: '',
-        };
-        const birthday = dayjs(item.toIdCard.substring(6, 14)).format('YYYY-MM-DD');
-        // 人脸识别成功
-        params.success = (getbase64) => {
-          console.log('人脸识别成功：');
-
-          // #ifdef MP-WEIXIN
-          const data = {
-            name: item.userName,
-            uactId: item.uactId,
-            idCardNumber: item.toIdCard,
-            gender: item.toIdCard.substring(16, 17) % 2,
-            nation: '',
-            birthday: birthday,
-            city: '',
-            address: '',
-          };
-          const info = {
-            ...data,
-            faceImg: '',
-          };
-          uni.navigateTo({
-            url: '/pages/certificate/avatar-confirm-other',
+    // 点击返回
+    handleNavigationBack() {
+      uni.navigateBack({
+        delta: 1
+      })
+    },
+    /**
+       * TabBar 点击事件（亮证，扫描，老年码切换）
+       */
+    handleTabClick(index) {
+      if (index == 2) return
+      const item = this.list[this.selectedAccountIndex]
+      switch (index) {
+        case 0:
+          this.selectedTabIndex = index
+          // 获取该亲友的领证状态
+          this.getCertificateState().then(() => {
+            // 获取展证信息
+            this.getCertificateInfo()
+          })
+          break
+        case 1:
+          uni.scanCode({
+            onlyFromCamera: true,
+            scanType: ['qrCode'],
             success: (res) => {
-              res.eventChannel.emit('didOpenPageFinish', info);
-            },
-          });
-          // 改版结束
-          // api.clearBg({
-          //   data: { photoBase64: staticData.faceImg },
-          //   showsLoading: true,
-          //   success: (resInfo) => {
-          //     // 保存第一次人脸识别图片
-          //     uni.setStorageSync('other-first-face-img', JSON.stringify(resInfo))
-          //     // 拿到头像图片
-          //     // 进入帮领证流程
-          //     let data = {
-          //       name: item.userName,
-          //       uactId: item.uactId,
-          //       idCardNumber: item.toIdCard,
-          //       gender: item.toIdCard.substring(16, 17) % 2,
-          //       nation: '',
-          //       birthday: birthday,
-          //       city: '',
-          //       address: '',
-          //     }
-          //     const info = {
-          //       ...data,
-          //       faceImg: staticData.faceImg,
-          //     }
-          //     // 去背景图片
-
-          //     uni.navigateTo({
-          //       url: '/pages/certificate/avatar-confirm-other',
-          //       success: (res) => {
-          //         res.eventChannel.emit('didOpenPageFinish', info)
-          //       },
-          //     })
-          //   },
-          // })
-          // #endif
-
-          // #ifdef MP-ALIPAY
-          api.clearBg({
-            data: { photoBase64: getbase64 },
-            showsLoading: true,
-            success: (resInfo) => {
-              // 保存第一次人脸识别图片
-              uni.setStorageSync('other-first-face-img', JSON.stringify(resInfo));
-              // 拿到头像图片
-              // 进入帮领证流程
-              const data = {
-                name: item.userName,
-                uactId: item.uactId,
-                idCardNumber: item.toIdCard,
-                gender: item.toIdCard.substring(16, 17) % 2,
-                nation: '',
-                birthday: birthday,
-                city: '',
-                address: '',
-              };
-              const info = {
-                ...data,
-                faceImg: resInfo.photoBase64,
-              };
-              // 去背景图片
-
-              uni.navigateTo({
-                url: '/pages/certificate/avatar-confirm-other',
-                success: (res) => {
-                  res.eventChannel.emit('didOpenPageFinish', info);
-                },
-              });
-            },
-          });
-          // #endif
-        };
-        // 开启人脸识别
-        console.log('开启人脸');
-        startFacialRecognitionVerify(params);
-      },
+              console.log(res)
+            }
+          })
+          break
+        case 2:
+          // 是否已绑定(连接状态02 待确认 00 已关联)
+          if (item.linkState === '02') {
+            return
+          }
+          // 是否已领证（电子证授权码 非null代表已领卡
+          if (item.authCode === null) {
+            return
+          }
+          this.selectedTabIndex = index
+          // 请求用户的展码数据
+          this.getQRCodeInfo().then(() => {
+            // 设置定时器
+            // this.handleRefreshClick()
+            this.setTimer()
+          })
+          break
+      }
     },
-    mounted() {
-      generator.qrcode('qr-code-copy', `${new Date().getTime()}`, 110, 110);
+    /**
+       * 刷新点击事件
+       */
+    handleRefreshClick() {
+      // 清楚定时器
+      if (this.timer) {
+        clearInterval(this.timer)
+        this.timer = null
+      }
+      this.handleTabClick(2)
     },
-    filters: {
-      // 日期过滤器, 用于格式化日期
-      dateFilter(value) {
-        console.log('value', value);
-        return dayjs(value).format('YYYY年MM月DD日');
-      },
-      // 姓名过滤器, 用于姓名脱敏
-      nameFilter(value) {
-        return desensitizeName(value);
-      },
-      // 身份证号过滤器, 用于身份证号脱敏
-      idCardNumberFilter(value) {
-        return desensitizeInfo(value);
-      },
+    /**
+       * 设置定时器
+       */
+    setTimer() {
+      if (this.timer) {
+        clearInterval(this.timer)
+        this.timer = null
+      }
+      this.timer = setInterval(() => {
+        this.getQRCodeInfo()
+      }, 60000)
     },
-    watch: {
-      list: {
-        // immediate:true,
-        handler(n, o) {
-          console.log('新数据的长度：', n.length);
-          console.log('旧数据的长度：', o.length);
+    /**
+       * 发送短信
+       */
+    sendMessage() {
+      const item = this.list[this.selectedAccountIndex]
+      this.msgtimer = null
+      this.list[this.selectedAccountIndex].retryNum = item.retryNum - 1
+      api.retryFamilyInfo({
+        data: {
+          regChnl: 'miniprogram',
+          familyId: item.familyId,
+          toUactId: item.uactId
         },
-        deep: true,
-      },
+        showsLoading: true,
+        success: (res) => {
+          if (res) {
+            // 发送成功
+            // 重新发送倒计时
+
+            this.list[this.selectedAccountIndex].expireTime = Date.parse(new Date())
+            console.log(
+              'this.list[this.selectedAccountIndex]:',
+              this.list[this.selectedAccountIndex]
+            )
+            this.seconds = 60
+            this.msgtimer = setInterval(() => {
+              this.tips = `请${this.seconds}s后重新尝试`
+              this.seconds -= 1
+              if (this.seconds < 0) {
+                this.tips = ''
+                clearInterval(this.msgtimer)
+
+                if (this.list[this.selectedAccountIndex].retryNum < 1) {
+                  this.tips = '今日次数已用尽'
+                }
+              }
+            }, 1000)
+          }
+        }
+      })
     },
-  };
+    // 点击立即领取
+    handleAddButtonClick() {
+      this.$uni.showToast('当前所在地区功能开通中')
+      return
+      // 未领 点击【返回】【知道了】按钮，进入【我的】页面
+      const item = this.list[this.selectedAccountIndex]
+      console.log('亲情关系---', item)
+      const params = {
+        name: item.userName,
+        idCard: item.toIdCard,
+        returnUrl: ''
+      }
+      const birthday = dayjs(item.toIdCard.substring(6, 14)).format('YYYY-MM-DD')
+      // 人脸识别成功
+      params.success = (getbase64) => {
+        console.log('人脸识别成功：')
+
+        // #ifdef MP-WEIXIN
+        const data = {
+          name: item.userName,
+          uactId: item.uactId,
+          idCardNumber: item.toIdCard,
+          gender: item.toIdCard.substring(16, 17) % 2,
+          nation: '',
+          birthday: birthday,
+          city: '',
+          address: ''
+        }
+        const info = {
+          ...data,
+          faceImg: ''
+        }
+        uni.navigateTo({
+          url: '/pages/certificate/avatar-confirm-other',
+          success: (res) => {
+            res.eventChannel.emit('didOpenPageFinish', info)
+          }
+        })
+        // 改版结束
+        // api.clearBg({
+        //   data: { photoBase64: staticData.faceImg },
+        //   showsLoading: true,
+        //   success: (resInfo) => {
+        //     // 保存第一次人脸识别图片
+        //     uni.setStorageSync('other-first-face-img', JSON.stringify(resInfo))
+        //     // 拿到头像图片
+        //     // 进入帮领证流程
+        //     let data = {
+        //       name: item.userName,
+        //       uactId: item.uactId,
+        //       idCardNumber: item.toIdCard,
+        //       gender: item.toIdCard.substring(16, 17) % 2,
+        //       nation: '',
+        //       birthday: birthday,
+        //       city: '',
+        //       address: '',
+        //     }
+        //     const info = {
+        //       ...data,
+        //       faceImg: staticData.faceImg,
+        //     }
+        //     // 去背景图片
+
+        //     uni.navigateTo({
+        //       url: '/pages/certificate/avatar-confirm-other',
+        //       success: (res) => {
+        //         res.eventChannel.emit('didOpenPageFinish', info)
+        //       },
+        //     })
+        //   },
+        // })
+        // #endif
+
+        // #ifdef MP-ALIPAY
+        api.clearBg({
+          data: { photoBase64: getbase64 },
+          showsLoading: true,
+          success: (resInfo) => {
+            // 保存第一次人脸识别图片
+            uni.setStorageSync('other-first-face-img', JSON.stringify(resInfo))
+            // 拿到头像图片
+            // 进入帮领证流程
+            const data = {
+              name: item.userName,
+              uactId: item.uactId,
+              idCardNumber: item.toIdCard,
+              gender: item.toIdCard.substring(16, 17) % 2,
+              nation: '',
+              birthday: birthday,
+              city: '',
+              address: ''
+            }
+            const info = {
+              ...data,
+              faceImg: resInfo.photoBase64
+            }
+            // 去背景图片
+
+            uni.navigateTo({
+              url: '/pages/certificate/avatar-confirm-other',
+              success: (res) => {
+                res.eventChannel.emit('didOpenPageFinish', info)
+              }
+            })
+          }
+        })
+        // #endif
+      }
+      // 开启人脸识别
+      console.log('开启人脸')
+      startFacialRecognitionVerify(params)
+    }
+  },
+  mounted() {
+    generator.qrcode('qr-code-copy', `${new Date().getTime()}`, 110, 110)
+  },
+  filters: {
+    // 日期过滤器, 用于格式化日期
+    dateFilter(value) {
+      console.log('value', value)
+      return dayjs(value).format('YYYY年MM月DD日')
+    },
+    // 姓名过滤器, 用于姓名脱敏
+    nameFilter(value) {
+      return desensitizeName(value)
+    },
+    // 身份证号过滤器, 用于身份证号脱敏
+    idCardNumberFilter(value) {
+      return desensitizeInfo(value)
+    }
+  },
+  watch: {
+    list: {
+      // immediate:true,
+      handler(n, o) {
+        console.log('新数据的长度：', n.length)
+        console.log('旧数据的长度：', o.length)
+      },
+      deep: true
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

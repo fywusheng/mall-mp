@@ -20,61 +20,61 @@
 </template>
 
 <script>
-  export default {
-    name: 'MenuBar',
-    props: {
-      // 被激活菜单的索引
-      selectedIndex: {
-        type: Number,
-        default: 0,
-      },
-    },
-    data() {
-      return {
-        // 菜单数据
-        list: [
-          {
-            menu: '首页',
-            voice: false,
-            path: '/pages/home/home',
-          },
-          {
-            menu: '优惠',
-            voice: false,
-            path: '/pages/find',
-          },
-          {
-            menu: '语音',
-            voice: true,
-            path: '/pages/voice/voice-search',
-          },
-          {
-            menu: '发现',
-            voice: false,
-            path: '/pages/index/orderList',
-          },
-          {
-            menu: '我的',
-            voice: false,
-            path: '/pages/index/mine',
-          },
-        ],
-      };
-    },
-    onLoad() {},
-    methods: {
-      // 页面跳转
-      jump(index) {
-        if (this.list[index]['voice']) {
-          uni.navigateTo({
-            url: this.list[index]['path'],
-          });
-        } else {
-          this.$emit('changeIndex', index);
+export default {
+  name: 'MenuBar',
+  props: {
+    // 被激活菜单的索引
+    selectedIndex: {
+      type: Number,
+      default: 0
+    }
+  },
+  data() {
+    return {
+      // 菜单数据
+      list: [
+        {
+          menu: '首页',
+          voice: false,
+          path: '/pages/home/home'
+        },
+        {
+          menu: '优惠',
+          voice: false,
+          path: '/pages/find'
+        },
+        {
+          menu: '语音',
+          voice: true,
+          path: '/pages/voice/voice-search'
+        },
+        {
+          menu: '发现',
+          voice: false,
+          path: '/pages/index/orderList'
+        },
+        {
+          menu: '我的',
+          voice: false,
+          path: '/pages/index/mine'
         }
-      },
-    },
-  };
+      ]
+    }
+  },
+  onLoad() {},
+  methods: {
+    // 页面跳转
+    jump(index) {
+      if (this.list[index]['voice']) {
+        uni.navigateTo({
+          url: this.list[index]['path']
+        })
+      } else {
+        this.$emit('changeIndex', index)
+      }
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .menuBar_list {

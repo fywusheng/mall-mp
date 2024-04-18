@@ -289,71 +289,71 @@
 </template>
 
 <script>
-  import wx from 'utils/wx';
-  import RuleModel from './components/rule-model.vue';
+import wx from 'utils/wx'
+import RuleModel from './components/rule-model.vue'
 
-  export default {
-    name: 'COUPON_LIST',
-    components: { RuleModel },
-    data() {
-      return {
-        status: 0,
-        couponList1: [],
-        couponList2: [],
-        couponList3: [],
-      };
+export default {
+  name: 'COUPON_LIST',
+  components: { RuleModel },
+  data() {
+    return {
+      status: 0,
+      couponList1: [],
+      couponList2: [],
+      couponList3: []
+    }
+  },
+  // computed: {
+  //   couponList1() {
+  //     return this.couponCouponList.filter((coupon) => {
+  //       return coupon.usedState === 0;
+  //     });
+  //   },
+  //   couponList2() {
+  //     return this.couponCouponList.filter((coupon) => {
+  //       return coupon.usedState === 1;
+  //     });
+  //   },
+  //   couponList3() {
+  //     return this.couponCouponList.filter((coupon) => {
+  //       return coupon.usedState === 2;
+  //     });
+  //   },
+  // },
+  onLoad(e) {
+    this.status = Number(e.status) || 0
+  },
+  methods: {
+    changeDesc(data) {
+      this.$refs.ruleModel.open(data.description)
     },
-    // computed: {
-    //   couponList1() {
-    //     return this.couponCouponList.filter((coupon) => {
-    //       return coupon.usedState === 0;
-    //     });
-    //   },
-    //   couponList2() {
-    //     return this.couponCouponList.filter((coupon) => {
-    //       return coupon.usedState === 1;
-    //     });
-    //   },
-    //   couponList3() {
-    //     return this.couponCouponList.filter((coupon) => {
-    //       return coupon.usedState === 2;
-    //     });
-    //   },
-    // },
-    onLoad(e) {
-      this.status = Number(e.status) || 0;
+    changeStatus(index) {
+      this.status = index
     },
-    methods: {
-      changeDesc(data) {
-        this.$refs.ruleModel.open(data.description);
-      },
-      changeStatus(index) {
-        this.status = index;
-      },
-      async loadData() {
-        wx.showLoading();
-        const couponResult = await Axios.post('/coupon/loading', {
-          pageNum: 1,
-          pageSize: 100,
-          queryObject: {
-            sessionId: Store.state.user.sessionId,
-          },
-        });
-        wx.hideLoading();
-        if (couponResult.code == 200) {
-          this.couponList1 = couponResult.data.canUsedList;
-          this.couponList2 = couponResult.data.usedList;
-          this.couponList3 = couponResult.data.cannotUsedList;
-        } else {
-          wx.showToast(couponResult.msg);
+    async loadData() {
+      wx.showLoading()
+      const couponResult = await Axios.post('/coupon/loading', {
+        pageNum: 1,
+        pageSize: 100,
+        queryObject: {
+          sessionId: Store.state.user.sessionId
         }
-      },
-    },
-    async mounted() {
-      if (!Store.getters.isLogin) {
-        await Store.dispatch('login');
+      })
+      wx.hideLoading()
+      if (couponResult.code == 200) {
+        this.couponList1 = couponResult.data.canUsedList
+        this.couponList2 = couponResult.data.usedList
+        this.couponList3 = couponResult.data.cannotUsedList
+      } else {
+        wx.showToast(couponResult.msg)
       }
-      this.loadData();
-    },
-  };
+    }
+  },
+  async mounted() {
+    if (!Store.getters.isLogin) {
+      await Store.dispatch('login')
+    }
+    this.loadData()
+  }
+}
 </script>

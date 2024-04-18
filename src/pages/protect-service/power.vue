@@ -33,105 +33,105 @@
   </view>
 </template>
 <script>
-  import pLaw from './component/pLaw.vue';
-  import bCase from './component/bCase.vue';
-  export default {
-    components: { pLaw, bCase },
-    data() {
-      return {
-        colName: '维权指南',
-        tabIndex: 0,
-        titleLables: [
-          {
-            index: 0,
-            name: '普法卫我',
-          },
-          {
-            index: 1,
-            name: '以案说法',
-          },
-          {
-            index: 2,
-            name: '维权指南',
-          },
-        ],
-      };
-    },
-    onLoad(e) {
-      if (e.index) {
-        this.tabIndex = e.index;
-      }
-    },
-    onReachBottom() {
-      if (this.tabIndex == 0) {
-        this.$refs.plaw.selectArtiListByColId();
-      } else if (this.tabIndex == 1) {
-        this.$refs.base.selectArtiListByColId();
-      }
-    },
-    onShow() {
-      if (this.$refs.base) {
-        this.$refs.base.initRadio();
-      }
-    },
-    watch: {
-      tabIndex(newV, old) {
-        this.destory();
-        // if (newV == 0 || newV == 2) {
-        //   this.destory()
-        // }
-      },
-    },
-    onUnload() {
-      this.destory();
-    },
-    onHide() {
-      this.destory();
-    },
-    methods: {
-      goSmallVideo(item) {
-        console.log('===视频列表---', item);
-        uni.getNetworkType({
-          success: (res) => {
-            if (res.networkType != 'none') {
-              uni.navigateTo({
-                url:
+import pLaw from './component/pLaw.vue'
+import bCase from './component/bCase.vue'
+export default {
+  components: { pLaw, bCase },
+  data() {
+    return {
+      colName: '维权指南',
+      tabIndex: 0,
+      titleLables: [
+        {
+          index: 0,
+          name: '普法卫我'
+        },
+        {
+          index: 1,
+          name: '以案说法'
+        },
+        {
+          index: 2,
+          name: '维权指南'
+        }
+      ]
+    }
+  },
+  onLoad(e) {
+    if (e.index) {
+      this.tabIndex = e.index
+    }
+  },
+  onReachBottom() {
+    if (this.tabIndex == 0) {
+      this.$refs.plaw.selectArtiListByColId()
+    } else if (this.tabIndex == 1) {
+      this.$refs.base.selectArtiListByColId()
+    }
+  },
+  onShow() {
+    if (this.$refs.base) {
+      this.$refs.base.initRadio()
+    }
+  },
+  watch: {
+    tabIndex(newV, old) {
+      this.destory()
+      // if (newV == 0 || newV == 2) {
+      //   this.destory()
+      // }
+    }
+  },
+  onUnload() {
+    this.destory()
+  },
+  onHide() {
+    this.destory()
+  },
+  methods: {
+    goSmallVideo(item) {
+      console.log('===视频列表---', item)
+      uni.getNetworkType({
+        success: (res) => {
+          if (res.networkType != 'none') {
+            uni.navigateTo({
+              url:
                   '/pages/find/video-swiper?transInfor=' +
-                  `${encodeURIComponent(JSON.stringify(item))}`,
-              });
-            } else {
-              this.$uni.showToast('没有网络');
-            }
-          },
-        });
-      },
-
-      destory() {
-        if (this.$refs.base) {
-          this.$refs.base.destoryInstance();
-          this.$refs.base.showAudio = false;
+                  `${encodeURIComponent(JSON.stringify(item))}`
+            })
+          } else {
+            this.$uni.showToast('没有网络')
+          }
         }
-        if (this.$refs.plaw) {
-          this.$refs.plaw.destoryInstance();
-          this.$refs.plaw.showAudio = false;
-        }
-      },
-      startQuest() {
-        const token = uni.getStorageSync('token');
-        if (!token) {
-          uni.navigateTo({ url: '/pages/user-center/login' });
-          return;
-        }
-        uni.navigateTo({ url: '/pages/services/activist' });
-      },
-      handleSuperMarket() {
-        uni.navigateTo({ url: '/pages/protect-service/wqPoint' });
-      },
-      activeClick(index) {
-        this.tabIndex = index;
-      },
+      })
     },
-  };
+
+    destory() {
+      if (this.$refs.base) {
+        this.$refs.base.destoryInstance()
+        this.$refs.base.showAudio = false
+      }
+      if (this.$refs.plaw) {
+        this.$refs.plaw.destoryInstance()
+        this.$refs.plaw.showAudio = false
+      }
+    },
+    startQuest() {
+      const token = uni.getStorageSync('token')
+      if (!token) {
+        uni.navigateTo({ url: '/pages/user-center/login' })
+        return
+      }
+      uni.navigateTo({ url: '/pages/services/activist' })
+    },
+    handleSuperMarket() {
+      uni.navigateTo({ url: '/pages/protect-service/wqPoint' })
+    },
+    activeClick(index) {
+      this.tabIndex = index
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

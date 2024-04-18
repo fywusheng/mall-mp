@@ -9,16 +9,16 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        icon1: 'http://192.168.1.187:10088/static/rights/icon-train1.png',
-        icon2: 'http://192.168.1.187:10088/static/rights/icon-train2.png',
-        icon3: 'http://192.168.1.187:10088/static/rights/icon-train3.png',
-        icon4: 'http://192.168.1.187:10088/static/rights/icon-train4.png',
-      };
-    },
-  };
+export default {
+  data() {
+    return {
+      icon1: 'http://192.168.1.187:10088/static/rights/icon-train1.png',
+      icon2: 'http://192.168.1.187:10088/static/rights/icon-train2.png',
+      icon3: 'http://192.168.1.187:10088/static/rights/icon-train3.png',
+      icon4: 'http://192.168.1.187:10088/static/rights/icon-train4.png'
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

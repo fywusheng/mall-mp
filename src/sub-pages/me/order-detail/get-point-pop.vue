@@ -16,44 +16,44 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        icon: {
-          bg: 'http://192.168.1.187:10088/static/images/common/icon-get-point.png',
-          close: 'http://192.168.1.187:10088/static/common/icon-close.png',
-        },
-        content: {
-          popUpTitle: '领积分,抵现金',
-          popUpDesc: '加入官方本地福利群，领积分领福利',
-          popUpImg: 'http://192.168.1.187:10088/static/images/common/icon-get-point.png',
-          popUpTargetUrl: '',
-          popUpTimes: 0,
-        },
-      };
+export default {
+  data() {
+    return {
+      icon: {
+        bg: 'http://192.168.1.187:10088/static/images/common/icon-get-point.png',
+        close: 'http://192.168.1.187:10088/static/common/icon-close.png'
+      },
+      content: {
+        popUpTitle: '领积分,抵现金',
+        popUpDesc: '加入官方本地福利群，领积分领福利',
+        popUpImg: 'http://192.168.1.187:10088/static/images/common/icon-get-point.png',
+        popUpTargetUrl: '',
+        popUpTimes: 0
+      }
+    }
+  },
+  computed: {
+    popCont() {
+      return this.content.popUpDesc.split('，')
+    }
+  },
+  methods: {
+    getPoint() {
+      uni.navigateTo({ url: `/pages/common/webpage?url=${this.content.popUpTargetUrl}` })
     },
-    computed: {
-      popCont() {
-        return this.content.popUpDesc.split('，');
-      },
+    open(data) {
+      Object.keys(this.content).map((key) => {
+        if (data[key]) {
+          this.content[key] = data[key]
+        }
+      })
+      this.$refs.popup.open()
     },
-    methods: {
-      getPoint() {
-        uni.navigateTo({ url: `/pages/common/webpage?url=${this.content.popUpTargetUrl}` });
-      },
-      open(data) {
-        Object.keys(this.content).map((key) => {
-          if (data[key]) {
-            this.content[key] = data[key];
-          }
-        });
-        this.$refs.popup.open();
-      },
-      close() {
-        this.$refs.popup.close();
-      },
-    },
-  };
+    close() {
+      this.$refs.popup.close()
+    }
+  }
+}
 </script>
 
 <style lang="scss" scope>

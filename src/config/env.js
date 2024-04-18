@@ -15,8 +15,8 @@ export default {
     production: 'https://mall.hling168.com/mall-client-api'
   }[process.env.NODE_ENV],
 
-   // 新增基础url-短信
-   NEW_API: {
+  // 新增基础url-短信
+  NEW_API: {
     // development: 'https://mall.hling168.com/mall-client-api', // 正式环境
     development: 'http://192.168.1.187:10011', // 测试环境
     test: 'http://192.168.1.187:18888',

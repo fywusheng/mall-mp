@@ -104,244 +104,244 @@
 </template>
 
 <script>
-  // import NavigationBar from "../../components/common/navigation-bar.vue";
-  import api from '@/apis/index.js';
-  export default {
-    components: {},
-    data() {
-      const windowHeight = uni.getSystemInfoSync().windowHeight;
-      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight;
-      return {
-        // 导航栏高度
-        navigationBarHeight: statusBarHeight + 44,
-        // 列表高度
-        scrollViewHeight: windowHeight,
-        // 滚动到顶部的视图
-        viewToScroll: '',
-        // 每个 section 的高度
-        heights: [],
-        // 最后一次点击的时间戳
-        clickTimestamp: 0,
-        // 最后一次滚动的时间戳
-        scrollTimestamp: 0,
-        // 当前高亮的下标
-        selectedIndex: '',
-        // 搜索结果
-        searchResult: null,
-        // 城市列表
-        cities: {
-          location: null,
-          recent:
+// import NavigationBar from "../../components/common/navigation-bar.vue";
+import api from '@/apis/index.js'
+export default {
+  components: {},
+  data() {
+    const windowHeight = uni.getSystemInfoSync().windowHeight
+    const statusBarHeight = uni.getSystemInfoSync().statusBarHeight
+    return {
+      // 导航栏高度
+      navigationBarHeight: statusBarHeight + 44,
+      // 列表高度
+      scrollViewHeight: windowHeight,
+      // 滚动到顶部的视图
+      viewToScroll: '',
+      // 每个 section 的高度
+      heights: [],
+      // 最后一次点击的时间戳
+      clickTimestamp: 0,
+      // 最后一次滚动的时间戳
+      scrollTimestamp: 0,
+      // 当前高亮的下标
+      selectedIndex: '',
+      // 搜索结果
+      searchResult: null,
+      // 城市列表
+      cities: {
+        location: null,
+        recent:
             uni.getStorageSync('citySearchHistories') || uni.getStorageSync('recentCities') || [],
-          hot: [
-            { name: '北京市', code: '110100', realCode: '110000' },
-            { name: '上海市', code: '310100', realCode: '310000' },
-            { name: '厦门市', code: '350200', realCode: '350200' },
-            { name: '深圳市', code: '440300', realCode: '440300' },
-            { name: '杭州市', code: '330100', realCode: '330100' },
-            { name: '成都市', code: '510100', realCode: '510100' },
-          ],
-          // hot: [
-          //   { name: '北京市', code: '110100' },
-          //   { name: '上海市', code: '310100' },
-          //   { name: '厦门市', code: '350200' },
-          //   { name: '深圳市', code: '440300' },
-          //   { name: '杭州市', code: '330100' },
-          //   { name: '成都市', code: '510100' }
-          // ],
-          list: [],
-        },
-      };
+        hot: [
+          { name: '北京市', code: '110100', realCode: '110000' },
+          { name: '上海市', code: '310100', realCode: '310000' },
+          { name: '厦门市', code: '350200', realCode: '350200' },
+          { name: '深圳市', code: '440300', realCode: '440300' },
+          { name: '杭州市', code: '330100', realCode: '330100' },
+          { name: '成都市', code: '510100', realCode: '510100' }
+        ],
+        // hot: [
+        //   { name: '北京市', code: '110100' },
+        //   { name: '上海市', code: '310100' },
+        //   { name: '厦门市', code: '350200' },
+        //   { name: '深圳市', code: '440300' },
+        //   { name: '杭州市', code: '330100' },
+        //   { name: '成都市', code: '510100' }
+        // ],
+        list: []
+      }
+    }
+  },
+  computed: {
+    // 要显示的城市列表, 如果有搜索结果则显示搜索结果, 否则显示全部
+    list() {
+      return this.searchResult || this.cities.list
     },
-    computed: {
-      // 要显示的城市列表, 如果有搜索结果则显示搜索结果, 否则显示全部
-      list() {
-        return this.searchResult || this.cities.list;
-      },
-      // 右侧索引栏数据
-      indexes() {
-        return this.cities.list.map((item) => item.index);
-      },
-    },
-    onLoad() {
-      this.getLocation();
-      this.requestData();
-    },
-    methods: {
-      /**
+    // 右侧索引栏数据
+    indexes() {
+      return this.cities.list.map((item) => item.index)
+    }
+  },
+  onLoad() {
+    this.getLocation()
+    this.requestData()
+  },
+  methods: {
+    /**
        * 输入框改变回调
        */
-      handleInputChange(e) {
-        if (e.detail.value) {
-          const result = [];
-          this.cities.list.forEach((item) => {
-            if (
-              item.items
-                .map((item) => item.name)
-                .join()
-                .indexOf(e.detail.value) !== -1
-            ) {
-              result.push({
-                ...item,
-                items: item.items.filter((item) => {
-                  return item.name.indexOf(e.detail.value) !== -1;
-                }),
-              });
-            }
-          });
-          this.searchResult = result;
-        } else {
-          this.searchResult = null;
-        }
-      },
-      /**
+    handleInputChange(e) {
+      if (e.detail.value) {
+        const result = []
+        this.cities.list.forEach((item) => {
+          if (
+            item.items
+              .map((item) => item.name)
+              .join()
+              .indexOf(e.detail.value) !== -1
+          ) {
+            result.push({
+              ...item,
+              items: item.items.filter((item) => {
+                return item.name.indexOf(e.detail.value) !== -1
+              })
+            })
+          }
+        })
+        this.searchResult = result
+      } else {
+        this.searchResult = null
+      }
+    },
+    /**
        * 清除最近访问城市点击事件
        */
-      handleClearClick() {
-        this.$uni.showConfirm({
-          content: '是否清除最近访问记录',
-          confirm: () => {
-            uni.removeStorageSync('citySearchHistories');
-            this.cities.recent = [];
-          },
-        });
-      },
-      /**
+    handleClearClick() {
+      this.$uni.showConfirm({
+        content: '是否清除最近访问记录',
+        confirm: () => {
+          uni.removeStorageSync('citySearchHistories')
+          this.cities.recent = []
+        }
+      })
+    },
+    /**
        * 城市点击事件
        */
-      handleCityClick(city) {
-        console.log('===点击选中city--', city, this.cities);
-        uni.setStorageSync('current_city', city);
-        if (this.cities.location.name !== city.name) {
-          const array = [...this.cities.recent];
-          array.unshift(city);
-          this.cities.recent = Array.from(new Set(array)).slice(0, 5);
-          uni.setStorageSync('recentCities', this.cities.recent);
-        }
-        uni.$emit('didSelectCity', city);
-        uni.navigateBack();
-      },
-      /**
+    handleCityClick(city) {
+      console.log('===点击选中city--', city, this.cities)
+      uni.setStorageSync('current_city', city)
+      if (this.cities.location.name !== city.name) {
+        const array = [...this.cities.recent]
+        array.unshift(city)
+        this.cities.recent = Array.from(new Set(array)).slice(0, 5)
+        uni.setStorageSync('recentCities', this.cities.recent)
+      }
+      uni.$emit('didSelectCity', city)
+      uni.navigateBack()
+    },
+    /**
        * 右侧索引栏点击事件
        */
-      handleIndexClick(id) {
-        this.selectedIndex = id;
-        this.viewToScroll = `section-${id}`;
-        this.clickTimestamp = new Date().getTime();
-      },
-      /**
+    handleIndexClick(id) {
+      this.selectedIndex = id
+      this.viewToScroll = `section-${id}`
+      this.clickTimestamp = new Date().getTime()
+    },
+    /**
        * scrollview 滚动回调
        */
-      handleScrollViewScroll(e) {
-        const timestamp = new Date().getTime();
-        if (timestamp - this.scrollTimestamp < 100 || timestamp - this.clickTimestamp < 500) {
-          return;
-        }
-        this.scrollTimestamp = timestamp;
+    handleScrollViewScroll(e) {
+      const timestamp = new Date().getTime()
+      if (timestamp - this.scrollTimestamp < 100 || timestamp - this.clickTimestamp < 500) {
+        return
+      }
+      this.scrollTimestamp = timestamp
 
-        const scrollTop = e.detail.scrollTop;
-        const scrollHeight = e.detail.scrollHeight;
-        const scrollViewHeight = uni.getSystemInfoSync().windowHeight;
-        if (scrollTop < 0 || scrollTop > scrollHeight - scrollViewHeight) return;
-        let index = this.heights.findIndex(
-          (value, index, array) => value <= scrollTop && scrollTop < array[index + 1],
-        );
+      const scrollTop = e.detail.scrollTop
+      const scrollHeight = e.detail.scrollHeight
+      const scrollViewHeight = uni.getSystemInfoSync().windowHeight
+      if (scrollTop < 0 || scrollTop > scrollHeight - scrollViewHeight) return
+      let index = this.heights.findIndex(
+        (value, index, array) => value <= scrollTop && scrollTop < array[index + 1]
+      )
 
-        if (index === -1) {
-          index = this.indexes.length + 1;
-        } else if (index < 2) {
-          index = 2;
-        }
-        this.selectedIndex = this.indexes[index - 2];
-      },
-      /**
+      if (index === -1) {
+        index = this.indexes.length + 1
+      } else if (index < 2) {
+        index = 2
+      }
+      this.selectedIndex = this.indexes[index - 2]
+    },
+    /**
        * 获取当前定位
        */
-      getLocation() {
-        uni.getLocation({
-          type: 'gcj02',
-          success: (res) => {
-            uni.setStorageSync('location', res);
-            // 调用高德地图 API 逆地理编码, 通过经纬度获取当前位置城市信息
-            api.regeoMap(
-              {
-                location: res.longitude + ',' + res.latitude,
-                // location: '116.3,39.9'
-              },
-              {
-                success: (res) => {
-                  let city = {};
-                  // 当城市是省直辖县时返回为空，以及城市为北京、上海、天津、重庆四个直辖市时，该字段返回为[],否则为城市名称（字符串）
-                  if (res.regeocode.addressComponent.city.length === 0) {
-                    city = {
-                      code: res.regeocode.addressComponent.adcode.substr(0, 2) + '0100',
-                      name: res.regeocode.addressComponent.province,
-                      realCode: res.regeocode.addressComponent.adcode.substr(0, 2) + '0000',
-                    };
-                  } else {
-                    city = {
-                      code: res.regeocode.addressComponent.adcode.substr(0, 4) + '00',
-                      name: res.regeocode.addressComponent.city,
-                    };
+    getLocation() {
+      uni.getLocation({
+        type: 'gcj02',
+        success: (res) => {
+          uni.setStorageSync('location', res)
+          // 调用高德地图 API 逆地理编码, 通过经纬度获取当前位置城市信息
+          api.regeoMap(
+            {
+              location: res.longitude + ',' + res.latitude
+              // location: '116.3,39.9'
+            },
+            {
+              success: (res) => {
+                let city = {}
+                // 当城市是省直辖县时返回为空，以及城市为北京、上海、天津、重庆四个直辖市时，该字段返回为[],否则为城市名称（字符串）
+                if (res.regeocode.addressComponent.city.length === 0) {
+                  city = {
+                    code: res.regeocode.addressComponent.adcode.substr(0, 2) + '0100',
+                    name: res.regeocode.addressComponent.province,
+                    realCode: res.regeocode.addressComponent.adcode.substr(0, 2) + '0000'
                   }
-                  this.cities.location = city;
-                  console.log('===job高德定位---', city);
-                },
-              },
-            );
-          },
-          fail: () => {
-            // 定位失败默认北京市
-            const city = { code: 110100, name: '北京市', realCode: '110000' };
-            this.cities.location = city;
-          },
-        });
-      },
-      /**
+                } else {
+                  city = {
+                    code: res.regeocode.addressComponent.adcode.substr(0, 4) + '00',
+                    name: res.regeocode.addressComponent.city
+                  }
+                }
+                this.cities.location = city
+                console.log('===job高德定位---', city)
+              }
+            }
+          )
+        },
+        fail: () => {
+          // 定位失败默认北京市
+          const city = { code: 110100, name: '北京市', realCode: '110000' }
+          this.cities.location = city
+        }
+      })
+    },
+    /**
        * 请求数据
        */
-      requestData() {
-        api.getCities({
-          success: (data) => {
-            const mappedCities = data.map((item) => {
-              return {
-                code: item.regnCode,
-                name: item.regnName,
-                index: item.dataDscr.substring(0, 1),
-              };
-            });
-            const indexes = new Set(mappedCities.map((item) => item.index));
-            this.cities.list = [];
-            indexes.forEach((index) => {
-              this.cities.list.push({
-                index: index,
-                items: mappedCities.filter((item) => {
-                  return item.index === index;
-                }),
-              });
-            });
+    requestData() {
+      api.getCities({
+        success: (data) => {
+          const mappedCities = data.map((item) => {
+            return {
+              code: item.regnCode,
+              name: item.regnName,
+              index: item.dataDscr.substring(0, 1)
+            }
+          })
+          const indexes = new Set(mappedCities.map((item) => item.index))
+          this.cities.list = []
+          indexes.forEach((index) => {
+            this.cities.list.push({
+              index: index,
+              items: mappedCities.filter((item) => {
+                return item.index === index
+              })
+            })
+          })
 
-            // 刷新数据后计算各个 section 高度
-            this.calculateSectionHeights();
-          },
-        });
-      },
-      /**
+          // 刷新数据后计算各个 section 高度
+          this.calculateSectionHeights()
+        }
+      })
+    },
+    /**
        * 计算 scrollview 中各个 section 的高度
        */
-      calculateSectionHeights() {
-        setTimeout(() => {
-          uni
-            .createSelectorQuery()
-            .selectAll('.section')
-            .boundingClientRect((rects) => {
-              this.heights = rects.map((item) => item.top);
-            })
-            .exec();
-        }, 1000);
-      },
-    },
-  };
+    calculateSectionHeights() {
+      setTimeout(() => {
+        uni
+          .createSelectorQuery()
+          .selectAll('.section')
+          .boundingClientRect((rects) => {
+            this.heights = rects.map((item) => item.top)
+          })
+          .exec()
+      }, 1000)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -270,155 +270,155 @@
 </template>
 
 <script>
-  import wx from 'utils/wx';
-  export default {
-    name: 'Invoice',
-    data() {
-      return {
-        isIphoneHair: App.isIphoneHair,
-        invoice: {
-          invoiceType: 0, // 0-电子普通发票；1-增值税专用发票
-          applicantType: 0, // 0-个人；1-公司
-          invoiceTitle: '', // 个人或公司名称
-          identifyingCode: '', // 公司识别码(企业统一识别码)
-          recipientPhone: '', // 接收电话
-          recipientEmail: '', // 接收邮件
-          invoiceContent: 4, // 发票内容
-          // 以下字段对增值税专用发票有效。
-          bankName: '', // 开户银行名称
-          bankAccount: '', // 开户账号
-          registrationAddress: '', // 注册地址
-          registrationPhone: '', // 联系电话
-        },
-      };
+import wx from 'utils/wx'
+export default {
+  name: 'Invoice',
+  data() {
+    return {
+      isIphoneHair: App.isIphoneHair,
+      invoice: {
+        invoiceType: 0, // 0-电子普通发票；1-增值税专用发票
+        applicantType: 0, // 0-个人；1-公司
+        invoiceTitle: '', // 个人或公司名称
+        identifyingCode: '', // 公司识别码(企业统一识别码)
+        recipientPhone: '', // 接收电话
+        recipientEmail: '', // 接收邮件
+        invoiceContent: 4, // 发票内容
+        // 以下字段对增值税专用发票有效。
+        bankName: '', // 开户银行名称
+        bankAccount: '', // 开户账号
+        registrationAddress: '', // 注册地址
+        registrationPhone: '' // 联系电话
+      }
+    }
+  },
+  computed: {},
+  filters: {},
+  components: {},
+  methods: {
+    changeInvoiceType(type) {
+      this.invoice.invoiceType = type
+      if (type == 1) {
+        this.invoice.applicantType = 1
+      } else {
+        this.invoice.applicantType = 0
+      }
     },
-    computed: {},
-    filters: {},
-    components: {},
-    methods: {
-      changeInvoiceType(type) {
-        this.invoice.invoiceType = type;
-        if (type == 1) {
-          this.invoice.applicantType = 1;
-        } else {
-          this.invoice.applicantType = 0;
-        }
-      },
-      changeInvoiceContent(content) {
-        this.invoice.invoiceContent = content;
-      },
-      changeApplicantType(value) {
-        this.invoice.applicantType = value;
-      },
-      async save() {
-        if (this.invoice.invoiceType === 0) {
-          if (this.invoice.applicantType == 0) {
-            if (!this.invoice.invoiceTitle) {
-              wx.showToast('纳税人名称不能为空，请输入！');
-              return false;
-            }
-          } else {
-            if (!this.invoice.invoiceTitle) {
-              wx.showToast('纳税单位名称不能为空，请输入！');
-              return false;
-            }
-            if (!this.invoice.identifyingCode) {
-              wx.showToast('纳税单位识别号不能为空，请输入！');
-              return false;
-            }
-            if (
-              this.invoice.identifyingCode.length !== 15 &&
-              this.invoice.identifyingCode.length !== 18 &&
-              this.invoice.identifyingCode.length !== 20
-            ) {
-              wx.showToast('请输入正确的纳税识别号！');
-              return false;
-            }
-          }
-
-          if (!this.invoice.recipientPhone) {
-            wx.showToast('请输入收票人手机号码！');
-            return false;
-          }
-          if (!/^[0-9]?\d{11}$/.test(this.invoice.recipientPhone)) {
-            wx.showToast('请输入正确的收票人手机号码！');
-            return false;
-          }
-          if (!this.invoice.recipientEmail) {
-            wx.showToast('请输入收票人电子邮箱！');
-            return false;
-          }
-          if (
-            !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(this.invoice.recipientEmail)
-          ) {
-            wx.showToast('请输入正确的电子邮箱！');
-            return false;
-          }
-        }
-
-        if (this.invoice.invoiceType == 1) {
+    changeInvoiceContent(content) {
+      this.invoice.invoiceContent = content
+    },
+    changeApplicantType(value) {
+      this.invoice.applicantType = value
+    },
+    async save() {
+      if (this.invoice.invoiceType === 0) {
+        if (this.invoice.applicantType == 0) {
           if (!this.invoice.invoiceTitle) {
-            wx.showToast('纳税单位名称不能为空，请输入！');
-            return false;
+            wx.showToast('纳税人名称不能为空，请输入！')
+            return false
+          }
+        } else {
+          if (!this.invoice.invoiceTitle) {
+            wx.showToast('纳税单位名称不能为空，请输入！')
+            return false
           }
           if (!this.invoice.identifyingCode) {
-            wx.showToast('纳税单位识别号不能为空，请输入！');
-            return false;
+            wx.showToast('纳税单位识别号不能为空，请输入！')
+            return false
           }
           if (
             this.invoice.identifyingCode.length !== 15 &&
-            this.invoice.identifyingCode.length !== 18 &&
-            this.invoice.identifyingCode.length !== 20
+              this.invoice.identifyingCode.length !== 18 &&
+              this.invoice.identifyingCode.length !== 20
           ) {
-            wx.showToast('请输入正确的纳税识别号！');
-            return false;
-          }
-          if (!this.invoice.bankName) {
-            wx.showToast('纳税单位开户银行名称不能为空，请输入！');
-            return false;
-          }
-          if (!this.invoice.bankAccount) {
-            wx.showToast('纳税单位银行开户账号不能为空，请输入！');
-            return false;
-          }
-          if (!this.invoice.registrationAddress) {
-            wx.showToast('纳税单位注册地址不能为空，请输入！');
-            return false;
-          }
-          if (!this.invoice.registrationPhone) {
-            wx.showToast('纳税单位电话号码不能为空，请输入！');
-            return false;
+            wx.showToast('请输入正确的纳税识别号！')
+            return false
           }
         }
-        Store.commit(VUEX.CHECKOUT.SET_INVOICE, this.invoice); // Object.assign({id: result.data.memberInvoiceInfoId}, this.invoice))
-        wx.navigateBack();
-        // wx.showLoading('正在提交...')
-        // const result = await Axios.post('', Object.assign({
-        //   method: 'user.saveInvoiceInfo',
-        // }, this.invoice))
-        // wx.hideLoading();
-        // if (result.result.result == 1) {
-        //   Store.commit(VUEX.CHECKOUT.SET_INVOICE, Object.assign({id: result.data.memberInvoiceInfoId}, this.invoice))
-        //   wx.navigateBack()
-        // } else {
-        //   wx.showToast(result.result.message)
-        // }
-      },
-    },
-    // async onShow() {
-    //   const result = await Axios.get('', {params: {
-    //     method: 'user.get',
-    //   }});
-    //   if (result.result.result == 1) {
-    //     this.invoice.memberId = result.data.id;
-    //   }
-    //   const invoiceResult = await Axios.get('', {params: {
-    //     memberId: this.invoice.memberId,
-    //     method: 'user.findInvoiceInfo',
-    //   }})
-    //   if (invoiceResult.result.result == 1 && invoiceResult.data && invoiceResult.data.length) {
-    //     this.invoice = invoiceResult.data[0];
-    //   }
-    // }
-  };
+
+        if (!this.invoice.recipientPhone) {
+          wx.showToast('请输入收票人手机号码！')
+          return false
+        }
+        if (!/^[0-9]?\d{11}$/.test(this.invoice.recipientPhone)) {
+          wx.showToast('请输入正确的收票人手机号码！')
+          return false
+        }
+        if (!this.invoice.recipientEmail) {
+          wx.showToast('请输入收票人电子邮箱！')
+          return false
+        }
+        if (
+          !/^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/.test(this.invoice.recipientEmail)
+        ) {
+          wx.showToast('请输入正确的电子邮箱！')
+          return false
+        }
+      }
+
+      if (this.invoice.invoiceType == 1) {
+        if (!this.invoice.invoiceTitle) {
+          wx.showToast('纳税单位名称不能为空，请输入！')
+          return false
+        }
+        if (!this.invoice.identifyingCode) {
+          wx.showToast('纳税单位识别号不能为空，请输入！')
+          return false
+        }
+        if (
+          this.invoice.identifyingCode.length !== 15 &&
+            this.invoice.identifyingCode.length !== 18 &&
+            this.invoice.identifyingCode.length !== 20
+        ) {
+          wx.showToast('请输入正确的纳税识别号！')
+          return false
+        }
+        if (!this.invoice.bankName) {
+          wx.showToast('纳税单位开户银行名称不能为空，请输入！')
+          return false
+        }
+        if (!this.invoice.bankAccount) {
+          wx.showToast('纳税单位银行开户账号不能为空，请输入！')
+          return false
+        }
+        if (!this.invoice.registrationAddress) {
+          wx.showToast('纳税单位注册地址不能为空，请输入！')
+          return false
+        }
+        if (!this.invoice.registrationPhone) {
+          wx.showToast('纳税单位电话号码不能为空，请输入！')
+          return false
+        }
+      }
+      Store.commit(VUEX.CHECKOUT.SET_INVOICE, this.invoice) // Object.assign({id: result.data.memberInvoiceInfoId}, this.invoice))
+      wx.navigateBack()
+      // wx.showLoading('正在提交...')
+      // const result = await Axios.post('', Object.assign({
+      //   method: 'user.saveInvoiceInfo',
+      // }, this.invoice))
+      // wx.hideLoading();
+      // if (result.result.result == 1) {
+      //   Store.commit(VUEX.CHECKOUT.SET_INVOICE, Object.assign({id: result.data.memberInvoiceInfoId}, this.invoice))
+      //   wx.navigateBack()
+      // } else {
+      //   wx.showToast(result.result.message)
+      // }
+    }
+  }
+  // async onShow() {
+  //   const result = await Axios.get('', {params: {
+  //     method: 'user.get',
+  //   }});
+  //   if (result.result.result == 1) {
+  //     this.invoice.memberId = result.data.id;
+  //   }
+  //   const invoiceResult = await Axios.get('', {params: {
+  //     memberId: this.invoice.memberId,
+  //     method: 'user.findInvoiceInfo',
+  //   }})
+  //   if (invoiceResult.result.result == 1 && invoiceResult.data && invoiceResult.data.length) {
+  //     this.invoice = invoiceResult.data[0];
+  //   }
+  // }
+}
 </script>

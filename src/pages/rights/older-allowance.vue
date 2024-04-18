@@ -22,44 +22,44 @@
 </template>
 
 <script>
-  import SwiperTab from './components/swiper-tab.vue';
-  export default {
-    data() {
-      return {
-        tabClickIndex: '',
-        icon: 'http://192.168.1.187:10088/static/rights/icon-older-allowance.png',
-        iconBottom: 'http://192.168.1.187:10088/static/rights/icon-zixun.png',
-        tabArry: [
-          'http://192.168.1.187:10088/static/rights/icon-tab1.png',
-          'http://192.168.1.187:10088/static/rights/icon-tab2.png',
-          'http://192.168.1.187:10088/static/rights/icon-tab3.png',
-        ],
-        tabList: [
-          { name: '高龄津贴', value: '0' },
-          { name: '失能老人补贴', value: '1' },
-          { name: '地区性福利补贴', value: '2' },
-        ],
-      };
+import SwiperTab from './components/swiper-tab.vue'
+export default {
+  data() {
+    return {
+      tabClickIndex: '',
+      icon: 'http://192.168.1.187:10088/static/rights/icon-older-allowance.png',
+      iconBottom: 'http://192.168.1.187:10088/static/rights/icon-zixun.png',
+      tabArry: [
+        'http://192.168.1.187:10088/static/rights/icon-tab1.png',
+        'http://192.168.1.187:10088/static/rights/icon-tab2.png',
+        'http://192.168.1.187:10088/static/rights/icon-tab3.png'
+      ],
+      tabList: [
+        { name: '高龄津贴', value: '0' },
+        { name: '失能老人补贴', value: '1' },
+        { name: '地区性福利补贴', value: '2' }
+      ]
+    }
+  },
+  components: { SwiperTab },
+  onLoad(e) {
+    this.tabClickIndex = e.index || '0'
+    this.$nextTick(() => {
+      this.$refs.topTab.setIndex(this.tabClickIndex)
+    })
+  },
+  methods: {
+    hanldeOnTap(e) {
+      this.tabClickIndex = e.value
+      this.iconTab = this.tabArry[this.tabClickIndex]
     },
-    components: { SwiperTab },
-    onLoad(e) {
-      this.tabClickIndex = e.index || '0';
-      this.$nextTick(() => {
-        this.$refs.topTab.setIndex(this.tabClickIndex);
-      });
-    },
-    methods: {
-      hanldeOnTap(e) {
-        this.tabClickIndex = e.value;
-        this.iconTab = this.tabArry[this.tabClickIndex];
-      },
-      takePhone() {
-        uni.makePhoneCall({
-          phoneNumber: '12345',
-        });
-      },
-    },
-  };
+    takePhone() {
+      uni.makePhoneCall({
+        phoneNumber: '12345'
+      })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .older-allowance {

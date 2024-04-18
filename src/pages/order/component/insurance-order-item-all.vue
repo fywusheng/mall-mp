@@ -20,37 +20,37 @@
 </template>
 
 <script>
-  import dayjs from 'dayjs';
-  import { desensitizeName } from '@/utils/desensitization.js';
-  export default {
-    name: 'insurance-order-item',
-    props: {
-      item: {
-        type: Object,
-        default: () => {},
-      },
+import dayjs from 'dayjs'
+import { desensitizeName } from '@/utils/desensitization.js'
+export default {
+  name: 'insurance-order-item',
+  props: {
+    item: {
+      type: Object,
+      default: () => {}
+    }
+  },
+  data() {
+    return {
+      icon: 'http://192.168.1.187:10088/static/life/insurance-logo.png'
+    }
+  },
+  methods: {
+    toDetail(data) {
+      uni.navigateTo({
+        url: `/pages/order/insurance-order-info?insuCode=${data.orderId}`
+      })
+    }
+  },
+  filters: {
+    dateFilter(value) {
+      return dayjs(value).format('YYYY-MM-DD')
     },
-    data() {
-      return {
-        icon: 'http://192.168.1.187:10088/static/life/insurance-logo.png',
-      };
-    },
-    methods: {
-      toDetail(data) {
-        uni.navigateTo({
-          url: `/pages/order/insurance-order-info?insuCode=${data.orderId}`,
-        });
-      },
-    },
-    filters: {
-      dateFilter(value) {
-        return dayjs(value).format('YYYY-MM-DD');
-      },
-      desensitizeName(name) {
-        return desensitizeName(name);
-      },
-    },
-  };
+    desensitizeName(name) {
+      return desensitizeName(name)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

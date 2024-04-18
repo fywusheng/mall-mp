@@ -8,35 +8,35 @@
 </template>
 
 <script>
-  export default {
-    components: {},
-    data() {
-      return {
-        type: 1, // 1-right 2-error
-        imgs: {
-          1: 'http://192.168.1.187:10088/static/user-center/right.png',
-          2: 'http://192.168.1.187:10088/static/user-center/error.png',
-        },
-        infor: { 1: '注销成功', 2: '注销失败' },
-        content: {
-          1: '您已成功注销账号',
-          2: '您的账号有正在进行中的订单 如需注销账号,请完成订单后再重试',
-        },
-      };
-    },
-    computed: {},
-    onLoad(e) {
-      if (e.type) {
-        this.type = e.type;
-      }
-    },
-
-    methods: {
-      compet() {
-        uni.reLaunch({ url: '/pages/index/index?index=4' });
+export default {
+  components: {},
+  data() {
+    return {
+      type: 1, // 1-right 2-error
+      imgs: {
+        1: 'http://192.168.1.187:10088/static/user-center/right.png',
+        2: 'http://192.168.1.187:10088/static/user-center/error.png'
       },
-    },
-  };
+      infor: { 1: '注销成功', 2: '注销失败' },
+      content: {
+        1: '您已成功注销账号',
+        2: '您的账号有正在进行中的订单 如需注销账号,请完成订单后再重试'
+      }
+    }
+  },
+  computed: {},
+  onLoad(e) {
+    if (e.type) {
+      this.type = e.type
+    }
+  },
+
+  methods: {
+    compet() {
+      uni.reLaunch({ url: '/pages/index/index?index=4' })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

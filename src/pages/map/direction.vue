@@ -218,759 +218,759 @@
 </template>
 
 <script>
-  import { showToast } from '@/utils/uni';
-  import myTabbar from './components/stzhang-tab';
-  export default {
-    components: { myTabbar },
-    data() {
-      return {
-        // 当前位置信息
-        location: uni.getStorageSync('location'),
-        // 起点和终点是否互换
-        isInterchanged: false,
-        // 出行方式列表
-        tripModes: [
-          {
-            iconPath: 'http://192.168.1.187:10088/static/map/icon-map-trip-mode-driving.png',
-            name: '驾车',
-            distance: '',
-            duration: '',
-          },
-          {
-            iconPath: 'http://192.168.1.187:10088/static/map/icon-map-trip-mode-busing.png',
-            name: '公交',
-            distance: '',
-            duration: '',
-          },
-          {
-            iconPath: 'http://192.168.1.187:10088/static/map/icon-map-trip-mode-cycling.png',
-            name: '骑行',
-            distance: '',
-            duration: '',
-          },
-          {
-            iconPath: 'http://192.168.1.187:10088/static/map/icon-map-trip-mode-walking.png',
-            name: '步行',
-            distance: '',
-            duration: '',
-          },
-        ],
-        // 出行方式选中的下标
-        selectedIndex: 1,
-        // 下划线
-        modelData: [{ label: '' }, { label: '' }, { label: '' }, { label: '' }],
-        // 下划线下标
-        initIndex: 1,
-        // 起点信息
-        origin: {},
-        // 终点信息
-        destination: {},
-        // 路线信息
-        polylines: [[], [], [], []],
-        // 公交线路信息
-        buslines: [],
-        // 判断是否是空状态页面
-        showEmpty: true,
-        // 判断是否终点可点击
-        isDestinationClick: false,
-        // 判断是否距离过远
-        isDistanceLong: false,
-      };
-    },
-    computed: {
-      // 标记点
-      markers() {
-        console.log('生成markers');
-        if (this.origin.latitude && this.destination.latitude) {
-          return [
-            {
-              id: 0,
-              iconPath: 'http://192.168.1.187:10088/static/map/icon-map-direction-origin.png',
-              width: 15,
-              height: 15,
-              ...this.origin,
-            },
-            {
-              id: 1,
-              iconPath: 'http://192.168.1.187:10088/static/map/icon-map-direction-destination.png',
-              width: 47,
-              height: 54,
-              ...this.destination,
-            },
-          ];
-        } else if (this.origin.latitude) {
-          return [
-            {
-              id: 0,
-              iconPath: 'http://192.168.1.187:10088/static/map/icon-map-direction-origin.png',
-              width: 15,
-              height: 15,
-              ...this.origin,
-            },
-          ];
-        } else if (this.destination.latitude) {
-          return [
-            {
-              id: 1,
-              iconPath: 'http://192.168.1.187:10088/static/map/icon-map-direction-destination.png',
-              width: 47,
-              height: 54,
-              ...this.destination,
-            },
-          ];
+import { showToast } from '@/utils/uni'
+import myTabbar from './components/stzhang-tab'
+export default {
+  components: { myTabbar },
+  data() {
+    return {
+      // 当前位置信息
+      location: uni.getStorageSync('location'),
+      // 起点和终点是否互换
+      isInterchanged: false,
+      // 出行方式列表
+      tripModes: [
+        {
+          iconPath: 'http://192.168.1.187:10088/static/map/icon-map-trip-mode-driving.png',
+          name: '驾车',
+          distance: '',
+          duration: ''
+        },
+        {
+          iconPath: 'http://192.168.1.187:10088/static/map/icon-map-trip-mode-busing.png',
+          name: '公交',
+          distance: '',
+          duration: ''
+        },
+        {
+          iconPath: 'http://192.168.1.187:10088/static/map/icon-map-trip-mode-cycling.png',
+          name: '骑行',
+          distance: '',
+          duration: ''
+        },
+        {
+          iconPath: 'http://192.168.1.187:10088/static/map/icon-map-trip-mode-walking.png',
+          name: '步行',
+          distance: '',
+          duration: ''
         }
-      },
-      // 缩放视野以包含所有给定的坐标点
-      includePoints() {
-        const polyline = this.polylines[this.selectedIndex];
-        const points = polyline && polyline.length > 0 ? polyline[0].points : [];
-        if (points && this.origin.latitude & this.destination.latitude) {
-          return [...points, this.origin, this.destination];
-        }
-      },
-    },
-    onLoad(e) {
-      //#ifdef MP-ALIPAY
-      if (e.empt) {
-        const data = {
-          empty: true,
-        };
-        this.handleDidOpenPageFinish(data);
-      }
-      if (e.data) {
-        const data = JSON.parse(decodeURIComponent(e.data));
-        this.handleDidOpenPageFinish(data);
-      }
-      //#endif
-      const eventChannel = this.getOpenerEventChannel();
-      eventChannel.on('didOpenPageFinish', this.handleDidOpenPageFinish);
-      if (e.data) {
-        const data = JSON.parse(decodeURIComponent(e.data));
-        if (data) {
-          this.handleDidOpenPageFinish(data);
-        }
-      }
-
-      console.log('执行onload');
-    },
-    onShow() {
-      uni.$on('didLocationSearchFinish', this.handleLocationSearchFinish);
-    },
-    watch: {
-      selectedIndex(newVal, oldVal) {
-        this.initIndex = newVal;
-      },
-      origin(n, o) {
-        console.log('n', n);
-        console.log('o', o);
-      },
-    },
-    methods: {
-      handleDidOpenPageFinish(data) {
-        console.log('传入的数据：', data);
-        const location = uni.getStorageSync('location');
-        this.origin = {
-          name: '我的位置',
-          longitude: location.longitude,
-          latitude: location.latitude,
-        };
-        console.log('this.origin:', this.origin);
-        //空状态路线页面
-        if (data.empty) {
-          this.showEmpty = false;
-          this.isDestinationClick = true;
-          this.destination = {
-            name: '',
-          };
-        } else {
-          this.destination = data;
-          this.calculateRoutes();
-          if (this.isDistance(data.distance)) {
-            this.handleTripModeClick(3);
-          } else {
-            this.handleTripModeClick(1);
+      ],
+      // 出行方式选中的下标
+      selectedIndex: 1,
+      // 下划线
+      modelData: [{ label: '' }, { label: '' }, { label: '' }, { label: '' }],
+      // 下划线下标
+      initIndex: 1,
+      // 起点信息
+      origin: {},
+      // 终点信息
+      destination: {},
+      // 路线信息
+      polylines: [[], [], [], []],
+      // 公交线路信息
+      buslines: [],
+      // 判断是否是空状态页面
+      showEmpty: true,
+      // 判断是否终点可点击
+      isDestinationClick: false,
+      // 判断是否距离过远
+      isDistanceLong: false
+    }
+  },
+  computed: {
+    // 标记点
+    markers() {
+      console.log('生成markers')
+      if (this.origin.latitude && this.destination.latitude) {
+        return [
+          {
+            id: 0,
+            iconPath: 'http://192.168.1.187:10088/static/map/icon-map-direction-origin.png',
+            width: 15,
+            height: 15,
+            ...this.origin
+          },
+          {
+            id: 1,
+            iconPath: 'http://192.168.1.187:10088/static/map/icon-map-direction-destination.png',
+            width: 47,
+            height: 54,
+            ...this.destination
           }
+        ]
+      } else if (this.origin.latitude) {
+        return [
+          {
+            id: 0,
+            iconPath: 'http://192.168.1.187:10088/static/map/icon-map-direction-origin.png',
+            width: 15,
+            height: 15,
+            ...this.origin
+          }
+        ]
+      } else if (this.destination.latitude) {
+        return [
+          {
+            id: 1,
+            iconPath: 'http://192.168.1.187:10088/static/map/icon-map-direction-destination.png',
+            width: 47,
+            height: 54,
+            ...this.destination
+          }
+        ]
+      }
+    },
+    // 缩放视野以包含所有给定的坐标点
+    includePoints() {
+      const polyline = this.polylines[this.selectedIndex]
+      const points = polyline && polyline.length > 0 ? polyline[0].points : []
+      if (points && this.origin.latitude & this.destination.latitude) {
+        return [...points, this.origin, this.destination]
+      }
+    }
+  },
+  onLoad(e) {
+    // #ifdef MP-ALIPAY
+    if (e.empt) {
+      const data = {
+        empty: true
+      }
+      this.handleDidOpenPageFinish(data)
+    }
+    if (e.data) {
+      const data = JSON.parse(decodeURIComponent(e.data))
+      this.handleDidOpenPageFinish(data)
+    }
+    // #endif
+    const eventChannel = this.getOpenerEventChannel()
+    eventChannel.on('didOpenPageFinish', this.handleDidOpenPageFinish)
+    if (e.data) {
+      const data = JSON.parse(decodeURIComponent(e.data))
+      if (data) {
+        this.handleDidOpenPageFinish(data)
+      }
+    }
+
+    console.log('执行onload')
+  },
+  onShow() {
+    uni.$on('didLocationSearchFinish', this.handleLocationSearchFinish)
+  },
+  watch: {
+    selectedIndex(newVal, oldVal) {
+      this.initIndex = newVal
+    },
+    origin(n, o) {
+      console.log('n', n)
+      console.log('o', o)
+    }
+  },
+  methods: {
+    handleDidOpenPageFinish(data) {
+      console.log('传入的数据：', data)
+      const location = uni.getStorageSync('location')
+      this.origin = {
+        name: '我的位置',
+        longitude: location.longitude,
+        latitude: location.latitude
+      }
+      console.log('this.origin:', this.origin)
+      // 空状态路线页面
+      if (data.empty) {
+        this.showEmpty = false
+        this.isDestinationClick = true
+        this.destination = {
+          name: ''
         }
-      },
-      /**
+      } else {
+        this.destination = data
+        this.calculateRoutes()
+        if (this.isDistance(data.distance)) {
+          this.handleTripModeClick(3)
+        } else {
+          this.handleTripModeClick(1)
+        }
+      }
+    },
+    /**
        * 地图选点完成回调
        */
-      handleLocationSearchFinish(item) {
-        console.log(item, '回调了啊111');
-        if (this.isInterchanged) {
+    handleLocationSearchFinish(item) {
+      console.log(item, '回调了啊111')
+      if (this.isInterchanged) {
+        this.destination = {
+          name: item.name,
+          longitude: item.longitude,
+          latitude: item.latitude,
+          address: item.address
+        }
+      } else {
+        // 终点选址回调
+        if (item.isDestination) {
+          this.showEmpty = true
           this.destination = {
             name: item.name,
             longitude: item.longitude,
             latitude: item.latitude,
-            address: item.address,
-          };
+            address: item.address
+          }
+          this.handleTripModeClick(0)
         } else {
-          //终点选址回调
-          if (item.isDestination) {
-            this.showEmpty = true;
-            this.destination = {
-              name: item.name,
-              longitude: item.longitude,
-              latitude: item.latitude,
-              address: item.address,
-            };
-            this.handleTripModeClick(0);
-          } else {
-            this.origin = {
-              name: item.name,
-              longitude: item.longitude,
-              latitude: item.latitude,
-              address: item.address,
-            };
+          this.origin = {
+            name: item.name,
+            longitude: item.longitude,
+            latitude: item.latitude,
+            address: item.address
           }
         }
+      }
 
-        this.calculateRoutes();
-      },
-      /**
+      this.calculateRoutes()
+    },
+    /**
        * 起点 or 终点点击事件
        */
-      handleOriginClick() {
-        if (!this.showEmpty) {
-          // 空状态不能点击
-          return;
-        }
-        uni.navigateTo({
-          url: '/pages/map/location-search',
-        });
-      },
-      /**
+    handleOriginClick() {
+      if (!this.showEmpty) {
+        // 空状态不能点击
+        return
+      }
+      uni.navigateTo({
+        url: '/pages/map/location-search'
+      })
+    },
+    /**
        * 起点 or 终点点击事件
        */
-      handleDestinationClick() {
-        //路线进来不带数据可以点击终点位置,否则不能点击
-        if (!this.isDestinationClick) {
-          return;
+    handleDestinationClick() {
+      // 路线进来不带数据可以点击终点位置,否则不能点击
+      if (!this.isDestinationClick) {
+        return
+      }
+      uni.navigateTo({
+        url: '/pages/map/location-search?destination=true',
+        success: (res) => {
+          res.eventChannel.emit('didOpenPageFinish', {
+            destination: true
+          })
         }
-        uni.navigateTo({
-          url: '/pages/map/location-search?destination=true',
-          success: (res) => {
-            res.eventChannel.emit('didOpenPageFinish', {
-              destination: true,
-            });
-          },
-        });
-      },
-      /**
+      })
+    },
+    /**
        * 起点终点互换点击事件
        */
-      handleInterchangeClick() {
-        this.isInterchanged = !this.isInterchanged;
-        // 起点和终点信息互换
-        [this.origin, this.destination] = [this.destination, this.origin];
-        // 重新计算路线信息
-        this.calculateRoutes();
-      },
-      /**
+    handleInterchangeClick() {
+      this.isInterchanged = !this.isInterchanged;
+      // 起点和终点信息互换
+      [this.origin, this.destination] = [this.destination, this.origin]
+      // 重新计算路线信息
+      this.calculateRoutes()
+    },
+    /**
        * 出行方式点击事件
        */
-      handleTripModeClick(index) {
-        if (index === this.selectedIndex) return;
-        this.selectedIndex = index;
-      },
-      /**
+    handleTripModeClick(index) {
+      if (index === this.selectedIndex) return
+      this.selectedIndex = index
+    },
+    /**
        * 公交路线点击事件
        */
-      handleBuslineClick(index) {
-        const data = {
-          buslines: this.buslines,
-          index: index,
-          origin: this.origin,
-          destination: this.destination,
-        };
-        uni.setStorageSync('busline', data);
-        uni.navigateTo({
-          url: '/pages/map/busline',
-          success: (res) => {
-            res.eventChannel.emit('didOpenPageFinish-busline', data);
-          },
-        });
-      },
-      /**
+    handleBuslineClick(index) {
+      const data = {
+        buslines: this.buslines,
+        index: index,
+        origin: this.origin,
+        destination: this.destination
+      }
+      uni.setStorageSync('busline', data)
+      uni.navigateTo({
+        url: '/pages/map/busline',
+        success: (res) => {
+          res.eventChannel.emit('didOpenPageFinish-busline', data)
+        }
+      })
+    },
+    /**
        * 打车按钮点击事件
        */
-      handleCarButtonClick() {
-        showToast({
-          title: '功能建设中，敬请期待',
-        });
-      },
-      /**
+    handleCarButtonClick() {
+      showToast({
+        title: '功能建设中，敬请期待'
+      })
+    },
+    /**
        * 导航按钮点击事件
        */
-      handleDirectButtonClick() {
-        const point = this.isInterchanged ? this.origin : this.destination;
-        uni.openLocation(point);
+    handleDirectButtonClick() {
+      const point = this.isInterchanged ? this.origin : this.destination
+      uni.openLocation(point)
 
-        console.log('====外部去导航---', point);
-        console.log('====外部导航---', Object.values(point));
-      },
-      /**
+      console.log('====外部去导航---', point)
+      console.log('====外部导航---', Object.values(point))
+    },
+    /**
        * 计算各出行方式路线信息
        */
-      calculateRoutes() {
-        this.calculateDrivingRoute();
-        this.calculateBusingRoute();
-        this.calculateCyclingRoute();
-        this.calculateWalkingRoute();
-      },
-      /**
+    calculateRoutes() {
+      this.calculateDrivingRoute()
+      this.calculateBusingRoute()
+      this.calculateCyclingRoute()
+      this.calculateWalkingRoute()
+    },
+    /**
        * 计算驾车路线信息
        */
-      calculateDrivingRoute() {
-        const origin = `${this.origin.longitude},${this.origin.latitude}`;
-        const destination = `${this.destination.longitude},${this.destination.latitude}`;
-        // 调用高德地图 API 所需的参数
-        const parameters = [
-          { key: 'key', value: '0e35e6dc56aec0c0841e7f6c82879aa3' },
-          { key: 'origin', value: origin },
-          { key: 'destination', value: destination },
-        ]
-          .map((item) => `${item.key}=${item.value}`)
-          .join('&');
-        uni.request({
-          url: `https://restapi.amap.com/v3/direction/driving?${parameters}`,
-          success: (res) => {
-            const paths = res.data.route.paths;
+    calculateDrivingRoute() {
+      const origin = `${this.origin.longitude},${this.origin.latitude}`
+      const destination = `${this.destination.longitude},${this.destination.latitude}`
+      // 调用高德地图 API 所需的参数
+      const parameters = [
+        { key: 'key', value: '0e35e6dc56aec0c0841e7f6c82879aa3' },
+        { key: 'origin', value: origin },
+        { key: 'destination', value: destination }
+      ]
+        .map((item) => `${item.key}=${item.value}`)
+        .join('&')
+      uni.request({
+        url: `https://restapi.amap.com/v3/direction/driving?${parameters}`,
+        success: (res) => {
+          const paths = res.data.route.paths
 
-            // 距离
-            if (paths[0].distance > 1000) {
-              const distance = (paths[0].distance / 1000).toFixed(1);
-              this.tripModes[0].distance = `${distance}公里`;
-            } else {
-              this.tripModes[0].distance = `${paths[0].distance}米`;
+          // 距离
+          if (paths[0].distance > 1000) {
+            const distance = (paths[0].distance / 1000).toFixed(1)
+            this.tripModes[0].distance = `${distance}公里`
+          } else {
+            this.tripModes[0].distance = `${paths[0].distance}米`
+          }
+
+          // 时长
+          const duration = Math.ceil(paths[0].duration / 60)
+          if (duration >= 60) {
+            this.tripModes[0].duration = `${this.toHourMinute(duration)}`
+          } else {
+            this.tripModes[0].duration = `${duration}分钟`
+          }
+
+          // 路线上的点
+          const points = res.data.route.paths[0].steps
+            .map((item) => item.polyline)
+            .join('')
+            .split(';')
+            .map((item) => {
+              const location = item.split(',')
+              return {
+                longitude: parseFloat(location[0]),
+                latitude: parseFloat(location[1])
+              }
+            })
+          this.polylines.splice(0, 1, [
+            {
+              points: points,
+              color: '#0078F7',
+              width: 10,
+              arrowLine: true
             }
-
-            // 时长
-            const duration = Math.ceil(paths[0].duration / 60);
-            if (duration >= 60) {
-              this.tripModes[0].duration = `${this.toHourMinute(duration)}`;
-            } else {
-              this.tripModes[0].duration = `${duration}分钟`;
-            }
-
-            // 路线上的点
-            const points = res.data.route.paths[0].steps
-              .map((item) => item.polyline)
-              .join('')
-              .split(';')
-              .map((item) => {
-                const location = item.split(',');
-                return {
-                  longitude: parseFloat(location[0]),
-                  latitude: parseFloat(location[1]),
-                };
-              });
-            this.polylines.splice(0, 1, [
-              {
-                points: points,
-                color: '#0078F7',
-                width: 10,
-                arrowLine: true,
-              },
-            ]);
-          },
-        });
-      },
-      /**
+          ])
+        }
+      })
+    },
+    /**
        * 计算公交路线信息
        */
-      calculateBusingRoute() {
-        const origin = `${this.origin.longitude},${this.origin.latitude}`;
-        const destination = `${this.destination.longitude},${this.destination.latitude}`;
-        // 调用高德地图 API 所需的参数
-        const parameters = [
-          { key: 'key', value: '0e35e6dc56aec0c0841e7f6c82879aa3' },
-          { key: 'origin', value: origin },
-          { key: 'destination', value: destination },
-          { key: 'city', value: uni.getStorageSync('city').name },
-        ]
-          .map((item) => `${item.key}=${item.value}`)
-          .join('&');
-        uni.request({
-          url: `https://restapi.amap.com/v3/direction/transit/integrated?${parameters}`,
-          success: (res) => {
-            console.log(res, '公交车路线');
-            // 当状态是0的时候距离太远
-            if (res.data.status == '0') {
-              this.tripModes[3].distance = '当前路线较远，请更换出行方式';
-              this.tripModes[1].duration = '暂无';
-              this.isDistanceLong = true;
-              return;
-            }
-            const route = res.data.route;
-            this.buslines = route.transits;
-            console.log(this.buslines, 'this.buslines');
-            if (this.buslines.length === 0) {
-              this.tripModes[1].duration = '暂无';
-              return;
-            }
+    calculateBusingRoute() {
+      const origin = `${this.origin.longitude},${this.origin.latitude}`
+      const destination = `${this.destination.longitude},${this.destination.latitude}`
+      // 调用高德地图 API 所需的参数
+      const parameters = [
+        { key: 'key', value: '0e35e6dc56aec0c0841e7f6c82879aa3' },
+        { key: 'origin', value: origin },
+        { key: 'destination', value: destination },
+        { key: 'city', value: uni.getStorageSync('city').name }
+      ]
+        .map((item) => `${item.key}=${item.value}`)
+        .join('&')
+      uni.request({
+        url: `https://restapi.amap.com/v3/direction/transit/integrated?${parameters}`,
+        success: (res) => {
+          console.log(res, '公交车路线')
+          // 当状态是0的时候距离太远
+          if (res.data.status == '0') {
+            this.tripModes[3].distance = '当前路线较远，请更换出行方式'
+            this.tripModes[1].duration = '暂无'
+            this.isDistanceLong = true
+            return
+          }
+          const route = res.data.route
+          this.buslines = route.transits
+          console.log(this.buslines, 'this.buslines')
+          if (this.buslines.length === 0) {
+            this.tripModes[1].duration = '暂无'
+            return
+          }
 
-            this.buslines.forEach((busline) => (busline.tags = []));
+          this.buslines.forEach((busline) => (busline.tags = []))
 
-            // 计算最短时间
-            // item = this.buslines.reduce((p, v) => {
-            //   return p.duration < v.duration ? p : v;
-            // });
+          // 计算最短时间
+          // item = this.buslines.reduce((p, v) => {
+          //   return p.duration < v.duration ? p : v;
+          // });
 
-            this.buslines = route.transits.sort((prve, next) => {
-              const valueN = prve['duration'];
-              const valueM = next['duration'];
-              if (valueN < valueM) return -1;
-              else if (valueN > valueM) return 1;
-              else return 0;
-            });
-            // this.buslines.sort(this.objectArraySort('duration'))
-            console.log('时间最短排行', this.buslines);
-            this.buslines[0].tags.push('时间最短');
-            // 计算换乘最少
+          this.buslines = route.transits.sort((prve, next) => {
+            const valueN = prve['duration']
+            const valueM = next['duration']
+            if (valueN < valueM) return -1
+            else if (valueN > valueM) return 1
+            else return 0
+          })
+          // this.buslines.sort(this.objectArraySort('duration'))
+          console.log('时间最短排行', this.buslines)
+          this.buslines[0].tags.push('时间最短')
+          // 计算换乘最少
 
-            // //是否换乘最少(为true则不是)
-            // let transfer =  this.buslines.some((busline)=>{
-            //     return busline.segments.length < this.buslines[0].segments.length
-            // })
-            // //是否步行最少(为true则不是)
-            // let walk =  this.buslines.some((busline)=>{
-            //     return busline.walking_distance < this.buslines[0].walking_distance
-            // })
+          // //是否换乘最少(为true则不是)
+          // let transfer =  this.buslines.some((busline)=>{
+          //     return busline.segments.length < this.buslines[0].segments.length
+          // })
+          // //是否步行最少(为true则不是)
+          // let walk =  this.buslines.some((busline)=>{
+          //     return busline.walking_distance < this.buslines[0].walking_distance
+          // })
 
-            //换乘最少
-            let item = {};
-            item = this.buslines.reduce((p, v) => {
-              return p.segments.length <= v.segments.length ? p : v;
-            });
-            item.tags.push('换乘最少');
+          // 换乘最少
+          let item = {}
+          item = this.buslines.reduce((p, v) => {
+            return p.segments.length <= v.segments.length ? p : v
+          })
+          item.tags.push('换乘最少')
 
-            //步行最少
-            let walkItem = {};
-            walkItem = this.buslines.reduce((p, v) => {
-              console.log('p.walking_distance:', typeof p.walking_distance);
-              console.log('v.walking_distance:', typeof v.walking_distance);
-              console.log('bollen', p.walking_distance <= v.walking_distance);
-              return Number(p.walking_distance) <= Number(v.walking_distance) ? p : v;
-            });
-            console.log('步行最少的walkItem：', walkItem);
-            walkItem.tags.push('步行最少');
+          // 步行最少
+          let walkItem = {}
+          walkItem = this.buslines.reduce((p, v) => {
+            console.log('p.walking_distance:', typeof p.walking_distance)
+            console.log('v.walking_distance:', typeof v.walking_distance)
+            console.log('bollen', p.walking_distance <= v.walking_distance)
+            return Number(p.walking_distance) <= Number(v.walking_distance) ? p : v
+          })
+          console.log('步行最少的walkItem：', walkItem)
+          walkItem.tags.push('步行最少')
 
-            let transferIndex = 0;
-            this.buslines.map((item, index) => {
-              if (item.tags.indexOf('换乘最少') > -1) {
-                if (index > 1) {
-                  this.buslines.splice(index, 1);
-                  this.buslines.splice(1, 0, item);
-                  transferIndex = 1;
-                } else {
-                  transferIndex = index;
-                }
-                console.log('换乘最少索引：', index);
+          let transferIndex = 0
+          this.buslines.map((item, index) => {
+            if (item.tags.indexOf('换乘最少') > -1) {
+              if (index > 1) {
+                this.buslines.splice(index, 1)
+                this.buslines.splice(1, 0, item)
+                transferIndex = 1
+              } else {
+                transferIndex = index
               }
-            });
-            this.buslines.map((item, index) => {
-              if (item.tags.indexOf('步行最少') > -1) {
-                if (transferIndex == 0 && index > 1) {
-                  this.buslines.splice(index, 1);
-                  this.buslines.splice(1, 0, item);
-                } else if (transferIndex == 1 && index > 1) {
-                  this.buslines.splice(index, 2);
-                  this.buslines.splice(2, 0, item);
-                }
-                console.log('步行最少索引：', index);
+              console.log('换乘最少索引：', index)
+            }
+          })
+          this.buslines.map((item, index) => {
+            if (item.tags.indexOf('步行最少') > -1) {
+              if (transferIndex == 0 && index > 1) {
+                this.buslines.splice(index, 1)
+                this.buslines.splice(1, 0, item)
+              } else if (transferIndex == 1 && index > 1) {
+                this.buslines.splice(index, 2)
+                this.buslines.splice(2, 0, item)
               }
-            });
+              console.log('步行最少索引：', index)
+            }
+          })
 
-            // if(!transfer && !walk){
-            //   this.buslines[0].tags.push("换乘最少").push("步行最少");
-            // }else if(!transfer && walk){
-            //   this.buslines[0].tags.push("换乘最少");
+          // if(!transfer && !walk){
+          //   this.buslines[0].tags.push("换乘最少").push("步行最少");
+          // }else if(!transfer && walk){
+          //   this.buslines[0].tags.push("换乘最少");
 
-            // }else if(transfer && !walk){
-            //   item = this.buslines.reduce((p, v) => {
-            //     return p.segments.length <= v.segments.length ? p : v;
-            //   });
-            //   item.tags.push("换乘最少");
-            //   this.buslines[0].tags.push("步行最少");
-            // }else if(transfer && walk){
-            //   item = this.buslines.reduce((p, v) => {
-            //     return p.segments.length <= v.segments.length ? p : v;
-            //   });
-            //   item.tags.push("换乘最少");
-            // 步行最少
-            // walkItem = this.buslines.reduce((p, v) => {
-            //         console.log("p.walking_distance:",p.walking_distance)
-            //         console.log("v.walking_distance:",v.walking_distance)
-            //   return p.walking_distance <= v.walking_distance ? p : v;
-            // });
-            // console.log("步行最少的walkItem：",walkItem)
-            // walkItem.tags.push("步行最少");
-            // }
+          // }else if(transfer && !walk){
+          //   item = this.buslines.reduce((p, v) => {
+          //     return p.segments.length <= v.segments.length ? p : v;
+          //   });
+          //   item.tags.push("换乘最少");
+          //   this.buslines[0].tags.push("步行最少");
+          // }else if(transfer && walk){
+          //   item = this.buslines.reduce((p, v) => {
+          //     return p.segments.length <= v.segments.length ? p : v;
+          //   });
+          //   item.tags.push("换乘最少");
+          // 步行最少
+          // walkItem = this.buslines.reduce((p, v) => {
+          //         console.log("p.walking_distance:",p.walking_distance)
+          //         console.log("v.walking_distance:",v.walking_distance)
+          //   return p.walking_distance <= v.walking_distance ? p : v;
+          // });
+          // console.log("步行最少的walkItem：",walkItem)
+          // walkItem.tags.push("步行最少");
+          // }
 
-            // const isUnique = this.buslines.every((busline) => {
-            //   return busline.segments.length < item.segments.length;
-            // });
-            // isUnique && item.tags.push("换乘最少");
+          // const isUnique = this.buslines.every((busline) => {
+          //   return busline.segments.length < item.segments.length;
+          // });
+          // isUnique && item.tags.push("换乘最少");
 
-            // 步行最少
-            // item = this.buslines.reduce((p, v) => {
-            //          console.log("p.walking_distance:",p.walking_distance)
-            //          console.log("v.walking_distance:",v.walking_distance)
-            //   return p.walking_distance <= v.walking_distance ? p : v;
-            // });
-            // console.log("步行最少的item：",item)
-            // item.tags.push("步行最少");
+          // 步行最少
+          // item = this.buslines.reduce((p, v) => {
+          //          console.log("p.walking_distance:",p.walking_distance)
+          //          console.log("v.walking_distance:",v.walking_distance)
+          //   return p.walking_distance <= v.walking_distance ? p : v;
+          // });
+          // console.log("步行最少的item：",item)
+          // item.tags.push("步行最少");
 
+          // 距离
+          // if (route.distance > 1000) {
+          //   const distance = (route.distance / 1000).toFixed(1);
+          //   this.tripModes[1].distance = `${distance}公里`;
+          // } else {
+          //   this.tripModes[1].distance = `${route.distance}米`;
+          // }
+
+          // 时长
+          const duration = Math.ceil(this.buslines[0].duration / 60)
+          if (duration >= 60) {
+            this.tripModes[1].duration = `${this.toHourMinute(duration)}`
+          } else {
+            this.tripModes[1].duration = `${duration}分钟`
+          }
+
+          this.buslines.forEach((item) => {
             // 距离
-            // if (route.distance > 1000) {
-            //   const distance = (route.distance / 1000).toFixed(1);
-            //   this.tripModes[1].distance = `${distance}公里`;
-            // } else {
-            //   this.tripModes[1].distance = `${route.distance}米`;
-            // }
+            if (item.walking_distance > 1000) {
+              const walkingDistance = (item.walking_distance / 1000).toFixed(1)
+              item.walking_distance = `${walkingDistance}公里`
+            } else {
+              item.walking_distance = `${item.walking_distance}米`
+            }
 
             // 时长
-            const duration = Math.ceil(this.buslines[0].duration / 60);
-            if (duration >= 60) {
-              this.tripModes[1].duration = `${this.toHourMinute(duration)}`;
-            } else {
-              this.tripModes[1].duration = `${duration}分钟`;
-            }
+            const duration = Math.ceil(item.duration / 60)
+            item.duration = `${duration}分钟`
 
-            this.buslines.forEach((item) => {
-              // 距离
-              if (item.walking_distance > 1000) {
-                const walkingDistance = (item.walking_distance / 1000).toFixed(1);
-                item.walking_distance = `${walkingDistance}公里`;
-              } else {
-                item.walking_distance = `${item.walking_distance}米`;
+            // 公交线路名称
+            item.buslines = []
+            item.segments.forEach((segment) => {
+              const buslines = segment.bus.buslines
+              if (buslines.length > 0) {
+                const name = buslines
+                  .map((busline) => {
+                    return busline.name.replace(/\(.*?\)/g, '')
+                  })
+                  .join('/')
+                item.buslines.push(name)
               }
+            })
+          })
 
-              // 时长
-              const duration = Math.ceil(item.duration / 60);
-              item.duration = `${duration}分钟`;
-
-              // 公交线路名称
-              item.buslines = [];
-              item.segments.forEach((segment) => {
-                const buslines = segment.bus.buslines;
-                if (buslines.length > 0) {
-                  const name = buslines
-                    .map((busline) => {
-                      return busline.name.replace(/\(.*?\)/g, '');
-                    })
-                    .join('/');
-                  item.buslines.push(name);
-                }
-              });
-            });
-
-            // 路线上的点
-            this.polylines.splice(1, 1, [
-              {
-                points: [this.origin, this.destination],
-                color: '#00000000',
-                width: 10,
-                arrowLine: true,
-              },
-            ]);
-          },
-        });
-      },
-      /**
+          // 路线上的点
+          this.polylines.splice(1, 1, [
+            {
+              points: [this.origin, this.destination],
+              color: '#00000000',
+              width: 10,
+              arrowLine: true
+            }
+          ])
+        }
+      })
+    },
+    /**
        * 获取步行最少
        */
-      /**
+    /**
        * 对对象中的某个字段进行排序
        */
-      objectArraySort(keyName) {
-        return (objectN, objectM) => {
-          var valueN = objectN[keyName];
-          var valueM = objectM[keyName];
-          if (valueN < valueM) return -1;
-          else if (valueN > valueM) return 1;
-          else return 0;
-        };
-      },
-      /**
+    objectArraySort(keyName) {
+      return (objectN, objectM) => {
+        var valueN = objectN[keyName]
+        var valueM = objectM[keyName]
+        if (valueN < valueM) return -1
+        else if (valueN > valueM) return 1
+        else return 0
+      }
+    },
+    /**
        * 计算骑行路线信息
        */
-      calculateCyclingRoute() {
-        const origin = `${this.origin.longitude},${this.origin.latitude}`;
-        const destination = `${this.destination.longitude},${this.destination.latitude}`;
-        // 调用高德地图 API 所需的参数
-        const parameters = [
-          { key: 'key', value: '0e35e6dc56aec0c0841e7f6c82879aa3' },
-          { key: 'origin', value: origin },
-          { key: 'destination', value: destination },
-        ]
-          .map((item) => `${item.key}=${item.value}`)
-          .join('&');
-        uni.request({
-          url: `https://restapi.amap.com/v4/direction/bicycling?${parameters}`,
-          success: (res) => {
-            const paths = res.data.data.paths;
+    calculateCyclingRoute() {
+      const origin = `${this.origin.longitude},${this.origin.latitude}`
+      const destination = `${this.destination.longitude},${this.destination.latitude}`
+      // 调用高德地图 API 所需的参数
+      const parameters = [
+        { key: 'key', value: '0e35e6dc56aec0c0841e7f6c82879aa3' },
+        { key: 'origin', value: origin },
+        { key: 'destination', value: destination }
+      ]
+        .map((item) => `${item.key}=${item.value}`)
+        .join('&')
+      uni.request({
+        url: `https://restapi.amap.com/v4/direction/bicycling?${parameters}`,
+        success: (res) => {
+          const paths = res.data.data.paths
 
-            // 距离
-            if (paths[0].distance > 1000) {
-              const distance = (paths[0].distance / 1000).toFixed(1);
-              this.tripModes[2].distance = `${distance}公里`;
-            } else {
-              this.tripModes[2].distance = `${paths[0].distance}米`;
+          // 距离
+          if (paths[0].distance > 1000) {
+            const distance = (paths[0].distance / 1000).toFixed(1)
+            this.tripModes[2].distance = `${distance}公里`
+          } else {
+            this.tripModes[2].distance = `${paths[0].distance}米`
+          }
+
+          // 时长
+          const duration = Math.ceil(paths[0].duration / 60)
+          if (duration >= 60) {
+            this.tripModes[2].duration = `${this.toHourMinute(duration)}`
+          } else {
+            this.tripModes[2].duration = `${duration}分钟`
+          }
+
+          // 路线上的点
+          const points = res.data.data.paths[0].steps
+            .map((item) => item.polyline)
+            .join('')
+            .split(';')
+            .map((item) => {
+              const location = item.split(',')
+              return {
+                longitude: parseFloat(location[0]),
+                latitude: parseFloat(location[1])
+              }
+            })
+          this.polylines.splice(2, 1, [
+            {
+              points: points,
+              color: '#0078F7',
+              width: 10,
+              arrowLine: true
             }
-
-            // 时长
-            const duration = Math.ceil(paths[0].duration / 60);
-            if (duration >= 60) {
-              this.tripModes[2].duration = `${this.toHourMinute(duration)}`;
-            } else {
-              this.tripModes[2].duration = `${duration}分钟`;
-            }
-
-            // 路线上的点
-            const points = res.data.data.paths[0].steps
-              .map((item) => item.polyline)
-              .join('')
-              .split(';')
-              .map((item) => {
-                const location = item.split(',');
-                return {
-                  longitude: parseFloat(location[0]),
-                  latitude: parseFloat(location[1]),
-                };
-              });
-            this.polylines.splice(2, 1, [
-              {
-                points: points,
-                color: '#0078F7',
-                width: 10,
-                arrowLine: true,
-              },
-            ]);
-          },
-        });
-      },
-      /**
+          ])
+        }
+      })
+    },
+    /**
        * 计算步行路线信息
        */
-      calculateWalkingRoute() {
-        const origin = `${this.origin.longitude},${this.origin.latitude}`;
-        const destination = `${this.destination.longitude},${this.destination.latitude}`;
-        // 调用高德地图 API 所需的参数
-        const parameters = [
-          { key: 'key', value: '0e35e6dc56aec0c0841e7f6c82879aa3' },
-          { key: 'origin', value: origin },
-          { key: 'destination', value: destination },
-        ]
-          .map((item) => `${item.key}=${item.value}`)
-          .join('&');
-        uni.request({
-          url: `https://restapi.amap.com/v3/direction/walking?${parameters}`,
-          success: (res) => {
-            console.log(res, '步行');
-            if (res.data.status == '0') {
-              this.tripModes[3].duration = '暂无';
-              return;
-            }
-            const paths = res.data.route.paths;
-            // 距离
-            if (paths[0].distance > 1000) {
-              const distance = (paths[0].distance / 1000).toFixed(1);
-              this.tripModes[3].distance = `${distance}公里`;
-            } else {
-              this.tripModes[3].distance = `${paths[0].distance}米`;
-            }
+    calculateWalkingRoute() {
+      const origin = `${this.origin.longitude},${this.origin.latitude}`
+      const destination = `${this.destination.longitude},${this.destination.latitude}`
+      // 调用高德地图 API 所需的参数
+      const parameters = [
+        { key: 'key', value: '0e35e6dc56aec0c0841e7f6c82879aa3' },
+        { key: 'origin', value: origin },
+        { key: 'destination', value: destination }
+      ]
+        .map((item) => `${item.key}=${item.value}`)
+        .join('&')
+      uni.request({
+        url: `https://restapi.amap.com/v3/direction/walking?${parameters}`,
+        success: (res) => {
+          console.log(res, '步行')
+          if (res.data.status == '0') {
+            this.tripModes[3].duration = '暂无'
+            return
+          }
+          const paths = res.data.route.paths
+          // 距离
+          if (paths[0].distance > 1000) {
+            const distance = (paths[0].distance / 1000).toFixed(1)
+            this.tripModes[3].distance = `${distance}公里`
+          } else {
+            this.tripModes[3].distance = `${paths[0].distance}米`
+          }
 
-            // 时长
-            const duration = Math.ceil(paths[0].duration / 60);
-            if (duration >= 60) {
-              this.tripModes[3].duration = `${this.toHourMinute(duration)}`;
-            } else {
-              this.tripModes[3].duration = `${duration}分钟`;
-            }
+          // 时长
+          const duration = Math.ceil(paths[0].duration / 60)
+          if (duration >= 60) {
+            this.tripModes[3].duration = `${this.toHourMinute(duration)}`
+          } else {
+            this.tripModes[3].duration = `${duration}分钟`
+          }
 
-            // 路线上的点
-            const points = res.data.route.paths[0].steps
-              .map((item) => item.polyline)
-              .join('')
-              .split(';')
-              .map((item) => {
-                const location = item.split(',');
-                return {
-                  longitude: parseFloat(location[0]),
-                  latitude: parseFloat(location[1]),
-                };
-              });
-            this.polylines.splice(3, 1, [
-              {
-                points: points,
-                color: '#0078F7',
-                width: 10,
-                arrowLine: true,
-              },
-            ]);
-          },
-        });
-      },
-      /*
+          // 路线上的点
+          const points = res.data.route.paths[0].steps
+            .map((item) => item.polyline)
+            .join('')
+            .split(';')
+            .map((item) => {
+              const location = item.split(',')
+              return {
+                longitude: parseFloat(location[0]),
+                latitude: parseFloat(location[1])
+              }
+            })
+          this.polylines.splice(3, 1, [
+            {
+              points: points,
+              color: '#0078F7',
+              width: 10,
+              arrowLine: true
+            }
+          ])
+        }
+      })
+    },
+    /*
        * 商户定位和当前定位方法
        */
-      handlePosition(index) {
-        const mapConext = uni.createMapContext('map', this);
-        switch (index) {
-          case 1:
-            console.log(this.destination);
-            mapConext.moveToLocation({
-              latitude: this.destination.latitude,
-              longitude: this.destination.longitude,
-              success: (res) => {},
-              fail: (res) => {},
-            });
-            break;
-          case 2:
-            mapConext.moveToLocation({
-              latitude: this.origin.latitude,
-              longitude: this.origin.longitude,
-              success: (res) => {},
-              fail: (res) => {},
-            });
-            break;
-          default:
-            break;
-        }
-      },
-      /*
+    handlePosition(index) {
+      const mapConext = uni.createMapContext('map', this)
+      switch (index) {
+        case 1:
+          console.log(this.destination)
+          mapConext.moveToLocation({
+            latitude: this.destination.latitude,
+            longitude: this.destination.longitude,
+            success: (res) => {},
+            fail: (res) => {}
+          })
+          break
+        case 2:
+          mapConext.moveToLocation({
+            latitude: this.origin.latitude,
+            longitude: this.origin.longitude,
+            success: (res) => {},
+            fail: (res) => {}
+          })
+          break
+        default:
+          break
+      }
+    },
+    /*
        *分钟转换成小时
        */
-      toHourMinute(minutes) {
-        return Math.floor(minutes / 60) + '小时' + (minutes % 60) + '分钟';
-        // 也可以转换为json，以方便专外部使用属
-        // return {hour:Math.floor(minutes/60),minute:(minutes%60)};
-      },
-      /*
+    toHourMinute(minutes) {
+      return Math.floor(minutes / 60) + '小时' + (minutes % 60) + '分钟'
+      // 也可以转换为json，以方便专外部使用属
+      // return {hour:Math.floor(minutes/60),minute:(minutes%60)};
+    },
+    /*
        * 判断是否小于1000米
        */
-      isDistance(str) {
-        console.log('str:', str);
-        let arr = (str + '').split('');
-        if (arr[arr.length - 1] == '米') {
-          arr.pop();
-          if (arr.join('') - 0 < 1000) {
-            return true;
-          } else {
-            return false;
-          }
+    isDistance(str) {
+      console.log('str:', str)
+      const arr = (str + '').split('')
+      if (arr[arr.length - 1] == '米') {
+        arr.pop()
+        if (arr.join('') - 0 < 1000) {
+          return true
+        } else {
+          return false
         }
-      },
-    },
-    onUnload() {
-      // console.log()
-    },
-    destroyed() {
-      console.log('页面销毁');
-    },
-  };
+      }
+    }
+  },
+  onUnload() {
+    // console.log()
+  },
+  destroyed() {
+    console.log('页面销毁')
+  }
+}
 </script>
 
 <style lang="scss" scoped>

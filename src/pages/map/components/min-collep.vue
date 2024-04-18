@@ -35,69 +35,69 @@
   </view>
 </template>
 <script>
-  export default {
-    props: {
-      list: {
-        type: [Array, String],
-        default: () => [],
-      },
-      desc: {
-        type: String,
-        default: 'item',
-      },
-      textDirection: {
-        type: String,
-        default: '',
-      },
-      placeholder: {
-        type: String,
-        default: '',
-      },
-      disabled: {
-        type: Boolean,
-        default: true,
-      },
-      border: {
-        type: Boolean,
-        default: false,
-      },
+export default {
+  props: {
+    list: {
+      type: [Array, String],
+      default: () => []
     },
-    data() {
-      return {
-        isShow: false,
-        hightLine: 'hight-line',
-        //list当前item下标
-        current: 0,
-      };
+    desc: {
+      type: String,
+      default: 'item'
     },
-    watch: {
-      list(n, o) {
-        console.log('==n==', n);
-        console.log('==o==', o);
-      },
+    textDirection: {
+      type: String,
+      default: ''
     },
-    onLoad() {},
-    methods: {
-      handleClick() {
-        this.isShow = !this.isShow;
-        this.$emit('clickTab');
-      },
-      closeClick() {
-        this.isShow = false;
-      },
-      click() {},
-      handleTouchstart(index) {
-        this.current = index;
-      },
-      handleTouchend(index) {
-        this.current = -1;
-      },
-      handleItemClick(index, serviceOrder) {
-        this.current = index;
-        this.$emit('handleItemClick', serviceOrder);
-      },
+    placeholder: {
+      type: String,
+      default: ''
     },
-  };
+    disabled: {
+      type: Boolean,
+      default: true
+    },
+    border: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      isShow: false,
+      hightLine: 'hight-line',
+      // list当前item下标
+      current: 0
+    }
+  },
+  watch: {
+    list(n, o) {
+      console.log('==n==', n)
+      console.log('==o==', o)
+    }
+  },
+  onLoad() {},
+  methods: {
+    handleClick() {
+      this.isShow = !this.isShow
+      this.$emit('clickTab')
+    },
+    closeClick() {
+      this.isShow = false
+    },
+    click() {},
+    handleTouchstart(index) {
+      this.current = index
+    },
+    handleTouchend(index) {
+      this.current = -1
+    },
+    handleItemClick(index, serviceOrder) {
+      this.current = index
+      this.$emit('handleItemClick', serviceOrder)
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .min-collapse {

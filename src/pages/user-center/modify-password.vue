@@ -28,26 +28,26 @@
 </template>
 
 <script>
-  export default {
-    methods: {
-      /**
+export default {
+  methods: {
+    /**
        * 不记得原来的密码
        */
-      handleRealPersonAuthenticationClick() {
-        uni.navigateTo({
-          url: '/pages/user-center/modify-by-phone-number?type=4',
-        });
-      },
-      /**
+    handleRealPersonAuthenticationClick() {
+      uni.navigateTo({
+        url: '/pages/user-center/modify-by-phone-number?type=4'
+      })
+    },
+    /**
        * 记得原来的密码
        */
-      handleSMSValidationClicK() {
-        uni.navigateTo({
-          url: '/pages/user-center/password-change-password',
-        });
-      },
-    },
-  };
+    handleSMSValidationClicK() {
+      uni.navigateTo({
+        url: '/pages/user-center/password-change-password'
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

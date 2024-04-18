@@ -148,217 +148,217 @@
 </template>
 
 <script>
-  import dayjs from 'dayjs';
-  import api from '@/apis/index.js';
-  import { UniPopup } from '@dcloudio/uni-ui';
-  import { validateIDCardNumber } from '@/utils/validation.js';
-  import { mapState } from 'vuex';
-  export default {
-    components: { UniPopup },
-    data() {
-      return {
-        showDisease: [],
-        selectDisease: [],
-        soure: '',
-        diseaseList: [
-          { name: '高血压', value: 0 },
-          { name: '高血脂', value: 1 },
-          { name: '糖尿病', value: 2 },
-          { name: '冠心病', value: 3 },
-          { name: '脑卒中', value: 4 },
-          { name: '肿瘤', value: 5 },
-          { name: '动脉硬化', value: 6 },
-          { name: '慢性肺病', value: 7 },
-          { name: '骨质疏松', value: 8 },
-          { name: '白内障', value: 9 },
-          { name: '老年痴呆', value: 10 },
-          { name: '骨关节病', value: 11 },
-        ],
-        // 表单数据
-        params: {
-          name: '', // 姓名
-          idCard: '', //身份证号
-          sex: '0', // 性别
-          age: '', //年龄
-          storeNo: '', //门店编号
-          districtArea: '', //省市
-          address: '', // 门店地址
-          disease: '', //疾病情况
-          memberId: '', //所属会员id
-        },
-      };
+import dayjs from 'dayjs'
+import api from '@/apis/index.js'
+import { UniPopup } from '@dcloudio/uni-ui'
+import { validateIDCardNumber } from '@/utils/validation.js'
+import { mapState } from 'vuex'
+export default {
+  components: { UniPopup },
+  data() {
+    return {
+      showDisease: [],
+      selectDisease: [],
+      soure: '',
+      diseaseList: [
+        { name: '高血压', value: 0 },
+        { name: '高血脂', value: 1 },
+        { name: '糖尿病', value: 2 },
+        { name: '冠心病', value: 3 },
+        { name: '脑卒中', value: 4 },
+        { name: '肿瘤', value: 5 },
+        { name: '动脉硬化', value: 6 },
+        { name: '慢性肺病', value: 7 },
+        { name: '骨质疏松', value: 8 },
+        { name: '白内障', value: 9 },
+        { name: '老年痴呆', value: 10 },
+        { name: '骨关节病', value: 11 }
+      ],
+      // 表单数据
+      params: {
+        name: '', // 姓名
+        idCard: '', // 身份证号
+        sex: '0', // 性别
+        age: '', // 年龄
+        storeNo: '', // 门店编号
+        districtArea: '', // 省市
+        address: '', // 门店地址
+        disease: '', // 疾病情况
+        memberId: '' // 所属会员id
+      }
+    }
+  },
+  async onLoad(e) {
+    if (e && e.soure) this.soure = e.soure
+    await this.$store.dispatch('getUserInfo')
+    this.fillParams(this.params)
+  },
+  onUnload() {
+    // uni.$off('faceRecognitionFinished');
+  },
+  computed: {
+    ...mapState({
+      userInfo: (state) => state.user.userInfo,
+      sessionId: (state) => state.user.sessionId
+    }),
+    // 页面操作  true 新增， false修改
+    add() {
+      if (this.userInfo && this.userInfo.memberId !== '' && this.userInfo.memberId !== ' ') {
+        return false
+      } else {
+        return true
+      }
+    }
+  },
+  methods: {
+    confirm() {
+      this.showDisease = JSON.parse(JSON.stringify(this.selectDisease))
+      this.closePop()
     },
-    async onLoad(e) {
-      if (e && e.soure) this.soure = e.soure;
-      await this.$store.dispatch('getUserInfo');
-      this.fillParams(this.params);
+    open() {
+      this.$refs.popup.open('bottom')
     },
-    onUnload() {
-      // uni.$off('faceRecognitionFinished');
+    closePop() {
+      this.$refs.popup.close()
     },
-    computed: {
-      ...mapState({
-        userInfo: (state) => state.user.userInfo,
-        sessionId: (state) => state.user.sessionId,
-      }),
-      // 页面操作  true 新增， false修改
-      add() {
-        if (this.userInfo && this.userInfo.memberId !== '' && this.userInfo.memberId !== ' ') {
-          return false;
-        } else {
-          return true;
-        }
-      },
-    },
-    methods: {
-      confirm() {
-        this.showDisease = JSON.parse(JSON.stringify(this.selectDisease));
-        this.closePop();
-      },
-      open() {
-        this.$refs.popup.open('bottom');
-      },
-      closePop() {
-        this.$refs.popup.close();
-      },
 
-      selectDis(item) {
-        if (this.selectDisease.includes(item.name)) return;
-        this.selectDisease.push(item.name);
-      },
-      fillParams(data) {
-        for (let key in data) {
-          this.params[key] = this.userInfo[key];
-        }
-        if (this.userInfo.disease !== '') {
-          this.showDisease = this.userInfo.disease.split(',');
-          this.selectDisease = this.userInfo.disease.split(',');
-          this.params.disease = this.userInfo.disease.split(',');
-        }
-      },
-      /**
+    selectDis(item) {
+      if (this.selectDisease.includes(item.name)) return
+      this.selectDisease.push(item.name)
+    },
+    fillParams(data) {
+      for (const key in data) {
+        this.params[key] = this.userInfo[key]
+      }
+      if (this.userInfo.disease !== '') {
+        this.showDisease = this.userInfo.disease.split(',')
+        this.selectDisease = this.userInfo.disease.split(',')
+        this.params.disease = this.userInfo.disease.split(',')
+      }
+    },
+    /**
        * 身份证号输入完成事件
        */
-      handleSexChange(e) {
-        this.params.sex = e.target.value;
-      },
-      // 获取门店信息
-      async handleStoreNoChange(manStore, e) {
-        let params = {};
-        if (manStore) {
-          params = { queryObject: { storeType: 2 } };
-        } else {
-          params = { queryObject: { storeNo: e.target.value } };
-        }
+    handleSexChange(e) {
+      this.params.sex = e.target.value
+    },
+    // 获取门店信息
+    async handleStoreNoChange(manStore, e) {
+      let params = {}
+      if (manStore) {
+        params = { queryObject: { storeType: 2 }}
+      } else {
+        params = { queryObject: { storeNo: e.target.value }}
+      }
 
-        const result = await Axios.post('/srm/sh/stores/listByPageNo', params);
-        if (result.code == 200 && result.data.list.length) {
-          this.params.storeNo = result.data.list[0].storeNo;
-          this.params.address = result.data.list[0].address;
-          this.params.districtArea = result.data.list[0].districtAreaStr;
-        } else {
-          const res = await Axios.post('/srm/sh/stores/listByPageNo', {
-            queryObject: { storeType: 2 },
-          });
-          if (res.code == 200 && res.data.list.length) {
-            if (e.target.value !== res.data.list[0].storeNo) {
-              this.$uni.showToast('输入有误，请重新输入');
-              this.params.storeNo = '';
-              this.params.address = '';
-              this.params.districtArea = '';
-            }
-          } else {
-            this.$uni.showToast('输入有误，请重新输入');
-            this.params.storeNo = '';
-            this.params.address = '';
-            this.params.districtArea = '';
+      const result = await Axios.post('/srm/sh/stores/listByPageNo', params)
+      if (result.code == 200 && result.data.list.length) {
+        this.params.storeNo = result.data.list[0].storeNo
+        this.params.address = result.data.list[0].address
+        this.params.districtArea = result.data.list[0].districtAreaStr
+      } else {
+        const res = await Axios.post('/srm/sh/stores/listByPageNo', {
+          queryObject: { storeType: 2 }
+        })
+        if (res.code == 200 && res.data.list.length) {
+          if (e.target.value !== res.data.list[0].storeNo) {
+            this.$uni.showToast('输入有误，请重新输入')
+            this.params.storeNo = ''
+            this.params.address = ''
+            this.params.districtArea = ''
           }
+        } else {
+          this.$uni.showToast('输入有误，请重新输入')
+          this.params.storeNo = ''
+          this.params.address = ''
+          this.params.districtArea = ''
         }
-      },
-      /**
+      }
+    },
+    /**
        * 下一步点击事件
        */
-      async handleNextStepClick() {
-        if (!this.chackInput()) return;
-        const params = { ...this.params };
-        params.disease = this.showDisease.join(',');
-        if (!this.add) {
-          params.id = this.userInfo.id;
-        }
+    async handleNextStepClick() {
+      if (!this.chackInput()) return
+      const params = { ...this.params }
+      params.disease = this.showDisease.join(',')
+      if (!this.add) {
+        params.id = this.userInfo.id
+      }
 
-        try {
-          await this.validRealName({
-            userName: params.name,
-            idCard: params.idCard,
-          });
-          const result = await Axios.post('/member/sh/memberInformation/saveMemberInfo', params);
-          if (result.code == 200) {
-            this.$uni.showToast('保存成功');
-            this.$store.dispatch('getUserInfo');
-            if (this.soure !== 'mine') {
-              uni.navigateTo({ url: '/pages/user-center/register-userInfo-result' });
-            } else {
-              uni.navigateBack();
-            }
+      try {
+        await this.validRealName({
+          userName: params.name,
+          idCard: params.idCard
+        })
+        const result = await Axios.post('/member/sh/memberInformation/saveMemberInfo', params)
+        if (result.code == 200) {
+          this.$uni.showToast('保存成功')
+          this.$store.dispatch('getUserInfo')
+          if (this.soure !== 'mine') {
+            uni.navigateTo({ url: '/pages/user-center/register-userInfo-result' })
           } else {
-            this.$uni.showToast(result.msg || result.data);
+            uni.navigateBack()
           }
-        } catch (error) {
-          this.$uni.showToast('实名认证失败,请重新输入');
+        } else {
+          this.$uni.showToast(result.msg || result.data)
         }
-      },
-      /**
+      } catch (error) {
+        this.$uni.showToast('实名认证失败,请重新输入')
+      }
+    },
+    /**
        * 输入信息校验
        */
-      chackInput() {
-        if (!this.params.name) {
-          this.$uni.showToast('请输入姓名');
-          return false;
-        }
-        if (!this.params.idCard) {
-          this.$uni.showToast('请输入身份证号');
-          return false;
-        }
-        if (!validateIDCardNumber(this.params.idCard)) {
-          this.$uni.showToast('身份证号格式错误，请重新输入');
-          return false;
-        }
-        // if (!this.params.sex) {
-        //   this.$uni.showToast('请选择性别');
-        //   return false;
-        // }
-        if (!this.params.age) {
-          this.$uni.showToast('请输入年龄');
-          return false;
-        }
-        if (!this.params.storeNo) {
-          this.$uni.showToast('请输入所属门店编号');
-          return false;
-        }
-        if (!this.showDisease.length) {
-          this.$uni.showToast('请选择疾病情况');
-          return false;
-        }
+    chackInput() {
+      if (!this.params.name) {
+        this.$uni.showToast('请输入姓名')
+        return false
+      }
+      if (!this.params.idCard) {
+        this.$uni.showToast('请输入身份证号')
+        return false
+      }
+      if (!validateIDCardNumber(this.params.idCard)) {
+        this.$uni.showToast('身份证号格式错误，请重新输入')
+        return false
+      }
+      // if (!this.params.sex) {
+      //   this.$uni.showToast('请选择性别');
+      //   return false;
+      // }
+      if (!this.params.age) {
+        this.$uni.showToast('请输入年龄')
+        return false
+      }
+      if (!this.params.storeNo) {
+        this.$uni.showToast('请输入所属门店编号')
+        return false
+      }
+      if (!this.showDisease.length) {
+        this.$uni.showToast('请选择疾病情况')
+        return false
+      }
 
-        return true;
-      },
-      // 进行实名认证
-      validRealName(data) {
-        return new Promise((resolve, reject) => {
-          api.realPersonAuthenticate({
-            data,
-            showsLoading: true,
-            success: (res) => {
-              resolve(res);
-            },
-            fail: (error) => {
-              reject(error);
-            },
-          });
-        });
-      },
+      return true
     },
-  };
+    // 进行实名认证
+    validRealName(data) {
+      return new Promise((resolve, reject) => {
+        api.realPersonAuthenticate({
+          data,
+          showsLoading: true,
+          success: (res) => {
+            resolve(res)
+          },
+          fail: (error) => {
+            reject(error)
+          }
+        })
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

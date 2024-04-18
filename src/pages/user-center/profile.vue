@@ -120,88 +120,88 @@
 </template>
 
 <script>
-  import { UniDataPicker } from '@dcloudio/uni-ui';
-  import api from '@/apis/index.js';
-  export default {
-    components: { UniDataPicker },
-    data() {
-      return {
-        // 性别选择器数据
-        genders: ['男', '女'],
-        // 城市选择器数据
-        cities: [],
-        // 用户信息
-        userInfo: {
-          avatar: '',
-          gender: '',
-          city: '',
-        },
-      };
-    },
-    computed: {
-      // 头像地址
-      avatarURL() {
-        return (
-          this.userInfo.avatar ||
+import { UniDataPicker } from '@dcloudio/uni-ui'
+import api from '@/apis/index.js'
+export default {
+  components: { UniDataPicker },
+  data() {
+    return {
+      // 性别选择器数据
+      genders: ['男', '女'],
+      // 城市选择器数据
+      cities: [],
+      // 用户信息
+      userInfo: {
+        avatar: '',
+        gender: '',
+        city: ''
+      }
+    }
+  },
+  computed: {
+    // 头像地址
+    avatarURL() {
+      return (
+        this.userInfo.avatar ||
           'http://192.168.1.187:10088/static/user-center/icon-user-center-default-avatar.png'
-        );
-      },
-    },
-    onLoad() {
-      this.requestData();
-    },
-    methods: {
-      /**
+      )
+    }
+  },
+  onLoad() {
+    this.requestData()
+  },
+  methods: {
+    /**
        * 头像点击事件
        */
-      handleAvatarClick() {
-        uni.previewImage({
-          urls: [this.avatarURL],
-        });
-      },
-      /**
+    handleAvatarClick() {
+      uni.previewImage({
+        urls: [this.avatarURL]
+      })
+    },
+    /**
        * 选取头像点击事件
        */
-      handlePhotoPickerClick() {
-        uni.chooseImage({
-          success: (res) => {
-            this.userInfo.avatar = res.tempFilePaths[0];
-          },
-        });
-      },
-      /**
+    handlePhotoPickerClick() {
+      uni.chooseImage({
+        success: (res) => {
+          this.userInfo.avatar = res.tempFilePaths[0]
+        }
+      })
+    },
+    /**
        * 性别选择器改变回调
        */
-      handleGenderChange(e) {
-        this.userInfo.gender = this.genders[e.target.value];
-      },
-      /**
+    handleGenderChange(e) {
+      this.userInfo.gender = this.genders[e.target.value]
+    },
+    /**
        * 城市选择器改变回调
        */
-      handleCityChange(e) {
-        this.userInfo.city = e.detail.value.map((item) => item.text).join('');
-      },
-      /**
+    handleCityChange(e) {
+      this.userInfo.city = e.detail.value.map((item) => item.text).join('')
+    },
+    /**
        * 请求数据
        */
-      requestData() {
-        api.getRegions({
-          success: (data) => {
-            function map(array) {
-              return array.map((item) => {
-                return {
-                  text: item.regnName,
-                  value: item.regnCode,
-                  children: map(item.children),
-                };
-              });
-            }
-            this.cities = map(data);
-          },
-        });
-      },
-    },
-  };
+    requestData() {
+      api.getRegions({
+        success: (data) => {
+          function map(array) {
+            return array.map((item) => {
+              return {
+                text: item.regnName,
+                value: item.regnCode,
+                children: map(item.children)
+              }
+            })
+          }
+          this.cities = map(data)
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style>

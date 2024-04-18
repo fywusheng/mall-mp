@@ -119,188 +119,188 @@
 </template>
 
 <script>
-  import NavigationBar from '@/components/common/navigation-bar.vue';
-  import PayWayList from './components/pay-way-list.vue';
-  import Modal from '@/components/common/modal.vue';
-  import api from '@/apis/index.js';
-  export default {
-    components: { NavigationBar, PayWayList, Modal },
-    data() {
-      return {
-        // 商店信息
-        icon: {
-          arrow: 'http://192.168.1.187:10088/static/home/arrow.png',
-        },
-        errorMsg: '',
-        // 导航栏高度
-        //#ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        //#endif
-        //#ifdef MP-ALIPAY
-        navigationBarHeight:
+import NavigationBar from '@/components/common/navigation-bar.vue'
+import PayWayList from './components/pay-way-list.vue'
+import Modal from '@/components/common/modal.vue'
+import api from '@/apis/index.js'
+export default {
+  components: { NavigationBar, PayWayList, Modal },
+  data() {
+    return {
+      // 商店信息
+      icon: {
+        arrow: 'http://192.168.1.187:10088/static/home/arrow.png'
+      },
+      errorMsg: '',
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        //#endif
-        // 状态栏高度
-        statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-        codeTxt: '发送验证码',
-        validCode: '',
-        enableSend: false,
-        bankList: [],
-        selectIndex: 0,
-        payCardInfo: {},
-        formData: {},
-      };
-    },
-    onLoad(e) {
-      this.formData = JSON.parse(decodeURIComponent(e.info));
-      this.getBankList();
-    },
-    onShow() {},
-    methods: {
-      // 银行列表
-      getBankList() {
-        api.getBankList({
-          data: {},
-          success: (res) => {
-            this.bankList = res;
-            this.payCardInfo = this.bankList[0];
-          },
-        });
-      },
-      handleSelect(index) {
-        this.selectIndex = index;
-        this.payCardInfo = this.bankList[index];
-      },
-      // 返回收银台
-      handleNavBack() {
-        if (this.formData.orderSource === 0) {
-          //保留之前优惠买单逻辑
-          uni.navigateTo({
-            url: '/pagas/supermarket/index',
-          });
-        } else {
-          const url = `${ENV.H5}/#/checkstand?cashId=` + this.formData.cashId;
-          uni.navigateTo({
-            url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-          });
+      // #endif
+      // 状态栏高度
+      statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
+      codeTxt: '发送验证码',
+      validCode: '',
+      enableSend: false,
+      bankList: [],
+      selectIndex: 0,
+      payCardInfo: {},
+      formData: {}
+    }
+  },
+  onLoad(e) {
+    this.formData = JSON.parse(decodeURIComponent(e.info))
+    this.getBankList()
+  },
+  onShow() {},
+  methods: {
+    // 银行列表
+    getBankList() {
+      api.getBankList({
+        data: {},
+        success: (res) => {
+          this.bankList = res
+          this.payCardInfo = this.bankList[0]
         }
+      })
+    },
+    handleSelect(index) {
+      this.selectIndex = index
+      this.payCardInfo = this.bankList[index]
+    },
+    // 返回收银台
+    handleNavBack() {
+      if (this.formData.orderSource === 0) {
+        // 保留之前优惠买单逻辑
+        uni.navigateTo({
+          url: '/pagas/supermarket/index'
+        })
+      } else {
+        const url = `${ENV.H5}/#/checkstand?cashId=` + this.formData.cashId
+        uni.navigateTo({
+          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
+        })
+      }
 
-        // api.getPayCodePage({
-        //   data: {supermarketId: this.formData.supermarketId},
-        //   success: data => {
-        //     uni.navigateTo({
-        //        url: '/pages/pay/show-pay-code?url=' + encodeURIComponent(data.result)
-        //     });
-        //   }
-        // })
-      },
-      // 返回首页
-      handleHomeBack() {
-        this.$refs.tipModal.open();
-      },
-      // 发送验证码
-      sendCode() {
-        api.sendSmsOnPay({
-          showsLoading: true,
-          data: {
-            bankCardRecordId: this.payCardInfo.recordId,
-            orderNo: this.formData.orderId,
-            orderAmount: this.formData.payAmount,
-          },
-          success: (res) => {
-            this.$uni.showToast('验证码短信已发送');
-            this.enableSend = true;
-            this.startTimer();
-            this.requestId = res;
-          },
-        });
-      },
-      startTimer() {
-        this.startTime = 15;
-        this.timer = setInterval(() => {
-          this.codeTxt = this.startTime + 's重发';
-          if (this.startTime === 0) {
-            this.codeTxt = '发送验证码';
-            this.enableSend = false;
-            clearInterval(this.timer);
-            return;
-          }
-          this.startTime--;
-        }, 1000);
-      },
-      handlePayWayPop() {
-        this.$refs.payWayPop.open();
-      },
-      handlKnow() {
-        this.$refs.codeModal.close();
-      },
-      // 放弃
-      handleConfirm() {
-        if (this.formData.orderSource === 0) {
-          uni.reLaunch({
-            url: '/pages/index/index',
-          });
-        } else {
-          //全部订单  其余类型
-          uni.reLaunch({
-            url: '/pages/index/index?index=3',
-          });
+      // api.getPayCodePage({
+      //   data: {supermarketId: this.formData.supermarketId},
+      //   success: data => {
+      //     uni.navigateTo({
+      //        url: '/pages/pay/show-pay-code?url=' + encodeURIComponent(data.result)
+      //     });
+      //   }
+      // })
+    },
+    // 返回首页
+    handleHomeBack() {
+      this.$refs.tipModal.open()
+    },
+    // 发送验证码
+    sendCode() {
+      api.sendSmsOnPay({
+        showsLoading: true,
+        data: {
+          bankCardRecordId: this.payCardInfo.recordId,
+          orderNo: this.formData.orderId,
+          orderAmount: this.formData.payAmount
+        },
+        success: (res) => {
+          this.$uni.showToast('验证码短信已发送')
+          this.enableSend = true
+          this.startTimer()
+          this.requestId = res
         }
-      },
-      // 继续支付
-      handleCancel() {
-        this.$refs.tipModal.close();
-      },
-      // 立即支付
-      handleAgreeClick() {
-        api.confirmPay({
-          data: {
-            requestId: this.requestId,
-            smsCode: this.validCode,
-            orderAmount: this.formData.payAmount,
-            productName: this.formData.supermarketName,
-            orderNo: this.formData.orderId,
-          },
-          success: (res) => {
-            switch (res) {
-              case 'SUCCESS':
-                this.formData.type = 0;
-                uni.navigateTo({
-                  url:
-                    '/pages/pay/pay-result?payInfo=' +
-                    encodeURIComponent(JSON.stringify(this.formData)),
-                });
-                break;
-              case 'PROCESS':
-                uni.navigateTo({
-                  url: '/pages/pay/error-tip',
-                });
-                break;
-              case 'FAILURE':
-                this.formData.type = 1;
-                uni.navigateTo({
-                  url:
-                    '/pages/pay/pay-result?payInfo=' +
-                    encodeURIComponent(JSON.stringify(this.formData)),
-                });
-                break;
-              default:
-                break;
-            }
-          },
-          fail: (res) => {
-            this.errorMsg = res.message;
-            this.$refs.codeModal.open();
-          },
-        });
-      },
+      })
     },
-    filters: {
-      formaterMoney(v) {
-        return (v / 100).toFixed(2);
-      },
+    startTimer() {
+      this.startTime = 15
+      this.timer = setInterval(() => {
+        this.codeTxt = this.startTime + 's重发'
+        if (this.startTime === 0) {
+          this.codeTxt = '发送验证码'
+          this.enableSend = false
+          clearInterval(this.timer)
+          return
+        }
+        this.startTime--
+      }, 1000)
     },
-  };
+    handlePayWayPop() {
+      this.$refs.payWayPop.open()
+    },
+    handlKnow() {
+      this.$refs.codeModal.close()
+    },
+    // 放弃
+    handleConfirm() {
+      if (this.formData.orderSource === 0) {
+        uni.reLaunch({
+          url: '/pages/index/index'
+        })
+      } else {
+        // 全部订单  其余类型
+        uni.reLaunch({
+          url: '/pages/index/index?index=3'
+        })
+      }
+    },
+    // 继续支付
+    handleCancel() {
+      this.$refs.tipModal.close()
+    },
+    // 立即支付
+    handleAgreeClick() {
+      api.confirmPay({
+        data: {
+          requestId: this.requestId,
+          smsCode: this.validCode,
+          orderAmount: this.formData.payAmount,
+          productName: this.formData.supermarketName,
+          orderNo: this.formData.orderId
+        },
+        success: (res) => {
+          switch (res) {
+            case 'SUCCESS':
+              this.formData.type = 0
+              uni.navigateTo({
+                url:
+                    '/pages/pay/pay-result?payInfo=' +
+                    encodeURIComponent(JSON.stringify(this.formData))
+              })
+              break
+            case 'PROCESS':
+              uni.navigateTo({
+                url: '/pages/pay/error-tip'
+              })
+              break
+            case 'FAILURE':
+              this.formData.type = 1
+              uni.navigateTo({
+                url:
+                    '/pages/pay/pay-result?payInfo=' +
+                    encodeURIComponent(JSON.stringify(this.formData))
+              })
+              break
+            default:
+              break
+          }
+        },
+        fail: (res) => {
+          this.errorMsg = res.message
+          this.$refs.codeModal.open()
+        }
+      })
+    }
+  },
+  filters: {
+    formaterMoney(v) {
+      return (v / 100).toFixed(2)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

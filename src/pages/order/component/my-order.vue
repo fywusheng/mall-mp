@@ -39,52 +39,52 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import dayjs from 'dayjs';
-  export default {
-    components: {},
-    props: {
-      list: {
-        type: Array,
-        default: [],
-      },
+import api from '@/apis/index.js'
+import dayjs from 'dayjs'
+export default {
+  components: {},
+  props: {
+    list: {
+      type: Array,
+      default: []
+    }
+  },
+  data() {
+    return {}
+  },
+  created() {},
+  onLoad(e) {},
+  // 下拉刷新
+  onPullDownRefresh() {},
+  // 上拉加载
+  onReachBottom() {},
+  methods: {
+    // 点击订单
+    handleOrderInfo(orderId) {
+      console.log('点击订单', orderId)
+      uni.navigateTo({
+        url: '/pages/supermarket/order-info?orderId=' + orderId
+      })
+    }
+  },
+  filters: {
+    setDistance(item) {
+      const s = Number(item) / 1000
+      if (s.toFixed(3) < 1) {
+        return parseInt(s * 1000) + 'm'
+      } else {
+        return s.toFixed(1) + 'km'
+      }
     },
-    data() {
-      return {};
+    formaterMoney(v) {
+      return (v / 100).toFixed(2)
     },
-    created() {},
-    onLoad(e) {},
-    // 下拉刷新
-    onPullDownRefresh() {},
-    // 上拉加载
-    onReachBottom() {},
-    methods: {
-      // 点击订单
-      handleOrderInfo(orderId) {
-        console.log('点击订单', orderId);
-        uni.navigateTo({
-          url: '/pages/supermarket/order-info?orderId=' + orderId,
-        });
-      },
-    },
-    filters: {
-      setDistance(item) {
-        const s = Number(item) / 1000;
-        if (s.toFixed(3) < 1) {
-          return parseInt(s * 1000) + 'm';
-        } else {
-          return s.toFixed(1) + 'km';
-        }
-      },
-      formaterMoney(v) {
-        return (v / 100).toFixed(2);
-      },
-      // 日期过滤器, 用于格式化日期
-      dateFilter(value) {
-        return dayjs(value).format('YYYY-MM-DD HH:mm:ss');
-      },
-    },
-  };
+    // 日期过滤器, 用于格式化日期
+    dateFilter(value) {
+      return dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

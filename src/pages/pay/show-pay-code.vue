@@ -8,35 +8,35 @@
 export default {
   data() {
     return {
-      url: '',
+      url: ''
     }
   },
   onLoad(e) {
     // this.url = 'http://localhost:9081/#/checkstand'
-    this.url = decodeURIComponent(e.url) 
+    this.url = decodeURIComponent(e.url)
   },
-  onShow(){
-    
+  onShow() {
+
   },
-   onShareAppMessage() {
+  onShareAppMessage() {
     return {
-      title:'',
+      title: '',
       path:
-        "/pages/index/index?index=0",
-    };
+        '/pages/index/index?index=0'
+    }
   },
   methods: {
-      // 返回上一页
+    // 返回上一页
     handleNavBack() {
-      uni.navigateBack();
+      uni.navigateBack()
     },
-      // 返回首页
+    // 返回首页
     handleHomeBack() {
       uni.reLaunch({
-         url: '/pages/index/index'
-      });
-    },
-  },
+        url: '/pages/index/index'
+      })
+    }
+  }
 }
 </script>
 

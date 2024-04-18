@@ -154,192 +154,192 @@
 </template>
 
 <script>
-  import NavigationBar from './components/navigation-bar.vue';
-  import Modal from '@/components/common/modal.vue';
-  import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
-  import api from '@/apis/index.js';
-  import { getBankBg } from '@/utils/utils.js';
+import NavigationBar from './components/navigation-bar.vue'
+import Modal from '@/components/common/modal.vue'
+import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue'
+import api from '@/apis/index.js'
+import { getBankBg } from '@/utils/utils.js'
 
-  // import { hideRule } from '@/utils/desensitization.js'
-  export default {
-    components: { NavigationBar, Modal, RealNamePop },
-    data() {
-      return {
-        title: '银行卡',
-        // 银行卡列表
-        bankList: [],
-        // iconPath
-        checked: true,
-        icon: {
-          sort: 'http://192.168.1.187:10088/static/pay/icon-sort.png',
-          add: 'http://192.168.1.187:10088/static/pay/icon-add.png',
-          addPlus: 'http://192.168.1.187:10088/static/pay/icon-add-white-plus.png',
-          auth: 'http://192.168.1.187:10088/static/pay/icon-warn-circle-blue.png',
-          delete: 'http://192.168.1.187:10088/static/pay/icon-input-delete.png',
-          circleGre: 'http://192.168.1.187:10088/static/pay/icon-warn-circle.png',
-          checked: 'http://192.168.1.187:10088/static/pay/icon-radio-checked.png',
-          noChecked: 'http://192.168.1.187:10088/static/pay/icon-radio-default.png',
-          arrow: 'http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png',
-        },
-        // 导航栏高度
-        // #ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        // #endif
-        // #ifdef MP-ALIPAY
-        navigationBarHeight:
+// import { hideRule } from '@/utils/desensitization.js'
+export default {
+  components: { NavigationBar, Modal, RealNamePop },
+  data() {
+    return {
+      title: '银行卡',
+      // 银行卡列表
+      bankList: [],
+      // iconPath
+      checked: true,
+      icon: {
+        sort: 'http://192.168.1.187:10088/static/pay/icon-sort.png',
+        add: 'http://192.168.1.187:10088/static/pay/icon-add.png',
+        addPlus: 'http://192.168.1.187:10088/static/pay/icon-add-white-plus.png',
+        auth: 'http://192.168.1.187:10088/static/pay/icon-warn-circle-blue.png',
+        delete: 'http://192.168.1.187:10088/static/pay/icon-input-delete.png',
+        circleGre: 'http://192.168.1.187:10088/static/pay/icon-warn-circle.png',
+        checked: 'http://192.168.1.187:10088/static/pay/icon-radio-checked.png',
+        noChecked: 'http://192.168.1.187:10088/static/pay/icon-radio-default.png',
+        arrow: 'http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png'
+      },
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        // #endif
-        // 状态栏高度
-        statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-        backUrl: '',
-      };
+      // #endif
+      // 状态栏高度
+      statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
+      backUrl: ''
+    }
+  },
+  onLoad(e) {
+    if (e.back) {
+      this.backUrl = e.back
+    }
+    this.getBankList()
+  },
+  onShow() {},
+  onBackPress(e) {
+    // uni.redirectTo({
+    //     url: `/pages/index/index?index=2`,
+    // });
+  },
+  methods: {
+    // 获取银行卡背景
+    getBankBg(name) {
+      return getBankBg(name)
     },
-    onLoad(e) {
-      if (e.back) {
-        this.backUrl = e.back;
-      }
-      this.getBankList();
+    // 银行列表
+    getBankList() {
+      api.getBankList({
+        data: {},
+        success: (res) => {
+          this.bankList = res.splice(0, 2)
+          this.payCardInfo = this.bankList[0]
+        }
+      })
     },
-    onShow() {},
-    onBackPress(e) {
-      // uni.redirectTo({
-      //     url: `/pages/index/index?index=2`,
-      // });
+    handlePopPhoneModal() {
+      this.$refs.tipModal.open()
+      // this.$refs.phoneModal.open()
     },
-    methods: {
-      // 获取银行卡背景
-      getBankBg(name) {
-        return getBankBg(name);
-      },
-      // 银行列表
-      getBankList() {
-        api.getBankList({
-          data: {},
-          success: (res) => {
-            this.bankList = res.splice(0, 2);
-            this.payCardInfo = this.bankList[0];
-          },
-        });
-      },
-      handlePopPhoneModal() {
-        this.$refs.tipModal.open();
-        // this.$refs.phoneModal.open()
-      },
-      // 返回上一页
-      handleNavBack() {
-        // TODO 支付宝没有返回操作  微信的返回，此时无法返回到收银台页面(h5),h5发起到这个页面经历过5个页面中转，中途有页面回跳的情况，2，个人中心有绑卡入口，无法区分是否是要下订单的返回
-        // uni.navigateBack();
+    // 返回上一页
+    handleNavBack() {
+      // TODO 支付宝没有返回操作  微信的返回，此时无法返回到收银台页面(h5),h5发起到这个页面经历过5个页面中转，中途有页面回跳的情况，2，个人中心有绑卡入口，无法区分是否是要下订单的返回
+      // uni.navigateBack();
 
-        if (this.backUrl) {
-          if (this.backUrl == 1) {
-            uni.navigateBack();
-            return;
-          } else {
-            uni.reLaunch({
-              url: this.backUrl,
-            });
-          }
-          return;
+      if (this.backUrl) {
+        if (this.backUrl == 1) {
+          uni.navigateBack()
+          return
         } else {
           uni.reLaunch({
-            url: '/pages/index/index',
-          });
+            url: this.backUrl
+          })
         }
-      },
-      // 返回首页
-      handleHomeBack() {
+        return
+      } else {
         uni.reLaunch({
-          url: '/pages/index/index',
-        });
-      },
-      // 排序
-      goSort() {
+          url: '/pages/index/index'
+        })
+      }
+    },
+    // 返回首页
+    handleHomeBack() {
+      uni.reLaunch({
+        url: '/pages/index/index'
+      })
+    },
+    // 排序
+    goSort() {
+      uni.navigateTo({
+        url: '/pages/pay/set-card-no'
+      })
+    },
+    // 添加银行卡
+    async goAdd() {
+      // const userInfo = uni.getStorageSync('userInfo')
+      const userInfo = await this.getUserInfo()
+      if (userInfo.crtfStas === '0') {
+        this.$refs.realpop.open()
+      } else {
         uni.navigateTo({
-          url: '/pages/pay/set-card-no',
-        });
-      },
-      // 添加银行卡
-      async goAdd() {
-        // const userInfo = uni.getStorageSync('userInfo')
-        const userInfo = await this.getUserInfo();
-        if (userInfo.crtfStas === '0') {
-          this.$refs.realpop.open();
-        } else {
-          uni.navigateTo({
-            url: '/pages/pay/add-bank-card?source=1',
-          });
-        }
-      },
-      // 实名认证成功
-      async succFlag(flag) {
-        if (flag == 1) {
-          const userInfo = await this.getUserInfo();
-          uni.setStorageSync('userInfo', userInfo);
-          this.$refs.realpop.close();
-          uni.navigateTo({
-            url: `/pages/user-center/real-name-result2?back=${'/pages/pay/add-bank-card'}&index=2`,
-          });
-        }
-      },
-      /**
+          url: '/pages/pay/add-bank-card?source=1'
+        })
+      }
+    },
+    // 实名认证成功
+    async succFlag(flag) {
+      if (flag == 1) {
+        const userInfo = await this.getUserInfo()
+        uni.setStorageSync('userInfo', userInfo)
+        this.$refs.realpop.close()
+        uni.navigateTo({
+          url: `/pages/user-center/real-name-result2?back=${'/pages/pay/add-bank-card'}&index=2`
+        })
+      }
+    },
+    /**
        * 获取用户信息 getUserAccount
        */
-      getUserInfo() {
-        return new Promise((resolve, reject) => {
-          api.getUserInfo({
-            data: {
-              accessToken: uni.getStorageSync('token'),
-            },
-            success: (data) => {
-              resolve(data);
-            },
-            fail: (error) => {
-              reject(error);
-            },
-          });
-        });
-      },
-      // 银行卡详情
-      goCardDetail(item) {
-        uni.navigateTo({
-          url: `/pages/pay/my-bank-card-detail?recordId=${item.recordId}`,
-        });
-      },
-      handleCheckXieyi() {
-        this.checked = !this.checked;
-      },
-      hideRule(val, front, back, placeholder) {
-        const length = val.length;
-        placeholder = placeholder || length - front - back;
-
-        if (length > front + back) {
-          const frontVal = val.slice(0, front);
-          const backVal = back ? val.slice(-back) : '';
-          return frontVal + ' ' + '*'.repeat(placeholder) + ' ' + backVal;
-        }
-
-        return val;
-      },
+    getUserInfo() {
+      return new Promise((resolve, reject) => {
+        api.getUserInfo({
+          data: {
+            accessToken: uni.getStorageSync('token')
+          },
+          success: (data) => {
+            resolve(data)
+          },
+          fail: (error) => {
+            reject(error)
+          }
+        })
+      })
     },
-    filters: {
-      formatBankNum(bankNum) {
-        const val = bankNum;
-        const front = 4;
-        const back = 4;
-        let placeholder = 8;
-        const length = val.length;
-        placeholder = placeholder || length - front - back;
-
-        if (length > front + back) {
-          const frontVal = val.slice(0, front);
-          const backVal = back ? val.slice(-back) : '';
-          return frontVal + ' ' + '*'.repeat(placeholder) + ' ' + backVal;
-        }
-
-        return val;
-      },
+    // 银行卡详情
+    goCardDetail(item) {
+      uni.navigateTo({
+        url: `/pages/pay/my-bank-card-detail?recordId=${item.recordId}`
+      })
     },
-  };
+    handleCheckXieyi() {
+      this.checked = !this.checked
+    },
+    hideRule(val, front, back, placeholder) {
+      const length = val.length
+      placeholder = placeholder || length - front - back
+
+      if (length > front + back) {
+        const frontVal = val.slice(0, front)
+        const backVal = back ? val.slice(-back) : ''
+        return frontVal + ' ' + '*'.repeat(placeholder) + ' ' + backVal
+      }
+
+      return val
+    }
+  },
+  filters: {
+    formatBankNum(bankNum) {
+      const val = bankNum
+      const front = 4
+      const back = 4
+      let placeholder = 8
+      const length = val.length
+      placeholder = placeholder || length - front - back
+
+      if (length > front + back) {
+        const frontVal = val.slice(0, front)
+        const backVal = back ? val.slice(-back) : ''
+        return frontVal + ' ' + '*'.repeat(placeholder) + ' ' + backVal
+      }
+
+      return val
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -41,8 +41,8 @@ export default {
   props: {
     list: {
       type: Array,
-      default: [],
-    },
+      default: []
+    }
   },
 
   data() {
@@ -51,7 +51,7 @@ export default {
   computed: {
     style() {
       return `width:${this.navItemWidth}px; left:${this.navItemLeft}px`
-    },
+    }
   },
   mounted() {
     // console.log("mounted执行初始化：",this.list)
@@ -59,20 +59,20 @@ export default {
   },
   updated() {
     // console.log("updated执行：",this.list)
-    //#ifdef MP-ALIPAY
+    // #ifdef MP-ALIPAY
     // this.init();
-    //#endif
+    // #endif
   },
   onLoad() {
     // this.getExampleData();
   },
   methods: {
-    //图片加载失败
+    // 图片加载失败
     handleArticleImageLoadFail(tab, index, imgIndex, type) {
       this.$emit('handleArticleImageLoadFail', tab, index, imgIndex, type)
     },
 
-    //自定义上拉加载更多
+    // 自定义上拉加载更多
     loadMore() {
       console.log('加载更多')
       // this.currentPage++;
@@ -117,16 +117,16 @@ export default {
       ) {
         this.bottomTips = 'nomore'
       }
-      //#ifdef MP-ALIPAY
+      // #ifdef MP-ALIPAY
       this.scrollDom()
-      //#endif
+      // #endif
     },
     // 滚动tabs以及移动下划线
     scrollDom() {
-      let info = this.navInfos[this.swiperIndex]
+      const info = this.navInfos[this.swiperIndex]
       console.log('获取元素：', info)
-      let offsetLeft = info.left - this.parentLeft
-      let scrollLeft = offsetLeft - (this.componentWidth - info.width) / 2
+      const offsetLeft = info.left - this.parentLeft
+      const scrollLeft = offsetLeft - (this.componentWidth - info.width) / 2
       this.scrollToLeft = scrollLeft < 0 ? 0 : scrollLeft
       this.navItemLeft = this.navInfos[this.swiperIndex].left
       setTimeout(() => {
@@ -156,19 +156,17 @@ export default {
     swiperScrollLower() {
       uni.showToast({
         icon: 'none',
-        title: `此时为${this.list[this.swiperIndex].title}触底`,
+        title: `此时为${this.list[this.swiperIndex].title}触底`
       })
       setTimeout(() => {
         // this.getData();
       }, 500)
     },
 
-
-
-    //点击文章详情
+    // 点击文章详情
     goDetail(e, tab, index) {
       this.$emit('goDetail', e, tab, index)
-    },
+    }
 
   },
   watch: {
@@ -182,9 +180,9 @@ export default {
         console.log('新数据的长度：', n.length)
         console.log('旧数据的长度：', o.length)
       },
-      deep: true,
-    },
-  },
+      deep: true
+    }
+  }
 }
 </script>
 

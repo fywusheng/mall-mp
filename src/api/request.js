@@ -18,7 +18,7 @@ export function request({
     'accessToken': uni.getStorageSync('token'),
     'tsf-metadata': ''
   }
- 
+
   const body = {
     appId: '19E179E5DC29C05E65B90CDE57A1C7E5',
     version: '1.0.0',
@@ -40,13 +40,13 @@ export function request({
     data: method === 'get' ? data : body
   }
 
-  return new Promise((resolve, reject)=>{
+  return new Promise((resolve, reject) => {
     uni.request({
       ...request,
       success: (response) => {
         // 隐藏 loading
         if (showsLoading) hideLoading()
-  
+
         // 处理请求结果
         if ([60001, 60002, 60003, 600016].includes(response.data.code)) {
           Store.dispatch('logout')
@@ -56,7 +56,7 @@ export function request({
           resolve(response.data)
           return
         }
-  
+
         if (response.statusCode === 200) {
           if (common) {
             // 这里通过第三方接口是没有data层的数据需要返回上一层的数据
@@ -82,5 +82,4 @@ export function request({
       }
     })
   })
- 
 }

@@ -68,171 +68,171 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
-  export default {
-    data() {
-      return {
-        logos: [
-          'http://192.168.1.187:10088/static/seeDoctor/tmc.png',
-          'http://192.168.1.187:10088/static/seeDoctor/huaxi-bg.png',
-        ],
-        imgs: [
-          {
-            type: '5',
-            src: 'http://192.168.1.187:10088/static/seeDoctor/tnb.png',
-            name: '#糖尿病#',
-          },
-          {
-            type: '6',
-            src: 'http://192.168.1.187:10088/static/seeDoctor/gxy.png',
-            name: '#高血压#',
-          },
-          {
-            type: '7',
-            src: 'http://192.168.1.187:10088/static/seeDoctor/bnz.png',
-            name: '#白内障#',
-          },
-        ],
-        imgUrl: 'http://192.168.1.187:10088/static/life/icon-kanbing.png',
-        docotor: 'http://192.168.1.187:10088/static/seeDoctor/findDoctor.png',
-        logo: 'http://192.168.1.187:10088/static/seeDoctor/huaxi-bg.png',
-        type: 1,
-        itemsData: [
-          {
-            name: '去挂号',
-            type: '1',
-            des: '在家挂号不排队',
-            src: 'http://192.168.1.187:10088/static/seeDoctor/guahao.png',
-          },
-          {
-            name: '问医生',
-            type: '2',
-            des: '小毛病在线问诊',
-            src: 'http://192.168.1.187:10088/static/seeDoctor/seeDocotor.png',
-          },
-        ],
-        orderLable: [
-          {
-            name: '挂号订单',
-            type: '3',
-            src: 'http://192.168.1.187:10088/static/seeDoctor/yyNumber.png',
-          },
-          {
-            name: '问诊订单',
-            type: '4',
-            src: 'http://192.168.1.187:10088/static/seeDoctor/wenZ.png',
-          },
-        ],
-        userInfor: {},
-        phoneNumber: '95169020',
-      };
-    },
-    created() {
-      this.userInfor = uni.getStorageSync('userInfo');
-      this.initCustomTel();
-      this.requestData();
-    },
-    mounted() {
-      this.$refs.popup.open();
-    },
+import api from '@/apis/index.js'
+export default {
+  data() {
+    return {
+      logos: [
+        'http://192.168.1.187:10088/static/seeDoctor/tmc.png',
+        'http://192.168.1.187:10088/static/seeDoctor/huaxi-bg.png'
+      ],
+      imgs: [
+        {
+          type: '5',
+          src: 'http://192.168.1.187:10088/static/seeDoctor/tnb.png',
+          name: '#糖尿病#'
+        },
+        {
+          type: '6',
+          src: 'http://192.168.1.187:10088/static/seeDoctor/gxy.png',
+          name: '#高血压#'
+        },
+        {
+          type: '7',
+          src: 'http://192.168.1.187:10088/static/seeDoctor/bnz.png',
+          name: '#白内障#'
+        }
+      ],
+      imgUrl: 'http://192.168.1.187:10088/static/life/icon-kanbing.png',
+      docotor: 'http://192.168.1.187:10088/static/seeDoctor/findDoctor.png',
+      logo: 'http://192.168.1.187:10088/static/seeDoctor/huaxi-bg.png',
+      type: 1,
+      itemsData: [
+        {
+          name: '去挂号',
+          type: '1',
+          des: '在家挂号不排队',
+          src: 'http://192.168.1.187:10088/static/seeDoctor/guahao.png'
+        },
+        {
+          name: '问医生',
+          type: '2',
+          des: '小毛病在线问诊',
+          src: 'http://192.168.1.187:10088/static/seeDoctor/seeDocotor.png'
+        }
+      ],
+      orderLable: [
+        {
+          name: '挂号订单',
+          type: '3',
+          src: 'http://192.168.1.187:10088/static/seeDoctor/yyNumber.png'
+        },
+        {
+          name: '问诊订单',
+          type: '4',
+          src: 'http://192.168.1.187:10088/static/seeDoctor/wenZ.png'
+        }
+      ],
+      userInfor: {},
+      phoneNumber: '95169020'
+    }
+  },
+  created() {
+    this.userInfor = uni.getStorageSync('userInfo')
+    this.initCustomTel()
+    this.requestData()
+  },
+  mounted() {
+    this.$refs.popup.open()
+  },
 
-    // 分享处理
-    onShareAppMessage() {
-      return {
-        title: '',
-        path: '/pages/index/index?index=0',
-      };
-    },
-    methods: {
-      goLink(item) {
-        if (item.bannerId == '14') {
-          const token = uni.getStorageSync('token');
-          if (!token) {
-            uni.navigateTo({ url: '/pages/user-center/login' });
-            return;
-          }
-          // TODO 去掉调试模式
-          uni.navigateToMiniProgram({
-            appId: 'wx184f795ce88789f7',
-            path: `pages/index/index?pltCode=64401&pltId=${token}`,
-            // envVersion: 'trial',
-            success(res) {},
-          });
-        } else {
-          this.goHX(0);
+  // 分享处理
+  onShareAppMessage() {
+    return {
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
+  },
+  methods: {
+    goLink(item) {
+      if (item.bannerId == '14') {
+        const token = uni.getStorageSync('token')
+        if (!token) {
+          uni.navigateTo({ url: '/pages/user-center/login' })
+          return
         }
-      },
-      requestData() {
-        api.getBanners({
-          data: { bannerType: '4', status: '1' },
-          success: (data) => {
-            this.logos = data;
-          },
-        });
-      },
-      closePop() {
-        this.$refs.popup.close();
-      },
-      customerTel() {
-        if (!this.phoneNumber) return;
-        uni.makePhoneCall({
-          phoneNumber: this.phoneNumber,
-        });
-      },
-      initCustomTel() {
-        api.getWyCustomerService({
-          data: {},
-          success: (data) => {
-            this.phoneNumber = data;
-          },
-        });
-      },
-      goH5(type) {
-        this.$refs.popup.open();
-        return;
-        const url = {
-          1: 'https://gjylfw.wy.guahao.com/standard/booking?_channel=wbhz',
-          2: 'https://gjylfw.wy.guahao.com/ums/consult/more?solutionId=SO202206102yj001',
-          3: 'https://gjylfw.wy.guahao.com/my/order/list?_channel=wbhz',
-          4: 'https://gjylfw.wy.guahao.com/my/consult/list?_channel=wbhz',
-          5: 'https://wy.guahao.com/ums/label/bb2901d8-32a1-11e6-95f4-b82a72d5b9fb',
-          6: 'https://wy.guahao.com/ums/label/880f04cf-32a3-11e6-804e-848f69fd6b70',
-          7: 'https://wy.guahao.com/ums/label/bff1d756-32a1-11e6-95f4-b82a72d5b9fb',
-          8: 'https://gjylfw.wy.guahao.com/news/menu',
-        };
-        // console.log("===选择地址--",url[type])
-        const types = ['5', '6', '7'];
-        if (types.includes(type)) {
-          this.$uni.showToast('正在开通中，敬请期待');
-          return;
-        }
-        api.getInquiryReturnUrl({
-          data: {
-            ext_user_id: this.userInfor.uactId, // 用户id
-            target: url[type],
-            mobile: this.userInfor.tel,
-          },
-          success: (data) => {
-            const url = data;
-            //  uni.navigateTo({url: `/pages/common/webpage?url=${encodeURIComponent(url)}`})
-            //  return
-            // #ifdef MP-ALIPAY
-            uni.navigateTo({ url: `/pages/common/webpage?url=${encodeURIComponent(url)}` });
-            // #endif
-            // #ifdef MP-WEIXIN
-            uni.navigateTo({ url: `/pages/common/webpage?url=${encodeURIComponent(url)}` });
-            // #endif
-          },
-        });
-      },
-      goHX(flag) {
-        this.$refs.popup.open();
-        return;
-        const urls = ['/pages/life/seeDoctor-old', '/pages/life/famouseDoctor'];
-        uni.navigateTo({ url: urls[flag] });
-      },
+        // TODO 去掉调试模式
+        uni.navigateToMiniProgram({
+          appId: 'wx184f795ce88789f7',
+          path: `pages/index/index?pltCode=64401&pltId=${token}`,
+          // envVersion: 'trial',
+          success(res) {}
+        })
+      } else {
+        this.goHX(0)
+      }
     },
-  };
+    requestData() {
+      api.getBanners({
+        data: { bannerType: '4', status: '1' },
+        success: (data) => {
+          this.logos = data
+        }
+      })
+    },
+    closePop() {
+      this.$refs.popup.close()
+    },
+    customerTel() {
+      if (!this.phoneNumber) return
+      uni.makePhoneCall({
+        phoneNumber: this.phoneNumber
+      })
+    },
+    initCustomTel() {
+      api.getWyCustomerService({
+        data: {},
+        success: (data) => {
+          this.phoneNumber = data
+        }
+      })
+    },
+    goH5(type) {
+      this.$refs.popup.open()
+      return
+      const url = {
+        1: 'https://gjylfw.wy.guahao.com/standard/booking?_channel=wbhz',
+        2: 'https://gjylfw.wy.guahao.com/ums/consult/more?solutionId=SO202206102yj001',
+        3: 'https://gjylfw.wy.guahao.com/my/order/list?_channel=wbhz',
+        4: 'https://gjylfw.wy.guahao.com/my/consult/list?_channel=wbhz',
+        5: 'https://wy.guahao.com/ums/label/bb2901d8-32a1-11e6-95f4-b82a72d5b9fb',
+        6: 'https://wy.guahao.com/ums/label/880f04cf-32a3-11e6-804e-848f69fd6b70',
+        7: 'https://wy.guahao.com/ums/label/bff1d756-32a1-11e6-95f4-b82a72d5b9fb',
+        8: 'https://gjylfw.wy.guahao.com/news/menu'
+      }
+      // console.log("===选择地址--",url[type])
+      const types = ['5', '6', '7']
+      if (types.includes(type)) {
+        this.$uni.showToast('正在开通中，敬请期待')
+        return
+      }
+      api.getInquiryReturnUrl({
+        data: {
+          ext_user_id: this.userInfor.uactId, // 用户id
+          target: url[type],
+          mobile: this.userInfor.tel
+        },
+        success: (data) => {
+          const url = data
+          //  uni.navigateTo({url: `/pages/common/webpage?url=${encodeURIComponent(url)}`})
+          //  return
+          // #ifdef MP-ALIPAY
+          uni.navigateTo({ url: `/pages/common/webpage?url=${encodeURIComponent(url)}` })
+          // #endif
+          // #ifdef MP-WEIXIN
+          uni.navigateTo({ url: `/pages/common/webpage?url=${encodeURIComponent(url)}` })
+          // #endif
+        }
+      })
+    },
+    goHX(flag) {
+      this.$refs.popup.open()
+      return
+      const urls = ['/pages/life/seeDoctor-old', '/pages/life/famouseDoctor']
+      uni.navigateTo({ url: urls[flag] })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .topArea {

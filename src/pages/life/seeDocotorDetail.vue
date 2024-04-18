@@ -47,183 +47,183 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import cuProgress from './components/cu-progress.vue';
-  import parse from 'mini-html-parser2';
-  import { UniPopup } from '@dcloudio/uni-ui';
+import api from '@/apis/index.js'
+import cuProgress from './components/cu-progress.vue'
+import parse from 'mini-html-parser2'
+import { UniPopup } from '@dcloudio/uni-ui'
 
-  export default {
-    components: { cuProgress, UniPopup },
-    data() {
-      return {
-        isShare: 'true',
-        // 文章id
-        contId: '',
-        //播放比例
-        progress: 0,
-        // 当前时间
-        current: 0,
-        // 总时长
-        duration: 0,
-        //详情
-        detail: {},
-        // 富文本节点
-        nodes: '',
-        // 是否播放
-        play: false,
-        // 是否暂停
-        paused: false,
-        // 详情的图片
-        imgs: null,
-        menuName: '',
-      };
-    },
-    watch: {},
-    onLoad(option) {
-      console.log('===kan---', option);
-      if (option.menuName) {
-        this.menuName = option.menuName;
+export default {
+  components: { cuProgress, UniPopup },
+  data() {
+    return {
+      isShare: 'true',
+      // 文章id
+      contId: '',
+      // 播放比例
+      progress: 0,
+      // 当前时间
+      current: 0,
+      // 总时长
+      duration: 0,
+      // 详情
+      detail: {},
+      // 富文本节点
+      nodes: '',
+      // 是否播放
+      play: false,
+      // 是否暂停
+      paused: false,
+      // 详情的图片
+      imgs: null,
+      menuName: ''
+    }
+  },
+  watch: {},
+  onLoad(option) {
+    console.log('===kan---', option)
+    if (option.menuName) {
+      this.menuName = option.menuName
+    }
+    this.$uni.setTitle(this.menuName)
+  },
+  onShareAppMessage() {
+    return {
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
+  },
+  onShow() {
+    this.getDetailInfos()
+  },
+  methods: {
+    getDetailInfos() {
+      const data = {
+        name: this.menuName
       }
-      this.$uni.setTitle(this.menuName);
-    },
-    onShareAppMessage() {
-      return {
-        title: '',
-        path: '/pages/index/index?index=0',
-      };
-    },
-    onShow() {
-      this.getDetailInfos();
-    },
-    methods: {
-      getDetailInfos() {
-        const data = {
-          name: this.menuName,
-        };
-        uni.showLoading({
-          title: '加载中',
-        });
+      uni.showLoading({
+        title: '加载中'
+      })
 
-        api.getDetailInfos({
-          data,
-          success: (res) => {
-            uni.hideLoading();
-            if (res) {
-              this.detail = res;
-              let nodesList = [];
-              let content = res.content;
-              let handlerStr = content.replace(/<img/g, '<img style="width:100%; mode="widthFix"');
-              parse(handlerStr, (err, nodesList) => {
-                this.nodes = nodesList;
-                //创建音频播放实例
-                this.innerAudioContext = uni.createInnerAudioContext();
-                // this.innerAudioContext.autoplay = true
+      api.getDetailInfos({
+        data,
+        success: (res) => {
+          uni.hideLoading()
+          if (res) {
+            this.detail = res
+            const nodesList = []
+            const content = res.content
+            const handlerStr = content.replace(/<img/g, '<img style="width:100%; mode="widthFix"')
+            parse(handlerStr, (err, nodesList) => {
+              this.nodes = nodesList
+              // 创建音频播放实例
+              this.innerAudioContext = uni.createInnerAudioContext()
+              // this.innerAudioContext.autoplay = true
 
-                // #ifdef MP-WEIXIN
-                this.innerAudioContext.src = this.detail.mp3;
-                // #endif
+              // #ifdef MP-WEIXIN
+              this.innerAudioContext.src = this.detail.mp3
+              // #endif
 
-                // #ifdef MP-ALIPAY
-                console.log('===播放资源---', this.detail.mp3);
-                this.innerAudioContext.src = this.detail.mp3 || this.detail.mp3;
-                // #endif
+              // #ifdef MP-ALIPAY
+              console.log('===播放资源---', this.detail.mp3)
+              this.innerAudioContext.src = this.detail.mp3 || this.detail.mp3
+              // #endif
 
-                this.innerAudioContext.onPlay(() => {});
+              this.innerAudioContext.onPlay(() => {})
 
-                // 监听播放事件
-                this.innerAudioContext.onTimeUpdate(() => {
-                  // 音频播放进度更新事件
-                  console.log('音频播放进度更新事件');
-                  this.progress =
-                    (this.innerAudioContext.currentTime / this.innerAudioContext.duration) * 100;
-                  this.current = this.innerAudioContext.currentTime;
-                  this.duration = this.innerAudioContext.duration;
-                  // console.log('音频播放进度更新事件',(this.innerAudioContext.currentTime/this.innerAudioContext.duration)*100);
-                });
-                //监听播放出错事件
-                this.innerAudioContext.onError((res) => {
-                  console.log('播放出错', res.errMsg);
-                });
-                //监听自然播放结束事件
-                this.innerAudioContext.onEnded((res) => {
-                  console.log('监听自然播放结束事件');
-                  this.progress = 0;
-                  // 是否播放
-                  this.play = false;
-                  // 是否暂停
-                  this.paused = false;
-                  this.current = 0;
-                });
-                //监听暂停事件
-                this.innerAudioContext.onPause((res) => {});
-                //监听音频停止事件
-                this.innerAudioContext.onStop((res) => {});
-                //监听音频停止事件
-                this.innerAudioContext.onPlay((res) => {
-                  this.paused = false;
-                });
-                //监听音频跳转事件
-                this.innerAudioContext.onSeeking((res) => {
-                  console.log('监听音频跳转事件');
-                });
-                //监听音频跳转事件结束
-                this.innerAudioContext.onSeeked((res) => {
-                  console.log('监听音频跳转事件结束');
-                  this.innerAudioContext.src; //天坑。如果不执行这行就不能继续执行onTimeUpdate方法！！！！！！！
-                  this.innerAudioContext.play();
-                });
-              });
-            }
-            //
-          },
-          fail: (err) => {
-            uni.hideLoading();
-          },
-        });
-      },
-      // 开始拖动
-      dragstart(data) {
-        console.log('开始拖动：', data);
-      },
-      // 拖动中
-      dragging(data) {
-        console.log('拖动中：', data);
-      },
-      // 拖动结束
-      dragged(data) {
-        console.log('拖动结束：', data);
-        console.log('总时长', this.duration);
-        console.log('播放位置：', typeof ((this.duration * data.value) / 100).toFixed(0));
-        this.innerAudioContext.seek(Number(((this.duration * data.value) / 100).toFixed(0)));
-      },
-      // 取消拖动
-      dragcancel(data) {
-        console.log('取消拖动：', data);
-      },
-      //图片加载失败
-      handleImageLoadFail() {
-        // 图片加载失败时显示默认图片
-        this.detail.image = 'http://192.168.1.187:10088/static/home/image-home-article-default.png';
-      },
-      handleNoimg() {
-        if (!this.play) {
-          this.innerAudioContext.play();
-          this.play = true;
-        } else if (this.play && !this.paused) {
-          this.innerAudioContext.pause();
-          this.paused = true;
-        } else if (this.play && this.paused) {
-          this.innerAudioContext.play();
-          this.paused = false;
+              // 监听播放事件
+              this.innerAudioContext.onTimeUpdate(() => {
+                // 音频播放进度更新事件
+                console.log('音频播放进度更新事件')
+                this.progress =
+                    (this.innerAudioContext.currentTime / this.innerAudioContext.duration) * 100
+                this.current = this.innerAudioContext.currentTime
+                this.duration = this.innerAudioContext.duration
+                // console.log('音频播放进度更新事件',(this.innerAudioContext.currentTime/this.innerAudioContext.duration)*100);
+              })
+              // 监听播放出错事件
+              this.innerAudioContext.onError((res) => {
+                console.log('播放出错', res.errMsg)
+              })
+              // 监听自然播放结束事件
+              this.innerAudioContext.onEnded((res) => {
+                console.log('监听自然播放结束事件')
+                this.progress = 0
+                // 是否播放
+                this.play = false
+                // 是否暂停
+                this.paused = false
+                this.current = 0
+              })
+              // 监听暂停事件
+              this.innerAudioContext.onPause((res) => {})
+              // 监听音频停止事件
+              this.innerAudioContext.onStop((res) => {})
+              // 监听音频停止事件
+              this.innerAudioContext.onPlay((res) => {
+                this.paused = false
+              })
+              // 监听音频跳转事件
+              this.innerAudioContext.onSeeking((res) => {
+                console.log('监听音频跳转事件')
+              })
+              // 监听音频跳转事件结束
+              this.innerAudioContext.onSeeked((res) => {
+                console.log('监听音频跳转事件结束')
+                this.innerAudioContext.src // 天坑。如果不执行这行就不能继续执行onTimeUpdate方法！！！！！！！
+                this.innerAudioContext.play()
+              })
+            })
+          }
+          //
+        },
+        fail: (err) => {
+          uni.hideLoading()
         }
-      },
+      })
     },
-    onUnload() {
-      if (this.innerAudioContext) {
-        this.innerAudioContext.destroy();
+    // 开始拖动
+    dragstart(data) {
+      console.log('开始拖动：', data)
+    },
+    // 拖动中
+    dragging(data) {
+      console.log('拖动中：', data)
+    },
+    // 拖动结束
+    dragged(data) {
+      console.log('拖动结束：', data)
+      console.log('总时长', this.duration)
+      console.log('播放位置：', typeof ((this.duration * data.value) / 100).toFixed(0))
+      this.innerAudioContext.seek(Number(((this.duration * data.value) / 100).toFixed(0)))
+    },
+    // 取消拖动
+    dragcancel(data) {
+      console.log('取消拖动：', data)
+    },
+    // 图片加载失败
+    handleImageLoadFail() {
+      // 图片加载失败时显示默认图片
+      this.detail.image = 'http://192.168.1.187:10088/static/home/image-home-article-default.png'
+    },
+    handleNoimg() {
+      if (!this.play) {
+        this.innerAudioContext.play()
+        this.play = true
+      } else if (this.play && !this.paused) {
+        this.innerAudioContext.pause()
+        this.paused = true
+      } else if (this.play && this.paused) {
+        this.innerAudioContext.play()
+        this.paused = false
       }
-    },
-  };
+    }
+  },
+  onUnload() {
+    if (this.innerAudioContext) {
+      this.innerAudioContext.destroy()
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

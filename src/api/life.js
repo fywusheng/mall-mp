@@ -1,4 +1,4 @@
-import {request} from '@/api/request.js'
+import { request } from '@/api/request.js'
 
 // 旅行下单支付
 export function putHotelOrder(query) {

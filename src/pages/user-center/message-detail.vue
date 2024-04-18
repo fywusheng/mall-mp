@@ -7,17 +7,17 @@
 </template>
 
 <script>
-import api from "@/apis/index.js";
-import dayjs from "dayjs";
+import api from '@/apis/index.js'
+import dayjs from 'dayjs'
 export default {
   data() {
     return {
       // 消息详细
-      info: {},
-    };
+      info: {}
+    }
   },
   onLoad(e) {
-    if (e.id) this.requestData(e.id);
+    if (e.id) this.requestData(e.id)
   },
   methods: {
     /**
@@ -28,13 +28,13 @@ export default {
         data: { msgId: id },
         success: (data) => {
           // 将时间戳转化为格式化日期
-          data.time = dayjs(data.sendTime).format("YYYY-MM-DD HH:mm:ss");
-          this.info = data;
-        },
-      });
-    },
-  },
-};
+          data.time = dayjs(data.sendTime).format('YYYY-MM-DD HH:mm:ss')
+          this.info = data
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

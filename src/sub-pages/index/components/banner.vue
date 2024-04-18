@@ -14,50 +14,50 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      content: {
-        type: Object,
-        default: {},
-      }
-    },
-    data() {
-      return {
-        height: 750,
-        list: [],
-      }
-    },
-    watch: {
-      'content.code': {
-        handler() {
-          this.getData()
-        }
-      }
-    },
-    methods: {
-      onLoad(e, data) {
-        data.height = e.mp.detail.height / e.mp.detail.width * 750;
-        this.height = data.height;
-      },
-      onTap(link) {
-        XIU.genLink(link)
-      },
-      async getData(){
-        if(this.content.code){
-          const result = await Axios.get(`${ENV.CMS}/operationContent/getByCode?code=${this.content.code}`)
-          if(result.code === 200){
-            result.data.contentList.forEach(content => {
-              content.image_url = XIU.getImgFormat(content.image_url,  '/resize,w_750')
-            })
-            this.list = result.data.contentList;
-          }
-        }
-      }
-    },
-    async mounted() {
-      this.getData();
+export default {
+  props: {
+    content: {
+      type: Object,
+      default: {}
     }
+  },
+  data() {
+    return {
+      height: 750,
+      list: []
+    }
+  },
+  watch: {
+    'content.code': {
+      handler() {
+        this.getData()
+      }
+    }
+  },
+  methods: {
+    onLoad(e, data) {
+      data.height = e.mp.detail.height / e.mp.detail.width * 750
+      this.height = data.height
+    },
+    onTap(link) {
+      XIU.genLink(link)
+    },
+    async getData() {
+      if (this.content.code) {
+        const result = await Axios.get(`${ENV.CMS}/operationContent/getByCode?code=${this.content.code}`)
+        if (result.code === 200) {
+          result.data.contentList.forEach(content => {
+            content.image_url = XIU.getImgFormat(content.image_url, '/resize,w_750')
+          })
+          this.list = result.data.contentList
+        }
+      }
+    }
+  },
+  async mounted() {
+    this.getData()
   }
+}
 </script>
 
 <style lang="scss">

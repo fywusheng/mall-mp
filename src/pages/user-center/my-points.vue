@@ -110,222 +110,222 @@
 </template>
 
 <script>
-  import NavigationBars from '../../components/common/navigation-bar.vue';
-  import api from '@/apis/index.js';
-  import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
-  import { mapState } from 'vuex';
-  export default {
-    components: { NavigationBars, RealNamePop },
-    data() {
-      return {
-        headImg: '',
-        clickId: '',
-        // 导航栏高度
-        // #ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        // #endif
-        // #ifdef MP-ALIPAY
-        navigationBarHeight:
+import NavigationBars from '../../components/common/navigation-bar.vue'
+import api from '@/apis/index.js'
+import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue'
+import { mapState } from 'vuex'
+export default {
+  components: { NavigationBars, RealNamePop },
+  data() {
+    return {
+      headImg: '',
+      clickId: '',
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        // #endif
-        // // 当前可用积分进度条宽度
-        progressBarWidth: 0,
-        // 选中的下标
-        selectedIndex: 0,
-        // 赚积分任务列表
-        list: [],
-        // 可用积分
-        score: '0',
-        // 最高积分
-        fixScore: '0',
-      };
-    },
-    computed: {
-      indicatorClass() {
-        return ['indicator--left', 'indicator--right'][this.selectedIndex];
-      },
-      // progressBarWidth() {
-      //   console.log('12312');
-      //   if (this.score > 1000) {
-      //     return 636;
-      //   }
+      // #endif
+      // // 当前可用积分进度条宽度
+      progressBarWidth: 0,
+      // 选中的下标
+      selectedIndex: 0,
+      // 赚积分任务列表
+      list: [],
+      // 可用积分
+      score: '0',
+      // 最高积分
+      fixScore: '0'
+    }
+  },
+  computed: {
+    indicatorClass() {
+      return ['indicator--left', 'indicator--right'][this.selectedIndex]
+    }
+    // progressBarWidth() {
+    //   console.log('12312');
+    //   if (this.score > 1000) {
+    //     return 636;
+    //   }
 
-      //   // 当前可用积分进度条宽度
-      //   return Math.ceil((this.score / 1000) * 636);
-      // },
+    //   // 当前可用积分进度条宽度
+    //   return Math.ceil((this.score / 1000) * 636);
+    // },
+  },
+  onLoad() {
+    // this.userInfo = uni.getStorageSync('userInfo');
+    // this.setData();
+  },
+  onShow() {
+    // this.userInfo = uni.getStorageSync('userInfo');
+    if (this.userInfo.phone) {
+      this.handleScoreInfo()
+    }
+    this.getUserTaskInfoByPage()
+  },
+  computed: {
+    ...mapState({
+      userInfo: (state) => state.user.userInfo
+    })
+  },
+  methods: {
+    goShop() {
+      uni.navigateTo({ url: '/sub-pages/point/index' })
     },
-    onLoad() {
-      // this.userInfo = uni.getStorageSync('userInfo');
-      // this.setData();
+    handleNavigationBack() {
+      // 导航返回处理
+      uni.reLaunch({
+        url: `/pages/index/index?index=4`
+      })
     },
-    onShow() {
-      // this.userInfo = uni.getStorageSync('userInfo');
-      if (this.userInfo.phone) {
-        this.handleScoreInfo();
-      }
-      this.getUserTaskInfoByPage();
-    },
-    computed: {
-      ...mapState({
-        userInfo: (state) => state.user.userInfo,
-      }),
-    },
-    methods: {
-      goShop() {
-        uni.navigateTo({ url: '/sub-pages/point/index' });
-      },
-      handleNavigationBack() {
-        // 导航返回处理
-        uni.reLaunch({
-          url: `/pages/index/index?index=4`,
-        });
-      },
-      /**
+    /**
        * 获取用户信息 getUserAccount
        */
-      getUserInfo() {
-        return new Promise((resolve, reject) => {
-          api.getUserInfo({
-            data: {
-              accessToken: uni.getStorageSync('token'),
-            },
-            success: (data) => {
-              resolve(data);
-            },
-            fail: (error) => {
-              reject(error);
-            },
-          });
-        });
-      },
-      async succFlag(flag) {
-        if (flag == 1) {
-          const userinfor = await this.getUserInfo();
-          uni.setStorageSync('userInfo', userinfor);
-          this.userInfo = userinfor;
-          console.log('=====实名后的信息---', userinfor);
-          this.$refs.realpop.close();
-          const urls = {
-            1: '/pages/certificate/electronic-card?index=0',
-            2: '/pages/family-account/select-type',
-            3: '/pages/support/index',
-            6: '/pages/user-center/my-points',
-          };
-          if (!urls[this.clickId]) return;
-          console.log('====实名后要去的页面--', urls[this.clickId]);
-          // uni.navigateTo({url: urls[this.clickId]})
-
-          uni.navigateTo({
-            url: `/pages/user-center/real-name-result2?back=${urls[this.clickId]}`,
-          });
-        }
-      },
-      selectUrl(item) {
-        const tastId = item.taskInfoId || '';
-        this.clickId = tastId;
-
-        // if (tastId == '1') {
-        //   this.$uni.showToast('当前所在地区功能开通中')
-        //   return
-        // }
-        console.log('====点击的下标---', item);
-        if (item.hasComplete == 1) return;
-        // 1-申领老年人证  2-亲情账号 3-添加赡养抚养关系 6-实名认证
-        // const urls = { '1': '/pages/certificate/electronic-card?index=0', '2': '/pages/family-account/select-type', '3': '/pages/support/index', '6': 'pages/user-center/my-points' }
+    getUserInfo() {
+      return new Promise((resolve, reject) => {
+        api.getUserInfo({
+          data: {
+            accessToken: uni.getStorageSync('token')
+          },
+          success: (data) => {
+            resolve(data)
+          },
+          fail: (error) => {
+            reject(error)
+          }
+        })
+      })
+    },
+    async succFlag(flag) {
+      if (flag == 1) {
+        const userinfor = await this.getUserInfo()
+        uni.setStorageSync('userInfo', userinfor)
+        this.userInfo = userinfor
+        console.log('=====实名后的信息---', userinfor)
+        this.$refs.realpop.close()
         const urls = {
-          1: '/pages/user-center/licence',
+          1: '/pages/certificate/electronic-card?index=0',
           2: '/pages/family-account/select-type',
           3: '/pages/support/index',
-          6: 'pages/user-center/my-points',
-        };
-        if (this.userInfo.crtfStas !== '2') {
-          // 未实名
-          if (tastId == '6') {
-            this.headImg = 'http://192.168.1.187:10088/static/common/loginAttest.png';
-          } else {
-            this.headImg = 'http://192.168.1.187:10088/static/common/img-real-name.png';
-          }
-          this.$refs.realpop.open();
-          return;
+          6: '/pages/user-center/my-points'
         }
-        if (this.userInfo.crtfStas !== '0') {
-          // 已实名
-          uni.navigateTo({ url: urls[tastId] });
+        if (!urls[this.clickId]) return
+        console.log('====实名后要去的页面--', urls[this.clickId])
+        // uni.navigateTo({url: urls[this.clickId]})
+
+        uni.navigateTo({
+          url: `/pages/user-center/real-name-result2?back=${urls[this.clickId]}`
+        })
+      }
+    },
+    selectUrl(item) {
+      const tastId = item.taskInfoId || ''
+      this.clickId = tastId
+
+      // if (tastId == '1') {
+      //   this.$uni.showToast('当前所在地区功能开通中')
+      //   return
+      // }
+      console.log('====点击的下标---', item)
+      if (item.hasComplete == 1) return
+      // 1-申领老年人证  2-亲情账号 3-添加赡养抚养关系 6-实名认证
+      // const urls = { '1': '/pages/certificate/electronic-card?index=0', '2': '/pages/family-account/select-type', '3': '/pages/support/index', '6': 'pages/user-center/my-points' }
+      const urls = {
+        1: '/pages/user-center/licence',
+        2: '/pages/family-account/select-type',
+        3: '/pages/support/index',
+        6: 'pages/user-center/my-points'
+      }
+      if (this.userInfo.crtfStas !== '2') {
+        // 未实名
+        if (tastId == '6') {
+          this.headImg = 'http://192.168.1.187:10088/static/common/loginAttest.png'
+        } else {
+          this.headImg = 'http://192.168.1.187:10088/static/common/img-real-name.png'
         }
-      },
-      /**
+        this.$refs.realpop.open()
+        return
+      }
+      if (this.userInfo.crtfStas !== '0') {
+        // 已实名
+        uni.navigateTo({ url: urls[tastId] })
+      }
+    },
+    /**
        * tab 点击事件
        */
-      handleTabClick(index) {
-        if (index === this.selectedIndex) return;
-        this.selectedIndex = index;
-      },
-      // 获取用户积分
-      handleScoreInfo() {
-        api.scoreInfo({
-          data: {
-            userId: this.userInfo.memberId,
-          },
-          success: (res) => {
-            console.log('用户积分：', res);
-            this.score = res.score;
-            this.fixScore = res.fixScore;
-            // 当前可用积分进度条宽度
-            if (this.score > 1000) {
-              this.progressBarWidth = 636;
-            }
-            this.progressBarWidth = Math.ceil((this.score / 1000) * 636);
-          },
-        });
-      },
-      // 获取用户积分任务列表
-      getUserTaskInfoByPage() {
-        api.getUserTaskInfoByPage({
-          data: {
-            userId: this.userInfo.memberId,
-            pageNum: 1,
-            pageSize: 100,
-          },
-          success: (res) => {
-            console.log('用户积分任务列表：', res.list);
-            this.list = res.list;
-          },
-        });
-      },
-      /**
+    handleTabClick(index) {
+      if (index === this.selectedIndex) return
+      this.selectedIndex = index
+    },
+    // 获取用户积分
+    handleScoreInfo() {
+      api.scoreInfo({
+        data: {
+          userId: this.userInfo.memberId
+        },
+        success: (res) => {
+          console.log('用户积分：', res)
+          this.score = res.score
+          this.fixScore = res.fixScore
+          // 当前可用积分进度条宽度
+          if (this.score > 1000) {
+            this.progressBarWidth = 636
+          }
+          this.progressBarWidth = Math.ceil((this.score / 1000) * 636)
+        }
+      })
+    },
+    // 获取用户积分任务列表
+    getUserTaskInfoByPage() {
+      api.getUserTaskInfoByPage({
+        data: {
+          userId: this.userInfo.memberId,
+          pageNum: 1,
+          pageSize: 100
+        },
+        success: (res) => {
+          console.log('用户积分任务列表：', res.list)
+          this.list = res.list
+        }
+      })
+    },
+    /**
        * 设置数据
        */
-      setData() {
-        this.list = [
-          {
-            title: '添加亲情账号',
-            points: 300,
-            icon: 'http://192.168.1.187:10088/static/user-center/icon-user-center-task-2.png',
-            isFinished: false,
-          },
-          {
-            title: '完善赡养扶养关系',
-            points: 200,
-            icon: 'http://192.168.1.187:10088/static/user-center/icon-user-center-task-1.png',
-            isFinished: false,
-          },
-          {
-            title: '申领电子证照老年人证',
-            points: 500,
-            icon: 'http://192.168.1.187:10088/static/user-center/icon-user-center-task-0-finished.png',
-            isFinished: true,
-          },
-        ];
-      },
-
-      // 点击查看
-      handleScoreList() {
-        uni.navigateTo({
-          url: '/pages/user-center/points-list',
-        });
-      },
+    setData() {
+      this.list = [
+        {
+          title: '添加亲情账号',
+          points: 300,
+          icon: 'http://192.168.1.187:10088/static/user-center/icon-user-center-task-2.png',
+          isFinished: false
+        },
+        {
+          title: '完善赡养扶养关系',
+          points: 200,
+          icon: 'http://192.168.1.187:10088/static/user-center/icon-user-center-task-1.png',
+          isFinished: false
+        },
+        {
+          title: '申领电子证照老年人证',
+          points: 500,
+          icon: 'http://192.168.1.187:10088/static/user-center/icon-user-center-task-0-finished.png',
+          isFinished: true
+        }
+      ]
     },
-  };
+
+    // 点击查看
+    handleScoreList() {
+      uni.navigateTo({
+        url: '/pages/user-center/points-list'
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

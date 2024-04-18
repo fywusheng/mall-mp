@@ -150,249 +150,249 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import NavigationBar from '../../components/common/navigation-bar.vue';
-  import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
-  import Modal from '@/components/common/modal.vue';
+import api from '@/apis/index.js'
+import NavigationBar from '../../components/common/navigation-bar.vue'
+import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue'
+import Modal from '@/components/common/modal.vue'
 
-  export default {
-    components: { NavigationBar, RealNamePop, Modal },
-    props: {},
-    data() {
-      return {
-        navHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        banners: [{}],
-        // 用户信息
-        userInfo: null,
-        appStartInfo: null,
-        pointList: [],
-        productList: [],
-      };
-    },
-    computed: {},
-    created() {
-      this.getBanners();
-      this.recommend(11);
-      this.handleLogin();
-      this.getMiliProductList();
-    },
-    mounted() {
-      // 监听登录回调
-      uni.$on('didLogin', this.handleLogin);
-      // 监听退出登录回调
-      uni.$on('didLogout', this.handleLogout);
-    },
-    methods: {
-      getMiliProductList() {
-        api.getMiliProductList({
-          data: {},
-          success: (data) => {
-            this.productList = data;
-          },
-          fail: (error) => {
-            this.$uni.showToast(error.message);
-            console.log(error);
-          },
-        });
-      },
-      goMili() {
-        const token = uni.getStorageSync('token');
-        if (!token) {
-          uni.navigateTo({ url: '/pages/user-center/login' });
-          return;
+export default {
+  components: { NavigationBar, RealNamePop, Modal },
+  props: {},
+  data() {
+    return {
+      navHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      banners: [{}],
+      // 用户信息
+      userInfo: null,
+      appStartInfo: null,
+      pointList: [],
+      productList: []
+    }
+  },
+  computed: {},
+  created() {
+    this.getBanners()
+    this.recommend(11)
+    this.handleLogin()
+    this.getMiliProductList()
+  },
+  mounted() {
+    // 监听登录回调
+    uni.$on('didLogin', this.handleLogin)
+    // 监听退出登录回调
+    uni.$on('didLogout', this.handleLogout)
+  },
+  methods: {
+    getMiliProductList() {
+      api.getMiliProductList({
+        data: {},
+        success: (data) => {
+          this.productList = data
+        },
+        fail: (error) => {
+          this.$uni.showToast(error.message)
+          console.log(error)
         }
-        const env = 'wechat_miniapp';
-        if (!token) {
-          const url = `${ENV.MILI_URL}/#/pages/sdk-entry/index?env=${env}&logout=1`;
-          uni.navigateTo({
-            url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-          });
-          return;
-        }
-        api.getUserAndAddress({
-          data: {},
-          success: (data) => {
-            const { appid, sign, timestamp } = data;
-            const token = encodeURIComponent(JSON.parse(data.data).token);
-            const url = `${ENV.MILI_URL}/#/pages/encrypted-entry/index?data=${token}&appid=${appid}&timestamp=${timestamp}&sign=${sign}&env=${env}`;
-            uni.navigateTo({
-              url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-            });
-          },
-          fail: (error) => {
-            console.log(error);
-          },
-        });
-      },
-      goBaoXian() {
-        const token = uni.getStorageSync('token');
-        if (!token) {
-          uni.navigateTo({ url: '/pages/user-center/login' });
-          return;
-        }
+      })
+    },
+    goMili() {
+      const token = uni.getStorageSync('token')
+      if (!token) {
+        uni.navigateTo({ url: '/pages/user-center/login' })
+        return
+      }
+      const env = 'wechat_miniapp'
+      if (!token) {
+        const url = `${ENV.MILI_URL}/#/pages/sdk-entry/index?env=${env}&logout=1`
         uni.navigateTo({
-          url: '/pages/life/insurance',
-        });
-      },
-      async recommend(flag) {
-        const params = { productType: flag };
-        const list = await Axios.post('/product/getProductListByType', params);
-        if (list.code == 200) {
-          this.pointList = list.data.slice(0, 2) || [];
-        } else {
-          wx.showToast(list.msg);
-        }
-      },
-      handlConfirmPop() {
-        this.$refs.confirmPop.close();
-      },
-      async succFlag(flag) {
-        console.log('---实名认证成功后的回调----');
-        if (flag == 1) {
-          const userinfor = await this.getUserInfo();
-          uni.setStorageSync('userInfo', userinfor);
-          this.userInfo = userinfor;
-          this.$refs.realpop.close();
+          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
+        })
+        return
+      }
+      api.getUserAndAddress({
+        data: {},
+        success: (data) => {
+          const { appid, sign, timestamp } = data
+          const token = encodeURIComponent(JSON.parse(data.data).token)
+          const url = `${ENV.MILI_URL}/#/pages/encrypted-entry/index?data=${token}&appid=${appid}&timestamp=${timestamp}&sign=${sign}&env=${env}`
           uni.navigateTo({
-            url: `/pages/user-center/real-name-result2?back=${'/pages/index/index'}`,
-          });
-          // if(this.tab_index == null) return
-          // uni.navigateTo({
-          //     url: `/pages/certificate/electronic-card?index=${this.tab_index}`
-          // })
+            url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
+          })
+        },
+        fail: (error) => {
+          console.log(error)
         }
-      },
-      goPath(flag) {
-        const token = uni.getStorageSync('token');
-        if (!token) {
-          uni.navigateTo({ url: '/pages/user-center/login' });
-          return;
-        }
-        const urls = ['/sub-pages/point/index'];
-        uni.navigateTo({ url: urls[flag] });
-      },
-      /**
+      })
+    },
+    goBaoXian() {
+      const token = uni.getStorageSync('token')
+      if (!token) {
+        uni.navigateTo({ url: '/pages/user-center/login' })
+        return
+      }
+      uni.navigateTo({
+        url: '/pages/life/insurance'
+      })
+    },
+    async recommend(flag) {
+      const params = { productType: flag }
+      const list = await Axios.post('/product/getProductListByType', params)
+      if (list.code == 200) {
+        this.pointList = list.data.slice(0, 2) || []
+      } else {
+        wx.showToast(list.msg)
+      }
+    },
+    handlConfirmPop() {
+      this.$refs.confirmPop.close()
+    },
+    async succFlag(flag) {
+      console.log('---实名认证成功后的回调----')
+      if (flag == 1) {
+        const userinfor = await this.getUserInfo()
+        uni.setStorageSync('userInfo', userinfor)
+        this.userInfo = userinfor
+        this.$refs.realpop.close()
+        uni.navigateTo({
+          url: `/pages/user-center/real-name-result2?back=${'/pages/index/index'}`
+        })
+        // if(this.tab_index == null) return
+        // uni.navigateTo({
+        //     url: `/pages/certificate/electronic-card?index=${this.tab_index}`
+        // })
+      }
+    },
+    goPath(flag) {
+      const token = uni.getStorageSync('token')
+      if (!token) {
+        uni.navigateTo({ url: '/pages/user-center/login' })
+        return
+      }
+      const urls = ['/sub-pages/point/index']
+      uni.navigateTo({ url: urls[flag] })
+    },
+    /**
        * 登录回调
        */
-      handleLogin() {
-        const token = uni.getStorageSync('token');
-        if (token) {
-          api.getUserInfo({
-            data: {
-              accessToken: token,
-            },
-            success: (data) => {
-              this.userInfo = data;
-              uni.setStorageSync('userInfo', data);
-            },
-            fail: () => {
-              uni.removeStorageSync('token');
-              uni.removeStorageSync('userInfo');
-            },
-          });
-        }
-      },
-      /**
+    handleLogin() {
+      const token = uni.getStorageSync('token')
+      if (token) {
+        api.getUserInfo({
+          data: {
+            accessToken: token
+          },
+          success: (data) => {
+            this.userInfo = data
+            uni.setStorageSync('userInfo', data)
+          },
+          fail: () => {
+            uni.removeStorageSync('token')
+            uni.removeStorageSync('userInfo')
+          }
+        })
+      }
+    },
+    /**
        * 退出登录回调
        */
-      handleLogout() {
-        this.userInfo = null;
-      },
-      // 点击去优惠买单
-      handleSuperMarket() {
-        this.handleLogin();
-        // 检查用户是否登录
-        if (!this.userInfo) {
-          // 未登录, 跳转到登录页面
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
-        }
-
-        // 获取系统启动参数
-        api.getAppParams({
-          data: {
-            status: '1',
-          },
-          success: (data) => {
-            // 是否开启实名认证
-            this.appStartInfo = data || false;
-            uni.setStorageSync('app_start_info', data);
-            const hasCertificat = this.appStartInfo.realNameAuth;
-            // 未实名
-            if (hasCertificat && this.userInfo.crtfStas === '0') {
-              this.$refs.realpop.open();
-              return;
-            }
-            // 已实名但小于60周岁
-            if (hasCertificat && this.userInfo.age < 60) {
-              this.$refs.confirmPop.open();
-              return;
-            }
-            //  登陆完直接跳转
-            uni.navigateTo({
-              url: '/pages/supermarket/index',
-            });
-          },
-        });
-      },
-      // 点击养老地图
-      handleMapClick() {
-        const token = uni.getStorageSync('token');
-        if (!token) {
-          uni.navigateTo({ url: '/pages/user-center/login' });
-          return;
-        }
+    handleLogout() {
+      this.userInfo = null
+    },
+    // 点击去优惠买单
+    handleSuperMarket() {
+      this.handleLogin()
+      // 检查用户是否登录
+      if (!this.userInfo) {
+        // 未登录, 跳转到登录页面
         uni.navigateTo({
-          url: '/pages/map/map',
-        });
-      },
-      getBanners() {
-        api.getBanners({
-          data: { bannerType: '3', status: '1' },
-          success: (data) => {
-            this.banners = data;
-          },
-        });
-      },
-      /**
+          url: '/pages/user-center/login'
+        })
+        return
+      }
+
+      // 获取系统启动参数
+      api.getAppParams({
+        data: {
+          status: '1'
+        },
+        success: (data) => {
+          // 是否开启实名认证
+          this.appStartInfo = data || false
+          uni.setStorageSync('app_start_info', data)
+          const hasCertificat = this.appStartInfo.realNameAuth
+          // 未实名
+          if (hasCertificat && this.userInfo.crtfStas === '0') {
+            this.$refs.realpop.open()
+            return
+          }
+          // 已实名但小于60周岁
+          if (hasCertificat && this.userInfo.age < 60) {
+            this.$refs.confirmPop.open()
+            return
+          }
+          //  登陆完直接跳转
+          uni.navigateTo({
+            url: '/pages/supermarket/index'
+          })
+        }
+      })
+    },
+    // 点击养老地图
+    handleMapClick() {
+      const token = uni.getStorageSync('token')
+      if (!token) {
+        uni.navigateTo({ url: '/pages/user-center/login' })
+        return
+      }
+      uni.navigateTo({
+        url: '/pages/map/map'
+      })
+    },
+    getBanners() {
+      api.getBanners({
+        data: { bannerType: '3', status: '1' },
+        success: (data) => {
+          this.banners = data
+        }
+      })
+    },
+    /**
        * 轮播图加载失败事件
        */
-      handleBannerLoadFail(index) {
-        // 图片加载失败时显示默认图片
-        this.banners[index].bannerUrl =
-          'http://192.168.1.187:10088/static/home/banner-home-default.png';
-      },
-      /**
+    handleBannerLoadFail(index) {
+      // 图片加载失败时显示默认图片
+      this.banners[index].bannerUrl =
+          'http://192.168.1.187:10088/static/home/banner-home-default.png'
+    },
+    /**
        * 轮播图 banner 点击事件
        */
-      handleBannerClick(index) {
-        const token = uni.getStorageSync('token');
-        if (!token) {
-          uni.navigateTo({ url: '/pages/user-center/login' });
-          return;
-        }
-        // TODO 目前以积分为主写死只跳积分
-        const item = this.banners[index];
-        if (item.jumpUrl) {
-          uni.navigateTo({
-            url: `/sub-pages/index/item/main?id=${item.jumpUrl}&sceneType=积分兑换`,
-          });
-        }
+    handleBannerClick(index) {
+      const token = uni.getStorageSync('token')
+      if (!token) {
+        uni.navigateTo({ url: '/pages/user-center/login' })
+        return
+      }
+      // TODO 目前以积分为主写死只跳积分
+      const item = this.banners[index]
+      if (item.jumpUrl) {
+        uni.navigateTo({
+          url: `/sub-pages/index/item/main?id=${item.jumpUrl}&sceneType=积分兑换`
+        })
+      }
 
-        // if (item.jumpUrl && item.jumpUrl.indexOf('http') !== -1) {
-        //   uni.navigateTo({
-        //     url: `/pages/common/webpage?url=${encodeURIComponent(item.jumpUrl)}`
-        //   })
-        // } else if (item.jumpText) {
-        //   uni.navigateTo({
-        //     url: `/pages/home/article?text=${item.jumpText}`
-        //   })
-        // }
-      },
-    },
-  };
+      // if (item.jumpUrl && item.jumpUrl.indexOf('http') !== -1) {
+      //   uni.navigateTo({
+      //     url: `/pages/common/webpage?url=${encodeURIComponent(item.jumpUrl)}`
+      //   })
+      // } else if (item.jumpText) {
+      //   uni.navigateTo({
+      //     url: `/pages/home/article?text=${item.jumpText}`
+      //   })
+      // }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

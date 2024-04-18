@@ -105,235 +105,235 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  // import { UniPopup } from '@dcloudio/uni-ui'
+import api from '@/apis/index.js'
+// import { UniPopup } from '@dcloudio/uni-ui'
 
-  export default {
-    // components: { UniPopup },
-    data() {
-      return {
-        firstVideo: {},
-        list: [],
-        lowerThreshold: 30,
-        bottomTips: '',
-        isAllowPullDown: false, // 是否触发下拉刷新
-        contId: undefined, // 类目id
-        pageNum: 1, // 当前页数
-        pageSize: 20, // 每页条数
-        current: '',
-        shareIndex: 0,
-      };
-    },
-    watch: {},
-    onLoad(e) {
-      this.firstVideo = JSON.parse(decodeURIComponent(e.firstVideo));
-      this.contId = this.firstVideo.contId;
-      this.getVideoList();
-    },
-    mounted() {},
-    onShow() {
-      this.pageNum = 1;
-      this.list = [];
-      // this.getVideoList()
-    },
-    onReachBottom() {
-      // 页面上拉触底事件的处理函数
-      console.log('用户把这个页面上拉100时触发我的');
-      this.getVideoList();
-    },
-    methods: {
-      // 获取视频列表
-      getVideoList() {
-        let userId = '';
-        if (uni.getStorageSync('userInfo')) {
-          userId = uni.getStorageSync('userInfo').uactId;
-        }
-        const data = {
-          contId: this.contId,
-          pageNum: this.pageNum,
-          pageSize: this.pageSize,
-          userId: userId,
-          theatreFlag: 1,
-        };
-        // if(this.pageNum>1){
-        //     this.bottomTips = "loading"
-        // }
-        api.getVideoList({
-          data,
-          showsLoading: true,
-          success: (res) => {
-            if (res.list) {
-              if (data.pageNum === 1) {
-                this.list.push(this.firstVideo);
-              }
-              res.list.map((items, indexs) => {
-                this.list.push(items);
-              });
-
-              this.pageNum = this.pageNum + 1;
-            } else {
-              if (this.pageNum > 0) {
-                this.bottomTips = 'nomore';
-                // setTimeout(()=>{
-                //     this.bottomTips = ""
-                // },2000)
-              }
+export default {
+  // components: { UniPopup },
+  data() {
+    return {
+      firstVideo: {},
+      list: [],
+      lowerThreshold: 30,
+      bottomTips: '',
+      isAllowPullDown: false, // 是否触发下拉刷新
+      contId: undefined, // 类目id
+      pageNum: 1, // 当前页数
+      pageSize: 20, // 每页条数
+      current: '',
+      shareIndex: 0
+    }
+  },
+  watch: {},
+  onLoad(e) {
+    this.firstVideo = JSON.parse(decodeURIComponent(e.firstVideo))
+    this.contId = this.firstVideo.contId
+    this.getVideoList()
+  },
+  mounted() {},
+  onShow() {
+    this.pageNum = 1
+    this.list = []
+    // this.getVideoList()
+  },
+  onReachBottom() {
+    // 页面上拉触底事件的处理函数
+    console.log('用户把这个页面上拉100时触发我的')
+    this.getVideoList()
+  },
+  methods: {
+    // 获取视频列表
+    getVideoList() {
+      let userId = ''
+      if (uni.getStorageSync('userInfo')) {
+        userId = uni.getStorageSync('userInfo').uactId
+      }
+      const data = {
+        contId: this.contId,
+        pageNum: this.pageNum,
+        pageSize: this.pageSize,
+        userId: userId,
+        theatreFlag: 1
+      }
+      // if(this.pageNum>1){
+      //     this.bottomTips = "loading"
+      // }
+      api.getVideoList({
+        data,
+        showsLoading: true,
+        success: (res) => {
+          if (res.list) {
+            if (data.pageNum === 1) {
+              this.list.push(this.firstVideo)
             }
+            res.list.map((items, indexs) => {
+              this.list.push(items)
+            })
 
-            //
-          },
-          fail: (err) => {},
-        });
-      },
-      // 点击播放
-      saveplay(name) {
-        console.log('点击播放视频：', this.current, name);
-        if (this.current && name != this.current) {
-          // console.log('被暂停了')
-          this.videoContext = uni.createVideoContext(this.current, this);
-          console.log('被暂停了', this.videoContext);
-          this.videoContext.pause();
-        }
-        this.current = name;
-      },
-      /**
+            this.pageNum = this.pageNum + 1
+          } else {
+            if (this.pageNum > 0) {
+              this.bottomTips = 'nomore'
+              // setTimeout(()=>{
+              //     this.bottomTips = ""
+              // },2000)
+            }
+          }
+
+          //
+        },
+        fail: (err) => {}
+      })
+    },
+    // 点击播放
+    saveplay(name) {
+      console.log('点击播放视频：', this.current, name)
+      if (this.current && name != this.current) {
+        // console.log('被暂停了')
+        this.videoContext = uni.createVideoContext(this.current, this)
+        console.log('被暂停了', this.videoContext)
+        this.videoContext.pause()
+      }
+      this.current = name
+    },
+    /**
        * 点击收藏按钮事件
        */
-      handleCollect(item, index) {
-        if (!uni.getStorageSync('token')) {
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
-        }
-        if (this.list[index].colFlag === '0') {
-          api.saveCollect({
-            data: {
-              colId: item.contId,
-              colType: '4',
-            },
-            success: (data) => {
-              this.list[index].colFlag = '1';
-              this.$uni.showToast('收藏成功');
-            },
-          });
-        } else {
-          api.updateCollect({
-            data: {
-              requestColSingleDTOList: [
-                {
-                  delFlag: '1',
-                  colId: item.contId,
-                },
-              ],
-            },
-            success: (data) => {
-              this.list[index].colFlag = '0';
-              this.$uni.showToast('取消收藏');
-            },
-          });
-        }
-      },
-      // 点击复制链接
-      handleCopyClick() {
-        uni.setClipboardData({
-          data: `${ENV.H5}/#/discovery/app-detail/` + this.list[this.shareIndex].contId,
-          success: (res) => {
-            uni.getClipboardData({
-              success: (resp) => {
-                this.$refs.popup.close();
-                console.log('resp:', resp);
-                uni.showToast({
-                  title: '已复制到剪贴板',
-                });
-              },
-            });
+    handleCollect(item, index) {
+      if (!uni.getStorageSync('token')) {
+        uni.navigateTo({
+          url: '/pages/user-center/login'
+        })
+        return
+      }
+      if (this.list[index].colFlag === '0') {
+        api.saveCollect({
+          data: {
+            colId: item.contId,
+            colType: '4'
           },
-        });
-      },
-      // 点击分享
-      handleShareClick(index) {
-        if (!uni.getStorageSync('token')) {
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
+          success: (data) => {
+            this.list[index].colFlag = '1'
+            this.$uni.showToast('收藏成功')
+          }
+        })
+      } else {
+        api.updateCollect({
+          data: {
+            requestColSingleDTOList: [
+              {
+                delFlag: '1',
+                colId: item.contId
+              }
+            ]
+          },
+          success: (data) => {
+            this.list[index].colFlag = '0'
+            this.$uni.showToast('取消收藏')
+          }
+        })
+      }
+    },
+    // 点击复制链接
+    handleCopyClick() {
+      uni.setClipboardData({
+        data: `${ENV.H5}/#/discovery/app-detail/` + this.list[this.shareIndex].contId,
+        success: (res) => {
+          uni.getClipboardData({
+            success: (resp) => {
+              this.$refs.popup.close()
+              console.log('resp:', resp)
+              uni.showToast({
+                title: '已复制到剪贴板'
+              })
+            }
+          })
         }
-        this.shareIndex = index;
-        this.$refs.popup.open();
-      },
-      // 关闭分享
-      handleCloseClick() {
-        this.$refs.popup.close();
-      },
+      })
     },
-    // 下拉刷新
-    onPullDownRefresh() {
-      console.log('触发refresh');
-      setTimeout(() => {
-        uni.stopPullDownRefresh();
-      });
+    // 点击分享
+    handleShareClick(index) {
+      if (!uni.getStorageSync('token')) {
+        uni.navigateTo({
+          url: '/pages/user-center/login'
+        })
+        return
+      }
+      this.shareIndex = index
+      this.$refs.popup.open()
     },
-    // 分享好友
-    onShareAppMessage(res) {
-      return {
-        title: this.list[this.shareIndex].ttl,
-        path:
+    // 关闭分享
+    handleCloseClick() {
+      this.$refs.popup.close()
+    }
+  },
+  // 下拉刷新
+  onPullDownRefresh() {
+    console.log('触发refresh')
+    setTimeout(() => {
+      uni.stopPullDownRefresh()
+    })
+  },
+  // 分享好友
+  onShareAppMessage(res) {
+    return {
+      title: this.list[this.shareIndex].ttl,
+      path:
           '/pages/find/video-list?firstVideo=' +
           encodeURIComponent(JSON.stringify(this.firstVideo)),
-        imageUrl: 'http://192.168.1.187:10088/static/common/bg-share.png',
-        success(res) {
-          this.$uni.showToast({
-            title: '分享成功',
-          });
-        },
-        fail(res) {
-          this.$uni.showToast({
-            title: '分享失败',
-            icon: 'none',
-          });
-        },
-      };
-    },
-    // 分享到朋友圈
-    onShareTimeline() {
-      return {
-        title: this.list[0].ttl,
-        path: '/pages/find/video-list',
-        query: 'firstVideo=' + encodeURIComponent(JSON.stringify(this.firstVideo)),
-        imageUrl: 'http://192.168.1.187:10088/static/common/bg-share.png',
-        success(res) {
-          uni.showToast({
-            title: '分享成功',
-          });
-        },
-        fail(res) {
-          uni.showToast({
-            title: '分享失败',
-            icon: 'none',
-          });
-        },
-      };
-    },
-    filters: {
-      // 判断底部提示文字
-      judgeBottomTips(type) {
-        switch (type) {
-          case 'nomore':
-            return '没有更多数据了';
-            break;
-          case 'loading':
-            return '正在努力加载中...';
-            break;
-          case 'more':
-            return '上拉加载更多';
-            break;
-          default:
-            break;
-        }
+      imageUrl: 'http://192.168.1.187:10088/static/common/bg-share.png',
+      success(res) {
+        this.$uni.showToast({
+          title: '分享成功'
+        })
       },
-    },
-  };
+      fail(res) {
+        this.$uni.showToast({
+          title: '分享失败',
+          icon: 'none'
+        })
+      }
+    }
+  },
+  // 分享到朋友圈
+  onShareTimeline() {
+    return {
+      title: this.list[0].ttl,
+      path: '/pages/find/video-list',
+      query: 'firstVideo=' + encodeURIComponent(JSON.stringify(this.firstVideo)),
+      imageUrl: 'http://192.168.1.187:10088/static/common/bg-share.png',
+      success(res) {
+        uni.showToast({
+          title: '分享成功'
+        })
+      },
+      fail(res) {
+        uni.showToast({
+          title: '分享失败',
+          icon: 'none'
+        })
+      }
+    }
+  },
+  filters: {
+    // 判断底部提示文字
+    judgeBottomTips(type) {
+      switch (type) {
+        case 'nomore':
+          return '没有更多数据了'
+          break
+        case 'loading':
+          return '正在努力加载中...'
+          break
+        case 'more':
+          return '上拉加载更多'
+          break
+        default:
+          break
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

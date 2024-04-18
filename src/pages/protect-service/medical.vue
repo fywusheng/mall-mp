@@ -19,65 +19,65 @@
   </view>
 </template>
 <script>
-  import bCase from './component/bCase.vue';
-  export default {
-    components: { bCase },
-    data() {
-      return {
-        tabIndex: 0,
-        colName: '医保服务',
-      };
-    },
-    onLoad(e) {
-      if (e.index) {
-        this.tabIndex = e.index;
-      }
-    },
-    onReachBottom() {
-      console.log('=---22立卡');
-      this.$refs.base.selectArtiListByColId();
-    },
-    onShow() {
-      if (this.$refs.base) {
-        this.$refs.base.initRadio();
-      }
-    },
-    watch: {
-      tabIndex(newV, old) {
-        if (newV == 0 || newV == 2) {
-          if (this.$refs.base) {
-            this.$refs.base.destoryInstance();
-          }
+import bCase from './component/bCase.vue'
+export default {
+  components: { bCase },
+  data() {
+    return {
+      tabIndex: 0,
+      colName: '医保服务'
+    }
+  },
+  onLoad(e) {
+    if (e.index) {
+      this.tabIndex = e.index
+    }
+  },
+  onReachBottom() {
+    console.log('=---22立卡')
+    this.$refs.base.selectArtiListByColId()
+  },
+  onShow() {
+    if (this.$refs.base) {
+      this.$refs.base.initRadio()
+    }
+  },
+  watch: {
+    tabIndex(newV, old) {
+      if (newV == 0 || newV == 2) {
+        if (this.$refs.base) {
+          this.$refs.base.destoryInstance()
         }
-      },
-    },
-    onUnload() {
-      if (this.$refs.base) {
-        this.$refs.base.destoryInstance();
-        this.$refs.base.showAudio = false;
       }
-    },
-    onHide() {
-      if (this.$refs.base) {
-        this.$refs.base.destoryInstance();
-        this.$refs.base.showAudio = false;
+    }
+  },
+  onUnload() {
+    if (this.$refs.base) {
+      this.$refs.base.destoryInstance()
+      this.$refs.base.showAudio = false
+    }
+  },
+  onHide() {
+    if (this.$refs.base) {
+      this.$refs.base.destoryInstance()
+      this.$refs.base.showAudio = false
+    }
+  },
+  methods: {
+    startQuest() {
+      const token = uni.getStorageSync('token')
+      if (!token) {
+        uni.navigateTo({ url: '/pages/user-center/login' })
+        return
       }
-    },
-    methods: {
-      startQuest() {
-        const token = uni.getStorageSync('token');
-        if (!token) {
-          uni.navigateTo({ url: '/pages/user-center/login' });
-          return;
-        }
-        const url =
-          'https://znkf.ylzinfo.com/ylzbigdata_znkf_fe/#/web_im_plugin?appId=c3ceba1d1345401ab85db3ca891ab265';
-        uni.navigateTo({
-          url: '/pages/common/webpage?url=' + encodeURIComponent(url),
-        });
-      },
-    },
-  };
+      const url =
+          'https://znkf.ylzinfo.com/ylzbigdata_znkf_fe/#/web_im_plugin?appId=c3ceba1d1345401ab85db3ca891ab265'
+      uni.navigateTo({
+        url: '/pages/common/webpage?url=' + encodeURIComponent(url)
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

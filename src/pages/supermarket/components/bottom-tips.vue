@@ -17,44 +17,44 @@
 </template>
 
 <script>
-	export default{
-		data(){
-			return{
-			
-			}
-		},
-		props: {
-			bottomTips:{
-				type: String,
-				default: ''
-			},
-		
-		},
-		created() {
+export default {
+  data() {
+    return {
 
-		},
-		filters:{
-			//判断底部提示文字
-			judgeBottomTips(type){
-				switch (type){
-					case 'nomore':
-						return '暂无更多内容'
-						break;
-					case 'loading':
-						return '正在努力加载中...'
-						break;
-					case 'more':
-						return '上拉加载更多'
-						break;
-					default:
-						break;
-				}
-			}
-		},
-		methods:{
-		
-		}
-	}
+    }
+  },
+  props: {
+    bottomTips: {
+      type: String,
+      default: ''
+    }
+
+  },
+  created() {
+
+  },
+  filters: {
+    // 判断底部提示文字
+    judgeBottomTips(type) {
+      switch (type) {
+        case 'nomore':
+          return '暂无更多内容'
+          break
+        case 'loading':
+          return '正在努力加载中...'
+          break
+        case 'more':
+          return '上拉加载更多'
+          break
+        default:
+          break
+      }
+    }
+  },
+  methods: {
+
+  }
+}
 </script>
 
 <style lang="scss" scoped>

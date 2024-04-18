@@ -20,82 +20,82 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        dataList: [],
-        pageLoad: false,
-      };
+export default {
+  data() {
+    return {
+      dataList: [],
+      pageLoad: false
+    }
+  },
+  components: {},
+  methods: {
+    toItem(item) {
+      if (item.saleState != 5) {
+        wx.showToast('该商品已下架无法预览详情！')
+        return
+      }
+      wx.navigateTo({
+        url: `/pages/item/main?id=${item.id}`
+      })
     },
-    components: {},
-    methods: {
-      toItem(item) {
-        if (item.saleState != 5) {
-          wx.showToast('该商品已下架无法预览详情！');
-          return;
-        }
-        wx.navigateTo({
-          url: `/pages/item/main?id=${item.id}`,
-        });
-      },
-      async remove(item) {
-        const result = await wx.showModal({
-          title: '',
-          content: '确定要删除该关注记录?',
-          confirmColor: '#FB4769',
-        });
-        if (result.confirm) {
-          wx.showLoading({ title: '正在提交...', mask: true });
-          const delResult = await Axios.post('/product/deleteFavorites', {
-            id: item.id,
-          });
-          wx.hideLoading();
-          if (delResult.code == 200) {
-            wx.showToast({
-              title: delResult.msg || '删除成功',
-              icon: 'none',
-            });
-            this.loadData();
-          } else {
-            wx.showToast({
-              title: delResult.msg || '删除失败',
-              icon: 'none',
-            });
-          }
-        }
-      },
-      async loadData() {
-        const result = await Axios.post('/product/listFavorites', {
-          params: {
-            data: {
-              pageNo: 1,
-              pageSize: 100,
-            },
-          },
-        });
-        if (result.code == 200) {
-          this.dataList = result.data.list || [];
+    async remove(item) {
+      const result = await wx.showModal({
+        title: '',
+        content: '确定要删除该关注记录?',
+        confirmColor: '#FB4769'
+      })
+      if (result.confirm) {
+        wx.showLoading({ title: '正在提交...', mask: true })
+        const delResult = await Axios.post('/product/deleteFavorites', {
+          id: item.id
+        })
+        wx.hideLoading()
+        if (delResult.code == 200) {
+          wx.showToast({
+            title: delResult.msg || '删除成功',
+            icon: 'none'
+          })
+          this.loadData()
         } else {
           wx.showToast({
-            title: result.msg || '获取数据失败',
-            icon: 'none',
-          });
+            title: delResult.msg || '删除失败',
+            icon: 'none'
+          })
         }
-      },
-    },
-    async mounted() {
-      wx.setNavigationBarTitle({
-        title: '收藏',
-      });
-      if (!Store.getters.isLogin) {
-        await Store.dispatch('login');
       }
-      wx.showLoading({ title: '正在加载...', mask: true });
-      await this.loadData();
-      this.pageLoad = true;
-      wx.hideLoading();
     },
-  };
+    async loadData() {
+      const result = await Axios.post('/product/listFavorites', {
+        params: {
+          data: {
+            pageNo: 1,
+            pageSize: 100
+          }
+        }
+      })
+      if (result.code == 200) {
+        this.dataList = result.data.list || []
+      } else {
+        wx.showToast({
+          title: result.msg || '获取数据失败',
+          icon: 'none'
+        })
+      }
+    }
+  },
+  async mounted() {
+    wx.setNavigationBarTitle({
+      title: '收藏'
+    })
+    if (!Store.getters.isLogin) {
+      await Store.dispatch('login')
+    }
+    wx.showLoading({ title: '正在加载...', mask: true })
+    await this.loadData()
+    this.pageLoad = true
+    wx.hideLoading()
+  }
+}
 </script>
 
 <style lang="scss">

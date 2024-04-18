@@ -31,62 +31,62 @@
 </template>
 
 <script>
-  import NavigationBar from '@/components/common/navigation-bar.vue';
-  export default {
-    components: { NavigationBar },
-    data() {
-      return {
-        // 结果类型 0-成功 1-失败
-        resultType: 0,
-        title: '绑定银行卡',
-        // iconPath
-        icon: {
-          success: 'http://192.168.1.187:10088/static/pay/icon-success.png',
-          fail: 'http://192.168.1.187:10088/static/pay/icon-fail.png',
-        },
-        // 导航栏高度
-        //#ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        //#endif
-        //#ifdef MP-ALIPAY
-        navigationBarHeight:
+import NavigationBar from '@/components/common/navigation-bar.vue'
+export default {
+  components: { NavigationBar },
+  data() {
+    return {
+      // 结果类型 0-成功 1-失败
+      resultType: 0,
+      title: '绑定银行卡',
+      // iconPath
+      icon: {
+        success: 'http://192.168.1.187:10088/static/pay/icon-success.png',
+        fail: 'http://192.168.1.187:10088/static/pay/icon-fail.png'
+      },
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        //#endif
-        // 状态栏高度
-        statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-      };
-    },
-    onLoad(e) {},
-    onShow() {},
-    onBackPress(e) {
-      console.log('----监听返回1111----');
-      // uni.redirectTo({
+      // #endif
+      // 状态栏高度
+      statusBarHeight: uni.getSystemInfoSync().statusBarHeight
+    }
+  },
+  onLoad(e) {},
+  onShow() {},
+  onBackPress(e) {
+    console.log('----监听返回1111----')
+    // uni.redirectTo({
+    //    url: '/pages/pay/my-bank-card'
+    // });
+  },
+  methods: {
+    hanldeComplete() {
+      // uni.navigateTo({
       //    url: '/pages/pay/my-bank-card'
       // });
+      uni.reLaunch({
+        url: '/pages/pay/my-bank-card'
+      })
     },
-    methods: {
-      hanldeComplete() {
-        // uni.navigateTo({
-        //    url: '/pages/pay/my-bank-card'
-        // });
-        uni.reLaunch({
-          url: '/pages/pay/my-bank-card',
-        });
-      },
 
-      // 返回上一页
-      handleNavBack() {
-        this.$refs.tipModal.open();
-        // uni.navigateBack();
-      },
-      // 返回首页
-      handleHomeBack() {
-        uni.reLaunch({
-          url: '/pages/index/index',
-        });
-      },
+    // 返回上一页
+    handleNavBack() {
+      this.$refs.tipModal.open()
+      // uni.navigateBack();
     },
-  };
+    // 返回首页
+    handleHomeBack() {
+      uni.reLaunch({
+        url: '/pages/index/index'
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

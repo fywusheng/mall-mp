@@ -85,171 +85,171 @@
 </template>
 
 <script>
-  import Modal from '@/components/common/modal.vue';
-  import PointPop from './components/get-point-pop.vue';
-  import NavigationBar from '@/components/common/navigation-bar.vue';
-  import api from '@/apis/index.js';
-  export default {
-    components: { NavigationBar, Modal, PointPop },
-    data() {
-      return {
-        payWay: { 1: '惠老钱包', 2: '支付宝支付', 3: '微信支付' },
-        // 结果类型 0-成功 1-失败
-        resultType: 0,
-        orderId: '',
-        payAmount: '',
-        formData: {},
-        // iconPath
-        icon: {
-          success: 'http://192.168.1.187:10088/static/pay/icon-success.png',
-          fail: 'http://192.168.1.187:10088/static/pay/icon-fail.png',
-        },
-        // 导航栏高度
-        // #ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        // #endif
-        // #ifdef MP-ALIPAY
-        navigationBarHeight:
+import Modal from '@/components/common/modal.vue'
+import PointPop from './components/get-point-pop.vue'
+import NavigationBar from '@/components/common/navigation-bar.vue'
+import api from '@/apis/index.js'
+export default {
+  components: { NavigationBar, Modal, PointPop },
+  data() {
+    return {
+      payWay: { 1: '惠老钱包', 2: '支付宝支付', 3: '微信支付' },
+      // 结果类型 0-成功 1-失败
+      resultType: 0,
+      orderId: '',
+      payAmount: '',
+      formData: {},
+      // iconPath
+      icon: {
+        success: 'http://192.168.1.187:10088/static/pay/icon-success.png',
+        fail: 'http://192.168.1.187:10088/static/pay/icon-fail.png'
+      },
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        // #endif
-        // 状态栏高度
-        statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-      };
+      // #endif
+      // 状态栏高度
+      statusBarHeight: uni.getSystemInfoSync().statusBarHeight
+    }
+  },
+  onLoad(e) {
+    this.formData = JSON.parse(decodeURIComponent(e.payInfo))
+    this.resultType = this.formData.type
+    this.orderId = this.formData.orderId
+    this.payAmount = this.formData.payAmount
+    // this.checkNeedPopUp();
+    console.log(this.formData, 'form信息=======')
+  },
+  onShow() {},
+  methods: {
+    // 返回上一页
+    handleNavBack() {
+      this.$refs.tipModal.open()
     },
-    onLoad(e) {
-      this.formData = JSON.parse(decodeURIComponent(e.payInfo));
-      this.resultType = this.formData.type;
-      this.orderId = this.formData.orderId;
-      this.payAmount = this.formData.payAmount;
-      // this.checkNeedPopUp();
-      console.log(this.formData, 'form信息=======');
+    // 返回首页
+    handleHomeBack() {
+      uni.reLaunch({
+        url: '/pages/index/index?index=0'
+      })
     },
-    onShow() {},
-    methods: {
-      // 返回上一页
-      handleNavBack() {
-        this.$refs.tipModal.open();
-      },
-      // 返回首页
-      handleHomeBack() {
-        uni.reLaunch({
-          url: '/pages/index/index?index=0',
-        });
-      },
-      // 订单详情
-      handleOrderDetail() {
-        // orderSource 0-附近优惠、1-买菜、2-看病、3-保险，4酒店 ,9 商城
-        switch (this.formData.orderSource) {
-          case 4:
-            uni.reLaunch({
-              url: '/pages/life/orderInfo?orderId=' + this.orderId,
-            });
-            break;
-          case 5:
-            this.goMiliOrderDetial();
-            break;
-          case 9:
-            uni.reLaunch({
-              url:
+    // 订单详情
+    handleOrderDetail() {
+      // orderSource 0-附近优惠、1-买菜、2-看病、3-保险，4酒店 ,9 商城
+      switch (this.formData.orderSource) {
+        case 4:
+          uni.reLaunch({
+            url: '/pages/life/orderInfo?orderId=' + this.orderId
+          })
+          break
+        case 5:
+          this.goMiliOrderDetial()
+          break
+        case 9:
+          uni.reLaunch({
+            url:
                 '/sub-pages/me/order-detail/main?id=' +
                 this.formData.transactionSerialNo +
-                '&popUpType=2',
-            });
-            break;
-          default:
-            uni.reLaunch({
-              url: '/pages/supermarket/order-info?orderId=' + this.orderId,
-            });
-            break;
-        }
-      },
-      // 米粒订单详情
-      goMiliOrderDetial() {
-        const url = `${ENV.MILI_URL}/#/pages/order-detail/index?order_no=${this.formData.transactionSerialNo}`;
-        uni.reLaunch({
-          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-        });
-      },
+                '&popUpType=2'
+          })
+          break
+        default:
+          uni.reLaunch({
+            url: '/pages/supermarket/order-info?orderId=' + this.orderId
+          })
+          break
+      }
+    },
+    // 米粒订单详情
+    goMiliOrderDetial() {
+      const url = `${ENV.MILI_URL}/#/pages/order-detail/index?order_no=${this.formData.transactionSerialNo}`
+      uni.reLaunch({
+        url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
+      })
+    },
 
-      // 绑定完成
-      // handleComplete() {
-      //   if(this.formData.payment == 1){
-      //        const source = uni.getStorageSync('bind-card-source')
-      //       // 0 :收银台 1 :我的银行卡
-      //       if(source === '0'){
-      //         if(this.formData.orderSource === 0){
-      //            uni.navigateTo({
-      //               url: '/pages/supermarket/index'
-      //             });
-      //         }else{
-      //           if(!this.formData.orderSource) return
-      //           //orderSource 0-附近优惠、1-买菜、2-看病、3-保险，4酒店
-      //           const backUrl = {1:'/pages/life/bugshopping',2:'/pages/life/seeDoctor',3:'/pages/life/insurance',4:'/pages/life/hotelDetail?hotelDiscountId='+hotelDiscountId+'&change=1'+'&hotelName='+hotelName+'&hotelId='+hotelId}
-      //           uni.reLaunch({url:backUrl[this.formData.orderSource]})
-      //         }
-      //       }else{
-      //         uni.navigateTo({
-      //         url: '/pages/pay/my-bank-card'
-      //       });
-      //     }
-      //   }else{
-      //      uni.reLaunch({
-      //        url: '/pages/index/index'
-      //     });
-      //   }
-      // },
-      handleConfirm() {
-        uni.reLaunch({ url: '/pages/life/orderInfo?orderId=' + this.formData.orderId });
-      },
-      // 重新支付
-      handleRePay() {
-        const n = new Date().getTime();
-        const g_q = new Date(this.formData.expirationTime).getTime();
-        const mine = Math.floor((g_q - n) / 60000);
-        console.log('====待付款订单是否超过30分钟---', mine);
-        if (this.formData.orderSource === 0) {
-          api.getPayCodePage({
-            data: { supermarketId: this.formData.supermarketId },
-            success: (data) => {
-              uni.navigateTo({
-                url: '/pages/pay/show-pay-code?url=' + encodeURIComponent(data.result),
-              });
-            },
-          });
-        } else {
-          if (mine > 30) {
-            // 弹框 关单
-            this.$refs.payInfor.open();
-          } else if (mine <= 30 && mine > 0) {
-            const url = `${ENV.H5}/#/checkstand?cashId=` + this.formData.cashId;
-            uni.redirectTo({
-              url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-            });
-          }
-        }
-      },
-      // 领积分弹窗
-      async checkNeedPopUp() {
-        const params = {
-          orderId: this.orderId,
-          popUpType: '0',
-        };
-        const { code, data } = await Axios.post('/order/checkNeedPopUp', params);
-        if (code === '200') {
-          if (data.needPopUp === 1) {
-            this.$refs.pointPop.open(data);
-          }
-        } else {
-          console.log('失败');
-        }
-      },
+    // 绑定完成
+    // handleComplete() {
+    //   if(this.formData.payment == 1){
+    //        const source = uni.getStorageSync('bind-card-source')
+    //       // 0 :收银台 1 :我的银行卡
+    //       if(source === '0'){
+    //         if(this.formData.orderSource === 0){
+    //            uni.navigateTo({
+    //               url: '/pages/supermarket/index'
+    //             });
+    //         }else{
+    //           if(!this.formData.orderSource) return
+    //           //orderSource 0-附近优惠、1-买菜、2-看病、3-保险，4酒店
+    //           const backUrl = {1:'/pages/life/bugshopping',2:'/pages/life/seeDoctor',3:'/pages/life/insurance',4:'/pages/life/hotelDetail?hotelDiscountId='+hotelDiscountId+'&change=1'+'&hotelName='+hotelName+'&hotelId='+hotelId}
+    //           uni.reLaunch({url:backUrl[this.formData.orderSource]})
+    //         }
+    //       }else{
+    //         uni.navigateTo({
+    //         url: '/pages/pay/my-bank-card'
+    //       });
+    //     }
+    //   }else{
+    //      uni.reLaunch({
+    //        url: '/pages/index/index'
+    //     });
+    //   }
+    // },
+    handleConfirm() {
+      uni.reLaunch({ url: '/pages/life/orderInfo?orderId=' + this.formData.orderId })
     },
-    filters: {
-      formaterMoney(v) {
-        return (v / 100).toFixed(2);
-      },
+    // 重新支付
+    handleRePay() {
+      const n = new Date().getTime()
+      const g_q = new Date(this.formData.expirationTime).getTime()
+      const mine = Math.floor((g_q - n) / 60000)
+      console.log('====待付款订单是否超过30分钟---', mine)
+      if (this.formData.orderSource === 0) {
+        api.getPayCodePage({
+          data: { supermarketId: this.formData.supermarketId },
+          success: (data) => {
+            uni.navigateTo({
+              url: '/pages/pay/show-pay-code?url=' + encodeURIComponent(data.result)
+            })
+          }
+        })
+      } else {
+        if (mine > 30) {
+          // 弹框 关单
+          this.$refs.payInfor.open()
+        } else if (mine <= 30 && mine > 0) {
+          const url = `${ENV.H5}/#/checkstand?cashId=` + this.formData.cashId
+          uni.redirectTo({
+            url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
+          })
+        }
+      }
     },
-  };
+    // 领积分弹窗
+    async checkNeedPopUp() {
+      const params = {
+        orderId: this.orderId,
+        popUpType: '0'
+      }
+      const { code, data } = await Axios.post('/order/checkNeedPopUp', params)
+      if (code === '200') {
+        if (data.needPopUp === 1) {
+          this.$refs.pointPop.open(data)
+        }
+      } else {
+        console.log('失败')
+      }
+    }
+  },
+  filters: {
+    formaterMoney(v) {
+      return (v / 100).toFixed(2)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

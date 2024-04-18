@@ -41,52 +41,52 @@
 </template>
 
 <script>
-  import wx from 'utils/wx';
-  export default {
-    props: {
-      min: {
-        type: Number,
-        default: 1,
-      },
-      current: {
-        type: Number,
-        default: 1,
-      },
-      max: {
-        type: Number,
-        default: 100,
-      },
+import wx from 'utils/wx'
+export default {
+  props: {
+    min: {
+      type: Number,
+      default: 1
     },
-    data() {
-      return {
-        number: 1,
-      };
+    current: {
+      type: Number,
+      default: 1
     },
-    watch: {
-      current() {
-        this.number = this.current;
-      },
+    max: {
+      type: Number,
+      default: 100
+    }
+  },
+  data() {
+    return {
+      number: 1
+    }
+  },
+  watch: {
+    current() {
+      this.number = this.current
+    }
+  },
+  methods: {
+    reduce() {
+      if (this.number === this.min) {
+        wx.showToast('最少购买' + this.min + '件')
+        return false
+      }
+      this.number--
+      this.$emit('change', this.number)
     },
-    methods: {
-      reduce() {
-        if (this.number === this.min) {
-          wx.showToast('最少购买' + this.min + '件');
-          return false;
-        }
-        this.number--;
-        this.$emit('change', this.number);
-      },
-      add() {
-        if (this.number === this.max) {
-          wx.showToast('最多可购' + this.max + '件');
-          return false;
-        }
-        this.number++;
-        this.$emit('change', this.number);
-      },
-    },
-    async mounted() {},
-  };
+    add() {
+      if (this.number === this.max) {
+        wx.showToast('最多可购' + this.max + '件')
+        return false
+      }
+      this.number++
+      this.$emit('change', this.number)
+    }
+  },
+  async mounted() {}
+}
 </script>
 
 <style lang="scss" scoped>

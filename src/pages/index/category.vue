@@ -23,50 +23,50 @@
 </template>
 
 <script>
-  import ENV from '@/config/env';
+import ENV from '@/config/env'
 
-  export default {
-    data() {
-      return {
-        categoryList: [],
-      };
-    },
-    onLoad() {
-      this.loadData();
-    },
-    methods: {
-      // 请求数据
-      async loadData() {
-        const { data, code, msg } = await Axios.post('/category/getCategoryList', {
-          type: 2,
-        });
-        if (code === '200') {
-          this.categoryList = data;
-        } else {
-          this.uni.showToast(msg);
-        }
-      },
-
-      // 去列表页
-      toCategory(v) {
-        uni.navigateTo({
-          url: `/sub-pages/index/item-list/main?cateId=${v.id}&level=${v.level}`,
-        });
-      },
-
-      handleImgLoadFail(item) {
-        item.iconUrl = ENV.IMG_DEFAULT;
-      },
-    },
-    onShow() {
-      const curPages = getCurrentPages()[0];
-      if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
-        curPages.getTabBar().setData({
-          tabIndex: 3,
-        });
+export default {
+  data() {
+    return {
+      categoryList: []
+    }
+  },
+  onLoad() {
+    this.loadData()
+  },
+  methods: {
+    // 请求数据
+    async loadData() {
+      const { data, code, msg } = await Axios.post('/category/getCategoryList', {
+        type: 2
+      })
+      if (code === '200') {
+        this.categoryList = data
+      } else {
+        this.uni.showToast(msg)
       }
     },
-  };
+
+    // 去列表页
+    toCategory(v) {
+      uni.navigateTo({
+        url: `/sub-pages/index/item-list/main?cateId=${v.id}&level=${v.level}`
+      })
+    },
+
+    handleImgLoadFail(item) {
+      item.iconUrl = ENV.IMG_DEFAULT
+    }
+  },
+  onShow() {
+    const curPages = getCurrentPages()[0]
+    if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
+      curPages.getTabBar().setData({
+        tabIndex: 3
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

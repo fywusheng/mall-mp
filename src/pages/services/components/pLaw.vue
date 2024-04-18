@@ -54,167 +54,167 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import uniPopup from '@/components/uni-popup/uni-popup.vue';
-  import Yaudio from './audio.vue';
-  export default {
-    components: { uniPopup, Yaudio },
-    data() {
-      return {
-        datalist: [],
-        pageNum: 1,
-        loading: 1,
-        list: [],
-        stopPlay: false,
-        playIndex: '',
-        isPlay: false,
-        innerAudioContext: null,
-        mapState: {},
-        title: '',
-        arrayIndex: 0,
-        player: '',
-        videoBg: '',
-        closeAudio: true,
-        showAudio: false,
-      };
+import api from '@/apis/index.js'
+import uniPopup from '@/components/uni-popup/uni-popup.vue'
+import Yaudio from './audio.vue'
+export default {
+  components: { uniPopup, Yaudio },
+  data() {
+    return {
+      datalist: [],
+      pageNum: 1,
+      loading: 1,
+      list: [],
+      stopPlay: false,
+      playIndex: '',
+      isPlay: false,
+      innerAudioContext: null,
+      mapState: {},
+      title: '',
+      arrayIndex: 0,
+      player: '',
+      videoBg: '',
+      closeAudio: true,
+      showAudio: false
+    }
+  },
+  onLoad() {},
+  created() {
+    this.selectArtiListByColId()
+  },
+  mounted() {
+    this.innerAudioContext = uni.createInnerAudioContext()
+  },
+  methods: {
+    destoryInstance() {
+      if (this.innerAudioContext) {
+        this.innerAudioContext.destroy()
+        this.$set(this.mapState, this.playIndex, false)
+      }
     },
-    onLoad() {},
-    created() {
-      this.selectArtiListByColId();
+    triggleBg(data) {
+      this.closeAudio = data
     },
-    mounted() {
-      this.innerAudioContext = uni.createInnerAudioContext();
+    nextPlay() {
+      const index = this.arrayIndex + 1
+      const item = this.datalist[index]
+      if (!item) {
+        this.arrayIndex = this.datalist.length - 1
+        return
+      }
+      this.handleNoimg(this.datalist[index], index)
+      this.title = item.ttl
+      this.videoBg = item.imgs[0] ? item.imgs[0] : ''
     },
-    methods: {
-      destoryInstance() {
-        if (this.innerAudioContext) {
-          this.innerAudioContext.destroy();
-          this.$set(this.mapState, this.playIndex, false);
-        }
-      },
-      triggleBg(data) {
-        this.closeAudio = data;
-      },
-      nextPlay() {
-        const index = this.arrayIndex + 1;
-        const item = this.datalist[index];
-        if (!item) {
-          this.arrayIndex = this.datalist.length - 1;
-          return;
-        }
-        this.handleNoimg(this.datalist[index], index);
-        this.title = item.ttl;
-        this.videoBg = item.imgs[0] ? item.imgs[0] : '';
-      },
-      handleSwitchPlay() {
-        this.mapState[this.playIndex] = !this.mapState[this.playIndex];
-        if (this.mapState[this.playIndex]) {
-          this.stopPlay = true;
-          this.innerAudioContext.play();
-        } else {
-          this.stopPlay = false;
-          this.innerAudioContext.pause();
-        }
-      },
-      /*
+    handleSwitchPlay() {
+      this.mapState[this.playIndex] = !this.mapState[this.playIndex]
+      if (this.mapState[this.playIndex]) {
+        this.stopPlay = true
+        this.innerAudioContext.play()
+      } else {
+        this.stopPlay = false
+        this.innerAudioContext.pause()
+      }
+    },
+    /*
        * 点击听文章事件
        */
-      handleNoimg(item, index) {
-        this.$emit('video_list', item);
-        return;
-        this.showAudio = true;
-        this.playIndex = item.contId;
-        this.arrayIndex = index;
-        this.title = item.ttl;
-        this.videoBg = item.imgs[0] ? item.imgs[0] : '';
-        if (this.mapState[item.contId]) {
-          const state = !this.mapState[item.contId];
-          this.$set(this.mapState, item.contId, state);
-        } else {
-          this.mapState = {};
-          this.$set(this.mapState, item.contId, true);
+    handleNoimg(item, index) {
+      this.$emit('video_list', item)
+      return
+      this.showAudio = true
+      this.playIndex = item.contId
+      this.arrayIndex = index
+      this.title = item.ttl
+      this.videoBg = item.imgs[0] ? item.imgs[0] : ''
+      if (this.mapState[item.contId]) {
+        const state = !this.mapState[item.contId]
+        this.$set(this.mapState, item.contId, state)
+      } else {
+        this.mapState = {}
+        this.$set(this.mapState, item.contId, true)
+      }
+      // #ifdef MP-WEIXIN
+      this.innerAudioContext.src = item.mediaUrl
+      // #endif
+      // #ifdef MP-ALIPAY
+      this.innerAudioContext.src = item.youkuUrl || item.mediaUrl
+      // #endif
+      if (this.mapState[item.contId]) {
+        if (this.player) {
+          this.player = null
         }
-        // #ifdef MP-WEIXIN
-        this.innerAudioContext.src = item.mediaUrl;
-        // #endif
-        // #ifdef MP-ALIPAY
-        this.innerAudioContext.src = item.youkuUrl || item.mediaUrl;
-        // #endif
-        if (this.mapState[item.contId]) {
-          if (this.player) {
-            this.player = null;
-          }
-          this.player = setTimeout(() => {
-            this.innerAudioContext.play();
-            this.stopPlay = true;
-          }, 500);
-        } else {
-          this.innerAudioContext.pause();
-          this.stopPlay = false;
-        }
-        this.innerAudioContext.onTimeUpdate(() => {
-          this.$refs.yaudio.process =
-            (this.innerAudioContext.currentTime / this.innerAudioContext.duration) * 100;
-        });
-        // 监听自然播放结束事件
-        this.innerAudioContext.onEnded((res) => {
-          console.log('监听自然播放结束事件');
-          // this.$refs.yaudio.process = 0
-          this.nextPlay();
-        });
-      },
-      prePlay() {
-        const index = this.arrayIndex - 1;
-        const item = this.datalist[index];
-        if (!item) {
-          this.arrayIndex = 0;
-          return;
-        }
-        this.handleNoimg(this.datalist[index], index);
-        this.title = item.ttl;
-        this.videoBg = item.imgs[0] ? item.imgs[0] : '';
-      },
-      handleClose() {
-        this.showAudio = false;
-        this.innerAudioContext.pause();
-        this.$set(this.mapState, this.playIndex, false);
-      },
-      close() {
-        this.$refs.confirmpop.close();
-      },
-      selectArtiListByColId() {
-        // TODO 栏目id 后端-可以任意值以name为准
-        const data = {
-          colId: '1',
-          colName: '传承知识',
-          pageNum: this.pageNum,
-          pageSize: 20,
-        };
-        api.selectArtiListByColId({
-          data,
-          success: (res) => {
-            if (res.list && res.list.length == 0) {
-              this.loading = 3;
-            } else if (res.list && res.list.length > 0) {
-              this.loading = 2;
-              this.datalist = this.datalist.concat(res.list);
-              res.list.map((element) => {
-                element.play = false;
-              });
-              this.pageNum = this.pageNum + 1;
-            }
-          },
-          fail: () => {
-            this.loading = 3;
-          },
-        });
-      },
-      // clickItem(item) {
-      //   // 点击去弹框下载
-      //   this.$refs.confirmpop.open()
-      // }
+        this.player = setTimeout(() => {
+          this.innerAudioContext.play()
+          this.stopPlay = true
+        }, 500)
+      } else {
+        this.innerAudioContext.pause()
+        this.stopPlay = false
+      }
+      this.innerAudioContext.onTimeUpdate(() => {
+        this.$refs.yaudio.process =
+            (this.innerAudioContext.currentTime / this.innerAudioContext.duration) * 100
+      })
+      // 监听自然播放结束事件
+      this.innerAudioContext.onEnded((res) => {
+        console.log('监听自然播放结束事件')
+        // this.$refs.yaudio.process = 0
+        this.nextPlay()
+      })
     },
-  };
+    prePlay() {
+      const index = this.arrayIndex - 1
+      const item = this.datalist[index]
+      if (!item) {
+        this.arrayIndex = 0
+        return
+      }
+      this.handleNoimg(this.datalist[index], index)
+      this.title = item.ttl
+      this.videoBg = item.imgs[0] ? item.imgs[0] : ''
+    },
+    handleClose() {
+      this.showAudio = false
+      this.innerAudioContext.pause()
+      this.$set(this.mapState, this.playIndex, false)
+    },
+    close() {
+      this.$refs.confirmpop.close()
+    },
+    selectArtiListByColId() {
+      // TODO 栏目id 后端-可以任意值以name为准
+      const data = {
+        colId: '1',
+        colName: '传承知识',
+        pageNum: this.pageNum,
+        pageSize: 20
+      }
+      api.selectArtiListByColId({
+        data,
+        success: (res) => {
+          if (res.list && res.list.length == 0) {
+            this.loading = 3
+          } else if (res.list && res.list.length > 0) {
+            this.loading = 2
+            this.datalist = this.datalist.concat(res.list)
+            res.list.map((element) => {
+              element.play = false
+            })
+            this.pageNum = this.pageNum + 1
+          }
+        },
+        fail: () => {
+          this.loading = 3
+        }
+      })
+    }
+    // clickItem(item) {
+    //   // 点击去弹框下载
+    //   this.$refs.confirmpop.open()
+    // }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

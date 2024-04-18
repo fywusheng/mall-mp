@@ -370,286 +370,286 @@
 </template>
 
 <script>
-  import wx from 'utils/wx';
-  import UniNumberBox from './uni-number-box.vue';
+import wx from 'utils/wx'
+import UniNumberBox from './uni-number-box.vue'
 
-  export default {
-    name: 'CART',
-    components: { UniNumberBox },
-    data() {
-      return {
-        num: 1,
-        selectAll: false,
-        sceneType: '',
-        itemList: [],
-        loading: false,
-        totalAmountPrice: 0,
-        isEdit: false,
-        totalNum: 0,
-        discountAmount: 0,
-        discountCreditPoints: 0,
-        totalPayablePrice: 0,
-      };
-    },
-    computed: {
-      // 选中商品集合
-      selectList() {
-        const result = [];
-        if (this.itemList.length) {
-          this.itemList.forEach((item) => {
-            item.carts.forEach((el) => {
-              if (el.checked) {
-                result.push(el);
-              }
-            });
-          });
-          return result;
-        }
-
-        return [];
-      },
-      // 是否登录
-      isLogin() {
-        return Store.getters.isLogin;
-      },
-    },
-    // components: {},
-    filters: {
-      formatNumber(num) {
-        if (Number.isNaN(parseInt(num))) {
-          return '0.00';
-        }
-        return num.toFixed(2);
-      },
-    },
-    methods: {
-      goStoreDetail(store) {
-        uni.navigateTo({
-          url: '/sub-pages/index/store/main?supplierId=' + store.storeId,
-        });
-      },
-      // 商品数量改变
-      async changeCarNum(childParams, product, index, subIndex) {
-        // 原始num
-        const type = childParams.type;
-        let num = childParams.value;
-        this.itemList[index].carts[subIndex].num = num;
-
-        wx.showLoading();
-        const result = await Axios.post('/cart/updateNum', {
-          skuId: product.skuId,
-          num: num,
-          sceneType: this.sceneType,
-        });
-        wx.hideLoading();
-        if (result.code == 200) {
-          this.loadData();
-          // this.itemList[index].carts[subIndex].num = num
-        } else {
-          // if (type === 'plus') {
-          //   num--;
-          // } else {
-          //   num++;
-          // }
-          this.itemList[index].carts[subIndex].num = num;
-          this.$uni.showToast(result.msg || result.data);
-        }
-
-        // const params = Object.assign({}, product, { num })
-        // return
-        // this.changeNumber(params)
-      },
-      toHome() {
-        uni.navigateBack();
-        // uni.redirectTo({
-        //   url: '/sub-pages/point/index'
-        // })
-      },
-      toLogin() {
-        wx.navigateTo({
-          url: '/pages/user-center/login',
-        });
-      },
-      clickRight() {
-        this.isEdit = !this.isEdit;
-      },
-      async changeCheck(item) {
-        const result = await Axios.post('/cart/check', {
-          checked: item.checked ? 0 : 1,
-          skuIds: [item.skuId],
-          sceneType: this.sceneType,
-        });
-        if (result.code == 200) {
-          item.checked = !item.checked;
-          this.recountCheck();
-        }
-        this.loadData();
-      },
-      addNum(item) {
-        console.log('选中', item);
-        item.num++;
-        this.changeNumber(item);
-      },
-      reduceNum(item) {
-        if (item.num > 1) {
-          item.num--;
-          this.changeNumber(item);
-        }
-      },
-      async changeNumber(item) {
-        wx.showLoading('正在提交...');
-        const result = await Axios.post('/cart/updateNum', {
-          skuId: item.skuId,
-          num: item.num,
-          sceneType: this.sceneType,
-        });
-        wx.hideLoading();
-        if (result.code == 200) {
-          this.loadData();
-        } else {
-          item.num--;
-          this.loadData();
-          // wx.showToast(result.msg || result.data)
-          this.$uni.showToast(result.msg || result.data);
-        }
-      },
-      async loadData() {
-        this.loading = false;
-        this.itemList = [];
-        wx.showLoading();
-        const result = await Axios.post('/cart/list', { sceneType: this.sceneType });
-        wx.hideLoading();
-
-        if (result.code == 200) {
-          if (!result.data.carts) {
-            this.itemList = [];
-          } else {
-            this.itemList = result.data.carts;
-          }
-          this.totalAmountPrice = result.data.totalAmountPrice;
-          this.discountAmount = result.data.discountAmount;
-          this.discountCreditPoints = result.data.discountCreditPoints;
-          this.totalPayablePrice = result.data.totalPayablePrice;
-          this.totalNum = result.data.totalNum;
-          this.recountCheck();
-        } else {
-          this.$uni.showToast(result.msg || '获取购物车信息失败');
-        }
-        this.loading = true;
-      },
-      // 店铺全选
-      async selectAllStore(item) {
-        const skuIds = [];
-        item.carts.forEach((el) => {
-          if (el.soldOut) {
-            skuIds.push(el.skuId);
-          }
-        });
-        const params = {
-          checked: item.checked ? 0 : 1,
-          skuIds: skuIds,
-          sceneType: this.sceneType,
-        };
-
-        const result = await Axios.post('/cart/check', JSON.stringify(params));
-        if (result.code != 200) {
-          wx.showToast(result.msg || result.data);
-        }
-        this.loadData();
-      },
-      // 所有全选
-      async changeSelectAll() {
-        const skuIds = [];
+export default {
+  name: 'CART',
+  components: { UniNumberBox },
+  data() {
+    return {
+      num: 1,
+      selectAll: false,
+      sceneType: '',
+      itemList: [],
+      loading: false,
+      totalAmountPrice: 0,
+      isEdit: false,
+      totalNum: 0,
+      discountAmount: 0,
+      discountCreditPoints: 0,
+      totalPayablePrice: 0
+    }
+  },
+  computed: {
+    // 选中商品集合
+    selectList() {
+      const result = []
+      if (this.itemList.length) {
         this.itemList.forEach((item) => {
           item.carts.forEach((el) => {
-            if (el.soldOut) {
-              skuIds.push(el.skuId);
+            if (el.checked) {
+              result.push(el)
             }
-          });
-        });
-        const params = {
-          checked: this.selectAll ? 0 : 1,
-          skuIds: skuIds,
-          sceneType: this.sceneType,
-        };
+          })
+        })
+        return result
+      }
 
-        const result = await Axios.post('/cart/check', JSON.stringify(params));
-        if (result.code != 200) {
-          wx.showToast(result.msg || result.data);
+      return []
+    },
+    // 是否登录
+    isLogin() {
+      return Store.getters.isLogin
+    }
+  },
+  // components: {},
+  filters: {
+    formatNumber(num) {
+      if (Number.isNaN(parseInt(num))) {
+        return '0.00'
+      }
+      return num.toFixed(2)
+    }
+  },
+  methods: {
+    goStoreDetail(store) {
+      uni.navigateTo({
+        url: '/sub-pages/index/store/main?supplierId=' + store.storeId
+      })
+    },
+    // 商品数量改变
+    async changeCarNum(childParams, product, index, subIndex) {
+      // 原始num
+      const type = childParams.type
+      const num = childParams.value
+      this.itemList[index].carts[subIndex].num = num
+
+      wx.showLoading()
+      const result = await Axios.post('/cart/updateNum', {
+        skuId: product.skuId,
+        num: num,
+        sceneType: this.sceneType
+      })
+      wx.hideLoading()
+      if (result.code == 200) {
+        this.loadData()
+        // this.itemList[index].carts[subIndex].num = num
+      } else {
+        // if (type === 'plus') {
+        //   num--;
+        // } else {
+        //   num++;
+        // }
+        this.itemList[index].carts[subIndex].num = num
+        this.$uni.showToast(result.msg || result.data)
+      }
+
+      // const params = Object.assign({}, product, { num })
+      // return
+      // this.changeNumber(params)
+    },
+    toHome() {
+      uni.navigateBack()
+      // uni.redirectTo({
+      //   url: '/sub-pages/point/index'
+      // })
+    },
+    toLogin() {
+      wx.navigateTo({
+        url: '/pages/user-center/login'
+      })
+    },
+    clickRight() {
+      this.isEdit = !this.isEdit
+    },
+    async changeCheck(item) {
+      const result = await Axios.post('/cart/check', {
+        checked: item.checked ? 0 : 1,
+        skuIds: [item.skuId],
+        sceneType: this.sceneType
+      })
+      if (result.code == 200) {
+        item.checked = !item.checked
+        this.recountCheck()
+      }
+      this.loadData()
+    },
+    addNum(item) {
+      console.log('选中', item)
+      item.num++
+      this.changeNumber(item)
+    },
+    reduceNum(item) {
+      if (item.num > 1) {
+        item.num--
+        this.changeNumber(item)
+      }
+    },
+    async changeNumber(item) {
+      wx.showLoading('正在提交...')
+      const result = await Axios.post('/cart/updateNum', {
+        skuId: item.skuId,
+        num: item.num,
+        sceneType: this.sceneType
+      })
+      wx.hideLoading()
+      if (result.code == 200) {
+        this.loadData()
+      } else {
+        item.num--
+        this.loadData()
+        // wx.showToast(result.msg || result.data)
+        this.$uni.showToast(result.msg || result.data)
+      }
+    },
+    async loadData() {
+      this.loading = false
+      this.itemList = []
+      wx.showLoading()
+      const result = await Axios.post('/cart/list', { sceneType: this.sceneType })
+      wx.hideLoading()
+
+      if (result.code == 200) {
+        if (!result.data.carts) {
+          this.itemList = []
+        } else {
+          this.itemList = result.data.carts
         }
-        this.loadData();
-      },
-      recountCheck() {
-        this.selectAll =
+        this.totalAmountPrice = result.data.totalAmountPrice
+        this.discountAmount = result.data.discountAmount
+        this.discountCreditPoints = result.data.discountCreditPoints
+        this.totalPayablePrice = result.data.totalPayablePrice
+        this.totalNum = result.data.totalNum
+        this.recountCheck()
+      } else {
+        this.$uni.showToast(result.msg || '获取购物车信息失败')
+      }
+      this.loading = true
+    },
+    // 店铺全选
+    async selectAllStore(item) {
+      const skuIds = []
+      item.carts.forEach((el) => {
+        if (el.soldOut) {
+          skuIds.push(el.skuId)
+        }
+      })
+      const params = {
+        checked: item.checked ? 0 : 1,
+        skuIds: skuIds,
+        sceneType: this.sceneType
+      }
+
+      const result = await Axios.post('/cart/check', JSON.stringify(params))
+      if (result.code != 200) {
+        wx.showToast(result.msg || result.data)
+      }
+      this.loadData()
+    },
+    // 所有全选
+    async changeSelectAll() {
+      const skuIds = []
+      this.itemList.forEach((item) => {
+        item.carts.forEach((el) => {
+          if (el.soldOut) {
+            skuIds.push(el.skuId)
+          }
+        })
+      })
+      const params = {
+        checked: this.selectAll ? 0 : 1,
+        skuIds: skuIds,
+        sceneType: this.sceneType
+      }
+
+      const result = await Axios.post('/cart/check', JSON.stringify(params))
+      if (result.code != 200) {
+        wx.showToast(result.msg || result.data)
+      }
+      this.loadData()
+    },
+    recountCheck() {
+      this.selectAll =
           this.itemList.length > 0 &&
           this.itemList.every((item) => {
-            return item.checked;
-          });
-      },
-      tolDetail(product) {
-        wx.navigateTo({
-          url:
-            '/sub-pages/index/item/main?id=' + product.productId + '&sceneType=' + this.sceneType,
-        });
-      },
-      deleteItem(product) {
-        wx.showModal({
-          content: '确定删除?',
-          success: async (res) => {
-            if (res.confirm) {
-              const result = await Axios.post('/cart/delete', {
-                skuId: product.skuId,
-                sceneType: this.sceneType,
-              });
-              if (result.code == 200) {
-                wx.showToast('删除成功');
-                this.loadData();
-              } else {
-                wx.showToast(result.msg || '删除失败');
-              }
+            return item.checked
+          })
+    },
+    tolDetail(product) {
+      wx.navigateTo({
+        url:
+            '/sub-pages/index/item/main?id=' + product.productId + '&sceneType=' + this.sceneType
+      })
+    },
+    deleteItem(product) {
+      wx.showModal({
+        content: '确定删除?',
+        success: async (res) => {
+          if (res.confirm) {
+            const result = await Axios.post('/cart/delete', {
+              skuId: product.skuId,
+              sceneType: this.sceneType
+            })
+            if (result.code == 200) {
+              wx.showToast('删除成功')
+              this.loadData()
+            } else {
+              wx.showToast(result.msg || '删除失败')
             }
-          },
-        });
-      },
-      // 结算
-      async checkout() {
-        if (!this.selectList.length) {
-          this.$uni.showToast('请选择商品！');
-          return;
+          }
         }
-
-        // const productIds = []
-        // this.itemList.forEach(item => {
-        //   item.carts.forEach(el => {
-        //     if (el.checked) {
-        //       productIds.push(el.productId)
-        //     }
-        //   })
-        // })
-
-        // const params = {
-        //   productIds,
-        //   sceneType: this.sceneType
-        // }
-
-        // const result = await Axios.post('/cart/checkAdd', JSON.stringify(params))
-        // if (result.code != 200) {
-        //   wx.showToast(result.msg || result.data)
-        //   return
-        // }
-
-        uni.navigateTo({
-          url: `/sub-pages/index/checkout/main?type=1&sceneType=${this.sceneType}`,
-        });
-      },
+      })
     },
-    async onShow() {
-      if (!Store.getters.isLogin) {
-        Store.dispatch('logout');
-        // await Store.dispatch('login')
+    // 结算
+    async checkout() {
+      if (!this.selectList.length) {
+        this.$uni.showToast('请选择商品！')
+        return
       }
-      this.sceneType = this.$root.$mp.query.sceneType;
-      this.loadData();
-    },
-  };
+
+      // const productIds = []
+      // this.itemList.forEach(item => {
+      //   item.carts.forEach(el => {
+      //     if (el.checked) {
+      //       productIds.push(el.productId)
+      //     }
+      //   })
+      // })
+
+      // const params = {
+      //   productIds,
+      //   sceneType: this.sceneType
+      // }
+
+      // const result = await Axios.post('/cart/checkAdd', JSON.stringify(params))
+      // if (result.code != 200) {
+      //   wx.showToast(result.msg || result.data)
+      //   return
+      // }
+
+      uni.navigateTo({
+        url: `/sub-pages/index/checkout/main?type=1&sceneType=${this.sceneType}`
+      })
+    }
+  },
+  async onShow() {
+    if (!Store.getters.isLogin) {
+      Store.dispatch('logout')
+      // await Store.dispatch('login')
+    }
+    this.sceneType = this.$root.$mp.query.sceneType
+    this.loadData()
+  }
+}
 </script>

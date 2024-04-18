@@ -68,156 +68,156 @@
 </template>
 
 <script>
-  import wx from 'utils/wx';
+import wx from 'utils/wx'
 
-  export default {
-    data() {
-      return {
-        isIphoneHair: App.isIphoneHair,
-        dataList: [],
-        pageLoad: false,
-        empty: false,
-        type: 2,
-        addressId: '',
-      };
-    },
-    components: {},
-    methods: {
-      async toDelete(delivery) {
-        wx.showModal({
-          title: '',
-          content: '确定删除该地址?',
-          success: async (res) => {
-            if (!res.confirm) {
-              return false;
-            }
-            wx.showLoading();
-            const result = await Axios.post(
-              '/address/delete',
-              {
-                id: delivery.id,
-              },
-              {
-                headers: {
-                  'content-type': 'application/json;charset=utf-8',
-                },
-              },
-            );
-            wx.hideLoading();
-            if (result.code == 200) {
-              wx.showToast('删除成功');
-              this.loadData();
-            } else {
-              wx.showToast(result.msg);
-            }
-          },
-        });
-      },
-      toEdit(address) {
-        wx.navigateTo({
-          url: `/sub-pages/me/address-add/main?address=${JSON.stringify(address)}`,
-        });
-      },
-      add() {
-        wx.navigateTo({
-          url: `/sub-pages/me/address-add/main?type=${this.type == 1 ? 3 : 1}`,
-        });
-      },
-      async setDefault(address) {
-        if (address.isDefault == 1) {
-          return false;
-        }
-        wx.showLoading('正在提交...');
-        const result = await Axios.post(
-          '/address/setDefault',
-          {
-            id: address.id,
-          },
-          {
-            headers: {
-              'content-type': 'application/json;charset=utf-8',
+export default {
+  data() {
+    return {
+      isIphoneHair: App.isIphoneHair,
+      dataList: [],
+      pageLoad: false,
+      empty: false,
+      type: 2,
+      addressId: ''
+    }
+  },
+  components: {},
+  methods: {
+    async toDelete(delivery) {
+      wx.showModal({
+        title: '',
+        content: '确定删除该地址?',
+        success: async (res) => {
+          if (!res.confirm) {
+            return false
+          }
+          wx.showLoading()
+          const result = await Axios.post(
+            '/address/delete',
+            {
+              id: delivery.id
             },
-          },
-        );
-        wx.hideLoading();
-        if (result.code == 200) {
-          wx.showToast(result.msg || '设置成功');
-          this.dataList.forEach((data) => {
-            if (data.isDefault == 1) {
-              data.isDefault = 0;
+            {
+              headers: {
+                'content-type': 'application/json;charset=utf-8'
+              }
             }
-          });
-          address.isDefault = 1;
-        } else {
-          wx.showToast(result.msg || '设置失败');
-        }
-      },
-      async selectAddress(address) {
-        Store.commit(VUEX.CHECKOUT.SET_ADDRESS, address.id);
-        Store.dispatch('getCheckoutData', true);
-        wx.navigateBack();
-      },
-      async remove(address) {
-        const result = await wx.showModal({
-          title: '',
-          content: '确定要删除?',
-          confirmColor: '#FB4769',
-        });
-        if (result.confirm) {
-          wx.showLoading({ title: '正在提交...', mask: true });
-          const delResult = await Axios.post('/address/delete', {
-            id: address.id,
-          });
-          wx.hideLoading();
-          if (delResult.code == 200) {
-            wx.showToast({
-              title: delResult.msg || '删除成功',
-              icon: 'none',
-            });
-            setTimeout(
-              function () {
-                this.loadData();
-              }.bind(this),
-              1000,
-            );
+          )
+          wx.hideLoading()
+          if (result.code == 200) {
+            wx.showToast('删除成功')
+            this.loadData()
           } else {
-            wx.showToast({
-              title: delResult.msg || '删除失败',
-              icon: 'none',
-            });
+            wx.showToast(result.msg)
           }
         }
-      },
-      async loadData() {
-        wx.showLoading();
-        this.loading = true;
-        const result = await Axios.get('/address/list');
-        wx.hideLoading();
-        if (result.code == 200) {
-          this.dataList = result.data || [];
-          this.empty = !this.dataList.length;
-        } else {
-          wx.showToast(result.msg);
+      })
+    },
+    toEdit(address) {
+      wx.navigateTo({
+        url: `/sub-pages/me/address-add/main?address=${JSON.stringify(address)}`
+      })
+    },
+    add() {
+      wx.navigateTo({
+        url: `/sub-pages/me/address-add/main?type=${this.type == 1 ? 3 : 1}`
+      })
+    },
+    async setDefault(address) {
+      if (address.isDefault == 1) {
+        return false
+      }
+      wx.showLoading('正在提交...')
+      const result = await Axios.post(
+        '/address/setDefault',
+        {
+          id: address.id
+        },
+        {
+          headers: {
+            'content-type': 'application/json;charset=utf-8'
+          }
         }
-        this.loading = false;
-      },
-    },
-    async onShow() {
-      if (!Store.getters.isLogin) {
-        await Store.dispatch('login');
-      }
-      await this.loadData();
-    },
-    async mounted() {
-      this.type = parseInt(this.$root.$mp.query.type || 0);
-      this.addressId = this.$root.$mp.query.addressId || Store.state.checkout.addressId;
-      if (this.type === 1) {
-        wx.setNavigationBarTitle({
-          title: '选择地址',
-        });
+      )
+      wx.hideLoading()
+      if (result.code == 200) {
+        wx.showToast(result.msg || '设置成功')
+        this.dataList.forEach((data) => {
+          if (data.isDefault == 1) {
+            data.isDefault = 0
+          }
+        })
+        address.isDefault = 1
+      } else {
+        wx.showToast(result.msg || '设置失败')
       }
     },
-  };
+    async selectAddress(address) {
+      Store.commit(VUEX.CHECKOUT.SET_ADDRESS, address.id)
+      Store.dispatch('getCheckoutData', true)
+      wx.navigateBack()
+    },
+    async remove(address) {
+      const result = await wx.showModal({
+        title: '',
+        content: '确定要删除?',
+        confirmColor: '#FB4769'
+      })
+      if (result.confirm) {
+        wx.showLoading({ title: '正在提交...', mask: true })
+        const delResult = await Axios.post('/address/delete', {
+          id: address.id
+        })
+        wx.hideLoading()
+        if (delResult.code == 200) {
+          wx.showToast({
+            title: delResult.msg || '删除成功',
+            icon: 'none'
+          })
+          setTimeout(
+            function () {
+              this.loadData()
+            }.bind(this),
+            1000
+          )
+        } else {
+          wx.showToast({
+            title: delResult.msg || '删除失败',
+            icon: 'none'
+          })
+        }
+      }
+    },
+    async loadData() {
+      wx.showLoading()
+      this.loading = true
+      const result = await Axios.get('/address/list')
+      wx.hideLoading()
+      if (result.code == 200) {
+        this.dataList = result.data || []
+        this.empty = !this.dataList.length
+      } else {
+        wx.showToast(result.msg)
+      }
+      this.loading = false
+    }
+  },
+  async onShow() {
+    if (!Store.getters.isLogin) {
+      await Store.dispatch('login')
+    }
+    await this.loadData()
+  },
+  async mounted() {
+    this.type = parseInt(this.$root.$mp.query.type || 0)
+    this.addressId = this.$root.$mp.query.addressId || Store.state.checkout.addressId
+    if (this.type === 1) {
+      wx.setNavigationBarTitle({
+        title: '选择地址'
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss">

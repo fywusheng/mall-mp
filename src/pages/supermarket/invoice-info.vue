@@ -124,105 +124,105 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import inputModal from './components/input-modal.vue';
-  import { validateEmail, validatePhoneNumber } from '@/utils/validation.js';
-  import dayjs from 'dayjs';
-  export default {
-    components: { inputModal },
-    data() {
-      return {
-        // 发票id
-        invoiceId: '',
-        info: {},
-        orderInfo: {},
-        email: '',
-      };
-    },
-    onLoad(e) {
-      this.invoiceId = e.invoiceId;
-      // let info = JSON.parse(decodeURIComponent())
-      this.getInvoiceInfo();
-      // this.drawCanvas()
-    },
-    methods: {
-      //  发票详情
-      getInvoiceInfo() {
-        api.getInvoiceInfo({
-          data: {
-            invoiceId: this.invoiceId,
-          },
-          success: (data) => {
-            console.log('发票详情:', data);
-            this.info = data;
-            api.getOrderInfo({
-              data: {
-                orderId: this.info.orderId,
-              },
-              success: (orderData) => {
-                console.log('订单详情:', orderData);
-                this.orderInfo = orderData;
-              },
-            });
-          },
-        });
-      },
-      // 发送邮箱
-      handleSendEmail() {
-        this.email = this.info.payeeEmail;
-        this.$refs.inputModal.open();
-      },
-      // 点击发送按钮
-      modalPopConfirm() {
-        if (!this.email) {
-          this.$uni.showToast('请填写邮箱');
-          return false;
+import api from '@/apis/index.js'
+import inputModal from './components/input-modal.vue'
+import { validateEmail, validatePhoneNumber } from '@/utils/validation.js'
+import dayjs from 'dayjs'
+export default {
+  components: { inputModal },
+  data() {
+    return {
+      // 发票id
+      invoiceId: '',
+      info: {},
+      orderInfo: {},
+      email: ''
+    }
+  },
+  onLoad(e) {
+    this.invoiceId = e.invoiceId
+    // let info = JSON.parse(decodeURIComponent())
+    this.getInvoiceInfo()
+    // this.drawCanvas()
+  },
+  methods: {
+    //  发票详情
+    getInvoiceInfo() {
+      api.getInvoiceInfo({
+        data: {
+          invoiceId: this.invoiceId
+        },
+        success: (data) => {
+          console.log('发票详情:', data)
+          this.info = data
+          api.getOrderInfo({
+            data: {
+              orderId: this.info.orderId
+            },
+            success: (orderData) => {
+              console.log('订单详情:', orderData)
+              this.orderInfo = orderData
+            }
+          })
         }
-        if (!validateEmail(this.email)) {
-          this.$uni.showToast('邮箱格式不正确');
-          return false;
-        }
-        api.sendMailbox({
-          data: {
-            pdfUrl: this.info.pdfUrl,
-            mailBox: this.email,
-          },
-          showsLoading: true,
-          success: (res) => {
-            this.$uni.showToast('发送成功');
-            this.$refs.inputModal.close();
-          },
-        });
-      },
-      // 点击取消按钮
-      modalPopCancel() {
-        this.$refs.inputModal.close();
-      },
+      })
     },
-    filters: {
-      formaterMoney(v) {
-        return (v / 100).toFixed(2);
-      },
-      // 日期过滤器, 用于格式化日期
-      dateFilter(value) {
-        // console.log("value:",value)
-        // console.log("dayjs:",dayjs(value).format("YYYY-MM-DD HH:mm:ss"))
-        if (!value) return '';
+    // 发送邮箱
+    handleSendEmail() {
+      this.email = this.info.payeeEmail
+      this.$refs.inputModal.open()
+    },
+    // 点击发送按钮
+    modalPopConfirm() {
+      if (!this.email) {
+        this.$uni.showToast('请填写邮箱')
+        return false
+      }
+      if (!validateEmail(this.email)) {
+        this.$uni.showToast('邮箱格式不正确')
+        return false
+      }
+      api.sendMailbox({
+        data: {
+          pdfUrl: this.info.pdfUrl,
+          mailBox: this.email
+        },
+        showsLoading: true,
+        success: (res) => {
+          this.$uni.showToast('发送成功')
+          this.$refs.inputModal.close()
+        }
+      })
+    },
+    // 点击取消按钮
+    modalPopCancel() {
+      this.$refs.inputModal.close()
+    }
+  },
+  filters: {
+    formaterMoney(v) {
+      return (v / 100).toFixed(2)
+    },
+    // 日期过滤器, 用于格式化日期
+    dateFilter(value) {
+      // console.log("value:",value)
+      // console.log("dayjs:",dayjs(value).format("YYYY-MM-DD HH:mm:ss"))
+      if (!value) return ''
 
-        var time = new Date(Number(value));
-        function add0(m) {
-          return m < 10 ? '0' + m : m;
-        }
-        var y = time.getFullYear();
-        var m = time.getMonth() + 1;
-        var d = time.getDate();
-        var h = time.getHours();
-        var mm = time.getMinutes();
-        var s = time.getSeconds();
-        return y + '-' + add0(m) + '-' + add0(d) + ' ' + add0(h) + ':' + add0(mm) + ':' + add0(s);
-      },
-    },
-  };
+      var time = new Date(Number(value))
+      function add0(m) {
+        return m < 10 ? '0' + m : m
+      }
+      var y = time.getFullYear()
+      var m = time.getMonth() + 1
+      var d = time.getDate()
+      var h = time.getHours()
+      var mm = time.getMinutes()
+      var s = time.getSeconds()
+      return y + '-' + add0(m) + '-' + add0(d) + ' ' + add0(h) + ':' + add0(mm) + ':' + add0(s)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

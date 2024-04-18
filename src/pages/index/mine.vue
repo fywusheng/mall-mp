@@ -210,605 +210,605 @@
 </template>
 
 <script>
-  import PopEntryMethod from '@/components/pop-entry-method/pop-entry-method.vue';
-  import api from '@/apis/index.js';
-  import { desensitizeName, desensitizeInfo } from '@/utils/desensitization.js';
-  import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
-  import SignPop from './component/sign.vue';
-  import { mapState } from 'vuex';
-  import dayjs from 'dayjs';
-  export default {
-    components: { PopEntryMethod, RealNamePop, SignPop },
-    data() {
-      return {
-        // 导航栏高度
-        // #ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        // #endif
-        // #ifdef MP-ALIPAY
-        navigationBarHeight:
+import PopEntryMethod from '@/components/pop-entry-method/pop-entry-method.vue'
+import api from '@/apis/index.js'
+import { desensitizeName, desensitizeInfo } from '@/utils/desensitization.js'
+import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue'
+import SignPop from './component/sign.vue'
+import { mapState } from 'vuex'
+import dayjs from 'dayjs'
+export default {
+  components: { PopEntryMethod, RealNamePop, SignPop },
+  data() {
+    return {
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        // #endif
+      // #endif
 
-        // userInfo: {},
-        // 图片地址，控件展示条件
-        url: '',
-        // 获取默认头像
-        header: 'http://192.168.1.187:10088/static/user-center/icon-user-center-default-avatar.png',
-        // 积分
-        score: '',
-        // 录入方式是否有图片
-        showImg: false,
-        benefitList: [
-          {
-            icon: 'http://192.168.1.187:10088/static/songhui/mine/benefit-1.png',
-            name: '单笔最高千 元购物优惠',
-          },
-          {
-            icon: 'http://192.168.1.187:10088/static/songhui/mine/benefit-2.png',
-            name: '有效期内享 无限次包邮',
-          },
-          {
-            icon: 'http://192.168.1.187:10088/static/songhui/mine/benefit-3.png',
-            name: '积分兑换 0元拿好物',
-          },
-          {
-            icon: 'http://192.168.1.187:10088/static/songhui/mine/benefit-4.png',
-            name: '不定期发放 专属优惠券',
-          },
-          {
-            icon: 'http://192.168.1.187:10088/static/songhui/mine/benefit-5.png',
-            name: '1对1专属顾问 为您答疑解惑',
-          },
-        ],
-        totalMoney: 0,
-        // canvas的宽高
-        imgWidth: '',
-        imgHeight: '',
-        hasLoading: false,
-
-        signDay: 5,
-      };
-    },
-    async onLoad() {
-      // await this.$store.dispatch('getUserInfo');
-      // this.getTotalSaveMoney();
-    },
-    async mounted() {
-      // 监听登录回调
-      // uni.$on('didLogin', this.handleLogin);
-    },
-    destroyed() {
-      uni.$off('didLogin');
-    },
-    computed: {
-      ...mapState({
-        userInfo: (state) => state.user.userInfo,
-      }),
-      expirationTime() {
-        if (this.userInfo) {
-          return dayjs(this.userInfo.expirationTime).format('YYYY-MM-DD');
+      // userInfo: {},
+      // 图片地址，控件展示条件
+      url: '',
+      // 获取默认头像
+      header: 'http://192.168.1.187:10088/static/user-center/icon-user-center-default-avatar.png',
+      // 积分
+      score: '',
+      // 录入方式是否有图片
+      showImg: false,
+      benefitList: [
+        {
+          icon: 'http://192.168.1.187:10088/static/songhui/mine/benefit-1.png',
+          name: '单笔最高千 元购物优惠'
+        },
+        {
+          icon: 'http://192.168.1.187:10088/static/songhui/mine/benefit-2.png',
+          name: '有效期内享 无限次包邮'
+        },
+        {
+          icon: 'http://192.168.1.187:10088/static/songhui/mine/benefit-3.png',
+          name: '积分兑换 0元拿好物'
+        },
+        {
+          icon: 'http://192.168.1.187:10088/static/songhui/mine/benefit-4.png',
+          name: '不定期发放 专属优惠券'
+        },
+        {
+          icon: 'http://192.168.1.187:10088/static/songhui/mine/benefit-5.png',
+          name: '1对1专属顾问 为您答疑解惑'
         }
-        return '';
-      },
-    },
-    methods: {
-      goOpenMember() {
-        uni.navigateTo({
-          url: '/pages/user-center/activate-member',
-        });
-      },
-      // 用户头像报存
-      async saveUserBanner(iconUrl) {
-        const params = { ...this.userInfo, iconUrl };
+      ],
+      totalMoney: 0,
+      // canvas的宽高
+      imgWidth: '',
+      imgHeight: '',
+      hasLoading: false,
 
-        try {
-          const result = await Axios.post('/member/sh/memberInformation/saveMemberInfo', params);
-          if (result.code == 200) {
-            this.$uni.showToast('修改成功');
-            this.$store.dispatch('getUserInfo');
-          } else {
-            this.$uni.showToast(result.msg || result.data);
+      signDay: 5
+    }
+  },
+  async onLoad() {
+    // await this.$store.dispatch('getUserInfo');
+    // this.getTotalSaveMoney();
+  },
+  async mounted() {
+    // 监听登录回调
+    // uni.$on('didLogin', this.handleLogin);
+  },
+  destroyed() {
+    uni.$off('didLogin')
+  },
+  computed: {
+    ...mapState({
+      userInfo: (state) => state.user.userInfo
+    }),
+    expirationTime() {
+      if (this.userInfo) {
+        return dayjs(this.userInfo.expirationTime).format('YYYY-MM-DD')
+      }
+      return ''
+    }
+  },
+  methods: {
+    goOpenMember() {
+      uni.navigateTo({
+        url: '/pages/user-center/activate-member'
+      })
+    },
+    // 用户头像报存
+    async saveUserBanner(iconUrl) {
+      const params = { ...this.userInfo, iconUrl }
+
+      try {
+        const result = await Axios.post('/member/sh/memberInformation/saveMemberInfo', params)
+        if (result.code == 200) {
+          this.$uni.showToast('修改成功')
+          this.$store.dispatch('getUserInfo')
+        } else {
+          this.$uni.showToast(result.msg || result.data)
+        }
+      } catch (error) {
+        this.$uni.showToast('保存失败')
+      }
+    },
+    // 获取累计省钱详情
+    async getTotalSaveMoney() {
+      if (!(this.userInfo && this.userInfo.memberStatus === '1')) {
+        return
+      }
+      const result = await Axios.post('/order/getMemberSaveMoney', {
+        memberSaveMoneyFlag: true,
+        startTime: this.userInfo.usageTime,
+        endTime: dayjs().subtract(1, 'day').format('YYYY-MM-DD')
+      })
+      if (result.code === '200') {
+        this.totalMoney = result.data.toFixed(2)
+      }
+    },
+    // 自动签到
+    async signClick() {
+      // 签到
+      await Axios.post('/member/sh/member/signRecords/saveSignRecords', {})
+      // 获取签到次数
+      const { code, data } = await Axios.post(
+        '/member/sh/member/signRecords/getSignRecordsById',
+        {}
+      )
+      if (code === '200') {
+        this.signDay = data.consecutiveSigns > 7 ? 1 : data.consecutiveSigns
+        this.$refs.signPop.open()
+      }
+    },
+    openMember() {
+      uni.navigateTo({ url: '/pages/user-center/activate-member' })
+    },
+    openMemberRecord() {
+      uni.navigateTo({ url: '/pages/services/open-record' })
+    },
+    goSaveMoney() {
+      uni.navigateTo({ url: '/pages/services/save-money' })
+    },
+    // 姓名过滤器, 用于姓名脱敏
+    nameFilter(value) {
+      return desensitizeName(value)
+    },
+    // 身份证号过滤器, 用于身份证号脱敏
+    idCardNumberFilter(value) {
+      return desensitizeInfo(value)
+    },
+    // 手机号过滤器, 用于手机号脱敏
+    phoneNumberFilter(value) {
+      return desensitizeInfo(value)
+    },
+    setting() {
+      uni.navigateTo({
+        url: `/pages/user-center/setting`
+      })
+    },
+    imgRead() {
+      const url = `${ENV.H5}/#/agreement?type=4`
+      uni.navigateTo({
+        url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
+      })
+    },
+    loginSuccess(loginfirst) {
+      if (loginfirst == 1) {
+        const data = {
+          uactId: this.userInfo.memberId,
+          pageNum: 1,
+          pageSize: 5
+        }
+        api.findFamilyMemberList({
+          data,
+          success: (res) => {
+            if (res.list.length > 0) {
+              uni.navigateTo({
+                url: `/pages/user-center/real-name-result2?back=${'/pages/family-account/index'}`
+              })
+            } else {
+              uni.navigateTo({
+                url: `/pages/user-center/real-name-result2?back=${'/pages/family-account/select-type'}`
+              })
+            }
+          },
+          fail: (err) => {
+            console.log(err)
           }
-        } catch (error) {
-          this.$uni.showToast('保存失败');
-        }
-      },
-      // 获取累计省钱详情
-      async getTotalSaveMoney() {
-        if (!(this.userInfo && this.userInfo.memberStatus === '1')) {
-          return;
-        }
-        const result = await Axios.post('/order/getMemberSaveMoney', {
-          memberSaveMoneyFlag: true,
-          startTime: this.userInfo.usageTime,
-          endTime: dayjs().subtract(1, 'day').format('YYYY-MM-DD'),
-        });
-        if (result.code === '200') {
-          this.totalMoney = result.data.toFixed(2);
-        }
-      },
-      // 自动签到
-      async signClick() {
-        // 签到
-        await Axios.post('/member/sh/member/signRecords/saveSignRecords', {});
-        // 获取签到次数
-        const { code, data } = await Axios.post(
-          '/member/sh/member/signRecords/getSignRecordsById',
-          {},
-        );
-        if (code === '200') {
-          this.signDay = data.consecutiveSigns > 7 ? 1 : data.consecutiveSigns;
-          this.$refs.signPop.open();
-        }
-      },
-      openMember() {
-        uni.navigateTo({ url: '/pages/user-center/activate-member' });
-      },
-      openMemberRecord() {
-        uni.navigateTo({ url: '/pages/services/open-record' });
-      },
-      goSaveMoney() {
-        uni.navigateTo({ url: '/pages/services/save-money' });
-      },
-      // 姓名过滤器, 用于姓名脱敏
-      nameFilter(value) {
-        return desensitizeName(value);
-      },
-      // 身份证号过滤器, 用于身份证号脱敏
-      idCardNumberFilter(value) {
-        return desensitizeInfo(value);
-      },
-      // 手机号过滤器, 用于手机号脱敏
-      phoneNumberFilter(value) {
-        return desensitizeInfo(value);
-      },
-      setting() {
+        })
+      }
+    },
+    // 实人认证
+    succFlag(attest) {
+      if (attest == 1) {
         uni.navigateTo({
-          url: `/pages/user-center/setting`,
-        });
-      },
-      imgRead() {
-        const url = `${ENV.H5}/#/agreement?type=4`;
-        uni.navigateTo({
-          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-        });
-      },
-      loginSuccess(loginfirst) {
-        if (loginfirst == 1) {
-          const data = {
-            uactId: this.userInfo.memberId,
-            pageNum: 1,
-            pageSize: 5,
-          };
-          api.findFamilyMemberList({
-            data,
-            success: (res) => {
-              if (res.list.length > 0) {
-                uni.navigateTo({
-                  url: `/pages/user-center/real-name-result2?back=${'/pages/family-account/index'}`,
-                });
-              } else {
-                uni.navigateTo({
-                  url: `/pages/user-center/real-name-result2?back=${'/pages/family-account/select-type'}`,
-                });
-              }
-            },
-            fail: (err) => {
-              console.log(err);
-            },
-          });
-        }
-      },
-      // 实人认证
-      succFlag(attest) {
-        if (attest == 1) {
-          uni.navigateTo({
-            url: `/pages/user-center/real-name-result2?back=${'/pages/index/mine'}`,
-          });
-        }
-      },
-      /**
+          url: `/pages/user-center/real-name-result2?back=${'/pages/index/mine'}`
+        })
+      }
+    },
+    /**
        * 检查用户状态
        */
-      checkUserState(handler) {
-        console.log('handle()');
-        // 检查用户是否实名
-        if (this.userInfo.crtfStas === '0') {
-          // 未实名, 弹窗提示去领取
-          this.showImg = true;
-          this.$refs.firstLogin.open();
-          return;
-        } else {
-          console.log('handle()');
-          handler();
-        }
-      },
-      // 点击设置
-      handleSetting() {
-        uni.navigateTo({
-          url: '/pages/user-center/setting',
-        });
-      },
-      // 点击裁剪确定按钮
-      onok(ev) {
-        this.path = ev.path;
-        this.header = ev.path;
-        this.url = '';
-      },
-      // 点击裁剪取消按钮
-      oncancle() {
-        // url设置为空，隐藏控件
-        this.url = '';
-      },
+    checkUserState(handler) {
+      console.log('handle()')
+      // 检查用户是否实名
+      if (this.userInfo.crtfStas === '0') {
+        // 未实名, 弹窗提示去领取
+        this.showImg = true
+        this.$refs.firstLogin.open()
+        return
+      } else {
+        console.log('handle()')
+        handler()
+      }
+    },
+    // 点击设置
+    handleSetting() {
+      uni.navigateTo({
+        url: '/pages/user-center/setting'
+      })
+    },
+    // 点击裁剪确定按钮
+    onok(ev) {
+      this.path = ev.path
+      this.header = ev.path
+      this.url = ''
+    },
+    // 点击裁剪取消按钮
+    oncancle() {
+      // url设置为空，隐藏控件
+      this.url = ''
+    },
 
-      // 更换头像
-      updateUserHeader(url) {
-        api.updateUserInfo({
-          data: {
-            psnId: this.userInfo.psnId,
-            uactId: this.userInfo.memberId,
-            userIcon: url,
-          },
-          success: (res) => {
-            const userInfo = uni.getStorageSync('userInfo');
-            uni.setStorageSync('userInfo', { ...userInfo, userIcon: url });
-          },
-        });
-      },
-      /**
+    // 更换头像
+    updateUserHeader(url) {
+      api.updateUserInfo({
+        data: {
+          psnId: this.userInfo.psnId,
+          uactId: this.userInfo.memberId,
+          userIcon: url
+        },
+        success: (res) => {
+          const userInfo = uni.getStorageSync('userInfo')
+          uni.setStorageSync('userInfo', { ...userInfo, userIcon: url })
+        }
+      })
+    },
+    /**
        * 获取亲情账号列表
        */
-      findFamilyMemberList() {
-        return new Promise((resolve, reject) => {
-          const data = {
-            uactId: this.userInfo.memberId,
-            pageNum: 1,
-            pageSize: 5,
-          };
-          uni.showLoading({
-            title: '加载中',
-          });
-          api.findFamilyMemberList({
-            data,
-            success: (res) => {
-              resolve();
-              console.log('接口所得res：', res);
-              uni.hideLoading();
-              if (res.list.length > 0) {
-                uni.navigateTo({
-                  url: '/pages/family-account/index',
-                });
-              } else {
-                uni.navigateTo({
-                  url: '/pages/family-account/select-type',
-                });
-              }
-
-              //
-            },
-            fail: (err) => {
-              reject();
-              console.log('错误err：', err);
-              uni.hideLoading();
-              uni.showToast(err.message);
-            },
-          });
-        });
-      },
-
-      // 登录
-      login() {
-        uni.navigateTo({
-          url: '/pages/user-center/login',
-        });
-      },
-
-      // 点击积分
-      handleIntegralClick() {
-        if (!this.userInfo.phone) {
-          // 未登录, 跳转到登录页面
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
+    findFamilyMemberList() {
+      return new Promise((resolve, reject) => {
+        const data = {
+          uactId: this.userInfo.memberId,
+          pageNum: 1,
+          pageSize: 5
         }
-        uni.navigateTo({
-          url: '/pages/user-center/my-points',
-        });
-      },
-
-      // 获取用户积分
-      handleScoreInfo() {
-        api.scoreInfo({
-          data: {
-            userId: this.userInfo.memberId,
-          },
+        uni.showLoading({
+          title: '加载中'
+        })
+        api.findFamilyMemberList({
+          data,
           success: (res) => {
-            this.score = res.score;
-          },
-        });
-      },
+            resolve()
+            console.log('接口所得res：', res)
+            uni.hideLoading()
+            if (res.list.length > 0) {
+              uni.navigateTo({
+                url: '/pages/family-account/index'
+              })
+            } else {
+              uni.navigateTo({
+                url: '/pages/family-account/select-type'
+              })
+            }
 
-      /**
+            //
+          },
+          fail: (err) => {
+            reject()
+            console.log('错误err：', err)
+            uni.hideLoading()
+            uni.showToast(err.message)
+          }
+        })
+      })
+    },
+
+    // 登录
+    login() {
+      uni.navigateTo({
+        url: '/pages/user-center/login'
+      })
+    },
+
+    // 点击积分
+    handleIntegralClick() {
+      if (!this.userInfo.phone) {
+        // 未登录, 跳转到登录页面
+        uni.navigateTo({
+          url: '/pages/user-center/login'
+        })
+        return
+      }
+      uni.navigateTo({
+        url: '/pages/user-center/my-points'
+      })
+    },
+
+    // 获取用户积分
+    handleScoreInfo() {
+      api.scoreInfo({
+        data: {
+          userId: this.userInfo.memberId
+        },
+        success: (res) => {
+          this.score = res.score
+        }
+      })
+    },
+
+    /**
        * 点击上传头像
        */
-      handleChooseImageClick() {
-        if (!this.userInfo) {
-          uni.navigateTo({ url: '/pages/user-center/login' });
-          return false;
-        }
-        uni.chooseImage({
-          sourceType: ['album', 'camera'],
-          count: 1,
-          success: (res) => {
-            // this.url = res.tempFilePaths[0]
-            // 图片转base64
-            console.log('res:', res);
-            // 名称
-            const imageName = res.tempFilePaths[0].split('/').pop();
-            const arr = imageName.split('.');
-            // 后缀
-            const imageExt = arr[arr.length - 1];
+    handleChooseImageClick() {
+      if (!this.userInfo) {
+        uni.navigateTo({ url: '/pages/user-center/login' })
+        return false
+      }
+      uni.chooseImage({
+        sourceType: ['album', 'camera'],
+        count: 1,
+        success: (res) => {
+          // this.url = res.tempFilePaths[0]
+          // 图片转base64
+          console.log('res:', res)
+          // 名称
+          const imageName = res.tempFilePaths[0].split('/').pop()
+          const arr = imageName.split('.')
+          // 后缀
+          const imageExt = arr[arr.length - 1]
 
-            // #ifdef MP-WEIXIN
+          // #ifdef MP-WEIXIN
 
-            uni.getFileSystemManager().readFile({
-              filePath: res.tempFilePaths[0],
-              encoding: 'base64',
-              success: async (rs) => {
-                console.log('rs:', rs);
+          uni.getFileSystemManager().readFile({
+            filePath: res.tempFilePaths[0],
+            encoding: 'base64',
+            success: async (rs) => {
+              console.log('rs:', rs)
 
-                // 线上环境
-                uni.request({
-                  url: 'https://api.hpgjzlinfo.com/nepsp-api/cms/iep/web/cms/imgUpload',
-                  data: {
-                    base64String: rs.data,
-                    imageName,
-                    imageExt,
-                  },
-                  method: 'POST',
-                  success: (imgres) => {
-                    const fileData = imgres.data.data;
-                    this.saveUserBanner(fileData.absoluteUrl);
-                  },
-                });
+              // 线上环境
+              uni.request({
+                url: 'https://api.hpgjzlinfo.com/nepsp-api/cms/iep/web/cms/imgUpload',
+                data: {
+                  base64String: rs.data,
+                  imageName,
+                  imageExt
+                },
+                method: 'POST',
+                success: (imgres) => {
+                  const fileData = imgres.data.data
+                  this.saveUserBanner(fileData.absoluteUrl)
+                }
+              })
 
-                // api.imgUpload({
-                //   data: {
-                //     base64String: rs.data,
-                //     imageName,
-                //     imageExt,
-                //   },
-                //   showsLoading: true,
-                //   success: (imgres) => {
-                //     console.log('图片上传成功res：', imgres);
-                //     this.header = imgres.absoluteUrl;
-                //     this.updateUserHeader(imgres.absoluteUrl);
-                //   },
-                // });
-              },
-            });
+              // api.imgUpload({
+              //   data: {
+              //     base64String: rs.data,
+              //     imageName,
+              //     imageExt,
+              //   },
+              //   showsLoading: true,
+              //   success: (imgres) => {
+              //     console.log('图片上传成功res：', imgres);
+              //     this.header = imgres.absoluteUrl;
+              //     this.updateUserHeader(imgres.absoluteUrl);
+              //   },
+              // });
+            }
+          })
 
-            // #endif
+          // #endif
 
-            // #ifdef MP-ALIPAY
-            my.getImageInfo({
-              src: res.tempFilePaths[0],
-              success: (resImg) => {
-                console.log('图片数据resImg：', resImg);
-                this.imgWidth = resImg.width;
-                this.imgHeight = resImg.height;
-                const canvas = my.createCanvasContext('canvas');
-                canvas.drawImage(res.tempFilePaths[0], 0, 0, this.imgWidth, this.imgHeight);
-                // 1. 绘制图片至canvas
-                // 绘制完成后执行回调
-                canvas.draw(false, () => {
-                  console.log('绘制完成后执行回调');
-                  canvas
-                    .toDataURL({
-                      width: this.imgWidth,
-                      height: this.imgHeight,
-                      quality: 1,
+          // #ifdef MP-ALIPAY
+          my.getImageInfo({
+            src: res.tempFilePaths[0],
+            success: (resImg) => {
+              console.log('图片数据resImg：', resImg)
+              this.imgWidth = resImg.width
+              this.imgHeight = resImg.height
+              const canvas = my.createCanvasContext('canvas')
+              canvas.drawImage(res.tempFilePaths[0], 0, 0, this.imgWidth, this.imgHeight)
+              // 1. 绘制图片至canvas
+              // 绘制完成后执行回调
+              canvas.draw(false, () => {
+                console.log('绘制完成后执行回调')
+                canvas
+                  .toDataURL({
+                    width: this.imgWidth,
+                    height: this.imgHeight,
+                    quality: 1
+                  })
+                  .then(async (baseImg) => {
+                    console.log('图片baseImg：', baseImg)
+                    // let base64 = baseImg.replace("data:image/png;base64,", "");
+                    const base64 = baseImg.split(',')[1]
+                    console.log('图片base64：', base64)
+                    // const par = {
+                    //   base64String: base64,
+                    //   imageName,
+                    //   imageExt,
+                    // }
+                    // const res = await Axios.post('https://api.hpgjzlinfo.com/nepsp-api/cms/iep/web/cms/imgUpload', par)
+                    // console.log("===结果---", res)
+
+                    api.imgUpload({
+                      data: {
+                        base64String: base64,
+                        imageName,
+                        imageExt
+                      },
+                      showsLoading: true,
+                      success: (imgres) => {
+                        console.log('图片上传成功res：', imgres)
+                        this.header = imgres.absoluteUrl
+                        this.updateUserHeader(imgres.absoluteUrl)
+                      }
                     })
-                    .then(async (baseImg) => {
-                      console.log('图片baseImg：', baseImg);
-                      // let base64 = baseImg.replace("data:image/png;base64,", "");
-                      const base64 = baseImg.split(',')[1];
-                      console.log('图片base64：', base64);
-                      // const par = {
-                      //   base64String: base64,
-                      //   imageName,
-                      //   imageExt,
-                      // }
-                      // const res = await Axios.post('https://api.hpgjzlinfo.com/nepsp-api/cms/iep/web/cms/imgUpload', par)
-                      // console.log("===结果---", res)
+                  })
+                //  console.log("图片base64：",base64)
+                // base64 = base64.replace("data:image/png;base64,", "");
+                // 身份证识别
+              })
+            }
+          })
+          // #endif
+        }
+      })
+    },
 
-                      api.imgUpload({
-                        data: {
-                          base64String: base64,
-                          imageName,
-                          imageExt,
-                        },
-                        showsLoading: true,
-                        success: (imgres) => {
-                          console.log('图片上传成功res：', imgres);
-                          this.header = imgres.absoluteUrl;
-                          this.updateUserHeader(imgres.absoluteUrl);
-                        },
-                      });
-                    });
-                  //  console.log("图片base64：",base64)
-                  // base64 = base64.replace("data:image/png;base64,", "");
-                  // 身份证识别
-                });
-              },
-            });
-            // #endif
-          },
-        });
-      },
-
-      /**
+    /**
        * 登录回调
        */
-      handleLogin(userInfo) {
-        if (userInfo) {
-          this.userInfo = userInfo;
-          uni.setStorageSync('userInfo', userInfo);
-        } else {
-          api.getUserInfo({
-            data: {
-              accessToken: uni.getStorageSync('token'),
-            },
-            success: (data) => {
-              this.userInfo = data;
-              uni.setStorageSync('userInfo', data);
-              // this.userInfo = uni.getStorageSync('userInfo')
-              if (this.userInfo.tel) {
-                this.handleScoreInfo();
-              }
-              this.header =
-                this.userInfo.userIcon ||
-                'http://192.168.1.187:10088/static/user-center/icon-user-center-default-avatar.png';
-              // 没有实名
-              // if (this.userInfo.crtfStas !== '2') {
-              //   this.$refs.firstLogin.open()
-              //   return
-              // }
-            },
-            fail: () => {
-              uni.removeStorageSync('token');
-              uni.removeStorageSync('userInfo');
-            },
-          });
-        }
-      },
-      // 点击赡养扶养,亲情账号，我的券包，我的订单7
-      handleServiceClick(type) {
-        // 检查用户是否登录
-        if ([1, 2, 4, 5, 6, 7].includes(type) && !uni.getStorageSync('token')) {
-          // 未登录, 跳转到登录页面
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
-        }
-        switch (type) {
-          case 1:
-            // this.checkUserState(() => {
-            //   uni.navigateTo({
-            //     url: '/pages/support/index',
-            //     error: function (res) {
-            //       console.log('console13', res);
-            //     },
-            //   });
-            // });
-            uni.navigateTo({
-              url: '/sub-pages/me/address-list/main',
-            });
-            break;
-          case 2:
-            uni.navigateTo({
-              url: '/pages/user-center/applicant-info?soure=mine',
-            });
-            break;
-          case 3:
-            // 消息中心
-            this.$uni.showToast('功能尚未开放，敬请期待');
-            break;
-          case 4:
-            uni.navigateTo({
-              url: '/pages/supermarket/myOrder',
-            });
-            break;
-          case 5:
-            uni.navigateTo({
-              url: '/pages/pay/my-bank-card',
-            });
-            break;
-          case 6:
-            uni.navigateTo({
-              url: '/sub-pages/me/my-coupon/main',
-            });
-            break;
-
-          case 7:
-            uni.navigateTo({
-              url: '/pages/order/orderList',
-            });
-            break;
-          default:
-            break;
-        }
-      },
-      // 点击实名认证,积分兑换,消息中心，收藏中心
-      handleUserClick(type) {
-        // 检查用户是否登录
-        if (!this.userInfo) {
-          // 未登录, 跳转到登录页面
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
-        }
-        switch (type) {
-          case 1:
-            if (this.userInfo.crtfStas !== '0') {
-              this.$uni.showToast('您已完成实名认证，无需重复认证');
-              return;
+    handleLogin(userInfo) {
+      if (userInfo) {
+        this.userInfo = userInfo
+        uni.setStorageSync('userInfo', userInfo)
+      } else {
+        api.getUserInfo({
+          data: {
+            accessToken: uni.getStorageSync('token')
+          },
+          success: (data) => {
+            this.userInfo = data
+            uni.setStorageSync('userInfo', data)
+            // this.userInfo = uni.getStorageSync('userInfo')
+            if (this.userInfo.tel) {
+              this.handleScoreInfo()
             }
-            this.showImg = false;
-            this.$refs.realpop.open();
-            break;
-          case 2:
-            uni.navigateTo({
-              url: '/pages/supermarket/myInvoice',
-            });
-            break;
-          case 3:
-            uni.navigateTo({
-              url: '/pages/user-center/message-center',
-            });
-            break;
-          case 4:
-            // 收藏中心
-            uni.navigateTo({
-              url: '/pages/user-center/collect-center',
-            });
-            break;
-          default:
-            break;
-        }
-      },
-      /**
+            this.header =
+                this.userInfo.userIcon ||
+                'http://192.168.1.187:10088/static/user-center/icon-user-center-default-avatar.png'
+            // 没有实名
+            // if (this.userInfo.crtfStas !== '2') {
+            //   this.$refs.firstLogin.open()
+            //   return
+            // }
+          },
+          fail: () => {
+            uni.removeStorageSync('token')
+            uni.removeStorageSync('userInfo')
+          }
+        })
+      }
+    },
+    // 点击赡养扶养,亲情账号，我的券包，我的订单7
+    handleServiceClick(type) {
+      // 检查用户是否登录
+      if ([1, 2, 4, 5, 6, 7].includes(type) && !uni.getStorageSync('token')) {
+        // 未登录, 跳转到登录页面
+        uni.navigateTo({
+          url: '/pages/user-center/login'
+        })
+        return
+      }
+      switch (type) {
+        case 1:
+          // this.checkUserState(() => {
+          //   uni.navigateTo({
+          //     url: '/pages/support/index',
+          //     error: function (res) {
+          //       console.log('console13', res);
+          //     },
+          //   });
+          // });
+          uni.navigateTo({
+            url: '/sub-pages/me/address-list/main'
+          })
+          break
+        case 2:
+          uni.navigateTo({
+            url: '/pages/user-center/applicant-info?soure=mine'
+          })
+          break
+        case 3:
+          // 消息中心
+          this.$uni.showToast('功能尚未开放，敬请期待')
+          break
+        case 4:
+          uni.navigateTo({
+            url: '/pages/supermarket/myOrder'
+          })
+          break
+        case 5:
+          uni.navigateTo({
+            url: '/pages/pay/my-bank-card'
+          })
+          break
+        case 6:
+          uni.navigateTo({
+            url: '/sub-pages/me/my-coupon/main'
+          })
+          break
+
+        case 7:
+          uni.navigateTo({
+            url: '/pages/order/orderList'
+          })
+          break
+        default:
+          break
+      }
+    },
+    // 点击实名认证,积分兑换,消息中心，收藏中心
+    handleUserClick(type) {
+      // 检查用户是否登录
+      if (!this.userInfo) {
+        // 未登录, 跳转到登录页面
+        uni.navigateTo({
+          url: '/pages/user-center/login'
+        })
+        return
+      }
+      switch (type) {
+        case 1:
+          if (this.userInfo.crtfStas !== '0') {
+            this.$uni.showToast('您已完成实名认证，无需重复认证')
+            return
+          }
+          this.showImg = false
+          this.$refs.realpop.open()
+          break
+        case 2:
+          uni.navigateTo({
+            url: '/pages/supermarket/myInvoice'
+          })
+          break
+        case 3:
+          uni.navigateTo({
+            url: '/pages/user-center/message-center'
+          })
+          break
+        case 4:
+          // 收藏中心
+          uni.navigateTo({
+            url: '/pages/user-center/collect-center'
+          })
+          break
+        default:
+          break
+      }
+    },
+    /**
        * 意见反馈点击事件
        */
-      handleFeedbackClick() {
-        // 备注：目前只有登录后才可以进行问题填报
-        if (!this.userInfo.phone) {
-          // 未登录, 跳转到登录页面
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
-        }
+    handleFeedbackClick() {
+      // 备注：目前只有登录后才可以进行问题填报
+      if (!this.userInfo.phone) {
+        // 未登录, 跳转到登录页面
         uni.navigateTo({
-          url: '/pages/user-center/feedback',
-        });
-      },
-    },
-    async onShow() {
-      const curPages = getCurrentPages()[0];
-      if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
-        curPages.getTabBar().setData({
-          tabIndex: 5, // 表示当前菜单的索引，该值在不同的页面表示不同
-        });
+          url: '/pages/user-center/login'
+        })
+        return
       }
-      await this.$store.dispatch('getUserInfo');
-      this.getTotalSaveMoney();
-    },
-  };
+      uni.navigateTo({
+        url: '/pages/user-center/feedback'
+      })
+    }
+  },
+  async onShow() {
+    const curPages = getCurrentPages()[0]
+    if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
+      curPages.getTabBar().setData({
+        tabIndex: 5 // 表示当前菜单的索引，该值在不同的页面表示不同
+      })
+    }
+    await this.$store.dispatch('getUserInfo')
+    this.getTotalSaveMoney()
+  }
+}
 </script>
 
 <style lang="scss" scoped>

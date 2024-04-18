@@ -113,64 +113,64 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import dayjs from 'dayjs';
-  import { desensitizeName, hidePhone, desensitizeInfo } from '@/utils/desensitization.js';
-  export default {
-    name: 'insurance-info',
-    data() {
-      return {
-        info: null,
-        icon1: 'http://192.168.1.187:10088/static/order/actived-icon.png',
-        icon2: 'http://192.168.1.187:10088/static/life/expired-icon.png',
-      };
+import api from '@/apis/index.js'
+import dayjs from 'dayjs'
+import { desensitizeName, hidePhone, desensitizeInfo } from '@/utils/desensitization.js'
+export default {
+  name: 'insurance-info',
+  data() {
+    return {
+      info: null,
+      icon1: 'http://192.168.1.187:10088/static/order/actived-icon.png',
+      icon2: 'http://192.168.1.187:10088/static/life/expired-icon.png'
+    }
+  },
+  onLoad(options) {
+    this.getInfo(options.insuCode)
+  },
+  methods: {
+    getInfo(insuCode) {
+      api.getInsuranceInfo({
+        data: { insuCode },
+        success: (data) => {
+          this.info = data
+        },
+        fail: (err) => {
+          uni.showToast(err.message)
+        }
+      })
     },
-    onLoad(options) {
-      this.getInfo(options.insuCode);
+    callPhone() {
+      uni.makePhoneCall({
+        phoneNumber: '95522'
+      })
+    }
+  },
+  filters: {
+    formatRelation(type) {
+      const RelationMap = {
+        1: '本人',
+        2: '父母',
+        3: '亲属',
+        4: '其他',
+        5: '子女'
+      }
+      return RelationMap[type]
     },
-    methods: {
-      getInfo(insuCode) {
-        api.getInsuranceInfo({
-          data: { insuCode },
-          success: (data) => {
-            this.info = data;
-          },
-          fail: (err) => {
-            uni.showToast(err.message);
-          },
-        });
-      },
-      callPhone() {
-        uni.makePhoneCall({
-          phoneNumber: '95522',
-        });
-      },
+    desensitizeName(name) {
+      return desensitizeName(name)
     },
-    filters: {
-      formatRelation(type) {
-        const RelationMap = {
-          1: '本人',
-          2: '父母',
-          3: '亲属',
-          4: '其他',
-          5: '子女',
-        };
-        return RelationMap[type];
-      },
-      desensitizeName(name) {
-        return desensitizeName(name);
-      },
-      hidePhone(phone) {
-        return hidePhone(phone);
-      },
-      desensitizeInfo(card) {
-        return desensitizeInfo(card);
-      },
-      formateDate(time) {
-        return dayjs(time).format('YYYY-MM-DD');
-      },
+    hidePhone(phone) {
+      return hidePhone(phone)
     },
-  };
+    desensitizeInfo(card) {
+      return desensitizeInfo(card)
+    },
+    formateDate(time) {
+      return dayjs(time).format('YYYY-MM-DD')
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -686,506 +686,506 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
-  import Top from '@/sub-pages/index/components/top.vue';
-  import SearchFilter from './components/filter';
-  import wx from 'utils/wx';
-  export default {
-    name: 'SEARCH',
-    data() {
-      return {
-        loading: true,
-        filterType: 0,
-        pageNo: 1,
-        pageSize: 20,
-        disabled: false,
-        empty: false,
-        listType: 0,
-        itemList: [],
-        brandList: [],
-        brandId: '',
-        dispId: '',
-        level: '',
-        cateId: '',
-        sortType: '',
-        key: '',
-        name: '',
-        attrList: [],
-        categoryList: [],
-        targetAudienceList: [],
-        priceList: [],
-      };
+import { mapState } from 'vuex'
+import Top from '@/sub-pages/index/components/top.vue'
+import SearchFilter from './components/filter'
+import wx from 'utils/wx'
+export default {
+  name: 'SEARCH',
+  data() {
+    return {
+      loading: true,
+      filterType: 0,
+      pageNo: 1,
+      pageSize: 20,
+      disabled: false,
+      empty: false,
+      listType: 0,
+      itemList: [],
+      brandList: [],
+      brandId: '',
+      dispId: '',
+      level: '',
+      cateId: '',
+      sortType: '',
+      key: '',
+      name: '',
+      attrList: [],
+      categoryList: [],
+      targetAudienceList: [],
+      priceList: []
+    }
+  },
+  computed: {
+    title() {
+      if (this.key) {
+        return this.key
+      }
+      if (this.name) {
+        return this.name
+      }
+      return '搜索'
+    }
+  },
+  components: {
+    Top,
+    SearchFilter
+  },
+  computed: {
+    ...mapState({
+      userInfo: (state) => state.user.userInfo
+    }),
+    // 是否会员
+    member() {
+      return this.userInfo && this.userInfo.memberStatus === '1'
+    }
+  },
+  methods: {
+    toHome() {
+      uni.navigateTo({
+        url: '/sub-pages/index/index/main'
+      })
     },
-    computed: {
-      title() {
-        if (this.key) {
-          return this.key;
-        }
-        if (this.name) {
-          return this.name;
-        }
-        return '搜索';
-      },
+    changeListType() {
+      this.listType = this.listType === 0 ? 1 : 0
     },
-    components: {
-      Top,
-      SearchFilter,
+    goItem(item) {
+      const sceneType = item.isCreditPoints === 1 ? '积分兑换' : '商品购买'
+      uni.navigateTo({
+        url: `/sub-pages/index/item/main?id=${item.id}&sceneType=${sceneType}`
+      })
     },
-    computed: {
-      ...mapState({
-        userInfo: (state) => state.user.userInfo,
-      }),
-      // 是否会员
-      member() {
-        return this.userInfo && this.userInfo.memberStatus === '1';
-      },
+    back() {
+      history.go(-1)
     },
-    methods: {
-      toHome() {
-        uni.navigateTo({
-          url: '/sub-pages/index/index/main',
-        });
-      },
-      changeListType() {
-        this.listType = this.listType === 0 ? 1 : 0;
-      },
-      goItem(item) {
-        const sceneType = item.isCreditPoints === 1 ? '积分兑换' : '商品购买';
-        uni.navigateTo({
-          url: `/sub-pages/index/item/main?id=${item.id}&sceneType=${sceneType}`,
-        });
-      },
-      back() {
-        history.go(-1);
-      },
-      reset() {
-        this.priceList.forEach((data) => {
-          data.check = false;
-        });
-        this.categoryList.forEach((data) => {
-          data.check = false;
-        });
-        this.brandList.forEach((data) => {
-          data.check = false;
-        });
-        this.targetAudienceList.forEach((data) => {
-          data.check = false;
-        });
-        this.attrList.forEach((data) => {
-          data.dataList.forEach((child) => {
-            child.check = false;
-          });
-        });
-        this.search();
-      },
-      changeSortType(type) {
-        this.sortType = type;
-        this.search();
-      },
-      clear() {
-        this.key = '';
-        this.search();
-      },
-      search() {
-        this.pageNo = 1;
-        this.itemList = [];
-        this.disabled = false;
-        this.searchData();
-      },
-      changePrice(priceRange) {
-        this.priceList.forEach((e) => {
-          e.check = false;
-        });
-        priceRange.check = !priceRange.check;
-        this.$set(this.priceList, priceRange.id, priceRange);
-      },
-      changeTargetAudience(list) {
-        this.targetAudienceList = list;
-      },
-      changeBrand(brand) {
-        brand.check = !brand.check;
-        const index = this.brandList.findIndex((item) => {
-          return item.brandId == brand.brandId;
-        });
-        this.$set(this.brandList, index, brand);
-      },
-      changeCate(cate) {
-        cate.check = !cate.check;
-        const index = this.categoryList.findIndex((item) => {
-          return item.id == cate.id;
-        });
-        this.$set(this.categoryList, index, cate);
-      },
-      showFilter() {
-        this.$refs.filter.show(true);
-      },
-      async loadData() {
-        if (this.disabled) {
-          return false;
-        }
-        const params = {
-          pageSize: this.pageSize,
-          pageNum: this.pageNo++,
-          // isCreditPoints: 0,
-        };
-        if (this.sortType) {
-          params.sortType = this.sortType;
-        }
-        if (this.brandId) {
-          params.brandIds = this.brandId.join(',');
-        }
-        if (this.planId) {
-          params.planId = this.planId;
-        }
-        if (this.dispId) {
-          params.categoryCodes = this.dispId;
-        }
-        if (this.level) {
-          const s = ['firstCategoryId', 'twoCategoryId', 'threeCategoryId'];
-          params[s[this.level - 1]] = this.cateId;
-        }
-        if (this.key) {
-          params.name = this.key;
-        }
-        const attrList = [];
-        this.attrList.forEach((attr) => {
-          attr.dataList.forEach((condition) => {
-            if (condition.check) {
-              attrList.push(condition.value);
-            }
-          });
-        });
-        if (attrList.length) {
-          params.attrValIds = attrList.join(',');
-        }
-        const dispIds = [];
-        this.categoryList.forEach((cate) => {
-          if (cate.check) {
-            dispIds.push(cate.id);
+    reset() {
+      this.priceList.forEach((data) => {
+        data.check = false
+      })
+      this.categoryList.forEach((data) => {
+        data.check = false
+      })
+      this.brandList.forEach((data) => {
+        data.check = false
+      })
+      this.targetAudienceList.forEach((data) => {
+        data.check = false
+      })
+      this.attrList.forEach((data) => {
+        data.dataList.forEach((child) => {
+          child.check = false
+        })
+      })
+      this.search()
+    },
+    changeSortType(type) {
+      this.sortType = type
+      this.search()
+    },
+    clear() {
+      this.key = ''
+      this.search()
+    },
+    search() {
+      this.pageNo = 1
+      this.itemList = []
+      this.disabled = false
+      this.searchData()
+    },
+    changePrice(priceRange) {
+      this.priceList.forEach((e) => {
+        e.check = false
+      })
+      priceRange.check = !priceRange.check
+      this.$set(this.priceList, priceRange.id, priceRange)
+    },
+    changeTargetAudience(list) {
+      this.targetAudienceList = list
+    },
+    changeBrand(brand) {
+      brand.check = !brand.check
+      const index = this.brandList.findIndex((item) => {
+        return item.brandId == brand.brandId
+      })
+      this.$set(this.brandList, index, brand)
+    },
+    changeCate(cate) {
+      cate.check = !cate.check
+      const index = this.categoryList.findIndex((item) => {
+        return item.id == cate.id
+      })
+      this.$set(this.categoryList, index, cate)
+    },
+    showFilter() {
+      this.$refs.filter.show(true)
+    },
+    async loadData() {
+      if (this.disabled) {
+        return false
+      }
+      const params = {
+        pageSize: this.pageSize,
+        pageNum: this.pageNo++
+        // isCreditPoints: 0,
+      }
+      if (this.sortType) {
+        params.sortType = this.sortType
+      }
+      if (this.brandId) {
+        params.brandIds = this.brandId.join(',')
+      }
+      if (this.planId) {
+        params.planId = this.planId
+      }
+      if (this.dispId) {
+        params.categoryCodes = this.dispId
+      }
+      if (this.level) {
+        const s = ['firstCategoryId', 'twoCategoryId', 'threeCategoryId']
+        params[s[this.level - 1]] = this.cateId
+      }
+      if (this.key) {
+        params.name = this.key
+      }
+      const attrList = []
+      this.attrList.forEach((attr) => {
+        attr.dataList.forEach((condition) => {
+          if (condition.check) {
+            attrList.push(condition.value)
           }
-        });
-        if (dispIds.length) {
-          params.categoryCodes = dispIds.join(',');
+        })
+      })
+      if (attrList.length) {
+        params.attrValIds = attrList.join(',')
+      }
+      const dispIds = []
+      this.categoryList.forEach((cate) => {
+        if (cate.check) {
+          dispIds.push(cate.id)
         }
-        const brandIds = [];
-        this.brandList.forEach((brand) => {
-          if (brand.check) {
-            brandIds.push(brand.brandId);
-          }
-        });
-        if (brandIds.length) {
-          params.brandIds = brandIds.join(',');
+      })
+      if (dispIds.length) {
+        params.categoryCodes = dispIds.join(',')
+      }
+      const brandIds = []
+      this.brandList.forEach((brand) => {
+        if (brand.check) {
+          brandIds.push(brand.brandId)
         }
-        const priceIds = [];
-        this.priceList.forEach((price) => {
-          if (price.check) {
-            priceIds.push(price.name);
-          }
-        });
-        if (priceIds.length) {
-          params.priceRange = priceIds.join(',');
+      })
+      if (brandIds.length) {
+        params.brandIds = brandIds.join(',')
+      }
+      const priceIds = []
+      this.priceList.forEach((price) => {
+        if (price.check) {
+          priceIds.push(price.name)
         }
-        const targetAudiences = [];
-        this.targetAudienceList.forEach((target) => {
-          if (target.check) {
-            targetAudiences.push(target.name);
-          }
-        });
-        if (targetAudiences.length) {
-          params.targetAudience = targetAudiences.join(',');
+      })
+      if (priceIds.length) {
+        params.priceRange = priceIds.join(',')
+      }
+      const targetAudiences = []
+      this.targetAudienceList.forEach((target) => {
+        if (target.check) {
+          targetAudiences.push(target.name)
         }
-        this.disabled = true;
-        uni.showLoading();
-        // console.log("params: " + JSON.stringify(params))
-        let searchResult = await Axios.post('/product/getProductSearchList', {
-          ...Object.assign(params, this.searchParams),
-        });
-        // console.log('searchResult: ', searchResult);
+      })
+      if (targetAudiences.length) {
+        params.targetAudience = targetAudiences.join(',')
+      }
+      this.disabled = true
+      uni.showLoading()
+      // console.log("params: " + JSON.stringify(params))
+      let searchResult = await Axios.post('/product/getProductSearchList', {
+        ...Object.assign(params, this.searchParams)
+      })
+      // console.log('searchResult: ', searchResult);
 
-        searchResult = searchResult.data;
-        uni.hideLoading();
-        this.loading = false;
-        if (searchResult.esProducts) {
-          this.disabled = searchResult.pageNum >= searchResult.totalPage;
-          const list = [];
-          searchResult.esProducts.forEach((data) => {
-            const tempData = _.pick(data, [
-              'id',
-              'skuList',
-              'mainImgUrl',
-              'brandName',
-              'name',
-              'price',
-              'stockBlance',
-              'saleState',
-              'pointDiscountPoint',
-            ]);
-            let availableStock = 0;
-            let minMarkOffPrice = 0;
-            let maxMarkOffPrice = 0;
-            let minCostPrice = 0;
-            let maxCostPrice = 0;
-            tempData.skuList &&
+      searchResult = searchResult.data
+      uni.hideLoading()
+      this.loading = false
+      if (searchResult.esProducts) {
+        this.disabled = searchResult.pageNum >= searchResult.totalPage
+        const list = []
+        searchResult.esProducts.forEach((data) => {
+          const tempData = _.pick(data, [
+            'id',
+            'skuList',
+            'mainImgUrl',
+            'brandName',
+            'name',
+            'price',
+            'stockBlance',
+            'saleState',
+            'pointDiscountPoint'
+          ])
+          let availableStock = 0
+          let minMarkOffPrice = 0
+          let maxMarkOffPrice = 0
+          let minCostPrice = 0
+          let maxCostPrice = 0
+          tempData.skuList &&
               tempData.skuList.forEach((sku) => {
-                availableStock += sku.availableStock;
+                availableStock += sku.availableStock
                 if (minMarkOffPrice === 0 || minMarkOffPrice > sku.markOffPrice) {
-                  minMarkOffPrice = sku.markOffPrice;
+                  minMarkOffPrice = sku.markOffPrice
                 }
                 if (maxMarkOffPrice === 0 || maxMarkOffPrice < sku.markOffPrice) {
-                  maxMarkOffPrice = sku.markOffPrice;
+                  maxMarkOffPrice = sku.markOffPrice
                 }
                 if (minCostPrice === 0 || minCostPrice > sku.sellingPrice) {
-                  minCostPrice = sku.sellingPrice;
+                  minCostPrice = sku.sellingPrice
                 }
                 if (maxCostPrice === 0 || maxCostPrice < sku.sellingPrice) {
-                  maxCostPrice = sku.sellingPrice;
+                  maxCostPrice = sku.sellingPrice
                 }
-              });
-            if (minMarkOffPrice !== maxMarkOffPrice) {
-              tempData.markOffPriceStr = `${minMarkOffPrice}-${maxMarkOffPrice}`;
-            } else {
-              tempData.markOffPriceStr = minMarkOffPrice;
+              })
+          if (minMarkOffPrice !== maxMarkOffPrice) {
+            tempData.markOffPriceStr = `${minMarkOffPrice}-${maxMarkOffPrice}`
+          } else {
+            tempData.markOffPriceStr = minMarkOffPrice
+          }
+          if (minCostPrice !== maxCostPrice) {
+            tempData.costPriceStr = `${minCostPrice}-${maxCostPrice}`
+          } else {
+            tempData.costPriceStr = minCostPrice
+          }
+          tempData.availableStock = availableStock
+          tempData.proPictDir = XIU.getImgFormat(tempData.mainImgUrl, '/resize,w_750')
+          Object.assign(tempData, data)
+          list.push(tempData)
+        })
+        this.itemList = this.itemList.concat(list)
+        this.brandList = []
+        console.log('searchResult: ', searchResult)
+        Object.keys(searchResult.brands).forEach((key) => {
+          searchResult.brands[key].forEach((brand) => {
+            this.brandList.push({
+              brandId: brand.brandId,
+              brandName: brand.brandName,
+              check: false
+            })
+          })
+        })
+        this.categoryList = []
+        searchResult.categorys.forEach((category) => {
+          this.categoryList.push({
+            id: category.code,
+            name: category.name,
+            check: false
+          })
+        })
+        this.priceList = []
+        searchResult.prices.forEach((data, index) => {
+          this.priceList.push({
+            id: index,
+            name: data,
+            check: false
+          })
+        })
+        if (this.attrList.length) {
+          return false
+        }
+        const attrs = []
+        Object.keys(searchResult.attrs).forEach((key) => {
+          const dataList = []
+          const attr = key.split('@@@')
+          searchResult.attrs[key].forEach((data) => {
+            if (!data) {
+              return false
             }
-            if (minCostPrice !== maxCostPrice) {
-              tempData.costPriceStr = `${minCostPrice}-${maxCostPrice}`;
-            } else {
-              tempData.costPriceStr = minCostPrice;
-            }
-            tempData.availableStock = availableStock;
-            tempData.proPictDir = XIU.getImgFormat(tempData.mainImgUrl, '/resize,w_750');
-            Object.assign(tempData, data);
-            list.push(tempData);
-          });
-          this.itemList = this.itemList.concat(list);
-          this.brandList = [];
-          console.log('searchResult: ', searchResult);
-          Object.keys(searchResult.brands).forEach((key) => {
-            searchResult.brands[key].forEach((brand) => {
-              this.brandList.push({
-                brandId: brand.brandId,
-                brandName: brand.brandName,
-                check: false,
-              });
-            });
-          });
-          this.categoryList = [];
-          searchResult.categorys.forEach((category) => {
-            this.categoryList.push({
-              id: category.code,
-              name: category.name,
-              check: false,
-            });
-          });
-          this.priceList = [];
-          searchResult.prices.forEach((data, index) => {
-            this.priceList.push({
-              id: index,
-              name: data,
-              check: false,
-            });
-          });
-          if (this.attrList.length) {
-            return false;
+            const subAttr = data.split('@@@')
+            dataList.push({
+              id: subAttr[0],
+              name: subAttr[1],
+              value: data,
+              check: false
+            })
+          })
+          attrs.push({
+            id: attr[0],
+            name: attr[1],
+            showMore: false,
+            dataList: dataList
+          })
+        })
+        this.attrList = attrs
+        this.empty = !this.itemList
+        // if(!this.itemList){
+        //   this.empty = true
+        // }else{
+        //   this.empty = false
+        // }
+        // console.log("页面商品：" + JSON.stringify(this.itemList))
+      } else {
+        // wx.showToast(searchResult.result.message);
+        this.empty = true
+      }
+    },
+    async searchData() {
+      if (this.disabled) {
+        return false
+      }
+      const params = {
+        pageSize: this.pageSize,
+        pageNum: this.pageNo++
+        // isCreditPoints: 0,
+      }
+      if (this.sortType) {
+        params.sortType = this.sortType
+      }
+      if (this.brandId) {
+        params.brandIds = this.brandId.join(',')
+      }
+      if (this.planId) {
+        params.planId = this.planId
+      }
+      if (this.dispId) {
+        params.categoryCodes = this.dispId
+      }
+      if (this.level) {
+        const s = ['firstCategoryId', 'twoCategoryId', 'threeCategoryId']
+        params[s[this.level - 1]] = this.cateId
+      }
+      if (this.key) {
+        params.name = this.key
+      }
+      const attrList = []
+      this.attrList.forEach((attr) => {
+        attr.dataList.forEach((condition) => {
+          if (condition.check) {
+            attrList.push(condition.value)
           }
-          const attrs = [];
-          Object.keys(searchResult.attrs).forEach((key) => {
-            const dataList = [];
-            const attr = key.split('@@@');
-            searchResult.attrs[key].forEach((data) => {
-              if (!data) {
-                return false;
-              }
-              const subAttr = data.split('@@@');
-              dataList.push({
-                id: subAttr[0],
-                name: subAttr[1],
-                value: data,
-                check: false,
-              });
-            });
-            attrs.push({
-              id: attr[0],
-              name: attr[1],
-              showMore: false,
-              dataList: dataList,
-            });
-          });
-          this.attrList = attrs;
-          this.empty = !this.itemList;
-          // if(!this.itemList){
-          //   this.empty = true
-          // }else{
-          //   this.empty = false
-          // }
-          // console.log("页面商品：" + JSON.stringify(this.itemList))
-        } else {
-          // wx.showToast(searchResult.result.message);
-          this.empty = true;
+        })
+      })
+      if (attrList.length) {
+        params.attrValIds = attrList.join(',')
+      }
+      const dispIds = []
+      this.categoryList.forEach((cate) => {
+        if (cate.check) {
+          dispIds.push(cate.id)
         }
-      },
-      async searchData() {
-        if (this.disabled) {
-          return false;
+      })
+      if (dispIds.length) {
+        params.categoryCodes = dispIds.join(',')
+      }
+      const brandIds = []
+      this.brandList.forEach((brand) => {
+        if (brand.check) {
+          brandIds.push(brand.brandId)
         }
-        const params = {
-          pageSize: this.pageSize,
-          pageNum: this.pageNo++,
-          // isCreditPoints: 0,
-        };
-        if (this.sortType) {
-          params.sortType = this.sortType;
+      })
+      if (brandIds.length) {
+        params.brandIds = brandIds.join(',')
+      }
+      const priceIds = []
+      this.priceList.forEach((price) => {
+        if (price.check) {
+          priceIds.push(price.name)
         }
-        if (this.brandId) {
-          params.brandIds = this.brandId.join(',');
+      })
+      if (priceIds.length) {
+        params.priceRange = priceIds.join(',')
+      }
+      const targetAudiences = []
+      this.targetAudienceList.forEach((target) => {
+        if (target.check) {
+          targetAudiences.push(target.name)
         }
-        if (this.planId) {
-          params.planId = this.planId;
-        }
-        if (this.dispId) {
-          params.categoryCodes = this.dispId;
-        }
-        if (this.level) {
-          const s = ['firstCategoryId', 'twoCategoryId', 'threeCategoryId'];
-          params[s[this.level - 1]] = this.cateId;
-        }
-        if (this.key) {
-          params.name = this.key;
-        }
-        const attrList = [];
-        this.attrList.forEach((attr) => {
-          attr.dataList.forEach((condition) => {
-            if (condition.check) {
-              attrList.push(condition.value);
-            }
-          });
-        });
-        if (attrList.length) {
-          params.attrValIds = attrList.join(',');
-        }
-        const dispIds = [];
-        this.categoryList.forEach((cate) => {
-          if (cate.check) {
-            dispIds.push(cate.id);
-          }
-        });
-        if (dispIds.length) {
-          params.categoryCodes = dispIds.join(',');
-        }
-        const brandIds = [];
-        this.brandList.forEach((brand) => {
-          if (brand.check) {
-            brandIds.push(brand.brandId);
-          }
-        });
-        if (brandIds.length) {
-          params.brandIds = brandIds.join(',');
-        }
-        const priceIds = [];
-        this.priceList.forEach((price) => {
-          if (price.check) {
-            priceIds.push(price.name);
-          }
-        });
-        if (priceIds.length) {
-          params.priceRange = priceIds.join(',');
-        }
-        const targetAudiences = [];
-        this.targetAudienceList.forEach((target) => {
-          if (target.check) {
-            targetAudiences.push(target.name);
-          }
-        });
-        if (targetAudiences.length) {
-          params.targetAudience = targetAudiences.join(',');
-        }
-        this.disabled = true;
-        uni.showLoading();
-        // console.log("params: " + JSON.stringify(params))
-        let searchResult = await Axios.post('/product/getProductSearchList', {
-          ...Object.assign(params, this.searchParams),
-        });
-        // console.log('searchResult: ', searchResult);
+      })
+      if (targetAudiences.length) {
+        params.targetAudience = targetAudiences.join(',')
+      }
+      this.disabled = true
+      uni.showLoading()
+      // console.log("params: " + JSON.stringify(params))
+      let searchResult = await Axios.post('/product/getProductSearchList', {
+        ...Object.assign(params, this.searchParams)
+      })
+      // console.log('searchResult: ', searchResult);
 
-        searchResult = searchResult.data;
-        uni.hideLoading();
-        this.loading = false;
-        if (searchResult.esProducts) {
-          this.disabled = searchResult.pageNum >= searchResult.totalPage;
-          const list = [];
-          searchResult.esProducts.forEach((data) => {
-            const tempData = _.pick(data, [
-              'id',
-              'skuList',
-              'mainImgUrl',
-              'brandName',
-              'name',
-              'price',
-              'stockBlance',
-              'saleState',
-              'pointDiscountPoint',
-            ]);
-            let availableStock = 0;
-            let minMarkOffPrice = 0;
-            let maxMarkOffPrice = 0;
-            let minCostPrice = 0;
-            let maxCostPrice = 0;
-            tempData.skuList &&
+      searchResult = searchResult.data
+      uni.hideLoading()
+      this.loading = false
+      if (searchResult.esProducts) {
+        this.disabled = searchResult.pageNum >= searchResult.totalPage
+        const list = []
+        searchResult.esProducts.forEach((data) => {
+          const tempData = _.pick(data, [
+            'id',
+            'skuList',
+            'mainImgUrl',
+            'brandName',
+            'name',
+            'price',
+            'stockBlance',
+            'saleState',
+            'pointDiscountPoint'
+          ])
+          let availableStock = 0
+          let minMarkOffPrice = 0
+          let maxMarkOffPrice = 0
+          let minCostPrice = 0
+          let maxCostPrice = 0
+          tempData.skuList &&
               tempData.skuList.forEach((sku) => {
-                availableStock += sku.availableStock;
+                availableStock += sku.availableStock
                 if (minMarkOffPrice === 0 || minMarkOffPrice > sku.markOffPrice) {
-                  minMarkOffPrice = sku.markOffPrice;
+                  minMarkOffPrice = sku.markOffPrice
                 }
                 if (maxMarkOffPrice === 0 || maxMarkOffPrice < sku.markOffPrice) {
-                  maxMarkOffPrice = sku.markOffPrice;
+                  maxMarkOffPrice = sku.markOffPrice
                 }
                 if (minCostPrice === 0 || minCostPrice > sku.sellingPrice) {
-                  minCostPrice = sku.sellingPrice;
+                  minCostPrice = sku.sellingPrice
                 }
                 if (maxCostPrice === 0 || maxCostPrice < sku.sellingPrice) {
-                  maxCostPrice = sku.sellingPrice;
+                  maxCostPrice = sku.sellingPrice
                 }
-              });
-            if (minMarkOffPrice !== maxMarkOffPrice) {
-              tempData.markOffPriceStr = `${minMarkOffPrice}-${maxMarkOffPrice}`;
-            } else {
-              tempData.markOffPriceStr = minMarkOffPrice;
-            }
-            if (minCostPrice !== maxCostPrice) {
-              tempData.costPriceStr = `${minCostPrice}-${maxCostPrice}`;
-            } else {
-              tempData.costPriceStr = minCostPrice;
-            }
-            tempData.availableStock = availableStock;
-            tempData.proPictDir = XIU.getImgFormat(tempData.mainImgUrl, '/resize,w_750');
-            Object.assign(tempData, data);
-            list.push(tempData);
-          });
-          this.itemList = this.itemList.concat(list);
-          this.empty = !this.itemList;
-        } else {
-          this.empty = true;
-        }
-      },
-    },
-    onReachBottom() {
-      this.searchData();
-    },
-    onPageScroll(e) {
-      // this.$refs.toTop.show(e.scrollTop > App.systemInfo.screenHeight);
-      this.$refs.toTop.show(true);
-    },
-    async mounted() {
-      this.brandId = this.$root.$mp.query.brandId;
-      this.planId = this.$root.$mp.query.planId;
-      this.dispId = this.$root.$mp.query.dispId;
-      this.cateId = this.$root.$mp.query.cateId;
-      this.level = this.$root.$mp.query.level;
-      this.key = this.$root.$mp.query.key;
-      this.$refs.filter.show(false);
-      this.pageNo = 1;
-      this.disabled = false;
-      this.itemList = [];
-      await this.loadData();
-    },
-  };
+              })
+          if (minMarkOffPrice !== maxMarkOffPrice) {
+            tempData.markOffPriceStr = `${minMarkOffPrice}-${maxMarkOffPrice}`
+          } else {
+            tempData.markOffPriceStr = minMarkOffPrice
+          }
+          if (minCostPrice !== maxCostPrice) {
+            tempData.costPriceStr = `${minCostPrice}-${maxCostPrice}`
+          } else {
+            tempData.costPriceStr = minCostPrice
+          }
+          tempData.availableStock = availableStock
+          tempData.proPictDir = XIU.getImgFormat(tempData.mainImgUrl, '/resize,w_750')
+          Object.assign(tempData, data)
+          list.push(tempData)
+        })
+        this.itemList = this.itemList.concat(list)
+        this.empty = !this.itemList
+      } else {
+        this.empty = true
+      }
+    }
+  },
+  onReachBottom() {
+    this.searchData()
+  },
+  onPageScroll(e) {
+    // this.$refs.toTop.show(e.scrollTop > App.systemInfo.screenHeight);
+    this.$refs.toTop.show(true)
+  },
+  async mounted() {
+    this.brandId = this.$root.$mp.query.brandId
+    this.planId = this.$root.$mp.query.planId
+    this.dispId = this.$root.$mp.query.dispId
+    this.cateId = this.$root.$mp.query.cateId
+    this.level = this.$root.$mp.query.level
+    this.key = this.$root.$mp.query.key
+    this.$refs.filter.show(false)
+    this.pageNo = 1
+    this.disabled = false
+    this.itemList = []
+    await this.loadData()
+  }
+}
 </script>

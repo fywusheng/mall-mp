@@ -76,79 +76,79 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        // 材料类型选择器数据
-        materialTypes: ['残疾证', '居住证'],
-        // 表单数据
-        params: {
-          materials: [{ type: '', url: '' }],
-        },
-      };
-    },
-    methods: {
-      /**
+export default {
+  data() {
+    return {
+      // 材料类型选择器数据
+      materialTypes: ['残疾证', '居住证'],
+      // 表单数据
+      params: {
+        materials: [{ type: '', url: '' }]
+      }
+    }
+  },
+  methods: {
+    /**
        * 材料类型改变回调
        */
-      handleMaterialTypeChange(e) {
-        const type = this.materialTypes[e.detail.value];
-        const selectedTypes = this.params.materials.map((item) => item.type);
-        if (selectedTypes.indexOf(type) !== -1) {
-          this.$uni.showToast(`不可重复选择${type}`);
-          return;
-        }
-        this.params.materials[e.target.id].type = type;
-      },
-      /**
+    handleMaterialTypeChange(e) {
+      const type = this.materialTypes[e.detail.value]
+      const selectedTypes = this.params.materials.map((item) => item.type)
+      if (selectedTypes.indexOf(type) !== -1) {
+        this.$uni.showToast(`不可重复选择${type}`)
+        return
+      }
+      this.params.materials[e.target.id].type = type
+    },
+    /**
        * 查看示例点击事件
        */
-      handleSeeExampleClick(index) {
-        uni.previewImage({
-          urls: ['https://xueyinonline.com/images/portal/certificate/myzs01.png'],
-        });
-      },
-      /**
+    handleSeeExampleClick(index) {
+      uni.previewImage({
+        urls: ['https://xueyinonline.com/images/portal/certificate/myzs01.png']
+      })
+    },
+    /**
        * 选择图片点击事件
        */
-      handlePhotoPickerClick(index) {
-        uni.chooseImage({
-          success: (res) => {
-            this.params.materials[index].url = res.tempFilePaths[0];
-          },
-        });
-      },
-      /**
+    handlePhotoPickerClick(index) {
+      uni.chooseImage({
+        success: (res) => {
+          this.params.materials[index].url = res.tempFilePaths[0]
+        }
+      })
+    },
+    /**
        * 删除材料点击事件
        */
-      handleDeleteMaterialClick(index) {
-        this.params.materials.splice(index, 1);
-      },
-      /**
+    handleDeleteMaterialClick(index) {
+      this.params.materials.splice(index, 1)
+    },
+    /**
        * 添加更多证明材料点击事件
        */
-      handleAddMaterialClick() {
-        if (this.params.materials.length === this.materialTypes.length) return;
-        this.params.materials.push({ type: '', url: '' });
-      },
-      /**
+    handleAddMaterialClick() {
+      if (this.params.materials.length === this.materialTypes.length) return
+      this.params.materials.push({ type: '', url: '' })
+    },
+    /**
        * 提交点击事件
        */
-      handleSubmitClick() {
-        const materials = this.params.materials.filter((item) => item.type);
-        const flag = materials.every((item) => {
-          if (item.url) {
-            return true;
-          } else {
-            this.$uni.showToast(`请上传${item.type}或删除该材料`);
-            return false;
-          }
-        });
-        if (!flag) return;
-        console.log('upload');
-      },
-    },
-  };
+    handleSubmitClick() {
+      const materials = this.params.materials.filter((item) => item.type)
+      const flag = materials.every((item) => {
+        if (item.url) {
+          return true
+        } else {
+          this.$uni.showToast(`请上传${item.type}或删除该材料`)
+          return false
+        }
+      })
+      if (!flag) return
+      console.log('upload')
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

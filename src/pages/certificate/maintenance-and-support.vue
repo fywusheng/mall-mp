@@ -77,133 +77,133 @@
 </template>
 
 <script>
-  import { validateIDCardNumber, validatePhoneNumber } from '@/utils/validation.js';
-  import api from '@/apis/index.js';
-  export default {
-    data() {
-      return {
-        // 与持证人关系列表
-        relationTypes: ['配偶', '子、女/媳', '孙子女/外孙子女', '兄弟姐妹', '其他'],
-        // 表单数据
-        params: {
-          relations: [],
-        },
-      };
-    },
-    onLoad() {
-      this.requestData();
-    },
-    methods: {
-      /**
+import { validateIDCardNumber, validatePhoneNumber } from '@/utils/validation.js'
+import api from '@/apis/index.js'
+export default {
+  data() {
+    return {
+      // 与持证人关系列表
+      relationTypes: ['配偶', '子、女/媳', '孙子女/外孙子女', '兄弟姐妹', '其他'],
+      // 表单数据
+      params: {
+        relations: []
+      }
+    }
+  },
+  onLoad() {
+    this.requestData()
+  },
+  methods: {
+    /**
        * 删除点击事件
        */
-      handleDeleteButtonClick(index) {
-        this.$uni.showConfirm({
-          content: '是否删除该条赡养扶养关系',
-          confirm: () => {
-            const supportId = this.params.relations[index].supportId;
-            if (supportId) {
-              api.deleteSuppertRelation({
-                data: { supportId: supportId },
-                success: () => {
-                  this.params.relations.splice(index, 1);
-                },
-              });
-            } else {
-              this.params.relations.splice(index, 1);
-            }
-          },
-        });
-      },
-      /**
+    handleDeleteButtonClick(index) {
+      this.$uni.showConfirm({
+        content: '是否删除该条赡养扶养关系',
+        confirm: () => {
+          const supportId = this.params.relations[index].supportId
+          if (supportId) {
+            api.deleteSuppertRelation({
+              data: { supportId: supportId },
+              success: () => {
+                this.params.relations.splice(index, 1)
+              }
+            })
+          } else {
+            this.params.relations.splice(index, 1)
+          }
+        }
+      })
+    },
+    /**
        * 添加点击事件
        */
-      handleAddButtonClick() {
-        this.params.relations.push({
-          name: '',
-          idCardNumber: '',
-          phoneNumber: '',
-          relation: '',
-        });
-      },
-      /**
+    handleAddButtonClick() {
+      this.params.relations.push({
+        name: '',
+        idCardNumber: '',
+        phoneNumber: '',
+        relation: ''
+      })
+    },
+    /**
        * 与持证人关系改变回调
        */
-      handleRelationTypeChange(e) {
-        const index = e.target.id;
-        const relation = this.relationTypes[e.detail.value];
-        this.params.relations[index].relation = relation;
-      },
-      /**
+    handleRelationTypeChange(e) {
+      const index = e.target.id
+      const relation = this.relationTypes[e.detail.value]
+      this.params.relations[index].relation = relation
+    },
+    /**
        * 保存点击事件
        */
-      handleSaveButtonClick() {
-        const flag = this.params.relations.every((item) => {
-          if (!item.name) {
-            this.$uni.showToast('请输入姓名');
-            return false;
+    handleSaveButtonClick() {
+      const flag = this.params.relations.every((item) => {
+        if (!item.name) {
+          this.$uni.showToast('请输入姓名')
+          return false
+        }
+        if (!item.idCardNumber) {
+          this.$uni.showToast('请输入身份证号')
+          return false
+        }
+        if (!validateIDCardNumber(item.idCardNumber)) {
+          this.$uni.showToast('身份证号格式错误，请重新输入')
+          return false
+        }
+        if (!item.phoneNumber) {
+          this.$uni.showToast('请输入手机号')
+          return false
+        }
+        if (!validatePhoneNumber(item.phoneNumber)) {
+          this.$uni.showToast('手机号格式错误，请重新输入')
+          return false
+        }
+        if (!item.relation) {
+          this.$uni.showToast('请选择与持证人关系')
+          return false
+        }
+        return true
+      })
+      if (!flag) return
+      const data = this.params.relations
+        .filter((item) => !item.supportId)
+        .map((item) => {
+          return {
+            supportName: item.name,
+            idCard: item.idCardNumber,
+            phone: item.phoneNumber,
+            supRelName: item.relation
           }
-          if (!item.idCardNumber) {
-            this.$uni.showToast('请输入身份证号');
-            return false;
-          }
-          if (!validateIDCardNumber(item.idCardNumber)) {
-            this.$uni.showToast('身份证号格式错误，请重新输入');
-            return false;
-          }
-          if (!item.phoneNumber) {
-            this.$uni.showToast('请输入手机号');
-            return false;
-          }
-          if (!validatePhoneNumber(item.phoneNumber)) {
-            this.$uni.showToast('手机号格式错误，请重新输入');
-            return false;
-          }
-          if (!item.relation) {
-            this.$uni.showToast('请选择与持证人关系');
-            return false;
-          }
-          return true;
-        });
-        if (!flag) return;
-        const data = this.params.relations
-          .filter((item) => !item.supportId)
-          .map((item) => {
-            return {
-              supportName: item.name,
-              idCard: item.idCardNumber,
-              phone: item.phoneNumber,
-              supRelName: item.relation,
-            };
-          });
-        if (data.length === 0) return;
-        api.addSuppertRelations({
-          data: { list: data },
-          success: () => {
-            this.$uni.showToast('保存成功');
-          },
-        });
-      },
-      /**
+        })
+      if (data.length === 0) return
+      api.addSuppertRelations({
+        data: { list: data },
+        success: () => {
+          this.$uni.showToast('保存成功')
+        }
+      })
+    },
+    /**
        * 请求数据
        */
-      requestData() {
-        api.getSuppertRelations({
-          success: (data) => {
-            this.params.relations = data.map((item) => {
-              return {
-                ...item,
-                name: item.supportName,
-                idCardNumber: item.idCard,
-                phoneNumber: item.phone,
-                relation: item.supRelName,
-              };
-            });
-          },
-        });
-      },
-    },
-  };
+    requestData() {
+      api.getSuppertRelations({
+        success: (data) => {
+          this.params.relations = data.map((item) => {
+            return {
+              ...item,
+              name: item.supportName,
+              idCardNumber: item.idCard,
+              phoneNumber: item.phone,
+              relation: item.supRelName
+            }
+          })
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

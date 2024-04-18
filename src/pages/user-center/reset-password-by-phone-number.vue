@@ -42,95 +42,95 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import { sendSMSCode } from '@/api/modules/sms.js';
-  import { validatePhoneNumber } from '@/utils/validation.js';
-  export default {
-    data() {
-      return {
-        title: '忘记密码',
-        // 发送验证码倒计时
-        seconds: 0,
-        // 表单数据
-        params: {
-          phoneNumber: '',
-          smsCode: '',
-        },
-      };
-    },
-    onLoad(e) {
-      if (e.phoneNumber) this.params.phoneNumber = e.phoneNumber;
-      if (e.title) this.title = e.title;
-    },
-    methods: {
-      /**
+import api from '@/apis/index.js'
+import { sendSMSCode } from '@/api/modules/sms.js'
+import { validatePhoneNumber } from '@/utils/validation.js'
+export default {
+  data() {
+    return {
+      title: '忘记密码',
+      // 发送验证码倒计时
+      seconds: 0,
+      // 表单数据
+      params: {
+        phoneNumber: '',
+        smsCode: ''
+      }
+    }
+  },
+  onLoad(e) {
+    if (e.phoneNumber) this.params.phoneNumber = e.phoneNumber
+    if (e.title) this.title = e.title
+  },
+  methods: {
+    /**
        * 发送验证码点击事件
        */
-      handleSencSMSCodeClick() {
-        if (!this.params.phoneNumber) {
-          this.$uni.showToast('请输入手机号');
-          return;
+    handleSencSMSCodeClick() {
+      if (!this.params.phoneNumber) {
+        this.$uni.showToast('请输入手机号')
+        return
+      }
+      if (!validatePhoneNumber(this.params.phoneNumber)) {
+        this.$uni.showToast('手机号格式错误，请重新输入')
+        return
+      }
+      sendSMSCode({
+        data: {
+          mobile: this.params.phoneNumber,
+          sceneFlag: '4',
+          source: 'source',
+          tmplId: '340701587045712968'
+        },
+        success: () => {
+          this.$uni.showToast('发送成功')
+          this.seconds = 60
+          this.timer = setInterval(() => {
+            this.seconds -= 1
+            if (this.seconds < 0) clearInterval(this.timer)
+          }, 1000)
         }
-        if (!validatePhoneNumber(this.params.phoneNumber)) {
-          this.$uni.showToast('手机号格式错误，请重新输入');
-          return;
-        }
-        sendSMSCode({
-          data: {
-            mobile: this.params.phoneNumber,
-            sceneFlag: '4',
-            source: 'source',
-            tmplId: '340701587045712968',
-          },
-          success: () => {
-            this.$uni.showToast('发送成功');
-            this.seconds = 60;
-            this.timer = setInterval(() => {
-              this.seconds -= 1;
-              if (this.seconds < 0) clearInterval(this.timer);
-            }, 1000);
-          },
-        });
-      },
-      /**
+      })
+    },
+    /**
        * 下一步点击事件
        */
-      handleNextStepClick() {
-        if (!this.params.phoneNumber) {
-          this.$uni.showToast('请输入手机号');
-          return;
+    handleNextStepClick() {
+      if (!this.params.phoneNumber) {
+        this.$uni.showToast('请输入手机号')
+        return
+      }
+      if (!validatePhoneNumber(this.params.phoneNumber)) {
+        this.$uni.showToast('手机号格式错误，请重新输入')
+        return
+      }
+      if (this.params.smsCode.length !== 6) {
+        this.$uni.showToast('请输入正确的验证码')
+        return
+      }
+      api.checkSMSCode({
+        data: {
+          mobile: this.params.phoneNumber,
+          code: this.params.smsCode,
+          sceneFlag: '4'
+        },
+        success: () => {
+          uni.navigateTo({
+            url: `/pages/user-center/reset-password?phoneNumber=${this.params.phoneNumber}&title=${this.title}`
+          })
         }
-        if (!validatePhoneNumber(this.params.phoneNumber)) {
-          this.$uni.showToast('手机号格式错误，请重新输入');
-          return;
-        }
-        if (this.params.smsCode.length !== 6) {
-          this.$uni.showToast('请输入正确的验证码');
-          return;
-        }
-        api.checkSMSCode({
-          data: {
-            mobile: this.params.phoneNumber,
-            code: this.params.smsCode,
-            sceneFlag: '4',
-          },
-          success: () => {
-            uni.navigateTo({
-              url: `/pages/user-center/reset-password?phoneNumber=${this.params.phoneNumber}&title=${this.title}`,
-            });
-          },
-        });
-      },
-      /**
+      })
+    },
+    /**
        * 通过身份证号找回点击事件
        */
-      handleResetByIDCardNumberClick() {
-        uni.redirectTo({
-          url: '/pages/user-center/reset-password-by-id-card-number',
-        });
-      },
-    },
-  };
+    handleResetByIDCardNumberClick() {
+      uni.redirectTo({
+        url: '/pages/user-center/reset-password-by-id-card-number'
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

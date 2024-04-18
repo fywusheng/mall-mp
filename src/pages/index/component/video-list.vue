@@ -132,301 +132,301 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
-  import uniPopup from '@/components/uni-popup/uni-popup.vue';
-  export default {
-    components: { uniPopup },
-    props: {
-      colName: {
-        type: String,
-        default: '老有所为',
-      },
-    },
-    data() {
-      return {
-        list: [],
-        stopPlay: false,
-        playIndex: '',
-        isPlay: false,
-        innerAudioContext: null,
-        mapState: {},
-        pageNum: 1,
-        loading: 1,
-        title: '',
-        arrayIndex: 0,
-        player: '',
-        videoBg: '',
-        current: '',
-        closeAudio: true,
-        showAudio: false,
-      };
-    },
+import api from '@/apis/index.js'
+import uniPopup from '@/components/uni-popup/uni-popup.vue'
+export default {
+  components: { uniPopup },
+  props: {
+    colName: {
+      type: String,
+      default: '老有所为'
+    }
+  },
+  data() {
+    return {
+      list: [],
+      stopPlay: false,
+      playIndex: '',
+      isPlay: false,
+      innerAudioContext: null,
+      mapState: {},
+      pageNum: 1,
+      loading: 1,
+      title: '',
+      arrayIndex: 0,
+      player: '',
+      videoBg: '',
+      current: '',
+      closeAudio: true,
+      showAudio: false
+    }
+  },
 
-    created() {
-      // setTimeout(() => {
-      //   this.selectArtiListByColId();
-      // }, 2000);
+  created() {
+    // setTimeout(() => {
+    //   this.selectArtiListByColId();
+    // }, 2000);
+  },
+  mounted() {
+    this.innerAudioContext = uni.createInnerAudioContext()
+    this.selectArtiListByColId()
+  },
+  methods: {
+    // 点赞or取消
+    handleGiveLike(item, index) {
+      if (!uni.getStorageSync('token')) {
+        uni.navigateTo({
+          url: '/pages/user-center/login'
+        })
+        return
+      }
+      const userInfo = uni.getStorageSync('userInfo')
+      if (this.list[index].giveAlikeFlag === '0') {
+        api.giveAlike({
+          data: {
+            contId: item.contId,
+            giveAlike: '1',
+            userId: userInfo.memberId
+          },
+          success: (data) => {
+            this.list[index].giveAlikeFlag = '1'
+            // this.$uni.showToast('点赞成功')
+          }
+        })
+      } else {
+        api.giveAlike({
+          data: {
+            contId: item.contId,
+            giveAlike: '0',
+            userId: userInfo.memberId
+          },
+          success: (data) => {
+            this.list[index].giveAlikeFlag = '0'
+            // this.$uni.showToast('取消成功')
+          }
+        })
+      }
     },
-    mounted() {
-      this.innerAudioContext = uni.createInnerAudioContext();
-      this.selectArtiListByColId();
-    },
-    methods: {
-      // 点赞or取消
-      handleGiveLike(item, index) {
-        if (!uni.getStorageSync('token')) {
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
-        }
-        const userInfo = uni.getStorageSync('userInfo');
-        if (this.list[index].giveAlikeFlag === '0') {
-          api.giveAlike({
-            data: {
-              contId: item.contId,
-              giveAlike: '1',
-              userId: userInfo.memberId,
-            },
-            success: (data) => {
-              this.list[index].giveAlikeFlag = '1';
-              // this.$uni.showToast('点赞成功')
-            },
-          });
-        } else {
-          api.giveAlike({
-            data: {
-              contId: item.contId,
-              giveAlike: '0',
-              userId: userInfo.memberId,
-            },
-            success: (data) => {
-              this.list[index].giveAlikeFlag = '0';
-              // this.$uni.showToast('取消成功')
-            },
-          });
-        }
-      },
-      /**
+    /**
        * 点击收藏按钮事件
        */
-      handleCollect(item, index) {
-        if (!uni.getStorageSync('token')) {
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
-        }
-        if (this.list[index].colFlag === '0') {
-          api.saveCollect({
-            data: {
-              colId: item.contId,
-              colType: '5',
-            },
-            success: (data) => {
-              this.list[index].colFlag = '1';
-              this.$uni.showToast('收藏成功');
-            },
-          });
-        } else {
-          api.updateCollect({
-            data: {
-              requestColSingleDTOList: [
-                {
-                  delFlag: '1',
-                  colId: item.contId,
-                },
-              ],
-            },
-            success: (data) => {
-              this.list[index].colFlag = '0';
-              this.$uni.showToast('取消收藏');
-            },
-          });
-        }
-      },
-      // 点击播放
-      saveplay(name) {
-        if (this.current && name != this.current) {
-          console.log('this.current: ', this.current);
-          console.log('name: ', name);
-
-          this.videoContext = uni.createVideoContext(this.current, this);
-
-          this.videoContext.pause();
-        }
-        this.current = name;
-      },
-      onPlayError(e) {
-        console.log('播放错误+++', e);
-      },
-      // 点击复制链接
-      handleCopyClick() {
-        uni.setClipboardData({
-          data: this.shareItem.mediaUrl,
-          success: (res) => {
-            console.log(res);
-            uni.getClipboardData({
-              success: (resp) => {
-                this.$refs.popup.close();
-                console.log('resp:', resp);
-                uni.showToast({
-                  title: '已复制到剪贴板',
-                });
-              },
-            });
-          },
-        });
-      },
-      // 点击分享
-      handleShareClick(item) {
-        if (!uni.getStorageSync('token')) {
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
-        }
-        this.shareItem = item;
-        this.$refs.popup.open();
-      },
-      // 关闭分享
-      handleCloseClick() {
-        this.$refs.popup.close();
-      },
-      triggleBg(data) {
-        this.closeAudio = data;
-      },
-      handleSwitchPlay() {
-        this.mapState[this.playIndex] = !this.mapState[this.playIndex];
-        if (this.mapState[this.playIndex]) {
-          this.stopPlay = true;
-          this.innerAudioContext.play();
-        } else {
-          this.stopPlay = false;
-          this.innerAudioContext.pause();
-        }
-      },
-      nextPlay() {
-        const index = this.arrayIndex + 1;
-        const item = this.list[index];
-        if (!item) {
-          this.arrayIndex = this.list.length - 1;
-          return;
-        }
-        this.handleNoimg(this.list[index], index);
-        this.title = item.ttl;
-        this.videoBg = item.imgs[0] ? item.imgs[0] : '';
-      },
-      prePlay() {
-        const index = this.arrayIndex - 1;
-        const item = this.list[index];
-        if (!item) {
-          this.arrayIndex = 0;
-          return;
-        }
-        this.handleNoimg(this.list[index], index);
-        this.title = item.ttl;
-        this.videoBg = item.imgs[0] ? item.imgs[0] : '';
-      },
-      handleClose() {
-        this.showAudio = false;
-        this.innerAudioContext.pause();
-        this.$set(this.mapState, this.playIndex, false);
-      },
-      goVedio() {
-        // this.$refs.confirmpop.open();
-      },
-      close() {
-        this.$refs.confirmpop.close();
-      },
-      destoryInstance() {
-        if (this.innerAudioContext) {
-          this.innerAudioContext.destroy();
-          this.$set(this.mapState, this.playIndex, false);
-        }
-      },
-      initRadio() {
-        this.innerAudioContext = uni.createInnerAudioContext();
-      },
-      handleNoimg(item, index) {
-        this.showAudio = true;
-        this.playIndex = item.contId;
-        this.arrayIndex = index;
-        this.title = item.ttl;
-        this.videoBg = item.imgs[0] ? item.imgs[0] : '';
-        if (this.mapState[item.contId]) {
-          const state = !this.mapState[item.contId];
-          this.$set(this.mapState, item.contId, state);
-        } else {
-          this.mapState = {};
-          this.$set(this.mapState, item.contId, true);
-        }
-        // #ifdef MP-WEIXIN
-        this.innerAudioContext.src = item.mediaUrl;
-        // #endif
-        // #ifdef MP-ALIPAY
-        this.innerAudioContext.src = item.youkuUrl || item.mediaUrl;
-        // #endif
-        if (this.mapState[item.contId]) {
-          if (this.player) {
-            this.player = null;
-          }
-          this.player = setTimeout(() => {
-            this.innerAudioContext.play();
-            this.stopPlay = true;
-          }, 500);
-        } else {
-          this.innerAudioContext.pause();
-          this.stopPlay = false;
-        }
-        this.innerAudioContext.onTimeUpdate(() => {
-          this.$refs.yaudio.process =
-            (this.innerAudioContext.currentTime / this.innerAudioContext.duration) * 100;
-        });
-        // 监听自然播放结束事件
-        this.innerAudioContext.onEnded((res) => {
-          console.log('监听自然播放结束事件');
-          this.nextPlay();
-        });
-      },
-      goDetail(e, tab, index) {
+    handleCollect(item, index) {
+      if (!uni.getStorageSync('token')) {
         uni.navigateTo({
-          url: `/pages/find/article-detail?contId=` + e.currentTarget.dataset.id,
-        });
-      },
-      // colId 后端要求任意值
-      selectArtiListByColId() {
-        const data = {
-          colId: '1',
-          // recomFlag: '1',
-          randomFlag: '1',
-          colName: this.colName,
-          pageNum: this.pageNum,
-          pageSize: 6,
-          userId: uni.getStorageSync('userInfo') ? uni.getStorageSync('userInfo').uactId : '',
-        };
-        api.selectArtiListByColId({
-          data,
-          success: (res) => {
-            if (res.list && res.list.length == 0) {
-              this.loading = 3;
-            } else if (res.list && res.list.length > 0) {
-              // this.loading = 2;
-              this.list = this.list.concat(res.list);
-              res.list.map((element) => {
-                element.play = false;
-              });
-              this.pageNum = this.pageNum + 1;
-              this.loading = 2;
-            }
+          url: '/pages/user-center/login'
+        })
+        return
+      }
+      if (this.list[index].colFlag === '0') {
+        api.saveCollect({
+          data: {
+            colId: item.contId,
+            colType: '5'
           },
-          fail: () => {
-            this.loading = 3;
+          success: (data) => {
+            this.list[index].colFlag = '1'
+            this.$uni.showToast('收藏成功')
+          }
+        })
+      } else {
+        api.updateCollect({
+          data: {
+            requestColSingleDTOList: [
+              {
+                delFlag: '1',
+                colId: item.contId
+              }
+            ]
           },
-        });
-      },
+          success: (data) => {
+            this.list[index].colFlag = '0'
+            this.$uni.showToast('取消收藏')
+          }
+        })
+      }
     },
-  };
+    // 点击播放
+    saveplay(name) {
+      if (this.current && name != this.current) {
+        console.log('this.current: ', this.current)
+        console.log('name: ', name)
+
+        this.videoContext = uni.createVideoContext(this.current, this)
+
+        this.videoContext.pause()
+      }
+      this.current = name
+    },
+    onPlayError(e) {
+      console.log('播放错误+++', e)
+    },
+    // 点击复制链接
+    handleCopyClick() {
+      uni.setClipboardData({
+        data: this.shareItem.mediaUrl,
+        success: (res) => {
+          console.log(res)
+          uni.getClipboardData({
+            success: (resp) => {
+              this.$refs.popup.close()
+              console.log('resp:', resp)
+              uni.showToast({
+                title: '已复制到剪贴板'
+              })
+            }
+          })
+        }
+      })
+    },
+    // 点击分享
+    handleShareClick(item) {
+      if (!uni.getStorageSync('token')) {
+        uni.navigateTo({
+          url: '/pages/user-center/login'
+        })
+        return
+      }
+      this.shareItem = item
+      this.$refs.popup.open()
+    },
+    // 关闭分享
+    handleCloseClick() {
+      this.$refs.popup.close()
+    },
+    triggleBg(data) {
+      this.closeAudio = data
+    },
+    handleSwitchPlay() {
+      this.mapState[this.playIndex] = !this.mapState[this.playIndex]
+      if (this.mapState[this.playIndex]) {
+        this.stopPlay = true
+        this.innerAudioContext.play()
+      } else {
+        this.stopPlay = false
+        this.innerAudioContext.pause()
+      }
+    },
+    nextPlay() {
+      const index = this.arrayIndex + 1
+      const item = this.list[index]
+      if (!item) {
+        this.arrayIndex = this.list.length - 1
+        return
+      }
+      this.handleNoimg(this.list[index], index)
+      this.title = item.ttl
+      this.videoBg = item.imgs[0] ? item.imgs[0] : ''
+    },
+    prePlay() {
+      const index = this.arrayIndex - 1
+      const item = this.list[index]
+      if (!item) {
+        this.arrayIndex = 0
+        return
+      }
+      this.handleNoimg(this.list[index], index)
+      this.title = item.ttl
+      this.videoBg = item.imgs[0] ? item.imgs[0] : ''
+    },
+    handleClose() {
+      this.showAudio = false
+      this.innerAudioContext.pause()
+      this.$set(this.mapState, this.playIndex, false)
+    },
+    goVedio() {
+      // this.$refs.confirmpop.open();
+    },
+    close() {
+      this.$refs.confirmpop.close()
+    },
+    destoryInstance() {
+      if (this.innerAudioContext) {
+        this.innerAudioContext.destroy()
+        this.$set(this.mapState, this.playIndex, false)
+      }
+    },
+    initRadio() {
+      this.innerAudioContext = uni.createInnerAudioContext()
+    },
+    handleNoimg(item, index) {
+      this.showAudio = true
+      this.playIndex = item.contId
+      this.arrayIndex = index
+      this.title = item.ttl
+      this.videoBg = item.imgs[0] ? item.imgs[0] : ''
+      if (this.mapState[item.contId]) {
+        const state = !this.mapState[item.contId]
+        this.$set(this.mapState, item.contId, state)
+      } else {
+        this.mapState = {}
+        this.$set(this.mapState, item.contId, true)
+      }
+      // #ifdef MP-WEIXIN
+      this.innerAudioContext.src = item.mediaUrl
+      // #endif
+      // #ifdef MP-ALIPAY
+      this.innerAudioContext.src = item.youkuUrl || item.mediaUrl
+      // #endif
+      if (this.mapState[item.contId]) {
+        if (this.player) {
+          this.player = null
+        }
+        this.player = setTimeout(() => {
+          this.innerAudioContext.play()
+          this.stopPlay = true
+        }, 500)
+      } else {
+        this.innerAudioContext.pause()
+        this.stopPlay = false
+      }
+      this.innerAudioContext.onTimeUpdate(() => {
+        this.$refs.yaudio.process =
+            (this.innerAudioContext.currentTime / this.innerAudioContext.duration) * 100
+      })
+      // 监听自然播放结束事件
+      this.innerAudioContext.onEnded((res) => {
+        console.log('监听自然播放结束事件')
+        this.nextPlay()
+      })
+    },
+    goDetail(e, tab, index) {
+      uni.navigateTo({
+        url: `/pages/find/article-detail?contId=` + e.currentTarget.dataset.id
+      })
+    },
+    // colId 后端要求任意值
+    selectArtiListByColId() {
+      const data = {
+        colId: '1',
+        // recomFlag: '1',
+        randomFlag: '1',
+        colName: this.colName,
+        pageNum: this.pageNum,
+        pageSize: 6,
+        userId: uni.getStorageSync('userInfo') ? uni.getStorageSync('userInfo').uactId : ''
+      }
+      api.selectArtiListByColId({
+        data,
+        success: (res) => {
+          if (res.list && res.list.length == 0) {
+            this.loading = 3
+          } else if (res.list && res.list.length > 0) {
+            // this.loading = 2;
+            this.list = this.list.concat(res.list)
+            res.list.map((element) => {
+              element.play = false
+            })
+            this.pageNum = this.pageNum + 1
+            this.loading = 2
+          }
+        },
+        fail: () => {
+          this.loading = 3
+        }
+      })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .audio {

@@ -2,16 +2,16 @@
 	<view class="mescroll-uni-warp">
 		<scroll-view :id="viewId" class="mescroll-uni" :class="{'mescroll-uni-fixed':isFixed}" :style="{'height':scrollHeight,'padding-top':padTop,'padding-bottom':padBottom,'top':fixedTop,'bottom':fixedBottom}" :scroll-top="scrollTop" :scroll-with-animation="scrollAnim" @scroll="scroll" :scroll-y='scrollable' :enable-back-to-top="true" :throttle="false">
 			<view class="mescroll-uni-content mescroll-render-touch"
-			@touchstart="wxsBiz.touchstartEvent" 
-			@touchmove="wxsBiz.touchmoveEvent" 
-			@touchend="wxsBiz.touchendEvent" 
+			@touchstart="wxsBiz.touchstartEvent"
+			@touchmove="wxsBiz.touchmoveEvent"
+			@touchend="wxsBiz.touchendEvent"
 			@touchcancel="wxsBiz.touchendEvent"
 			:change:prop="wxsBiz.propObserver"
 			:prop="wxsProp">
-						
+
 				<!-- 状态栏 -->
 				<view v-if="topbar&&statusBarHeight" class="mescroll-topbar" :style="{height: statusBarHeight+'px', background: topbar}"></view>
-							
+
 				<view class="mescroll-wxs-content" :style="{'transform': translateY, 'transition': transition}" :change:prop="wxsBiz.callObserver" :prop="callProp">
 					<!-- 下拉加载区域 (支付宝小程序子组件传参给子子组件仍报单项数据流的异常,暂时不通过mescroll-down组件实现)-->
 					<!-- <mescroll-down :option="mescroll.optDown" :type="downLoadType"></mescroll-down> -->
@@ -42,12 +42,12 @@
 						<view v-if="upLoadType===2" class="upwarp-nodata">{{ mescroll.optUp.textNoMore }}</view>
 					</view>
 				</view>
-				
+
 				<!-- 底部是否偏移TabBar的高度(仅H5端生效) -->
 				<!-- #ifdef H5 -->
 				<view v-if="bottombar && windowBottom>0" class="mescroll-bottombar" :style="{height: windowBottom+'px'}"></view>
 				<!-- #endif -->
-				
+
 				<!-- 适配iPhoneX -->
 				<view v-if="safearea" class="mescroll-safearea"></view>
 			</view>
@@ -84,7 +84,7 @@
 	import WxsMixin from '../../mescroll-uni/wxs/mixins.js';
 	import mescrollI18n from '../../mescroll-uni/mescroll-i18n.js';
 	import GlobalOption from './mescroll-uni-option.js';
-	
+
 	export default {
 		mixins: [WxsMixin],
 		components: {
@@ -337,7 +337,7 @@
 			vm.mescroll.i18n = i18nOption;
 			// init回调mescroll对象
 			vm.$emit('init', vm.mescroll);
-			
+
 			// 设置高度
 			const sys = uni.getSystemInfoSync();
 			if(sys.windowTop) vm.windowTop = sys.windowTop;
@@ -394,7 +394,7 @@
 					}, t)
 				}
 			})
-			
+
 			// 具体的界面如果不配置up.toTop.safearea,则取本vue的safearea值
 			if (vm.up && vm.up.toTop && vm.up.toTop.safearea != null) {} else {
 				vm.mescroll.optUp.toTop.safearea = vm.safearea;

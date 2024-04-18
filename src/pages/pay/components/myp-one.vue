@@ -17,97 +17,97 @@
 </template>
 
 <script>
-	// 支持使用 v-model
-	// 支持使用refs
-	// 打个广告：
-	// 全新的 UI 组件来袭：mypUI-nvue页面，uni-app模式，一套组件对应mp/h5/app
-	export default {
-		name: 'mypOneInput',
-		props: {
-			// 支持外部提供，支持使用v-model
-			// 支持通过value来做清空
-			value: {
-				type: String,
-				default: ''
-			},
-			// 4/6
-			maxlength: {
-				type: Number,
-				default: 4
-			},
-			autoFocus: {
-				type: Boolean,
-				default: false
-			},
-			isPwd: {
-				type: Boolean,
-				default: false
-			},
-			// middle-middle line, bottom-bottom line, box-square box
-			type: {
-				type: String,
-				default: "bottom"
-			}
-		},
-		watch: {
-			maxlength: {
-				immediate: true,
-				handler: function(newV) {
-					if (newV === 6) {
-						this.ranges = [1, 2, 3, 4, 5, 6]
-					} else {
-						this.ranges = [1, 2, 3, 4]
-					}
-				}
-			},
-			value: {
-				immediate: true,
-				handler: function(newV) {
-					if (newV !== this.inputValue) {
-						this.inputValue = newV
-						this.toMakeAndCheck(newV)
-					}
-				}
-			}
-		},
-		data() {
-			return {
-				inputValue: '',
-				codeIndex: 1,
-				codeArr: [],
-				ranges: [1, 2, 3, 4]
-			}
-		},
-		methods: {
-			getVal(e) {
-				const val = e.detail.value
-				this.inputValue = val
-				this.$emit('input', val)
-				this.toMakeAndCheck(val)
-			},
-			toMakeAndCheck(val) {
-				const arr = val.split('')
-				this.codeIndex = arr.length + 1
-				this.codeArr = arr
-				if (this.codeIndex > Number(this.maxlength)) {
-					this.$emit('finish', this.codeArr.join(''))
-				}
-			},
-			// refs 时不再提供 v-model 支持
-			// 支持使用refs来设置value
-			// 没有提供数据保护与检测，自己在外面对数据进行检测保护
-			set(val) {
-				this.inputValue = val
-				this.toMakeAndCheck(val)
-			},
-			// 支持使用refs来清空
-			clear() {
-				this.inputValue = ''
-				this.codeArr = []
-				this.codeIndex = 1
-			}
-		}
-	}
+// 支持使用 v-model
+// 支持使用refs
+// 打个广告：
+// 全新的 UI 组件来袭：mypUI-nvue页面，uni-app模式，一套组件对应mp/h5/app
+export default {
+  name: 'mypOneInput',
+  props: {
+    // 支持外部提供，支持使用v-model
+    // 支持通过value来做清空
+    value: {
+      type: String,
+      default: ''
+    },
+    // 4/6
+    maxlength: {
+      type: Number,
+      default: 4
+    },
+    autoFocus: {
+      type: Boolean,
+      default: false
+    },
+    isPwd: {
+      type: Boolean,
+      default: false
+    },
+    // middle-middle line, bottom-bottom line, box-square box
+    type: {
+      type: String,
+      default: 'bottom'
+    }
+  },
+  watch: {
+    maxlength: {
+      immediate: true,
+      handler: function(newV) {
+        if (newV === 6) {
+          this.ranges = [1, 2, 3, 4, 5, 6]
+        } else {
+          this.ranges = [1, 2, 3, 4]
+        }
+      }
+    },
+    value: {
+      immediate: true,
+      handler: function(newV) {
+        if (newV !== this.inputValue) {
+          this.inputValue = newV
+          this.toMakeAndCheck(newV)
+        }
+      }
+    }
+  },
+  data() {
+    return {
+      inputValue: '',
+      codeIndex: 1,
+      codeArr: [],
+      ranges: [1, 2, 3, 4]
+    }
+  },
+  methods: {
+    getVal(e) {
+      const val = e.detail.value
+      this.inputValue = val
+      this.$emit('input', val)
+      this.toMakeAndCheck(val)
+    },
+    toMakeAndCheck(val) {
+      const arr = val.split('')
+      this.codeIndex = arr.length + 1
+      this.codeArr = arr
+      if (this.codeIndex > Number(this.maxlength)) {
+        this.$emit('finish', this.codeArr.join(''))
+      }
+    },
+    // refs 时不再提供 v-model 支持
+    // 支持使用refs来设置value
+    // 没有提供数据保护与检测，自己在外面对数据进行检测保护
+    set(val) {
+      this.inputValue = val
+      this.toMakeAndCheck(val)
+    },
+    // 支持使用refs来清空
+    clear() {
+      this.inputValue = ''
+      this.codeArr = []
+      this.codeIndex = 1
+    }
+  }
+}
 </script>
 
 <style scoped>

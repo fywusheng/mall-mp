@@ -73,176 +73,176 @@
 </template>
 
 <script>
-  import NavigationBar from '../../components/common/navigation-bar.vue';
-  import api from '@/apis/index.js';
-  import Modal from '@/components/common/modal.vue';
-  export default {
-    components: { NavigationBar, Modal },
-    data() {
-      return {
-        // 导航栏高度
-        // #ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        // #endif
-        // #ifdef MP-ALIPAY
-        navigationBarHeight:
+import NavigationBar from '../../components/common/navigation-bar.vue'
+import api from '@/apis/index.js'
+import Modal from '@/components/common/modal.vue'
+export default {
+  components: { NavigationBar, Modal },
+  data() {
+    return {
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        // #endif
-        // 选中的绑定方式下标
-        selectedTypeIndex: -1,
-        // 模态框参数
-        modal: {
-          title: '',
-          text: '',
-          modImg: 1,
-        },
-        // 自定义弹框内容
-        modal: {
-          cancelText: '放弃绑定',
-          confirmText: '立即绑定',
-        },
-      };
-    },
-    onLoad(options) {
-      // if (options.family === '1') {
-      // } else {
-      //   this.findFamilyMemberList()
-      // }
-      uni.setStorageSync('reflash', true);
-    },
-    methods: {
-      imgRead() {
-        const url = `${ENV.H5}/#/agreement?type=4&relation=1`;
-        uni.navigateTo({
-          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-        });
+      // #endif
+      // 选中的绑定方式下标
+      selectedTypeIndex: -1,
+      // 模态框参数
+      modal: {
+        title: '',
+        text: '',
+        modImg: 1
       },
-      /**
+      // 自定义弹框内容
+      modal: {
+        cancelText: '放弃绑定',
+        confirmText: '立即绑定'
+      }
+    }
+  },
+  onLoad(options) {
+    // if (options.family === '1') {
+    // } else {
+    //   this.findFamilyMemberList()
+    // }
+    uni.setStorageSync('reflash', true)
+  },
+  methods: {
+    imgRead() {
+      const url = `${ENV.H5}/#/agreement?type=4&relation=1`
+      uni.navigateTo({
+        url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
+      })
+    },
+    /**
        * 获取亲情账号列表
        */
-      findFamilyMemberList() {
-        return new Promise((resolve, reject) => {
-          api.findFamilyMemberList({
-            data: {
-              uactId: uni.getStorageSync('userInfo').uactId,
-              pageNum: 1,
-              pageSize: 20,
-            },
-            showLoading: true,
-            success: (res) => {
-              resolve();
-              console.log('接口所得res：', res);
-              // if (res.list) {
-              //   this.list = res.list
-              // }
-              if (res.list.length > 0) {
-                uni.redirectTo({
-                  url: '/pages/family-account/index',
-                });
-              }
+    findFamilyMemberList() {
+      return new Promise((resolve, reject) => {
+        api.findFamilyMemberList({
+          data: {
+            uactId: uni.getStorageSync('userInfo').uactId,
+            pageNum: 1,
+            pageSize: 20
+          },
+          showLoading: true,
+          success: (res) => {
+            resolve()
+            console.log('接口所得res：', res)
+            // if (res.list) {
+            //   this.list = res.list
+            // }
+            if (res.list.length > 0) {
+              uni.redirectTo({
+                url: '/pages/family-account/index'
+              })
+            }
 
-              //
-            },
-          });
-        });
-      },
-      /**
+            //
+          }
+        })
+      })
+    },
+    /**
        * 添加亲友点击事件
        */
-      handleAddButtonClick() {
-        uni.navigateTo({
-          url: '/pages/family-account/add?type=' + this.selectedTypeIndex,
-        });
-      },
-      /**
+    handleAddButtonClick() {
+      uni.navigateTo({
+        url: '/pages/family-account/add?type=' + this.selectedTypeIndex
+      })
+    },
+    /**
        * 是否已添加过情亲
        */
-      findUserIsAddSup() {
-        api.findUserIsAddSup({
-          data: {
-            selectType: '1',
-          },
-          success: (res) => {
-            // 已添加过返回true ,未添加返回false
-            if (res) {
-              uni.redirectTo({
-                url: '/pages/family-account/index',
-              });
-            }
-          },
-        });
-      },
-      /**
+    findUserIsAddSup() {
+      api.findUserIsAddSup({
+        data: {
+          selectType: '1'
+        },
+        success: (res) => {
+          // 已添加过返回true ,未添加返回false
+          if (res) {
+            uni.redirectTo({
+              url: '/pages/family-account/index'
+            })
+          }
+        }
+      })
+    },
+    /**
        * 自定义导航栏返回点击事件
        */
-      handleNavigationBack() {
-        // uni.navigateBack()
-        // 是否已添加过情亲
-        const data = {
-          selectType: '1',
-        };
-        api.findUserIsAddSup({
-          data,
-          success: (res) => {
-            // this.canBind = res
-            console.log('是否已添加过亲情:', res);
-            if (!res) {
-              this.modal = {
-                cancelText: '放弃绑定',
-                confirmText: '立即绑定',
-              };
-              this.$refs.popup.open();
-            } else {
-              uni.navigateBack();
-              // uni.reLaunch({
-              //   url: "/pages/index/index?index=2",
-              // });
+    handleNavigationBack() {
+      // uni.navigateBack()
+      // 是否已添加过情亲
+      const data = {
+        selectType: '1'
+      }
+      api.findUserIsAddSup({
+        data,
+        success: (res) => {
+          // this.canBind = res
+          console.log('是否已添加过亲情:', res)
+          if (!res) {
+            this.modal = {
+              cancelText: '放弃绑定',
+              confirmText: '立即绑定'
             }
-          },
-        });
+            this.$refs.popup.open()
+          } else {
+            uni.navigateBack()
+            // uni.reLaunch({
+            //   url: "/pages/index/index?index=2",
+            // });
+          }
+        }
+      })
 
-        // if (!this.canBind) {
-        //   this.$uni.showConfirm({
-        //     content:
-        //       '您确定不添加赡养扶养关系吗？这将会影响您在本平台享有的权益和服务',
-        //     confirmText: '立刻添加',
-        //     cancelText: '放弃添加',
-        //     cancel: () => {
-        //       uni.navigateBack()
-        //     },
-        //   })
-        // }else{
-        //   uni.navigateBack()
-        // }
-        // this.$uni.showToast('拦截到返回事件')
-      },
-      /**
+      // if (!this.canBind) {
+      //   this.$uni.showConfirm({
+      //     content:
+      //       '您确定不添加赡养扶养关系吗？这将会影响您在本平台享有的权益和服务',
+      //     confirmText: '立刻添加',
+      //     cancelText: '放弃添加',
+      //     cancel: () => {
+      //       uni.navigateBack()
+      //     },
+      //   })
+      // }else{
+      //   uni.navigateBack()
+      // }
+      // this.$uni.showToast('拦截到返回事件')
+    },
+    /**
        * 绑定方式是否选中的图标路径
        */
-      getStateIconURL(index) {
-        if (index === this.selectedTypeIndex) {
-          return 'http://192.168.1.187:10088/static/common/icon-common-selected.png';
-        } else {
-          return 'http://192.168.1.187:10088/static/common/icon-common-unselect.png';
-        }
-      },
-      // 点击确定
-      confirm() {
-        this.$refs.popup.close();
-      },
-      // 点击取消
-      cancel() {
-        this.$refs.popup.close();
-        uni.reLaunch({
-          url: '/pages/index/index?index=4',
-        });
-      },
-      // 监听事件
-      event(e) {
-        console.log('监听事件:', e);
-      },
+    getStateIconURL(index) {
+      if (index === this.selectedTypeIndex) {
+        return 'http://192.168.1.187:10088/static/common/icon-common-selected.png'
+      } else {
+        return 'http://192.168.1.187:10088/static/common/icon-common-unselect.png'
+      }
     },
-  };
+    // 点击确定
+    confirm() {
+      this.$refs.popup.close()
+    },
+    // 点击取消
+    cancel() {
+      this.$refs.popup.close()
+      uni.reLaunch({
+        url: '/pages/index/index?index=4'
+      })
+    },
+    // 监听事件
+    event(e) {
+      console.log('监听事件:', e)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

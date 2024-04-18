@@ -54,115 +54,115 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
-  import right from '@/pages/life/components/right.vue';
-  import modalKnow from '@/pages/life/components/modal-know.vue';
-  export default {
-    components: { right, modalKnow },
-    data() {
-      return {
-        list: [],
-        hotelName: '',
-        hotelPhoto: '',
-        address: '',
-        distance: '',
-        lat: '',
-        lon: '',
-        item: {},
-        picArray: [],
-        picConent: [],
-        type: 2,
-      };
+import api from '@/apis/index.js'
+import right from '@/pages/life/components/right.vue'
+import modalKnow from '@/pages/life/components/modal-know.vue'
+export default {
+  components: { right, modalKnow },
+  data() {
+    return {
+      list: [],
+      hotelName: '',
+      hotelPhoto: '',
+      address: '',
+      distance: '',
+      lat: '',
+      lon: '',
+      item: {},
+      picArray: [],
+      picConent: [],
+      type: 2
+    }
+  },
+  created() {},
+  filters: {
+    setDistance(s) {
+      s = Number(s / 1000)
+      if (s.toFixed(2) < 1) {
+        return s.toFixed(2) * 1000 + '米'
+      } else {
+        return s.toFixed(2) + '公里'
+      }
     },
-    created() {},
-    filters: {
-      setDistance(s) {
-        s = Number(s / 1000);
-        if (s.toFixed(2) < 1) {
-          return s.toFixed(2) * 1000 + '米';
-        } else {
-          return s.toFixed(2) + '公里';
-        }
-      },
-      formaterMoney(v) {
-        return (v / 100).toFixed(2);
-      },
+    formaterMoney(v) {
+      return (v / 100).toFixed(2)
+    }
+  },
+  onShareAppMessage() {
+    return {
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
+    // const params = {
+    //    address:this.address,
+    //    hotelName:this.hotelName,
+    //    hotelPhoto:this.hotelPhoto,
+    //    lat:this.lat,
+    //    lon:this.lon,
+    //    distance:this.distance
+    //  }
+    //   return {
+    //       title:'酒店详情',
+    //       path:"/pages/life/hotelHomeDetail?params="+`${encodeURIComponent(JSON.stringify(params))}`,
+    //    };
+  },
+  onLoad(option) {
+    const data = JSON.parse(decodeURIComponent(option.params))
+    console.log('===onload---', data)
+    this.address = data.address
+    this.hotelPhoto = data.hotelPhoto
+    this.hotelName = data.hotelName
+    this.hotelId = data.hotelId
+    this.lat = data.lat
+    this.lon = data.lon
+    this.distance = data.distance
+    this.queryHotelsinsert()
+  },
+  methods: {
+    goMap() {
+      const params = {
+        name: this.hotelName,
+        longitude: this.lon - 0,
+        latitude: this.lat - 0,
+        distance: this.distance,
+        address: this.address,
+        hotelPhoto: this.hotelPhoto
+      }
+      uni.navigateTo({
+        url: '/pages/life/mapShow?params=' + `${encodeURIComponent(JSON.stringify(params))}`
+      })
     },
-    onShareAppMessage() {
-      return {
-        title: '',
-        path: '/pages/index/index?index=0',
-      };
-      // const params = {
-      //    address:this.address,
-      //    hotelName:this.hotelName,
-      //    hotelPhoto:this.hotelPhoto,
-      //    lat:this.lat,
-      //    lon:this.lon,
-      //    distance:this.distance
-      //  }
-      //   return {
-      //       title:'酒店详情',
-      //       path:"/pages/life/hotelHomeDetail?params="+`${encodeURIComponent(JSON.stringify(params))}`,
-      //    };
-    },
-    onLoad(option) {
-      const data = JSON.parse(decodeURIComponent(option.params));
-      console.log('===onload---', data);
-      this.address = data.address;
-      this.hotelPhoto = data.hotelPhoto;
-      this.hotelName = data.hotelName;
-      this.hotelId = data.hotelId;
-      this.lat = data.lat;
-      this.lon = data.lon;
-      this.distance = data.distance;
-      this.queryHotelsinsert();
-    },
-    methods: {
-      goMap() {
-        const params = {
-          name: this.hotelName,
-          longitude: this.lon - 0,
-          latitude: this.lat - 0,
-          distance: this.distance,
-          address: this.address,
-          hotelPhoto: this.hotelPhoto,
-        };
-        uni.navigateTo({
-          url: '/pages/life/mapShow?params=' + `${encodeURIComponent(JSON.stringify(params))}`,
-        });
-      },
-      hostDetail(item) {
-        uni.redirectTo({
-          url:
+    hostDetail(item) {
+      uni.redirectTo({
+        url:
             '/pages/life/hotelDetail?hotelDiscountId=' +
             item.hotelDiscountId +
             '&change=1' +
             '&hotelName=' +
             this.hotelName +
             '&hotelId=' +
-            this.hotelId,
-        });
-      },
-      clickItem(type) {
-        if (type == 1) {
-          this.$refs.notice.open();
-        }
-        // TODO 住宿没有 暂时不坐type切换
-        // this.type = type
-        this.type = 2;
-      },
-      queryHotelsinsert() {
-        api.queryHotelsinsert({
-          data: { hotelName: this.hotelName },
-          success: (res) => {
-            this.list = res;
-          },
-          fail: (res) => {},
-        });
-      },
+            this.hotelId
+      })
     },
-  };
+    clickItem(type) {
+      if (type == 1) {
+        this.$refs.notice.open()
+      }
+      // TODO 住宿没有 暂时不坐type切换
+      // this.type = type
+      this.type = 2
+    },
+    queryHotelsinsert() {
+      api.queryHotelsinsert({
+        data: { hotelName: this.hotelName },
+        success: (res) => {
+          this.list = res
+        },
+        fail: (res) => {}
+      })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .hotelDetail {

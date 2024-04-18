@@ -41,115 +41,115 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
-  import UniNumberBox from './components/uni-number-box.vue';
-  export default {
-    components: { UniNumberBox },
-    data() {
-      return {
-        hotelDiscountId: '',
-        type: 1,
-        isShowPrice: 1,
-        changeP: '',
-        //  总金额
-        totalPrice: '',
-        //  数量
-        count: 1,
-        //  商品信息
-        item: {},
-      };
-    },
-    created() {},
-    onLoad(option) {
-      //  option.change = '1'
-      //  option.hotelDiscountId = '1483050766292750405'
+import api from '@/apis/index.js'
+import UniNumberBox from './components/uni-number-box.vue'
+export default {
+  components: { UniNumberBox },
+  data() {
+    return {
+      hotelDiscountId: '',
+      type: 1,
+      isShowPrice: 1,
+      changeP: '',
+      //  总金额
+      totalPrice: '',
+      //  数量
+      count: 1,
+      //  商品信息
+      item: {}
+    }
+  },
+  created() {},
+  onLoad(option) {
+    //  option.change = '1'
+    //  option.hotelDiscountId = '1483050766292750405'
 
-      this.hotelDiscountId = option.hotelDiscountId;
-      console.log('====接受---', option);
-      if (option.change) {
-        this.changeP = option.change;
+    this.hotelDiscountId = option.hotelDiscountId
+    console.log('====接受---', option)
+    if (option.change) {
+      this.changeP = option.change
+    }
+    if (option.isShowPrice) {
+      this.isShowPrice = option.isShowPrice
+    }
+    if (option.type) {
+      this.type = option.type
+    }
+    if (option.hotelName) {
+      this.hotelName = option.hotelName
+      this.hotelId = option.hotelId
+    }
+    this.queryByDiscountId()
+  },
+  filters: {
+    formatMoney(money) {
+      if (!money) return ''
+      return (money / 100).toFixed(2)
+    }
+  },
+  methods: {
+    buy() {
+      // this.$refs.notice.open()
+      const uactId = uni.getStorageSync('userInfo').uactId
+      const params = {
+        uactId: uactId,
+        supermarketThumbnail: this.item.hotelDiscountMainPhoto,
+        supermarketId: this.hotelId,
+        supermarketName: this.hotelName,
+        productId: this.hotelDiscountId,
+        orderSource: 4,
+        productPrice: this.item.hotelDiscountPrice,
+        payNumber: this.count
       }
-      if (option.isShowPrice) {
-        this.isShowPrice = option.isShowPrice;
-      }
-      if (option.type) {
-        this.type = option.type;
-      }
-      if (option.hotelName) {
-        this.hotelName = option.hotelName;
-        this.hotelId = option.hotelId;
-      }
-      this.queryByDiscountId();
-    },
-    filters: {
-      formatMoney(money) {
-        if (!money) return '';
-        return (money / 100).toFixed(2);
-      },
-    },
-    methods: {
-      buy() {
-        // this.$refs.notice.open()
-        const uactId = uni.getStorageSync('userInfo').uactId;
-        const params = {
-          uactId: uactId,
-          supermarketThumbnail: this.item.hotelDiscountMainPhoto,
-          supermarketId: this.hotelId,
-          supermarketName: this.hotelName,
-          productId: this.hotelDiscountId,
-          orderSource: 4,
-          productPrice: this.item.hotelDiscountPrice,
-          payNumber: this.count,
-        };
-        api.putHotelOrder({
-          data: params,
-          success: (res) => {
-            console.log(res, '订单成功');
-            const url = `${ENV.H5}/#/checkstand?cashId=${res}`;
-            // #ifdef MP-ALIPAY
-            uni.reLaunch({
-              url: `/pages/common/webpage?url=${url}`,
-            });
-            // #endif
+      api.putHotelOrder({
+        data: params,
+        success: (res) => {
+          console.log(res, '订单成功')
+          const url = `${ENV.H5}/#/checkstand?cashId=${res}`
+          // #ifdef MP-ALIPAY
+          uni.reLaunch({
+            url: `/pages/common/webpage?url=${url}`
+          })
+          // #endif
 
-            // #ifdef MP-WEIXIN
-            uni.reLaunch({
-              url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-            });
-            // #endif
-          },
-        });
-        console.log(params, '参数=======');
-      },
-      getTotalPrice(newVal) {
-        this.totalPrice = this.item.hotelDiscountPrice * newVal;
-      },
-      clickItem(type) {
-        this.type = type;
-      },
-      queryByDiscountId() {
-        api.queryByDiscountId({
-          data: { hotelDiscountId: this.hotelDiscountId, isTransaction: this.changeP },
-          success: (res) => {
-            this.item = res;
-            this.totalPrice = this.count * res.hotelDiscountPrice;
-            //  this.hotelDiscountDesc = res.hotelDiscountDesc
-            //  const hotelList = res.hotelDiscountContent
-            //  this.picArray =  hotelList.split(',')
-            //  let listpic = hotelList.split(',')
-
-            //  listpic.push(res.hotelDiscountRule)
-            //  this.picConent = listpic.slice(1,listpic.length)
-            //  let str = this.change(this.hotelDiscountDesc)
-            //   parse(str,(e,newstring)=>{
-            //     this.strings = newstring
-            //   })
-          },
-          fail: (res) => {},
-        });
-      },
+          // #ifdef MP-WEIXIN
+          uni.reLaunch({
+            url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
+          })
+          // #endif
+        }
+      })
+      console.log(params, '参数=======')
     },
-  };
+    getTotalPrice(newVal) {
+      this.totalPrice = this.item.hotelDiscountPrice * newVal
+    },
+    clickItem(type) {
+      this.type = type
+    },
+    queryByDiscountId() {
+      api.queryByDiscountId({
+        data: { hotelDiscountId: this.hotelDiscountId, isTransaction: this.changeP },
+        success: (res) => {
+          this.item = res
+          this.totalPrice = this.count * res.hotelDiscountPrice
+          //  this.hotelDiscountDesc = res.hotelDiscountDesc
+          //  const hotelList = res.hotelDiscountContent
+          //  this.picArray =  hotelList.split(',')
+          //  let listpic = hotelList.split(',')
+
+          //  listpic.push(res.hotelDiscountRule)
+          //  this.picConent = listpic.slice(1,listpic.length)
+          //  let str = this.change(this.hotelDiscountDesc)
+          //   parse(str,(e,newstring)=>{
+          //     this.strings = newstring
+          //   })
+        },
+        fail: (res) => {}
+      })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .submitOrder {

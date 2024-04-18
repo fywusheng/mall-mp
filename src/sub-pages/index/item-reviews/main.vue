@@ -99,41 +99,41 @@
 </template>
 
 <script>
-  export default {
-    name: 'COMMENT_LIST',
-    props: {},
-    data() {
-      return {
-        showPopup: true,
-        dataList: [],
-        pageNum: 1,
-        pageSize: 10,
-        disabled: true,
-        loading: true,
-      };
-    },
+export default {
+  name: 'COMMENT_LIST',
+  props: {},
+  data() {
+    return {
+      showPopup: true,
+      dataList: [],
+      pageNum: 1,
+      pageSize: 10,
+      disabled: true,
+      loading: true
+    }
+  },
 
-    methods: {
-      async loadData() {
-        const result = await Axios.get('', {
-          params: {
-            method: 'product.getCommentList',
-            productId: this.$root.$mp.query.id,
-            pageNum: this.pageNum++,
-            pageSize: this.pageSize,
-          },
-        });
-        if (result.result.result == 1) {
-          this.dataList = this.dataList.concat(result.data.result || []);
-          this.disabled = result.data.pageNum >= result.data.totalPage;
-        } else {
-          wx.showToast(result.message);
+  methods: {
+    async loadData() {
+      const result = await Axios.get('', {
+        params: {
+          method: 'product.getCommentList',
+          productId: this.$root.$mp.query.id,
+          pageNum: this.pageNum++,
+          pageSize: this.pageSize
         }
-        this.loading = false;
-      },
-    },
-    async mounted() {
-      this.loadData();
-    },
-  };
+      })
+      if (result.result.result == 1) {
+        this.dataList = this.dataList.concat(result.data.result || [])
+        this.disabled = result.data.pageNum >= result.data.totalPage
+      } else {
+        wx.showToast(result.message)
+      }
+      this.loading = false
+    }
+  },
+  async mounted() {
+    this.loadData()
+  }
+}
 </script>

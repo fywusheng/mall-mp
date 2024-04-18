@@ -41,90 +41,90 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import dayjs from 'dayjs';
-  export default {
-    data() {
-      return {
-        // 消息类型
-        type: null,
-        // 消息列表
-        list: [],
-      };
-    },
-    onLoad(e) {
-      if (e.type) {
-        this.$uni.setTitle(e.title);
-        this.type = e.type;
-        this.requestData();
-      } else {
-        this.getOpenerEventChannel().on('didOpenPageFinish', (data) => {
-          const { title, type } = data;
-          this.$uni.setTitle(title);
-          this.type = type;
-          this.requestData();
-        });
-      }
-    },
-    onPullDownRefresh() {
-      this.requestData();
-    },
-    onReachBottom() {
-      if (this.list.length % 10 === 0) {
-        this.requestData(this.list.length / 10 + 1);
-      }
-    },
-    methods: {
-      /**
+import api from '@/apis/index.js'
+import dayjs from 'dayjs'
+export default {
+  data() {
+    return {
+      // 消息类型
+      type: null,
+      // 消息列表
+      list: []
+    }
+  },
+  onLoad(e) {
+    if (e.type) {
+      this.$uni.setTitle(e.title)
+      this.type = e.type
+      this.requestData()
+    } else {
+      this.getOpenerEventChannel().on('didOpenPageFinish', (data) => {
+        const { title, type } = data
+        this.$uni.setTitle(title)
+        this.type = type
+        this.requestData()
+      })
+    }
+  },
+  onPullDownRefresh() {
+    this.requestData()
+  },
+  onReachBottom() {
+    if (this.list.length % 10 === 0) {
+      this.requestData(this.list.length / 10 + 1)
+    }
+  },
+  methods: {
+    /**
        * 消息点击事件
        */
-      handleItemClick(index) {
-        const item = this.list[index];
-        uni.navigateTo({
-          url: `/pages/user-center/message-detail?id=${item.msgId}`,
-          success: () => {
-            // 手动调用已读单条消息接口
-            api.changeMessageState({
-              showsLoading: false,
-              data: {
-                msgId: item.msgId,
-                channel: 'app',
-              },
-              success: () => {
-                // 调用成功后手动刷新当前页面数据并通知上一页面刷新数据
-                this.list.splice(index, 1, { ...item, readStas: 1 });
-                uni.$emit('didMessageStateChanged');
-              },
-            });
-          },
-        });
-      },
-      /**
+    handleItemClick(index) {
+      const item = this.list[index]
+      uni.navigateTo({
+        url: `/pages/user-center/message-detail?id=${item.msgId}`,
+        success: () => {
+          // 手动调用已读单条消息接口
+          api.changeMessageState({
+            showsLoading: false,
+            data: {
+              msgId: item.msgId,
+              channel: 'app'
+            },
+            success: () => {
+              // 调用成功后手动刷新当前页面数据并通知上一页面刷新数据
+              this.list.splice(index, 1, { ...item, readStas: 1 })
+              uni.$emit('didMessageStateChanged')
+            }
+          })
+        }
+      })
+    },
+    /**
        * 请求数据
        */
-      requestData(page = 1) {
-        api.getMessageList({
-          data: {
-            msgType: this.type,
-            channel: 'app',
-            pageNo: page,
-            pageSize: '10',
-          },
-          success: (data) => {
-            this.list = page === 1 ? data.list : this.list.concat(data.list);
-            if (this.list.length > 0) {
-              this.list.forEach((item) => {
-                item.time = dayjs(item.sendTime).format('YYYY-MM-DD HH:mm:ss');
-              });
-            }
-          },
-          complete: () => {
-            uni.stopPullDownRefresh();
-          },
-        });
-      },
-    },
-  };
+    requestData(page = 1) {
+      api.getMessageList({
+        data: {
+          msgType: this.type,
+          channel: 'app',
+          pageNo: page,
+          pageSize: '10'
+        },
+        success: (data) => {
+          this.list = page === 1 ? data.list : this.list.concat(data.list)
+          if (this.list.length > 0) {
+            this.list.forEach((item) => {
+              item.time = dayjs(item.sendTime).format('YYYY-MM-DD HH:mm:ss')
+            })
+          }
+        },
+        complete: () => {
+          uni.stopPullDownRefresh()
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

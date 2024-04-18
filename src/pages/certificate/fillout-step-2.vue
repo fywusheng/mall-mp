@@ -73,122 +73,122 @@
 </template>
 
 <script>
-  import StepProgressBar from './components/step-progress-bar.vue';
-  import { validatePhoneNumber } from '@/utils/validation.js';
-  import api from '@/apis/index.js';
-  export default {
-    components: { StepProgressBar },
-    data() {
-      return {
-        params: {
-          contactList: [{ name: '', phoneNumber: '' }],
-        },
-      };
-    },
-    onLoad() {
-      this.setData();
+import StepProgressBar from './components/step-progress-bar.vue'
+import { validatePhoneNumber } from '@/utils/validation.js'
+import api from '@/apis/index.js'
+export default {
+  components: { StepProgressBar },
+  data() {
+    return {
+      params: {
+        contactList: [{ name: '', phoneNumber: '' }]
+      }
+    }
+  },
+  onLoad() {
+    this.setData()
 
-      uni.$on('didFilloutStepBack', this.handleFilloutStepBack);
+    uni.$on('didFilloutStepBack', this.handleFilloutStepBack)
+  },
+  methods: {
+    checkConect() {
+      const list = this.params.contactList
+      console.log('====list=', list)
+      const userInfor = uni.getStorageSync('userInfo')
+      const _array = []
+      const _phone = []
+      console.log('===容器---', _phone)
+      return list.some((item, index, array) => {
+        if (item.name === userInfor.psnName || item.phoneNumber === userInfor.tel) {
+          this.$uni.showToast('不能添加自己为紧急联系人')
+          return true
+        }
+        if (!_array.includes(item.name)) {
+          _array.push(item.name)
+        } else {
+          this.$uni.showToast('紧急联系人名字不能相同')
+          return true
+        }
+        if (!_phone.includes(item.phoneNumber)) {
+          _phone.push(item.phoneNumber)
+        } else {
+          this.$uni.showToast('紧急联系人手机号不能相同')
+          return true
+        }
+      })
     },
-    methods: {
-      checkConect() {
-        const list = this.params.contactList;
-        console.log('====list=', list);
-        const userInfor = uni.getStorageSync('userInfo');
-        let _array = [];
-        let _phone = [];
-        console.log('===容器---', _phone);
-        return list.some((item, index, array) => {
-          if (item.name === userInfor.psnName || item.phoneNumber === userInfor.tel) {
-            this.$uni.showToast('不能添加自己为紧急联系人');
-            return true;
-          }
-          if (!_array.includes(item.name)) {
-            _array.push(item.name);
-          } else {
-            this.$uni.showToast('紧急联系人名字不能相同');
-            return true;
-          }
-          if (!_phone.includes(item.phoneNumber)) {
-            _phone.push(item.phoneNumber);
-          } else {
-            this.$uni.showToast('紧急联系人手机号不能相同');
-            return true;
-          }
-        });
-      },
-      handleFilloutStepBack(params) {
-        this.params = params;
-      },
-      /**
+    handleFilloutStepBack(params) {
+      this.params = params
+    },
+    /**
        * 删除点击事件
        */
-      handleDeleteClick(index) {
-        this.params.contactList.splice(index, 1);
-      },
-      /**
+    handleDeleteClick(index) {
+      this.params.contactList.splice(index, 1)
+    },
+    /**
        * 添加点击事件
        */
-      handleAddClick() {
-        this.params.contactList.push({ name: '', phoneNumber: '' });
-      },
-      /**
+    handleAddClick() {
+      this.params.contactList.push({ name: '', phoneNumber: '' })
+    },
+    /**
        * 上一步点击事件
        */
-      handlePreviousStepClick() {
-        uni.$emit('didFilloutStepBack', this.params);
-        uni.navigateBack();
-      },
-      /**
+    handlePreviousStepClick() {
+      uni.$emit('didFilloutStepBack', this.params)
+      uni.navigateBack()
+    },
+    /**
        * 下一步点击事件  先直接处理申领动作  改动点 //TODO
        */
-      handleNextStepClick() {
-        const ce = this.checkConect();
-        if (!this.checkInput() && ce == false) return;
-        if (this.checkInput() && !this.checkConect()) {
-          uni.navigateTo({
-            url: '/pages/certificate/fillout-step-3',
-            success: (res) => {
-              res.eventChannel.emit('didOpenPageFinish', this.params);
-            },
-          });
-        }
-      },
+    handleNextStepClick() {
+      const ce = this.checkConect()
+      if (!this.checkInput() && ce == false) return
+      if (this.checkInput() && !this.checkConect()) {
+        uni.navigateTo({
+          url: '/pages/certificate/fillout-step-3',
+          success: (res) => {
+            res.eventChannel.emit('didOpenPageFinish', this.params)
+          }
+        })
+      }
+    },
 
-      /**
+    /**
        * 设置数据 TODO 查看初始上一步的值
        */
-      setData() {
-        const eventChannel = this.getOpenerEventChannel();
-        if (!eventChannel.on) return;
-        eventChannel.on('didOpenPageFinish', (data) => {
-          console.log('==拿到前一步的数据--', data);
-          this.params = { ...this.params, ...data };
-          console.log('==拿到前一步的数据3333--', this.params);
-        });
-      },
-      /**
+    setData() {
+      const eventChannel = this.getOpenerEventChannel()
+      if (!eventChannel.on) return
+      eventChannel.on('didOpenPageFinish', (data) => {
+        console.log('==拿到前一步的数据--', data)
+        this.params = { ...this.params, ...data }
+        console.log('==拿到前一步的数据3333--', this.params)
+      })
+    },
+    /**
        * 输入信息校验
        */
-      checkInput() {
-        return this.params.contactList.every((item) => {
-          if (!item.name) {
-            this.$uni.showToast('请输入联系人姓名');
-            return false;
-          }
-          if (!item.phoneNumber) {
-            this.$uni.showToast('请输入联系电话');
-            return false;
-          }
-          if (!validatePhoneNumber(item.phoneNumber)) {
-            this.$uni.showToast('联系电话格式不正确');
-            return false;
-          }
-          return true;
-        });
-      },
-    },
-  };
+    checkInput() {
+      return this.params.contactList.every((item) => {
+        if (!item.name) {
+          this.$uni.showToast('请输入联系人姓名')
+          return false
+        }
+        if (!item.phoneNumber) {
+          this.$uni.showToast('请输入联系电话')
+          return false
+        }
+        if (!validatePhoneNumber(item.phoneNumber)) {
+          this.$uni.showToast('联系电话格式不正确')
+          return false
+        }
+        return true
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

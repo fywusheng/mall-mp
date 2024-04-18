@@ -111,106 +111,106 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
-  import api from '@/apis/index.js';
-  import generator from '@/utils/code-generator.js';
-  export default {
-    components: {},
-    data() {
-      return {
-        // 订单信息
-        info: null,
-        // 选中tab
-        tabIndex: '0',
-        // 订单id
-        orderId: '',
-      };
+import { mapState } from 'vuex'
+import api from '@/apis/index.js'
+import generator from '@/utils/code-generator.js'
+export default {
+  components: {},
+  data() {
+    return {
+      // 订单信息
+      info: null,
+      // 选中tab
+      tabIndex: '0',
+      // 订单id
+      orderId: ''
+    }
+  },
+  onLoad(e) {
+    this.orderId = e.orderId
+    // let info = JSON.parse(decodeURIComponent())
+    this.getOrderInfo()
+    // this.drawCanvas()
+  },
+  computed: {
+    ...mapState({
+      userInfo: (state) => state.user.userInfo
+    })
+  },
+  methods: {
+    // 申请开票
+    handleApplyClick() {
+      // let info = JSON.stringify(this.info)
+      api.getOrderInfo({
+        data: {
+          orderId: this.orderId
+        },
+        success: (data) => {
+          switch (data.orderStatus) {
+            case '3':
+            case '5':
+              if (data.invoiceStatus !== '2') {
+                uni.navigateTo({
+                  url: '/pages/supermarket/apply-invoice?info=' + JSON.stringify(data)
+                })
+              } else {
+                this.$uni.showToast('该笔订单无法申请开票，请联系客服400-0610-100')
+              }
+              break
+            case '6':
+              if (data.invoiceStatus === '1') {
+                uni.navigateTo({
+                  url: '/pages/supermarket/apply-invoice?info=' + JSON.stringify(data)
+                })
+              } else {
+                this.$uni.showToast('该笔订单已退款，无法申请开票')
+              }
+              break
+            case '7':
+              if (data.invoiceStatus === '1') {
+                uni.navigateTo({
+                  url: '/pages/supermarket/apply-invoice?info=' + JSON.stringify(data)
+                })
+              } else {
+                this.$uni.showToast('当前正在退款中，无法申请开票')
+              }
+              break
+          }
+        }
+      })
     },
-    onLoad(e) {
-      this.orderId = e.orderId;
-      // let info = JSON.parse(decodeURIComponent())
-      this.getOrderInfo();
-      // this.drawCanvas()
+    // 查看开票
+    handleInvoiceClick() {
+      uni.navigateTo({
+        url: '/pages/supermarket/invoice-info?invoiceId=' + this.info.invoiceId
+      })
     },
-    computed: {
-      ...mapState({
-        userInfo: (state) => state.user.userInfo,
-      }),
+    //  订单详情
+    getOrderInfo() {
+      api.getOrderInfo({
+        data: {
+          orderId: this.orderId
+        },
+        success: (data) => {
+          console.log('订单详情:', data)
+          this.info = data || {}
+          // this.$nextTick(() => {
+          //   this.drawCanvas();
+          // });
+        }
+      })
     },
-    methods: {
-      // 申请开票
-      handleApplyClick() {
-        // let info = JSON.stringify(this.info)
-        api.getOrderInfo({
-          data: {
-            orderId: this.orderId,
-          },
-          success: (data) => {
-            switch (data.orderStatus) {
-              case '3':
-              case '5':
-                if (data.invoiceStatus !== '2') {
-                  uni.navigateTo({
-                    url: '/pages/supermarket/apply-invoice?info=' + JSON.stringify(data),
-                  });
-                } else {
-                  this.$uni.showToast('该笔订单无法申请开票，请联系客服400-0610-100');
-                }
-                break;
-              case '6':
-                if (data.invoiceStatus === '1') {
-                  uni.navigateTo({
-                    url: '/pages/supermarket/apply-invoice?info=' + JSON.stringify(data),
-                  });
-                } else {
-                  this.$uni.showToast('该笔订单已退款，无法申请开票');
-                }
-                break;
-              case '7':
-                if (data.invoiceStatus === '1') {
-                  uni.navigateTo({
-                    url: '/pages/supermarket/apply-invoice?info=' + JSON.stringify(data),
-                  });
-                } else {
-                  this.$uni.showToast('当前正在退款中，无法申请开票');
-                }
-                break;
-            }
-          },
-        });
-      },
-      // 查看开票
-      handleInvoiceClick() {
-        uni.navigateTo({
-          url: '/pages/supermarket/invoice-info?invoiceId=' + this.info.invoiceId,
-        });
-      },
-      //  订单详情
-      getOrderInfo() {
-        api.getOrderInfo({
-          data: {
-            orderId: this.orderId,
-          },
-          success: (data) => {
-            console.log('订单详情:', data);
-            this.info = data || {};
-            // this.$nextTick(() => {
-            //   this.drawCanvas();
-            // });
-          },
-        });
-      },
-      drawCanvas() {
-        if (!this.info.refundCode) return;
-        generator.barcode('bar-code', this, this.info.refundCode, 562, 128);
-      },
-    },
-    filters: {
-      formaterMoney(v) {
-        return (v / 100).toFixed(2);
-      },
-    },
-  };
+    drawCanvas() {
+      if (!this.info.refundCode) return
+      generator.barcode('bar-code', this, this.info.refundCode, 562, 128)
+    }
+  },
+  filters: {
+    formaterMoney(v) {
+      return (v / 100).toFixed(2)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -42,33 +42,33 @@
 </template>
 
 <script>
-  import dayjs from 'dayjs';
-  import { desensitizeName, desensitizeInfo } from '@/utils/desensitization.js';
-  export default {
-    data() {
-      return {
-        // 扫描结果
-        info: {},
-      };
+import dayjs from 'dayjs'
+import { desensitizeName, desensitizeInfo } from '@/utils/desensitization.js'
+export default {
+  data() {
+    return {
+      // 扫描结果
+      info: {}
+    }
+  },
+  filters: {
+    // 姓名过滤器, 用于姓名脱敏
+    nameFilter(value) {
+      return desensitizeName(value)
     },
-    filters: {
-      // 姓名过滤器, 用于姓名脱敏
-      nameFilter(value) {
-        return desensitizeName(value);
-      },
-      // 身份证号过滤器, 用于身份证号脱敏
-      idCardNumberFilter(value) {
-        return desensitizeInfo(value);
-      },
-    },
-    onLoad(e) {
-      if (e.info) {
-        this.info = JSON.parse(e.info);
-        const time = this.info.check_time;
-        this.info.time = dayjs(time).format('YYYY年MM月DD日 HH:mm:ss');
-      }
-    },
-  };
+    // 身份证号过滤器, 用于身份证号脱敏
+    idCardNumberFilter(value) {
+      return desensitizeInfo(value)
+    }
+  },
+  onLoad(e) {
+    if (e.info) {
+      this.info = JSON.parse(e.info)
+      const time = this.info.check_time
+      this.info.time = dayjs(time).format('YYYY年MM月DD日 HH:mm:ss')
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

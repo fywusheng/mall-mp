@@ -7,7 +7,7 @@
       <!-- #ifdef MP-ALIPAY -->
        <canvas :canvas-id="canvasId" class="canvas" :id="canvasId"/>
       <!-- #endif -->
-      <!-- #ifdef MP-WEIXIN -->   
+      <!-- #ifdef MP-WEIXIN -->
       <view v-if="canvasId == 'leftPanel'">
          <view class="cirle"></view>
       </view>
@@ -34,77 +34,77 @@
 export default {
   props: {
     info: Object,
-    canvasId: String,
+    canvasId: String
   },
   computed: {
     background() {
       return this.info
         ? `linear-gradient(to right, ${this.info.color2}, ${this.info.color1});`
-        : "white";
-    },
+        : 'white'
+    }
   },
   watch: {
     info() {
-        this.draw();
-    },
+      this.draw()
+    }
   },
   methods: {
     /**
      * 按钮点击事件
      */
     handleButtonClick() {
-      this.$emit("click");
+      this.$emit('click')
     },
     /**
      * 绘制环形图
      */
     draw() {
-      const context = uni.createCanvasContext(this.canvasId, this);
+      const context = uni.createCanvasContext(this.canvasId, this)
 
       // 画灰色底环
-      context.beginPath();
+      context.beginPath()
       context.arc(
         this.convert(100),
         this.convert(100),
         this.convert(100) - 6,
         0,
         2 * Math.PI
-      );
-      context.setLineWidth(12);
-      context.setStrokeStyle("#f2f2f2");
-      context.stroke();
+      )
+      context.setLineWidth(12)
+      context.setStrokeStyle('#f2f2f2')
+      context.stroke()
 
       // 计算角度
-      const degree = (Number(this.info.percent) / 100).toFixed(2) * 2 * Math.PI;
+      const degree = (Number(this.info.percent) / 100).toFixed(2) * 2 * Math.PI
       // 设置渐变色
       const gradient = context.createLinearGradient(
         0,
         0,
         this.convert(100),
         this.convert(100)
-      );
-      gradient.addColorStop(0, this.info.color1);
-      gradient.addColorStop(1, this.info.color2);
+      )
+      gradient.addColorStop(0, this.info.color1)
+      gradient.addColorStop(1, this.info.color2)
       // 画进度条
-      context.beginPath();
+      context.beginPath()
       context.arc(
         this.convert(100),
         this.convert(100),
         this.convert(100) - 6,
         Math.PI / 2,
         degree + Math.PI / 2
-      );
-      context.setLineWidth(12);
-      context.setLineCap("round");
-      context.setStrokeStyle(gradient);
-      context.stroke();
-      context.draw();
+      )
+      context.setLineWidth(12)
+      context.setLineCap('round')
+      context.setStrokeStyle(gradient)
+      context.stroke()
+      context.draw()
     },
     convert(length) {
-      return Math.round((uni.getSystemInfoSync().windowWidth * length) / 750);
-    },
-  },
-};
+      return Math.round((uni.getSystemInfoSync().windowWidth * length) / 750)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

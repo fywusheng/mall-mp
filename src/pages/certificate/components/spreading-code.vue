@@ -139,335 +139,335 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import generator from '@/utils/code-generator.js';
-  import { debounce } from '@/utils/utils.js';
-  import { desensitizeName, desensitizeInfo } from '@/utils/desensitization.js';
-  import ModalKnow from '@/pages/certificate/components/modal-know.vue';
-  export default {
-    components: { ModalKnow },
-    props: {},
-    data() {
-      return {
-        closeModalS: false,
-        // 卡状态1：已授权已激活 2：未授权已激活 3：未激活 4.审核中 5.审核失败 6.其它渠道已经领取，在老龄委使用，需要进行用户授权
-        cardStatus: 3,
-        // 实名状态 0:未认证 1:实名、实人认证 2：实名认证
-        crtfStas: 0,
-        // 是否展示条形码大图
-        showsBarCode: false,
-        // 是否展示二维码大图
-        showsQRCode: false,
-        // 自动刷新定时器
-        timer: null,
-        // 用户信息
-        userInfo: {},
+import api from '@/apis/index.js'
+import generator from '@/utils/code-generator.js'
+import { debounce } from '@/utils/utils.js'
+import { desensitizeName, desensitizeInfo } from '@/utils/desensitization.js'
+import ModalKnow from '@/pages/certificate/components/modal-know.vue'
+export default {
+  components: { ModalKnow },
+  props: {},
+  data() {
+    return {
+      closeModalS: false,
+      // 卡状态1：已授权已激活 2：未授权已激活 3：未激活 4.审核中 5.审核失败 6.其它渠道已经领取，在老龄委使用，需要进行用户授权
+      cardStatus: 3,
+      // 实名状态 0:未认证 1:实名、实人认证 2：实名认证
+      crtfStas: 0,
+      // 是否展示条形码大图
+      showsBarCode: false,
+      // 是否展示二维码大图
+      showsQRCode: false,
+      // 自动刷新定时器
+      timer: null,
+      // 用户信息
+      userInfo: {},
 
-        info: {}, //展码的数据
+      info: {}, // 展码的数据
 
-        showNumber: false, //展示条形码数字
+      showNumber: false, // 展示条形码数字
 
-        sureSave: false, //是否点击我知道
+      sureSave: false, // 是否点击我知道
 
-        twoSecond: false, //刚刷新老年码未过两秒
-      };
+      twoSecond: false // 刚刷新老年码未过两秒
+    }
+  },
+  filters: {
+    // 姓名过滤器, 用于姓名脱敏
+    nameFilter(value) {
+      return desensitizeName(value) || ''
     },
-    filters: {
-      // 姓名过滤器, 用于姓名脱敏
-      nameFilter(value) {
-        return desensitizeName(value) || '';
-      },
-      // 身份证号过滤器, 用于身份证号脱敏
-      idCardNumberFilter(value) {
-        return desensitizeInfo(value) || '';
-      },
-    },
-    onLoad() {},
-    mounted() {
-      this.$refs.noticeModal.open();
-      //模拟条码注释,后续删除
-      // generator.barcode('bar-code', this, '11111888888889999999', 560, 128)
-      // generator.qrcode('qr-code', this, '11111888888889999999', 500, 500)
+    // 身份证号过滤器, 用于身份证号脱敏
+    idCardNumberFilter(value) {
+      return desensitizeInfo(value) || ''
+    }
+  },
+  onLoad() {},
+  mounted() {
+    this.$refs.noticeModal.open()
+    // 模拟条码注释,后续删除
+    // generator.barcode('bar-code', this, '11111888888889999999', 560, 128)
+    // generator.qrcode('qr-code', this, '11111888888889999999', 500, 500)
 
-      // this.initData()
-      //cardStatus == 1 && !showsBarCode && !showsQRCode
-      this.cardStatus = 1;
-      this.showsBarCode = false;
-      this.showsQRCode = false;
-      this.userInfo.psnName = '赵宝华';
-      this.userInfo.idCard = '150**********102X';
-      this.info.ecQrCode = '11118888899999';
-    },
-    onReady() {
-      // this.handleRefreshClick();
-    },
-    onUnload() {
-      // 退出页面时销毁定时器
-      if (this.timer) {
-        console.log('执行onUnload');
-        clearInterval(this.timer);
-        this.timer = null;
+    // this.initData()
+    // cardStatus == 1 && !showsBarCode && !showsQRCode
+    this.cardStatus = 1
+    this.showsBarCode = false
+    this.showsQRCode = false
+    this.userInfo.psnName = '赵宝华'
+    this.userInfo.idCard = '150**********102X'
+    this.info.ecQrCode = '11118888899999'
+  },
+  onReady() {
+    // this.handleRefreshClick();
+  },
+  onUnload() {
+    // 退出页面时销毁定时器
+    if (this.timer) {
+      console.log('执行onUnload')
+      clearInterval(this.timer)
+      this.timer = null
+    }
+  },
+  destroyed() {
+    if (this.timer) {
+      console.log('执行onUnload')
+      clearInterval(this.timer)
+      this.timer = null
+    }
+  },
+  watch: {
+    info(n, o) {
+      if (this.showsBarCode && this.info.ecQrCode) {
+        generator.barcode('bar-code-big', this, this.info.ecQrCode, 1120, 256)
+      }
+      if (this.showsQRCode && this.info.ecQrCode) {
+        generator.qrcode('qr-code-big', this, this.info.ecQrCode, 720, 720)
+      }
+    }
+  },
+  methods: {
+    closeModal(flag) {
+      if (flag == 1) {
+        this.closeModalS = true
+        this.$nextTick(() => {
+          this.handleRefreshClick_demo()
+        })
+        console.log('===关闭监听---', this.closeModalS)
       }
     },
-    destroyed() {
-      if (this.timer) {
-        console.log('执行onUnload');
-        clearInterval(this.timer);
-        this.timer = null;
-      }
-    },
-    watch: {
-      info(n, o) {
-        if (this.showsBarCode && this.info.ecQrCode) {
-          generator.barcode('bar-code-big', this, this.info.ecQrCode, 1120, 256);
-        }
-        if (this.showsQRCode && this.info.ecQrCode) {
-          generator.qrcode('qr-code-big', this, this.info.ecQrCode, 720, 720);
-        }
-      },
-    },
-    methods: {
-      closeModal(flag) {
-        if (flag == 1) {
-          this.closeModalS = true;
-          this.$nextTick(() => {
-            this.handleRefreshClick_demo();
-          });
-          console.log('===关闭监听---', this.closeModalS);
-        }
-      },
-      /**
+    /**
        * 展示大条形码
        */
-      handleShowsBarCode() {
-        this.sureSave = false;
-        this.showsBarCode = true;
-      },
-      /**
+    handleShowsBarCode() {
+      this.sureSave = false
+      this.showsBarCode = true
+    },
+    /**
        * 关闭大条形码
        */
-      closeBarCode() {
-        this.sureSave = false;
-        this.showsBarCode = false;
-        setTimeout(() => {
-          generator.barcode('bar-code', this, this.info.ecQrCode, 560, 128);
-          generator.qrcode('qr-code', this, this.info.ecQrCode, 500, 500);
-        }, 100);
-      },
-      /**
+    closeBarCode() {
+      this.sureSave = false
+      this.showsBarCode = false
+      setTimeout(() => {
+        generator.barcode('bar-code', this, this.info.ecQrCode, 560, 128)
+        generator.qrcode('qr-code', this, this.info.ecQrCode, 500, 500)
+      }, 100)
+    },
+    /**
        * 关闭大二维码
        */
-      closeQRCode() {
-        this.showsQRCode = false;
-        setTimeout(() => {
-          generator.barcode('bar-code', this, this.info.ecQrCode, 560, 128);
-          generator.qrcode('qr-code', this, this.info.ecQrCode, 500, 500);
-        }, 100);
-      },
+    closeQRCode() {
+      this.showsQRCode = false
+      setTimeout(() => {
+        generator.barcode('bar-code', this, this.info.ecQrCode, 560, 128)
+        generator.qrcode('qr-code', this, this.info.ecQrCode, 500, 500)
+      }, 100)
+    },
 
-      /**
+    /**
        * 点击我知道了
        */
-      handleSave() {
-        this.sureSave = true;
-        this.showsBarCode = true;
-        setTimeout(() => {
-          generator.barcode('bar-code-big', this, this.info.ecQrCode, 1120, 256);
-        }, 100);
-      },
-      /**
+    handleSave() {
+      this.sureSave = true
+      this.showsBarCode = true
+      setTimeout(() => {
+        generator.barcode('bar-code-big', this, this.info.ecQrCode, 1120, 256)
+      }, 100)
+    },
+    /**
        * 展示大二维码
        */
-      handleShowsQRCode() {
-        this.showsQRCode = true;
-        setTimeout(() => {
-          generator.qrcode('qr-code-big', this, this.info.ecQrCode, 720, 720);
-        }, 100);
-      },
-      //handleRefreshClick  特殊刷新 TODO 最后删除
-      handleRefreshClick_demo() {
-        generator.barcode('bar-code', this, '11111888888889999999' + Math.random() * 10, 560, 128);
-        generator.qrcode('qr-code', this, '11111888888889999999' + Math.random() * 10, 500, 500);
-      },
-      /**
+    handleShowsQRCode() {
+      this.showsQRCode = true
+      setTimeout(() => {
+        generator.qrcode('qr-code-big', this, this.info.ecQrCode, 720, 720)
+      }, 100)
+    },
+    // handleRefreshClick  特殊刷新 TODO 最后删除
+    handleRefreshClick_demo() {
+      generator.barcode('bar-code', this, '11111888888889999999' + Math.random() * 10, 560, 128)
+      generator.qrcode('qr-code', this, '11111888888889999999' + Math.random() * 10, 500, 500)
+    },
+    /**
        * 刷新点击事件
        */
-      handleRefreshClick: debounce(function () {
-        this.setTimer();
-        this.requestData();
-      }, 200),
-      /**
+    handleRefreshClick: debounce(function () {
+      this.setTimer()
+      this.requestData()
+    }, 200),
+    /**
        * 立即领取点击事件
        */
-      handleGetButtonClick() {
-        //TODO  去掉立即领取 亮证区域
-        // this.$uni.showToast('功能建设中，敬请期待。')
-        this.$emit('getLicense');
-      },
-      /**
+    handleGetButtonClick() {
+      // TODO  去掉立即领取 亮证区域
+      // this.$uni.showToast('功能建设中，敬请期待。')
+      this.$emit('getLicense')
+    },
+    /**
        * 请求数据   展二维码
        */
-      requestData() {
-        console.log('');
-        const userInfo = uni.getStorageSync('userInfo');
-        //TODO 之后放开
-        // if (!userInfo.authCode) {
-        //   return false
-        // }
-        //展二维码
-        api.getQRCodeInfo({
-          showsLoading: false,
-          data: {
-            appId: '53928a083adb4a7dad2eecf05564873f',
-            authCode: userInfo.authCode,
-          },
-          success: (data) => {
-            this.info = data;
-            generator.barcode('bar-code', this, '11111888888889999999', 560, 128);
-            generator.qrcode('qr-code', this, '11111888888889999999', 500, 500);
-            // generator.barcode('bar-code', this, data.ecQrCode, 560, 128)
-            // generator.qrcode('qr-code', this, data.ecQrCode, 500, 500)
-            this.twoSecond = true;
-            setTimeout(() => {
-              this.twoSecond = false;
-            });
-            // generator.qrcode('qr-code-big', this, data.ecQrCode, 720, 720)
-          },
-        });
-      },
-      /**
+    requestData() {
+      console.log('')
+      const userInfo = uni.getStorageSync('userInfo')
+      // TODO 之后放开
+      // if (!userInfo.authCode) {
+      //   return false
+      // }
+      // 展二维码
+      api.getQRCodeInfo({
+        showsLoading: false,
+        data: {
+          appId: '53928a083adb4a7dad2eecf05564873f',
+          authCode: userInfo.authCode
+        },
+        success: (data) => {
+          this.info = data
+          generator.barcode('bar-code', this, '11111888888889999999', 560, 128)
+          generator.qrcode('qr-code', this, '11111888888889999999', 500, 500)
+          // generator.barcode('bar-code', this, data.ecQrCode, 560, 128)
+          // generator.qrcode('qr-code', this, data.ecQrCode, 500, 500)
+          this.twoSecond = true
+          setTimeout(() => {
+            this.twoSecond = false
+          })
+          // generator.qrcode('qr-code-big', this, data.ecQrCode, 720, 720)
+        }
+      })
+    },
+    /**
        * 设置定时器
        */
-      setTimer() {
-        if (this.timer) {
-          clearInterval(this.timer);
-        }
-        this.timer = setInterval(() => {
-          this.requestData();
-        }, 60000);
-      },
-      /**
+    setTimer() {
+      if (this.timer) {
+        clearInterval(this.timer)
+      }
+      this.timer = setInterval(() => {
+        this.requestData()
+      }, 60000)
+    },
+    /**
        * 获取用户信息
        */
-      getUserInfo() {
-        return new Promise((resolve, reject) => {
-          api.getUserInfo({
-            data: {
-              accessToken: uni.getStorageSync('token'),
-            },
-            success: (data) => {
-              resolve(data);
-            },
-            fail: (error) => {
-              reject(error);
-            },
-          });
-        });
-      },
-      async initData() {
-        const userinfor = await this.getUserInfo();
-        uni.setStorageSync('userInfo', userinfor);
-        this.userInfo = userinfor;
-        console.log('====初始化44455---', this.userInfo, this.hasCard);
-        // 检查用户是否实名
-        if (this.userInfo.crtfStas !== '2') {
-          // 未实名, 展示立即领取界面
-          this.hasCard = false;
-          return;
-        }
-
-        // 查询卡状态
-        api.getCertificateState({
+    getUserInfo() {
+      return new Promise((resolve, reject) => {
+        api.getUserInfo({
           data: {
-            appId: '53928a083adb4a7dad2eecf05564873f',
-            idType: '身份证',
-            userName: this.userInfo.psnName,
-            idNo: this.userInfo.idCard,
+            accessToken: uni.getStorageSync('token')
           },
           success: (data) => {
-            const authState = data.authState;
-            this.cardStatus = data.authState;
-            // 判断卡状态
-            if (authState === '1') {
-              // 卡状态为 1, 无需操作
-              const aucode = data.authCode;
-              const getuserinfor = uni.getStorageSync('userInfo');
-              getuserinfor['authCode'] = aucode;
-              console.log('====缓存里面放入authcodoe--', getuserinfor);
-              uni.setStorageSync('userInfo', getuserinfor);
-              // 获取展码数据
-              this.handleRefreshClick();
-              // 查询是否弹出过500积分
-              api.findPopoverList({
-                data: {
-                  userId: this.userInfo.memberId,
-                },
-                success: (res) => {
-                  let msgId = '';
-                  const popStatus = res.some((popItem, popIndex) => {
-                    if (popItem.popoverType === '0') {
-                      msgId = popItem.msgId;
-                      return true;
-                    }
-                  });
-                  if (popStatus) {
-                    //弹出弹框
-                    this.$emit('handlePopShow', msgId);
-                  }
-                },
-              });
-            } else if (authState === '2') {
-              // 卡状态为 2, 请求获取授权码接口
-              api.getAuthorizationCode({
-                data: {
-                  uactId: this.userInfo.memberId,
-                  psnName: this.userInfo.psnName,
-                  certNo: this.userInfo.idCard,
-                  appId: '53928a083adb4a7dad2eecf05564873f',
-                },
-                success: (data) => {
-                  this.userInfo.authCode = data.authCode;
-                  uni.setStorageSync('userInfo', this.userInfo);
-                  this.cardStatus = '1';
-                  // 获取展码数据
-                  this.handleRefreshClick();
-                  // 查询是否弹出过500积分
-                  api.findPopoverList({
-                    data: {
-                      userId: this.userInfo.memberId,
-                    },
-                    success: (res) => {
-                      let msgId = '';
-                      const popStatus = res.some((popItem, popIndex) => {
-                        if (popItem.popoverType === '0') {
-                          msgId = popItem.msgId;
-                          return true;
-                        }
-                      });
-                      if (popStatus) {
-                        //弹出弹框
-                        this.$emit('handlePopShow', msgId);
-                      }
-                    },
-                  });
-                },
-              });
-            } else if (authState === '3') {
-              // 卡状态为 3, 显示立即领取
-              // this.hasCard = false;
-            } else if (authState === '4') {
-              // // 卡状态为 4, 提示正在审核
-              // this.$uni.showAlert({
-              //   content: "您的申领请求正在审核中请耐心等待",
-              // });
-              // this.hasCard = false;
-            }
+            resolve(data)
           },
-        });
-      },
+          fail: (error) => {
+            reject(error)
+          }
+        })
+      })
     },
-    onHide() {},
-  };
+    async initData() {
+      const userinfor = await this.getUserInfo()
+      uni.setStorageSync('userInfo', userinfor)
+      this.userInfo = userinfor
+      console.log('====初始化44455---', this.userInfo, this.hasCard)
+      // 检查用户是否实名
+      if (this.userInfo.crtfStas !== '2') {
+        // 未实名, 展示立即领取界面
+        this.hasCard = false
+        return
+      }
+
+      // 查询卡状态
+      api.getCertificateState({
+        data: {
+          appId: '53928a083adb4a7dad2eecf05564873f',
+          idType: '身份证',
+          userName: this.userInfo.psnName,
+          idNo: this.userInfo.idCard
+        },
+        success: (data) => {
+          const authState = data.authState
+          this.cardStatus = data.authState
+          // 判断卡状态
+          if (authState === '1') {
+            // 卡状态为 1, 无需操作
+            const aucode = data.authCode
+            const getuserinfor = uni.getStorageSync('userInfo')
+            getuserinfor['authCode'] = aucode
+            console.log('====缓存里面放入authcodoe--', getuserinfor)
+            uni.setStorageSync('userInfo', getuserinfor)
+            // 获取展码数据
+            this.handleRefreshClick()
+            // 查询是否弹出过500积分
+            api.findPopoverList({
+              data: {
+                userId: this.userInfo.memberId
+              },
+              success: (res) => {
+                let msgId = ''
+                const popStatus = res.some((popItem, popIndex) => {
+                  if (popItem.popoverType === '0') {
+                    msgId = popItem.msgId
+                    return true
+                  }
+                })
+                if (popStatus) {
+                  // 弹出弹框
+                  this.$emit('handlePopShow', msgId)
+                }
+              }
+            })
+          } else if (authState === '2') {
+            // 卡状态为 2, 请求获取授权码接口
+            api.getAuthorizationCode({
+              data: {
+                uactId: this.userInfo.memberId,
+                psnName: this.userInfo.psnName,
+                certNo: this.userInfo.idCard,
+                appId: '53928a083adb4a7dad2eecf05564873f'
+              },
+              success: (data) => {
+                this.userInfo.authCode = data.authCode
+                uni.setStorageSync('userInfo', this.userInfo)
+                this.cardStatus = '1'
+                // 获取展码数据
+                this.handleRefreshClick()
+                // 查询是否弹出过500积分
+                api.findPopoverList({
+                  data: {
+                    userId: this.userInfo.memberId
+                  },
+                  success: (res) => {
+                    let msgId = ''
+                    const popStatus = res.some((popItem, popIndex) => {
+                      if (popItem.popoverType === '0') {
+                        msgId = popItem.msgId
+                        return true
+                      }
+                    })
+                    if (popStatus) {
+                      // 弹出弹框
+                      this.$emit('handlePopShow', msgId)
+                    }
+                  }
+                })
+              }
+            })
+          } else if (authState === '3') {
+            // 卡状态为 3, 显示立即领取
+            // this.hasCard = false;
+          } else if (authState === '4') {
+            // // 卡状态为 4, 提示正在审核
+            // this.$uni.showAlert({
+            //   content: "您的申领请求正在审核中请耐心等待",
+            // });
+            // this.hasCard = false;
+          }
+        }
+      })
+    }
+  },
+  onHide() {}
+}
 </script>
 
 <style lang="scss" scoped>

@@ -86,126 +86,126 @@
   </view>
 </template>
 <script>
-  import modalKnow from '@/pages/life/components/modal-know.vue';
-  import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
-  import api from '@/apis/index.js';
-  export default {
-    components: { modalKnow, RealNamePop },
-    data() {
-      return {
-        list: [],
-        newList: {
-          dataList: [],
-        },
-      };
-    },
-    created() {
-      this.insuranceList();
-      this.insuranceNewList();
-    },
-    onShareAppMessage() {
-      return {
-        title: '',
-        path: '/pages/index/index?index=0',
-      };
-    },
-    methods: {
-      goInsuranDetail(itemv) {
-        const userInfo = uni.getStorageSync('userInfo');
+import modalKnow from '@/pages/life/components/modal-know.vue'
+import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue'
+import api from '@/apis/index.js'
+export default {
+  components: { modalKnow, RealNamePop },
+  data() {
+    return {
+      list: [],
+      newList: {
+        dataList: []
+      }
+    }
+  },
+  created() {
+    this.insuranceList()
+    this.insuranceNewList()
+  },
+  onShareAppMessage() {
+    return {
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
+  },
+  methods: {
+    goInsuranDetail(itemv) {
+      const userInfo = uni.getStorageSync('userInfo')
 
-        // 未登录, 跳转到登录页面
-        if (!userInfo) {
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
-        }
-
-        // 未实名
-        if (userInfo.crtfStas === '0') {
-          this.$refs.realpop.open();
-          return false;
-        }
-
-        uni.setStorageSync('insuranDetal', itemv.productH5);
-        uni.navigateTo({ url: '/pages/life/insuranceDetail?price=' + itemv.productPrice });
-      },
-      goH5Detail(item, index) {
-        const userInfo = uni.getStorageSync('userInfo');
-
-        // 未登录, 跳转到登录页面
-        if (!userInfo) {
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
-        }
-
-        // 未实名
-        if (userInfo.crtfStas === '0') {
-          this.$refs.realpop.open();
-          return false;
-        }
-
+      // 未登录, 跳转到登录页面
+      if (!userInfo) {
         uni.navigateTo({
-          url: index === 0 ? '/pages/life/insurance-premium' : '/pages/life/insurance-mofang',
-        });
-        // uni.navigateTo({ url: '/pages/common/webpage?url=' + encodeURIComponent(item.targetUrl) })
-      },
-      // 实名认证成功
-      async succFlag(flag) {
-        if (flag == 1) {
-          const userInfo = await this.getUserInfo();
-          uni.setStorageSync('userInfo', userInfo);
-          this.$refs.realpop.close();
-          uni.navigateTo({
-            url: `/pages/user-center/real-name-result2?back=${'/pages/life/insurance'}`,
-          });
-        }
-      },
-      /**
+          url: '/pages/user-center/login'
+        })
+        return
+      }
+
+      // 未实名
+      if (userInfo.crtfStas === '0') {
+        this.$refs.realpop.open()
+        return false
+      }
+
+      uni.setStorageSync('insuranDetal', itemv.productH5)
+      uni.navigateTo({ url: '/pages/life/insuranceDetail?price=' + itemv.productPrice })
+    },
+    goH5Detail(item, index) {
+      const userInfo = uni.getStorageSync('userInfo')
+
+      // 未登录, 跳转到登录页面
+      if (!userInfo) {
+        uni.navigateTo({
+          url: '/pages/user-center/login'
+        })
+        return
+      }
+
+      // 未实名
+      if (userInfo.crtfStas === '0') {
+        this.$refs.realpop.open()
+        return false
+      }
+
+      uni.navigateTo({
+        url: index === 0 ? '/pages/life/insurance-premium' : '/pages/life/insurance-mofang'
+      })
+      // uni.navigateTo({ url: '/pages/common/webpage?url=' + encodeURIComponent(item.targetUrl) })
+    },
+    // 实名认证成功
+    async succFlag(flag) {
+      if (flag == 1) {
+        const userInfo = await this.getUserInfo()
+        uni.setStorageSync('userInfo', userInfo)
+        this.$refs.realpop.close()
+        uni.navigateTo({
+          url: `/pages/user-center/real-name-result2?back=${'/pages/life/insurance'}`
+        })
+      }
+    },
+    /**
        * 获取用户信息 getUserAccount
        */
-      getUserInfo() {
-        return new Promise((resolve, reject) => {
-          api.getUserInfo({
-            data: {
-              accessToken: uni.getStorageSync('token'),
-            },
-            success: (data) => {
-              resolve(data);
-            },
-            fail: (error) => {
-              reject(error);
-            },
-          });
-        });
-      },
-      // insuranceList
-      insuranceList() {
-        api.insuranceList({
-          data: {},
-          success: (res) => {
-            this.list = res;
+    getUserInfo() {
+      return new Promise((resolve, reject) => {
+        api.getUserInfo({
+          data: {
+            accessToken: uni.getStorageSync('token')
           },
-          fail: (res) => {
-            console.log(res);
+          success: (data) => {
+            resolve(data)
           },
-        });
-      },
-      // 重疾保障
-      insuranceNewList() {
-        api.insuranceNewList({
-          data: {},
-          success: (res) => {
-            console.log(res);
-            this.newList = res;
-          },
-          fail: (res) => {},
-        });
-      },
+          fail: (error) => {
+            reject(error)
+          }
+        })
+      })
     },
-  };
+    // insuranceList
+    insuranceList() {
+      api.insuranceList({
+        data: {},
+        success: (res) => {
+          this.list = res
+        },
+        fail: (res) => {
+          console.log(res)
+        }
+      })
+    },
+    // 重疾保障
+    insuranceNewList() {
+      api.insuranceNewList({
+        data: {},
+        success: (res) => {
+          console.log(res)
+          this.newList = res
+        },
+        fail: (res) => {}
+      })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .insurance {

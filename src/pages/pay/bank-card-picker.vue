@@ -85,212 +85,212 @@
 </template>
 
 <script>
-  import NavigationBar from '@/components/common/navigation-bar.vue';
-  import api from '@/apis/index.js';
-  export default {
-    components: { NavigationBar },
-    data() {
-      const windowHeight = uni.getSystemInfoSync().windowHeight;
-      const statusBarHeight = uni.getSystemInfoSync().statusBarHeight;
-      return {
-        // 导航栏高度
-        navigationBarHeight: statusBarHeight + 44,
-        // 列表高度
-        scrollViewHeight: windowHeight - statusBarHeight - 44,
-        title: '一键绑卡',
-        // 滚动到顶部的视图
-        viewToScroll: '',
-        // 每个 section 的高度
-        heights: [],
-        // 最后一次点击的时间戳
-        clickTimestamp: 0,
-        // 最后一次滚动的时间戳
-        scrollTimestamp: 0,
-        // 当前高亮的下标
-        selectedIndex: '',
-        // 搜索结果
-        searchResult: null,
-        // 城市列表
-        cities: {
-          location: null,
-          recent: uni.getStorageSync('citySearchHistories') || [],
-          hot: [
-            { name: '北京市', code: '110100' },
-            { name: '上海市', code: '310100' },
-            { name: '厦门市', code: '350200' },
-            { name: '深圳市', code: '440300' },
-            { name: '杭州市', code: '330100' },
-            { name: '成都市', code: '510100' },
-          ],
-          list: [],
-        },
-      };
+import NavigationBar from '@/components/common/navigation-bar.vue'
+import api from '@/apis/index.js'
+export default {
+  components: { NavigationBar },
+  data() {
+    const windowHeight = uni.getSystemInfoSync().windowHeight
+    const statusBarHeight = uni.getSystemInfoSync().statusBarHeight
+    return {
+      // 导航栏高度
+      navigationBarHeight: statusBarHeight + 44,
+      // 列表高度
+      scrollViewHeight: windowHeight - statusBarHeight - 44,
+      title: '一键绑卡',
+      // 滚动到顶部的视图
+      viewToScroll: '',
+      // 每个 section 的高度
+      heights: [],
+      // 最后一次点击的时间戳
+      clickTimestamp: 0,
+      // 最后一次滚动的时间戳
+      scrollTimestamp: 0,
+      // 当前高亮的下标
+      selectedIndex: '',
+      // 搜索结果
+      searchResult: null,
+      // 城市列表
+      cities: {
+        location: null,
+        recent: uni.getStorageSync('citySearchHistories') || [],
+        hot: [
+          { name: '北京市', code: '110100' },
+          { name: '上海市', code: '310100' },
+          { name: '厦门市', code: '350200' },
+          { name: '深圳市', code: '440300' },
+          { name: '杭州市', code: '330100' },
+          { name: '成都市', code: '510100' }
+        ],
+        list: []
+      }
+    }
+  },
+  computed: {
+    // 要显示的城市列表, 如果有搜索结果则显示搜索结果, 否则显示全部
+    list() {
+      return this.searchResult || this.cities.list
     },
-    computed: {
-      // 要显示的城市列表, 如果有搜索结果则显示搜索结果, 否则显示全部
-      list() {
-        return this.searchResult || this.cities.list;
-      },
-      // 右侧索引栏数据
-      indexes() {
-        return this.cities.list.map((item) => item.index);
-      },
+    // 右侧索引栏数据
+    indexes() {
+      return this.cities.list.map((item) => item.index)
+    }
+  },
+  onLoad() {
+    this.getLocation()
+    this.requestData()
+  },
+  methods: {
+    // 返回上一页
+    handleNavBack() {
+      uni.navigateBack()
     },
-    onLoad() {
-      this.getLocation();
-      this.requestData();
-    },
-    methods: {
-      // 返回上一页
-      handleNavBack() {
-        uni.navigateBack();
-      },
-      /**
+    /**
        * 输入框改变回调
        */
-      handleInputChange(e) {
-        if (e.detail.value) {
-          const result = [];
-          this.cities.list.forEach((item) => {
-            if (
-              item.items
-                .map((item) => item.name)
-                .join()
-                .indexOf(e.detail.value) !== -1
-            ) {
-              result.push({
-                ...item,
-                items: item.items.filter((item) => {
-                  return item.name.indexOf(e.detail.value) !== -1;
-                }),
-              });
-            }
-          });
-          this.searchResult = result;
-        } else {
-          this.searchResult = null;
-        }
-      },
-      /**
+    handleInputChange(e) {
+      if (e.detail.value) {
+        const result = []
+        this.cities.list.forEach((item) => {
+          if (
+            item.items
+              .map((item) => item.name)
+              .join()
+              .indexOf(e.detail.value) !== -1
+          ) {
+            result.push({
+              ...item,
+              items: item.items.filter((item) => {
+                return item.name.indexOf(e.detail.value) !== -1
+              })
+            })
+          }
+        })
+        this.searchResult = result
+      } else {
+        this.searchResult = null
+      }
+    },
+    /**
        * 清除最近访问城市点击事件
        */
-      handleClearClick() {
-        this.$uni.showConfirm({
-          content: '是否清除最近访问记录',
-          confirm: () => {
-            uni.removeStorageSync('citySearchHistories');
-            this.cities.recent = [];
-          },
-        });
-      },
-      /**
+    handleClearClick() {
+      this.$uni.showConfirm({
+        content: '是否清除最近访问记录',
+        confirm: () => {
+          uni.removeStorageSync('citySearchHistories')
+          this.cities.recent = []
+        }
+      })
+    },
+    /**
        * 城市点击事件
        */
-      handleCityClick(city) {
-        if (this.cities.location.name !== city.name) {
-          const array = [...this.cities.recent];
-          array.unshift(city);
-          this.cities.recent = Array.from(new Set(array)).slice(0, 5);
-          uni.setStorageSync('recentCities', this.cities.recent);
-        }
-        uni.$emit('didSelectCity', city);
-        uni.navigateBack();
-      },
-      /**
+    handleCityClick(city) {
+      if (this.cities.location.name !== city.name) {
+        const array = [...this.cities.recent]
+        array.unshift(city)
+        this.cities.recent = Array.from(new Set(array)).slice(0, 5)
+        uni.setStorageSync('recentCities', this.cities.recent)
+      }
+      uni.$emit('didSelectCity', city)
+      uni.navigateBack()
+    },
+    /**
        * 右侧索引栏点击事件
        */
-      handleIndexClick(id) {
-        this.selectedIndex = id;
-        this.viewToScroll = `section-${id}`;
-        this.clickTimestamp = new Date().getTime();
-      },
-      /**
+    handleIndexClick(id) {
+      this.selectedIndex = id
+      this.viewToScroll = `section-${id}`
+      this.clickTimestamp = new Date().getTime()
+    },
+    /**
        * scrollview 滚动回调
        */
-      handleScrollViewScroll(e) {
-        const timestamp = new Date().getTime();
-        if (timestamp - this.scrollTimestamp < 100 || timestamp - this.clickTimestamp < 500) return;
-        this.scrollTimestamp = timestamp;
+    handleScrollViewScroll(e) {
+      const timestamp = new Date().getTime()
+      if (timestamp - this.scrollTimestamp < 100 || timestamp - this.clickTimestamp < 500) return
+      this.scrollTimestamp = timestamp
 
-        const scrollTop = e.detail.scrollTop;
-        const scrollHeight = e.detail.scrollHeight;
-        const scrollViewHeight = uni.getSystemInfoSync().windowHeight - 128;
-        // uni.upx2px(128);
-        if (scrollTop < 0 || scrollTop > scrollHeight - scrollViewHeight) return;
+      const scrollTop = e.detail.scrollTop
+      const scrollHeight = e.detail.scrollHeight
+      const scrollViewHeight = uni.getSystemInfoSync().windowHeight - 128
+      // uni.upx2px(128);
+      if (scrollTop < 0 || scrollTop > scrollHeight - scrollViewHeight) return
 
-        console.log(scrollTop);
-        const index = this.heights.findIndex(
-          (value, index, array) => value <= scrollTop && scrollTop < array[index + 1],
-        );
-        this.selectedIndex = this.indexes[index];
-      },
-      /**
+      console.log(scrollTop)
+      const index = this.heights.findIndex(
+        (value, index, array) => value <= scrollTop && scrollTop < array[index + 1]
+      )
+      this.selectedIndex = this.indexes[index]
+    },
+    /**
        * 获取当前定位
        */
-      getLocation() {
-        uni.getLocation({
-          type: 'gcj02',
-          success: (res) => {
-            // 调用百度地图 API 逆地理编码, 通过经纬度获取当前位置城市信息
-            uni.request({
-              url: `https://api.map.baidu.com/reverse_geocoding/v3/?ak=Q8zDDVDgBOYUCSYykREHmlydkSobm9Gf&output=json&coordtype=gcj02ll&location=${res.latitude},${res.longitude}`,
-              success: (response) => {
-                this.cities.location = {
-                  code: response.data.result.addressComponent.adcode,
-                  name: response.data.result.addressComponent.city,
-                };
-              },
-            });
-          },
-          fail: (err) => {},
-        });
-      },
-      /**
+    getLocation() {
+      uni.getLocation({
+        type: 'gcj02',
+        success: (res) => {
+          // 调用百度地图 API 逆地理编码, 通过经纬度获取当前位置城市信息
+          uni.request({
+            url: `https://api.map.baidu.com/reverse_geocoding/v3/?ak=Q8zDDVDgBOYUCSYykREHmlydkSobm9Gf&output=json&coordtype=gcj02ll&location=${res.latitude},${res.longitude}`,
+            success: (response) => {
+              this.cities.location = {
+                code: response.data.result.addressComponent.adcode,
+                name: response.data.result.addressComponent.city
+              }
+            }
+          })
+        },
+        fail: (err) => {}
+      })
+    },
+    /**
        * 请求数据
        */
-      requestData() {
-        api.getCities({
-          success: (data) => {
-            const mappedCities = data.map((item) => {
-              return {
-                code: item.regnCode,
-                name: item.regnName,
-                index: item.dataDscr.substring(0, 1),
-              };
-            });
-            const indexes = new Set(mappedCities.map((item) => item.index));
-            this.cities.list = [];
-            indexes.forEach((index) => {
-              this.cities.list.push({
-                index: index,
-                items: mappedCities.filter((item) => {
-                  return item.index === index;
-                }),
-              });
-            });
+    requestData() {
+      api.getCities({
+        success: (data) => {
+          const mappedCities = data.map((item) => {
+            return {
+              code: item.regnCode,
+              name: item.regnName,
+              index: item.dataDscr.substring(0, 1)
+            }
+          })
+          const indexes = new Set(mappedCities.map((item) => item.index))
+          this.cities.list = []
+          indexes.forEach((index) => {
+            this.cities.list.push({
+              index: index,
+              items: mappedCities.filter((item) => {
+                return item.index === index
+              })
+            })
+          })
 
-            // 刷新数据后计算各个 section 高度
-            this.calculateSectionHeights();
-          },
-        });
-      },
-      /**
+          // 刷新数据后计算各个 section 高度
+          this.calculateSectionHeights()
+        }
+      })
+    },
+    /**
        * 计算 scrollview 中各个 section 的高度
        */
-      calculateSectionHeights() {
-        setTimeout(() => {
-          uni
-            .createSelectorQuery()
-            .selectAll('.section')
-            .boundingClientRect((rects) => {
-              this.heights = rects.map((item) => item.top - 128);
-              console.log(this.heights, uni.upx2px(128));
-            })
-            .exec();
-        }, 0);
-      },
-    },
-  };
+    calculateSectionHeights() {
+      setTimeout(() => {
+        uni
+          .createSelectorQuery()
+          .selectAll('.section')
+          .boundingClientRect((rects) => {
+            this.heights = rects.map((item) => item.top - 128)
+            console.log(this.heights, uni.upx2px(128))
+          })
+          .exec()
+      }, 0)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

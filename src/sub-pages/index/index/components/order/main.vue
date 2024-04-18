@@ -92,206 +92,206 @@
 </template>
 
 <script>
-  import wx from 'utils/wx';
+import wx from 'utils/wx'
 
-  export default {
-    data() {
-      return {
-        orderList: [],
-        sceneType: '适老用品',
-        status: 0,
-        pageNum: 1,
-        loading: true,
-      };
+export default {
+  data() {
+    return {
+      orderList: [],
+      sceneType: '适老用品',
+      status: 0,
+      pageNum: 1,
+      loading: true
+    }
+  },
+  components: {},
+  filters: {
+    formatDate(price) {
+      return Number(price).toFixed(2)
+    }
+  },
+  methods: {
+    // 店铺详情
+    goStoreDetail(item) {
+      uni.navigateTo({ url: '/sub-pages/index/store/main?supplierId=' + item.storeId })
     },
-    components: {},
-    filters: {
-      formatDate(price) {
-        return Number(price).toFixed(2);
-      },
+    toHome() {
+      XIU.bridge.goHome()
     },
-    methods: {
-      // 店铺详情
-      goStoreDetail(item) {
-        uni.navigateTo({ url: '/sub-pages/index/store/main?supplierId=' + item.storeId });
-      },
-      toHome() {
-        XIU.bridge.goHome();
-      },
-      logistics(order) {
+    logistics(order) {
+      wx.navigateTo({
+        url: '/sub-pages/me/logistics/main?id=' + order.orderId
+      })
+    },
+    toService(item, order) {
+      App.currentOrder = order
+      if (order.status == 20 || item.status > 1) {
         wx.navigateTo({
-          url: '/sub-pages/me/logistics/main?id=' + order.orderId,
-        });
-      },
-      toService(item, order) {
-        App.currentOrder = order;
-        if (order.status == 20 || item.status > 1) {
-          wx.navigateTo({
-            url: `../refund-detail/main?type=1&itemId=${item.itemId}&num=${item.skuQty}`,
-          });
-        } else {
-          wx.navigateTo({
-            url: `../service-type/main?itemId=${item.itemId}&num=${item.skuQty}`,
-          });
-        }
-      },
-      async toPay(order) {
-        // const {code} = await wx.login();
-        wx.showLoading({ title: '正在获取...', mask: true });
-        const result = await Axios.post('/payment/sign', {
-          orderId: order.orderId,
-          paymentMethodCode: 'nepsp_pay',
-          code: new Date().getTime(),
-        });
-        wx.hideLoading();
-        if (result.code == 200) {
-          // 去收银台支付
-          uni.reLaunch({
-            url: '/pages/common/webpage?url=' + encodeURIComponent(result.data.payUrl),
-          });
+          url: `../refund-detail/main?type=1&itemId=${item.itemId}&num=${item.skuQty}`
+        })
+      } else {
+        wx.navigateTo({
+          url: `../service-type/main?itemId=${item.itemId}&num=${item.skuQty}`
+        })
+      }
+    },
+    async toPay(order) {
+      // const {code} = await wx.login();
+      wx.showLoading({ title: '正在获取...', mask: true })
+      const result = await Axios.post('/payment/sign', {
+        orderId: order.orderId,
+        paymentMethodCode: 'nepsp_pay',
+        code: new Date().getTime()
+      })
+      wx.hideLoading()
+      if (result.code == 200) {
+        // 去收银台支付
+        uni.reLaunch({
+          url: '/pages/common/webpage?url=' + encodeURIComponent(result.data.payUrl)
+        })
+      } else {
+        wx.showToast({
+          title: result.msg || '获取失败',
+          icon: 'none'
+        })
+      }
+    },
+    async remove(order) {
+      const result = await wx.showModal({
+        title: '',
+        content: '确定要取消?'
+      })
+      if (result.confirm) {
+        wx.showLoading({ title: '正在提交...', mask: true })
+        const delResult = await Axios.post('/order/cancel', {
+          orderId: order.orderId
+        })
+        wx.hideLoading()
+        if (delResult.code == 200) {
+          setTimeout(() => {
+            wx.showToast({
+              title: delResult.msg || '操作成功',
+              icon: 'none'
+            })
+          }, 1500)
+          this.changeStatus(this.status)
         } else {
           wx.showToast({
-            title: result.msg || '获取失败',
-            icon: 'none',
-          });
+            title: delResult.msg || '操作失败',
+            icon: 'none'
+          })
         }
-      },
-      async remove(order) {
-        const result = await wx.showModal({
-          title: '',
-          content: '确定要取消?',
-        });
-        if (result.confirm) {
-          wx.showLoading({ title: '正在提交...', mask: true });
-          const delResult = await Axios.post('/order/cancel', {
-            orderId: order.orderId,
-          });
-          wx.hideLoading();
-          if (delResult.code == 200) {
-            setTimeout(() => {
-              wx.showToast({
-                title: delResult.msg || '操作成功',
-                icon: 'none',
-              });
-            }, 1500);
-            this.changeStatus(this.status);
-          } else {
-            wx.showToast({
-              title: delResult.msg || '操作失败',
-              icon: 'none',
-            });
-          }
-        }
-      },
-      async confirm(order) {
-        const result = await wx.showModal({
-          title: '',
-          content: '确定已收货?',
-        });
-        if (result.confirm) {
-          wx.showLoading('正在提交...');
-          const delResult = await Axios.post('/order/confirm', {
-            orderId: order.orderId,
-          });
-          wx.hideLoading();
-          if (delResult.code == 200) {
-            setTimeout(() => {
-              wx.showToast({
-                title: delResult.msg || '确认成功',
-                icon: 'none',
-              });
-            }, 1500);
-            this.changeStatus(this.status);
-          } else {
-            wx.showToast(delResult.msg || '确认失败');
-          }
-        }
-      },
-      changeStatus(status) {
-        this.status = status;
-        this.all_loaded = false;
-        this.orderList = [];
-        this.pageNum = 1;
-        this.loadData();
-      },
-      async loadData() {
-        if (this.all_loaded) {
-          return false;
-        }
-        const params = {
-          pageNum: this.pageNum++,
-          numPerPage: 10,
-          sceneType: this.sceneType,
-        };
-        if (this.status > 0) {
-          params.status = this.status;
-        }
-        this.loading = true;
-        wx.showLoading();
-        const result = await Axios.post('/order/list', params);
-        wx.hideLoading();
-        if (result.code == 200) {
-          (result.data.list || []).forEach((data) => {
-            const itemList = [];
-            data.storeOrderItems.forEach((orderItemModel) => {
-              orderItemModel.items.forEach((item) => {
-                item.imgUrl = XIU.getImgFormat(item.imgUrl, '/resize,w_400');
-                itemList.push(
-                  _.pick(item, [
-                    'imgUrl',
-                    'productId',
-                    'productName',
-                    'skuName',
-                    'sellingPrice',
-                    'skuQuantity',
-                    'payableAmount',
-                  ]),
-                );
-              });
-            });
-            const tempData = _.pick(data, [
-              'orderId',
-              'orderStatus',
-              'totalQuantity',
-              'orderType',
-              'orderAmount',
-              'orderStatusLabel',
-              'payableAmount',
-              'storeName',
-              'storeId',
-            ]);
-            tempData.itemList = itemList;
-            this.orderList.push(tempData);
-            console.log(this.orderList);
-          });
-          this.all_loaded = result.data.pageNum >= result.data.totalPage;
-        } else {
-          wx.showToast(result.msg);
-        }
-        this.loading = false;
-      },
-      toDetail(data) {
-        uni.navigateTo({
-          url: `/sub-pages/me/order-detail/main?id=${data.orderId}`,
-        });
-      },
-      toItem(item) {
-        wx.navigateTo({
-          url: `/pages/item/main?id=${item.productId}`,
-        });
-      },
-    },
-    onReachBottom() {
-      this.loadData();
-    },
-    async mounted() {
-      if (!Store.getters.isLogin) {
-        await Store.dispatch('login');
       }
-      this.status = parseInt(this.$root.$mp.query.status || 0);
-      this.changeStatus(this.status);
     },
-  };
+    async confirm(order) {
+      const result = await wx.showModal({
+        title: '',
+        content: '确定已收货?'
+      })
+      if (result.confirm) {
+        wx.showLoading('正在提交...')
+        const delResult = await Axios.post('/order/confirm', {
+          orderId: order.orderId
+        })
+        wx.hideLoading()
+        if (delResult.code == 200) {
+          setTimeout(() => {
+            wx.showToast({
+              title: delResult.msg || '确认成功',
+              icon: 'none'
+            })
+          }, 1500)
+          this.changeStatus(this.status)
+        } else {
+          wx.showToast(delResult.msg || '确认失败')
+        }
+      }
+    },
+    changeStatus(status) {
+      this.status = status
+      this.all_loaded = false
+      this.orderList = []
+      this.pageNum = 1
+      this.loadData()
+    },
+    async loadData() {
+      if (this.all_loaded) {
+        return false
+      }
+      const params = {
+        pageNum: this.pageNum++,
+        numPerPage: 10,
+        sceneType: this.sceneType
+      }
+      if (this.status > 0) {
+        params.status = this.status
+      }
+      this.loading = true
+      wx.showLoading()
+      const result = await Axios.post('/order/list', params)
+      wx.hideLoading()
+      if (result.code == 200) {
+        (result.data.list || []).forEach((data) => {
+          const itemList = []
+          data.storeOrderItems.forEach((orderItemModel) => {
+            orderItemModel.items.forEach((item) => {
+              item.imgUrl = XIU.getImgFormat(item.imgUrl, '/resize,w_400')
+              itemList.push(
+                _.pick(item, [
+                  'imgUrl',
+                  'productId',
+                  'productName',
+                  'skuName',
+                  'sellingPrice',
+                  'skuQuantity',
+                  'payableAmount'
+                ])
+              )
+            })
+          })
+          const tempData = _.pick(data, [
+            'orderId',
+            'orderStatus',
+            'totalQuantity',
+            'orderType',
+            'orderAmount',
+            'orderStatusLabel',
+            'payableAmount',
+            'storeName',
+            'storeId'
+          ])
+          tempData.itemList = itemList
+          this.orderList.push(tempData)
+          console.log(this.orderList)
+        })
+        this.all_loaded = result.data.pageNum >= result.data.totalPage
+      } else {
+        wx.showToast(result.msg)
+      }
+      this.loading = false
+    },
+    toDetail(data) {
+      uni.navigateTo({
+        url: `/sub-pages/me/order-detail/main?id=${data.orderId}`
+      })
+    },
+    toItem(item) {
+      wx.navigateTo({
+        url: `/pages/item/main?id=${item.productId}`
+      })
+    }
+  },
+  onReachBottom() {
+    this.loadData()
+  },
+  async mounted() {
+    if (!Store.getters.isLogin) {
+      await Store.dispatch('login')
+    }
+    this.status = parseInt(this.$root.$mp.query.status || 0)
+    this.changeStatus(this.status)
+  }
+}
 </script>
 
 <style lang="scss">

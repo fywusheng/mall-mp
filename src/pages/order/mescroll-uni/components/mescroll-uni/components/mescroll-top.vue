@@ -13,38 +13,38 @@
 
 <script>
 export default {
-	props: {
-		// up.toTop的配置项
-		option: Object,
-		// 是否显示
-		value: false
-	},
-	computed: {
-		// 支付宝小程序需写成计算属性,prop定义default仍报错
-		mOption(){
-			return this.option || {}
-		},
-		// 优先显示左边
-		left(){
-			return this.mOption.left ? this.addUnit(this.mOption.left) : 'auto';
-		},
-		// 右边距离 (优先显示左边)
-		right() {
-			return this.mOption.left ? 'auto' : this.addUnit(this.mOption.right);
-		}
-	},
-	methods: {
-		addUnit(num){
-			if(!num) return 0;
-			if(typeof num === 'number') return num + 'rpx';
-			return num
-		},
-		toTopClick() {
-			this.$emit('input', false); // 使v-model生效
-			this.$emit('click'); // 派发点击事件
-		}
-	}
-};
+  props: {
+    // up.toTop的配置项
+    option: Object,
+    // 是否显示
+    value: false
+  },
+  computed: {
+    // 支付宝小程序需写成计算属性,prop定义default仍报错
+    mOption() {
+      return this.option || {}
+    },
+    // 优先显示左边
+    left() {
+      return this.mOption.left ? this.addUnit(this.mOption.left) : 'auto'
+    },
+    // 右边距离 (优先显示左边)
+    right() {
+      return this.mOption.left ? 'auto' : this.addUnit(this.mOption.right)
+    }
+  },
+  methods: {
+    addUnit(num) {
+      if (!num) return 0
+      if (typeof num === 'number') return num + 'rpx'
+      return num
+    },
+    toTopClick() {
+      this.$emit('input', false) // 使v-model生效
+      this.$emit('click') // 派发点击事件
+    }
+  }
+}
 </script>
 
 <style>

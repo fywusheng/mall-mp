@@ -283,502 +283,502 @@
   </div>
 </template>
 <script>
-  import Top from '@/sub-pages/index/components/top.vue';
-  import SearchFilter from './components/filter';
-  import wx from 'utils/wx';
-  export default {
-    name: 'stopList',
-    data() {
-      return {
-        loading: true,
-        filterType: 0,
-        pageNo: 1,
-        pageSize: 20,
-        disabled: false,
-        empty: false,
-        itemList: [],
-        brandList: [],
-        brandId: '',
-        dispId: '',
-        sortType: '',
-        key: '',
-        name: '',
-        attrList: [],
-        categoryList: [],
-        priceList: [],
-        supplierId: '',
-        storeMap: {},
-        number: '',
-        showPop: false,
-        notices: [
-          {
-            type: 1,
-            name: '消息',
-            icon: 'http://192.168.1.187:10088/static/images/store/mess.png',
-          },
-          {
-            type: 2,
-            name: '首页',
-            icon: 'http://192.168.1.187:10088/static/images/store/home.png',
-          },
-          {
-            type: 3,
-            name: '钱包',
-            icon: 'http://192.168.1.187:10088/static/images/store/card.png',
-          },
-        ],
-        isCollected: false,
-        notices_info: '',
-        showIcon: false,
-      };
-    },
-    computed: {
-      title() {
-        if (this.key) {
-          return this.key;
+import Top from '@/sub-pages/index/components/top.vue'
+import SearchFilter from './components/filter'
+import wx from 'utils/wx'
+export default {
+  name: 'stopList',
+  data() {
+    return {
+      loading: true,
+      filterType: 0,
+      pageNo: 1,
+      pageSize: 20,
+      disabled: false,
+      empty: false,
+      itemList: [],
+      brandList: [],
+      brandId: '',
+      dispId: '',
+      sortType: '',
+      key: '',
+      name: '',
+      attrList: [],
+      categoryList: [],
+      priceList: [],
+      supplierId: '',
+      storeMap: {},
+      number: '',
+      showPop: false,
+      notices: [
+        {
+          type: 1,
+          name: '消息',
+          icon: 'http://192.168.1.187:10088/static/images/store/mess.png'
+        },
+        {
+          type: 2,
+          name: '首页',
+          icon: 'http://192.168.1.187:10088/static/images/store/home.png'
+        },
+        {
+          type: 3,
+          name: '钱包',
+          icon: 'http://192.168.1.187:10088/static/images/store/card.png'
         }
-        if (this.name) {
-          return this.name;
-        }
-        return '搜索';
-      },
-    },
-    components: {
-      Top,
-      SearchFilter,
-    },
-    async onLoad(e) {
-      console.log('--onload--');
-      if (e.supplierId) {
-        this.supplierId = e.supplierId;
-        this.storeDetail();
+      ],
+      isCollected: false,
+      notices_info: '',
+      showIcon: false
+    }
+  },
+  computed: {
+    title() {
+      if (this.key) {
+        return this.key
       }
-      this.brandId = this.$root.$mp.query.brandId;
-      this.planId = this.$root.$mp.query.planId;
-      this.dispId = this.$root.$mp.query.dispId;
-      this.key = this.$root.$mp.query.key;
-      this.$refs.filter.show(false);
-      this.pageNo = 1;
-      this.disabled = false;
-      this.itemList = [];
+      if (this.name) {
+        return this.name
+      }
+      return '搜索'
+    }
+  },
+  components: {
+    Top,
+    SearchFilter
+  },
+  async onLoad(e) {
+    console.log('--onload--')
+    if (e.supplierId) {
+      this.supplierId = e.supplierId
+      this.storeDetail()
+    }
+    this.brandId = this.$root.$mp.query.brandId
+    this.planId = this.$root.$mp.query.planId
+    this.dispId = this.$root.$mp.query.dispId
+    this.key = this.$root.$mp.query.key
+    this.$refs.filter.show(false)
+    this.pageNo = 1
+    this.disabled = false
+    this.itemList = []
+  },
+  mounted() {
+    // this.storeCount()
+    console.log('---document--', document)
+  },
+  onShareAppMessage() {
+    return {
+      path: '/sub-pages/index/store/main?supplierId=' + this.supplierId,
+      title: '',
+      imageUrl: ''
+    }
+  },
+  methods: {
+    clickMap() {
+      this.showPop = false
     },
-    mounted() {
-      // this.storeCount()
-      console.log('---document--', document);
+    focusInput() {
+      this.showIcon = true
     },
-    onShareAppMessage() {
-      return {
-        path: '/sub-pages/index/store/main?supplierId=' + this.supplierId,
-        title: '',
-        imageUrl: '',
-      };
+    blurInput() {
+      if (this.key) {
+        this.showIcon = true
+      } else {
+        this.showIcon = false
+      }
     },
-    methods: {
-      clickMap() {
-        this.showPop = false;
-      },
-      focusInput() {
-        this.showIcon = true;
-      },
-      blurInput() {
-        if (this.key) {
-          this.showIcon = true;
-        } else {
-          this.showIcon = false;
-        }
-      },
-      showNotice() {
-        this.$refs.notice.open();
-      },
-      closed() {
-        this.$refs.notice.close();
-      },
-      telClick(item) {
-        uni.makePhoneCall({
-          phoneNumber: item.supplierStorePhone,
-        });
-      },
-      // 点击分享
-      handleShareClick() {
-        if (!uni.getStorageSync('token')) {
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
-        }
-        this.$refs.popup.open();
-      },
-      // 关闭分享
-      handleCloseClick() {
-        this.$refs.popup.close();
-      },
-      // TODO 店铺搜藏
-      async changeFavor() {
-        this.isCollected = !this.isCollected;
-        console.log('===点击33===', this.isCollected);
-        // 商品收藏
-        // if(!Store.getters.isLogin){
-        //   wx.navigate({
-        //     // url: '/sub-pages/index/login/main''
-        //   })
-        //   return false;
-        // }
-        // wx.showLoading('正在提交...');
-        // const result = await Axios.post(this.product.isCollected == 1 ? '/product/deleteFavorites' : '/product/addFavorites', {
-        //     id: this.productId,
-        // })
-        // wx.hideLoading();
-        // if (result.code == 200) {
-        //   this.product.isCollected = this.product.isCollected == 1 ? 0 : 1;
-        //   wx.showToast(result.msg);
-        // } else {
-        //   wx.showToast(result.msg || '操作失败');
-        // }
-      },
-      clickItem(item) {
-        console.log('===itemid--', this.storeMap.id);
-        const types = [1, 3];
-        if (types.includes(item.type)) {
-          if (!Store.getters.isLogin) {
-            Store.dispatch('logout');
-            uni.navigateTo({
-              url: '/pages/user-center/login',
-            });
-            return false;
-          }
-        }
-        // const back = `/pages/pay/my-bank-card?back=${'/sub-pages/index/store/main?supplierId=' + this.storeMap.id}`
-        const urls = {
-          1: '/pages/user-center/message-center',
-          2: '/pages/index/index',
-          3: '/pages/pay/my-bank-card?back=1',
-        };
-        wx.navigateTo({ url: urls[item.type] });
-      },
-      clickPop() {
-        this.showPop = !this.showPop;
-      },
-      showList() {},
-      goStore() {
-        if (!this.number) return;
-        // this.storeMap.supplierCode  this.supplierId
-        wx.navigateTo({ url: '/sub-pages/index/shop/main?supplierId=' + this.storeMap.id });
-      },
-      async storeCount() {
-        const params = {
-          supplierCode: this.storeMap.id,
-        };
-        const result = await Axios.post('/srm/stores/getStoreCount', params);
-        if (result.code == '200') {
-          this.number = result.data;
-        } else {
-          this.$uni.showToast(result.msg);
-        }
-      },
-      async storeDetail() {
-        const params = {
-          id: this.supplierId,
-        };
-        const result = await Axios.post('/srm/supplier/getByPk', params);
-        if (result.code == '200') {
-          this.storeMap = result.data || {};
-          this.notices_info = this.storeMap.supplierStoreNotice;
-          this.storeCount();
-          await this.loadData();
-        } else {
-          this.$uni.showToast(result.msg);
-        }
-      },
-      toHome() {
-        wx.switchTab({
-          url: '/pages/index/main',
-        });
-      },
-      goItem(item) {
-        const sceneType = item.isCreditPoints === 1 ? '积分兑换' : '商品购买';
+    showNotice() {
+      this.$refs.notice.open()
+    },
+    closed() {
+      this.$refs.notice.close()
+    },
+    telClick(item) {
+      uni.makePhoneCall({
+        phoneNumber: item.supplierStorePhone
+      })
+    },
+    // 点击分享
+    handleShareClick() {
+      if (!uni.getStorageSync('token')) {
         uni.navigateTo({
-          url: `/sub-pages/index/item/main?id=${item.id}&sceneType=${sceneType}`,
-        });
-        // XIU.bridge.goItem(item.id)
-      },
-      back() {
-        history.go(-1);
-      },
-      reset() {
-        this.priceList.forEach((data) => {
-          data.check = false;
-        });
-        this.categoryList.forEach((data) => {
-          data.check = false;
-        });
-        this.brandList.forEach((data) => {
-          data.check = false;
-        });
-        this.attrList.forEach((data) => {
-          data.dataList.forEach((child) => {
-            child.check = false;
-          });
-        });
-        this.search();
-      },
-      changeSortType(type) {
-        this.sortType = type;
-        this.search();
-      },
-      clear() {
-        this.key = '';
-        this.showIcon = false;
-        console.log('===清除--');
-        this.search();
-      },
-      search() {
-        this.pageNo = 1;
-        this.itemList = [];
-        this.disabled = false;
-        this.loadData();
-      },
-      changePrice(priceRange) {
-        priceRange.check = !priceRange.check;
-        this.$set(this.priceList, priceRange.id, priceRange);
-      },
-      changeBrand(brand) {
-        brand.check = !brand.check;
-        const index = this.brandList.findIndex((item) => {
-          return item.brandId == brand.brandId;
-        });
-        this.$set(this.brandList, index, brand);
-      },
-      changeCate(cate) {
-        cate.check = !cate.check;
-        const index = this.categoryList.findIndex((item) => {
-          return item.id == cate.id;
-        });
-        this.$set(this.categoryList, index, cate);
-      },
-      showFilter() {
-        this.$refs.filter.show(true);
-      },
-      async loadData() {
-        if (this.disabled) {
-          return false;
+          url: '/pages/user-center/login'
+        })
+        return
+      }
+      this.$refs.popup.open()
+    },
+    // 关闭分享
+    handleCloseClick() {
+      this.$refs.popup.close()
+    },
+    // TODO 店铺搜藏
+    async changeFavor() {
+      this.isCollected = !this.isCollected
+      console.log('===点击33===', this.isCollected)
+      // 商品收藏
+      // if(!Store.getters.isLogin){
+      //   wx.navigate({
+      //     // url: '/sub-pages/index/login/main''
+      //   })
+      //   return false;
+      // }
+      // wx.showLoading('正在提交...');
+      // const result = await Axios.post(this.product.isCollected == 1 ? '/product/deleteFavorites' : '/product/addFavorites', {
+      //     id: this.productId,
+      // })
+      // wx.hideLoading();
+      // if (result.code == 200) {
+      //   this.product.isCollected = this.product.isCollected == 1 ? 0 : 1;
+      //   wx.showToast(result.msg);
+      // } else {
+      //   wx.showToast(result.msg || '操作失败');
+      // }
+    },
+    clickItem(item) {
+      console.log('===itemid--', this.storeMap.id)
+      const types = [1, 3]
+      if (types.includes(item.type)) {
+        if (!Store.getters.isLogin) {
+          Store.dispatch('logout')
+          uni.navigateTo({
+            url: '/pages/user-center/login'
+          })
+          return false
         }
-        const params = {
-          pageSize: this.pageSize,
-          pageNum: this.pageNo++,
-          supplierId: this.supplierId,
-        };
+      }
+      // const back = `/pages/pay/my-bank-card?back=${'/sub-pages/index/store/main?supplierId=' + this.storeMap.id}`
+      const urls = {
+        1: '/pages/user-center/message-center',
+        2: '/pages/index/index',
+        3: '/pages/pay/my-bank-card?back=1'
+      }
+      wx.navigateTo({ url: urls[item.type] })
+    },
+    clickPop() {
+      this.showPop = !this.showPop
+    },
+    showList() {},
+    goStore() {
+      if (!this.number) return
+      // this.storeMap.supplierCode  this.supplierId
+      wx.navigateTo({ url: '/sub-pages/index/shop/main?supplierId=' + this.storeMap.id })
+    },
+    async storeCount() {
+      const params = {
+        supplierCode: this.storeMap.id
+      }
+      const result = await Axios.post('/srm/stores/getStoreCount', params)
+      if (result.code == '200') {
+        this.number = result.data
+      } else {
+        this.$uni.showToast(result.msg)
+      }
+    },
+    async storeDetail() {
+      const params = {
+        id: this.supplierId
+      }
+      const result = await Axios.post('/srm/supplier/getByPk', params)
+      if (result.code == '200') {
+        this.storeMap = result.data || {}
+        this.notices_info = this.storeMap.supplierStoreNotice
+        this.storeCount()
+        await this.loadData()
+      } else {
+        this.$uni.showToast(result.msg)
+      }
+    },
+    toHome() {
+      wx.switchTab({
+        url: '/pages/index/main'
+      })
+    },
+    goItem(item) {
+      const sceneType = item.isCreditPoints === 1 ? '积分兑换' : '商品购买'
+      uni.navigateTo({
+        url: `/sub-pages/index/item/main?id=${item.id}&sceneType=${sceneType}`
+      })
+      // XIU.bridge.goItem(item.id)
+    },
+    back() {
+      history.go(-1)
+    },
+    reset() {
+      this.priceList.forEach((data) => {
+        data.check = false
+      })
+      this.categoryList.forEach((data) => {
+        data.check = false
+      })
+      this.brandList.forEach((data) => {
+        data.check = false
+      })
+      this.attrList.forEach((data) => {
+        data.dataList.forEach((child) => {
+          child.check = false
+        })
+      })
+      this.search()
+    },
+    changeSortType(type) {
+      this.sortType = type
+      this.search()
+    },
+    clear() {
+      this.key = ''
+      this.showIcon = false
+      console.log('===清除--')
+      this.search()
+    },
+    search() {
+      this.pageNo = 1
+      this.itemList = []
+      this.disabled = false
+      this.loadData()
+    },
+    changePrice(priceRange) {
+      priceRange.check = !priceRange.check
+      this.$set(this.priceList, priceRange.id, priceRange)
+    },
+    changeBrand(brand) {
+      brand.check = !brand.check
+      const index = this.brandList.findIndex((item) => {
+        return item.brandId == brand.brandId
+      })
+      this.$set(this.brandList, index, brand)
+    },
+    changeCate(cate) {
+      cate.check = !cate.check
+      const index = this.categoryList.findIndex((item) => {
+        return item.id == cate.id
+      })
+      this.$set(this.categoryList, index, cate)
+    },
+    showFilter() {
+      this.$refs.filter.show(true)
+    },
+    async loadData() {
+      if (this.disabled) {
+        return false
+      }
+      const params = {
+        pageSize: this.pageSize,
+        pageNum: this.pageNo++,
+        supplierId: this.supplierId
+      }
 
-        Object.assign(
-          params,
-          this.storeMap.storeIds.length > 0 ? { ids: this.storeMap.storeIds } : {},
-        );
-        if (this.sortType) {
-          params.sortType = this.sortType;
-        }
-        if (this.brandId) {
-          params.brandIds = this.brandId.join(',');
-        }
-        if (this.planId) {
-          params.planId = this.planId;
-        }
-        if (this.dispId) {
-          params.categoryCodes = this.dispId;
-        }
-        if (this.key) {
-          params.keywords = this.key;
-        }
-        const attrList = [];
-        this.attrList.forEach((attr) => {
-          attr.dataList.forEach((condition) => {
-            if (condition.check) {
-              attrList.push(condition.value);
-            }
-          });
-        });
-        if (attrList.length) {
-          params.attrValIds = attrList.join(',');
-        }
-        // 类别
-        const dispIds = [];
-        this.categoryList.forEach((cate) => {
-          if (cate.check) {
-            dispIds.push(cate.id);
+      Object.assign(
+        params,
+        this.storeMap.storeIds.length > 0 ? { ids: this.storeMap.storeIds } : {}
+      )
+      if (this.sortType) {
+        params.sortType = this.sortType
+      }
+      if (this.brandId) {
+        params.brandIds = this.brandId.join(',')
+      }
+      if (this.planId) {
+        params.planId = this.planId
+      }
+      if (this.dispId) {
+        params.categoryCodes = this.dispId
+      }
+      if (this.key) {
+        params.keywords = this.key
+      }
+      const attrList = []
+      this.attrList.forEach((attr) => {
+        attr.dataList.forEach((condition) => {
+          if (condition.check) {
+            attrList.push(condition.value)
           }
-        });
-        if (dispIds.length) {
-          params.categoryCodes = dispIds.join(',');
+        })
+      })
+      if (attrList.length) {
+        params.attrValIds = attrList.join(',')
+      }
+      // 类别
+      const dispIds = []
+      this.categoryList.forEach((cate) => {
+        if (cate.check) {
+          dispIds.push(cate.id)
         }
-        // 品牌
-        const brandIds = [];
-        this.brandList.forEach((brand) => {
-          if (brand.check) {
-            brandIds.push(brand.brandId);
-          }
-        });
-        if (brandIds.length) {
-          params.brandIds = brandIds.join(',');
+      })
+      if (dispIds.length) {
+        params.categoryCodes = dispIds.join(',')
+      }
+      // 品牌
+      const brandIds = []
+      this.brandList.forEach((brand) => {
+        if (brand.check) {
+          brandIds.push(brand.brandId)
         }
-        // 价格
-        const priceIds = [];
-        this.priceList.forEach((price) => {
-          if (price.check) {
-            priceIds.push(price.name + '');
-          }
-        });
-        if (priceIds.length) {
-          params.priceRange = priceIds.join(',');
+      })
+      if (brandIds.length) {
+        params.brandIds = brandIds.join(',')
+      }
+      // 价格
+      const priceIds = []
+      this.priceList.forEach((price) => {
+        if (price.check) {
+          priceIds.push(price.name + '')
         }
-        this.disabled = true;
-        wx.showLoading();
-        // console.log("params: " + JSON.stringify(params))
-        //  const searchResult = await Axios.get(ENV.SEARCH, { params: Object.assign(params, this.searchParams) })
-        const searchResult2 = await Axios.post(
-          '/product/getProductSearchList',
-          Object.assign(params, this.searchParams),
-        );
+      })
+      if (priceIds.length) {
+        params.priceRange = priceIds.join(',')
+      }
+      this.disabled = true
+      wx.showLoading()
+      // console.log("params: " + JSON.stringify(params))
+      //  const searchResult = await Axios.get(ENV.SEARCH, { params: Object.assign(params, this.searchParams) })
+      const searchResult2 = await Axios.post(
+        '/product/getProductSearchList',
+        Object.assign(params, this.searchParams)
+      )
 
-        console.log('result: ', searchResult2);
-        if (searchResult2.code == '200') {
-          const searchResult = searchResult2.data;
-          wx.hideLoading();
-          this.loading = false;
-          if (searchResult.esProducts) {
-            this.disabled = searchResult.pageNum >= searchResult.totalPage;
-            const list = [];
-            searchResult.esProducts.forEach((data) => {
-              const tempData = _.pick(data, [
-                'id',
-                'skuList',
-                'mainImgUrl',
-                'brandName',
-                'name',
-                'price',
-                'stockBlance',
-                'saleState',
-              ]);
-              let availableStock = 0;
-              let minMarkOffPrice = 0;
-              let maxMarkOffPrice = 0;
-              let minCostPrice = 0;
-              let maxCostPrice = 0;
-              tempData.skuList &&
+      console.log('result: ', searchResult2)
+      if (searchResult2.code == '200') {
+        const searchResult = searchResult2.data
+        wx.hideLoading()
+        this.loading = false
+        if (searchResult.esProducts) {
+          this.disabled = searchResult.pageNum >= searchResult.totalPage
+          const list = []
+          searchResult.esProducts.forEach((data) => {
+            const tempData = _.pick(data, [
+              'id',
+              'skuList',
+              'mainImgUrl',
+              'brandName',
+              'name',
+              'price',
+              'stockBlance',
+              'saleState'
+            ])
+            let availableStock = 0
+            let minMarkOffPrice = 0
+            let maxMarkOffPrice = 0
+            let minCostPrice = 0
+            let maxCostPrice = 0
+            tempData.skuList &&
                 tempData.skuList.forEach((sku) => {
-                  availableStock += sku.availableStock;
+                  availableStock += sku.availableStock
                   if (minMarkOffPrice === 0 || minMarkOffPrice > sku.markOffPrice) {
-                    minMarkOffPrice = sku.markOffPrice;
+                    minMarkOffPrice = sku.markOffPrice
                   }
                   if (maxMarkOffPrice === 0 || maxMarkOffPrice < sku.markOffPrice) {
-                    maxMarkOffPrice = sku.markOffPrice;
+                    maxMarkOffPrice = sku.markOffPrice
                   }
                   if (minCostPrice === 0 || minCostPrice > sku.sellingPrice) {
-                    minCostPrice = sku.sellingPrice;
+                    minCostPrice = sku.sellingPrice
                   }
                   if (maxCostPrice === 0 || maxCostPrice < sku.sellingPrice) {
-                    maxCostPrice = sku.sellingPrice;
+                    maxCostPrice = sku.sellingPrice
                   }
-                });
-              if (minMarkOffPrice !== maxMarkOffPrice) {
-                tempData.markOffPriceStr = `${minMarkOffPrice}-${maxMarkOffPrice}`;
-              } else {
-                tempData.markOffPriceStr = minMarkOffPrice;
-              }
-              if (minCostPrice !== maxCostPrice) {
-                tempData.costPriceStr = `${minCostPrice}-${maxCostPrice}`;
-              } else {
-                tempData.costPriceStr = minCostPrice;
-              }
-              tempData.availableStock = availableStock;
-              tempData.proPictDir = XIU.getImgFormat(tempData.mainImgUrl, '/resize,w_750');
-              Object.assign(tempData, data);
-              console.log('===data--', tempData);
-              list.push(tempData);
-            });
-            this.itemList = this.itemList.concat(list);
-            this.brandList = [];
-            Object.keys(searchResult.brands).forEach((key) => {
-              searchResult.brands[key].forEach((brand) => {
-                this.brandList.push({
-                  brandId: brand.brandId,
-                  brandName: brand.brandName,
-                  check: false,
-                });
-              });
-            });
-            this.categoryList = [];
-            searchResult.categorys.forEach((category) => {
-              this.categoryList.push({
-                id: category.code,
-                name: category.name,
-                check: false,
-              });
-            });
-            this.priceList = [];
-            searchResult.prices.forEach((data, index) => {
-              this.priceList.push({
-                id: index,
-                name: data,
-                check: false,
-              });
-            });
-            if (this.attrList.length) {
-              return false;
+                })
+            if (minMarkOffPrice !== maxMarkOffPrice) {
+              tempData.markOffPriceStr = `${minMarkOffPrice}-${maxMarkOffPrice}`
+            } else {
+              tempData.markOffPriceStr = minMarkOffPrice
             }
-            const attrs = [];
-            Object.keys(searchResult.attrs).forEach((key) => {
-              const dataList = [];
-              const attr = key.split('@@@');
-              searchResult.attrs[key].forEach((data) => {
-                if (!data) {
-                  return false;
-                }
-                const subAttr = data.split('@@@');
-                dataList.push({
-                  id: subAttr[0],
-                  name: subAttr[1],
-                  value: data,
-                  check: false,
-                });
-              });
-              attrs.push({
-                id: attr[0],
-                name: attr[1],
-                showMore: false,
-                dataList: dataList,
-              });
-            });
-            this.attrList = attrs;
-            this.empty = !this.itemList;
-            // if(!this.itemList){
-            //   this.empty = true
-            // }else{
-            //   this.empty = false
-            // }
-            // console.log("页面商品：" + JSON.stringify(this.itemList))
-          } else {
-            // wx.showToast(searchResult.result.message);
-            this.empty = true;
+            if (minCostPrice !== maxCostPrice) {
+              tempData.costPriceStr = `${minCostPrice}-${maxCostPrice}`
+            } else {
+              tempData.costPriceStr = minCostPrice
+            }
+            tempData.availableStock = availableStock
+            tempData.proPictDir = XIU.getImgFormat(tempData.mainImgUrl, '/resize,w_750')
+            Object.assign(tempData, data)
+            console.log('===data--', tempData)
+            list.push(tempData)
+          })
+          this.itemList = this.itemList.concat(list)
+          this.brandList = []
+          Object.keys(searchResult.brands).forEach((key) => {
+            searchResult.brands[key].forEach((brand) => {
+              this.brandList.push({
+                brandId: brand.brandId,
+                brandName: brand.brandName,
+                check: false
+              })
+            })
+          })
+          this.categoryList = []
+          searchResult.categorys.forEach((category) => {
+            this.categoryList.push({
+              id: category.code,
+              name: category.name,
+              check: false
+            })
+          })
+          this.priceList = []
+          searchResult.prices.forEach((data, index) => {
+            this.priceList.push({
+              id: index,
+              name: data,
+              check: false
+            })
+          })
+          if (this.attrList.length) {
+            return false
           }
+          const attrs = []
+          Object.keys(searchResult.attrs).forEach((key) => {
+            const dataList = []
+            const attr = key.split('@@@')
+            searchResult.attrs[key].forEach((data) => {
+              if (!data) {
+                return false
+              }
+              const subAttr = data.split('@@@')
+              dataList.push({
+                id: subAttr[0],
+                name: subAttr[1],
+                value: data,
+                check: false
+              })
+            })
+            attrs.push({
+              id: attr[0],
+              name: attr[1],
+              showMore: false,
+              dataList: dataList
+            })
+          })
+          this.attrList = attrs
+          this.empty = !this.itemList
+          // if(!this.itemList){
+          //   this.empty = true
+          // }else{
+          //   this.empty = false
+          // }
+          // console.log("页面商品：" + JSON.stringify(this.itemList))
+        } else {
+          // wx.showToast(searchResult.result.message);
+          this.empty = true
         }
-      },
-    },
-    onPageScroll(e) {
-      // TODO 滚动问题
-      // e.scrollTop > App.systemInfo.screenHeight
-      this.$refs.toTop.show(true);
-    },
-    // async mounted() {
-    //    console.log('--mounted--')
-    //   this.brandId = this.$root.$mp.query.brandId;
-    //   this.planId = this.$root.$mp.query.planId;
-    //   this.dispId = this.$root.$mp.query.dispId;
-    //   this.key = this.$root.$mp.query.key;
-    //   this.$refs.filter.show(false);
-    //   this.pageNo = 1;
-    //   this.disabled=false;
-    //   this.itemList = [];
-    //   await this.loadData();
-    // }
-  };
+      }
+    }
+  },
+  onPageScroll(e) {
+    // TODO 滚动问题
+    // e.scrollTop > App.systemInfo.screenHeight
+    this.$refs.toTop.show(true)
+  }
+  // async mounted() {
+  //    console.log('--mounted--')
+  //   this.brandId = this.$root.$mp.query.brandId;
+  //   this.planId = this.$root.$mp.query.planId;
+  //   this.dispId = this.$root.$mp.query.dispId;
+  //   this.key = this.$root.$mp.query.key;
+  //   this.$refs.filter.show(false);
+  //   this.pageNo = 1;
+  //   this.disabled=false;
+  //   this.itemList = [];
+  //   await this.loadData();
+  // }
+}
 </script>
 <style lang="scss" scoped>
   @import '~@/styles/base';

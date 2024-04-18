@@ -142,313 +142,313 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import ActionSheet from '@/components/common/action-sheet';
-  export default {
-    components: { ActionSheet },
-    data() {
-      return {
-        // 区县列表
-        counties: [
-          { text: '朝阳区', value: '110000' },
-          { text: '东城区', value: '110000' },
-          { text: '西城区', value: '110000' },
-        ],
-        // 选择的区县
-        county: { text: '朝阳区', value: '110000' },
-        // 列表数据
-        list: [{}],
-        //医院id
-        medical: '',
+import api from '@/apis/index.js'
+import ActionSheet from '@/components/common/action-sheet'
+export default {
+  components: { ActionSheet },
+  data() {
+    return {
+      // 区县列表
+      counties: [
+        { text: '朝阳区', value: '110000' },
+        { text: '东城区', value: '110000' },
+        { text: '西城区', value: '110000' }
+      ],
+      // 选择的区县
+      county: { text: '朝阳区', value: '110000' },
+      // 列表数据
+      list: [{}],
+      // 医院id
+      medical: '',
 
-        citys: [{ text: '北京市', value: '110000' }],
-        city: {},
-        //处理后的详情
-        item: {},
-        //当前定位
-        person: {},
-        //电话号码列表
-        phoneList: [],
-        // 拨打电话弹窗选项
-        actionSheetItems: [],
-      };
-    },
-    onLoad(options) {
-      this.medical = options.medical;
-      this.list = options.list;
-      console.log('this.medical:', options.medical);
-      // this.setCounties();
-      this.getLocation();
-    },
-    methods: {
-      /**
+      citys: [{ text: '北京市', value: '110000' }],
+      city: {},
+      // 处理后的详情
+      item: {},
+      // 当前定位
+      person: {},
+      // 电话号码列表
+      phoneList: [],
+      // 拨打电话弹窗选项
+      actionSheetItems: []
+    }
+  },
+  onLoad(options) {
+    this.medical = options.medical
+    this.list = options.list
+    console.log('this.medical:', options.medical)
+    // this.setCounties();
+    this.getLocation()
+  },
+  methods: {
+    /**
        * 选择城市
        */
-      handleCounty(e) {
-        this.citys = this.citys[e.detail.value];
-      },
-      /**
+    handleCounty(e) {
+      this.citys = this.citys[e.detail.value]
+    },
+    /**
        * 点击打车事件
        */
-      handleCarClick() {
-        this.$uni.showToast({
-          title: '功能建设中，敬请期待',
-        });
-      },
-      /**
+    handleCarClick() {
+      this.$uni.showToast({
+        title: '功能建设中，敬请期待'
+      })
+    },
+    /**
        * 区县选择器选择回调
        */
-      handleCountyChange(e) {
-        this.county = this.counties[e.detail.value];
-      },
-      //前往详情页
-      handleItemClick() {
-        uni.navigateTo({
-          url: '/pages/map/address-detail',
-          success: (res) => {
-            res.eventChannel.emit('didOpenPageFinish', {
-              type: 'hospital',
-              item: this.item,
-            });
-          },
-        });
-      },
+    handleCountyChange(e) {
+      this.county = this.counties[e.detail.value]
+    },
+    // 前往详情页
+    handleItemClick() {
+      uni.navigateTo({
+        url: '/pages/map/address-detail',
+        success: (res) => {
+          res.eventChannel.emit('didOpenPageFinish', {
+            type: 'hospital',
+            item: this.item
+          })
+        }
+      })
+    },
 
-      //根据id获取医院信息
-      getEcOrgOfficeInfoById() {
-        let useInfo = uni.getStorageSync('userInfo');
-        api.getOfficeInfoById({
-          data: {
-            orgOfficeId: this.medical,
-            userId: useInfo.uactId || '', //用户id
-          },
-          success: (data) => {
-            let obj = {
-              orgOfficeId: data.orgOfficeId,
-              rid: data.rid,
-              type: data.orgOfficeType,
-              latitude: data.orgOfficeLat,
-              longitude: data.orgOfficeLon,
-              name: data.orgOfficeName,
-              orgOfficeInfoDetail: data.orgOfficeInfoDetail,
-              scenic_area_tel: data.orgOfficeTel,
-              isCollected: data.isCollected,
-              orgId: data.orgId,
-            };
-            if (this.person.latitude) {
-              obj['distance'] = this.getDistance(
-                this.person.latitude,
-                this.person.longitude,
-                data.orgOfficeLat,
-                data.orgOfficeLon,
-              );
+    // 根据id获取医院信息
+    getEcOrgOfficeInfoById() {
+      const useInfo = uni.getStorageSync('userInfo')
+      api.getOfficeInfoById({
+        data: {
+          orgOfficeId: this.medical,
+          userId: useInfo.uactId || '' // 用户id
+        },
+        success: (data) => {
+          const obj = {
+            orgOfficeId: data.orgOfficeId,
+            rid: data.rid,
+            type: data.orgOfficeType,
+            latitude: data.orgOfficeLat,
+            longitude: data.orgOfficeLon,
+            name: data.orgOfficeName,
+            orgOfficeInfoDetail: data.orgOfficeInfoDetail,
+            scenic_area_tel: data.orgOfficeTel,
+            isCollected: data.isCollected,
+            orgId: data.orgId
+          }
+          if (this.person.latitude) {
+            obj['distance'] = this.getDistance(
+              this.person.latitude,
+              this.person.longitude,
+              data.orgOfficeLat,
+              data.orgOfficeLon
+            )
+          }
+          if (data.orgOfficeInfoDetail) {
+            const area = JSON.parse(data.orgOfficeInfoDetail.replace(/\s*/g, ''))
+            obj['hospital_level'] = area.hospital_level ? area.hospital_level : ''
+            obj['hospital_clinic'] = area.hospital_clinic ? area.hospital_clinic : ''
+            obj['scenic_area_rank'] = area.scenic_area_rank
+            obj['scenic_area_opentime'] = area.scenic_area_opentime
+            obj['scenic_area_intro'] = area.scenic_area_intro
+              ? area.scenic_area_intro
+              : area.hospital_intro
+            if (area.scenic_area_photos) {
+              obj['scenic_area_photos'] = area.scenic_area_photos.split(',')[0]
             }
-            if (data.orgOfficeInfoDetail) {
-              const area = JSON.parse(data.orgOfficeInfoDetail.replace(/\s*/g, ''));
-              obj['hospital_level'] = area.hospital_level ? area.hospital_level : '';
-              obj['hospital_clinic'] = area.hospital_clinic ? area.hospital_clinic : '';
-              obj['scenic_area_rank'] = area.scenic_area_rank;
-              obj['scenic_area_opentime'] = area.scenic_area_opentime;
-              obj['scenic_area_intro'] = area.scenic_area_intro
-                ? area.scenic_area_intro
-                : area.hospital_intro;
-              if (area.scenic_area_photos) {
-                obj['scenic_area_photos'] = area.scenic_area_photos.split(',')[0];
-              }
-            }
-            this.item = obj;
-          },
-        });
-      },
-      /**
+          }
+          this.item = obj
+        }
+      })
+    },
+    /**
        * 设置曲线列表
        */
-      setCounties() {
-        this.counties = [
-          { text: '东城区', value: '110000' },
-          { text: '西城区', value: '110000' },
-          { text: '朝阳区', value: '110000' },
-        ];
-      },
-      /**
+    setCounties() {
+      this.counties = [
+        { text: '东城区', value: '110000' },
+        { text: '西城区', value: '110000' },
+        { text: '朝阳区', value: '110000' }
+      ]
+    },
+    /**
        * 返回单位km  lat:纬度  lng：经度
        */
-      getDistance(lat1, lng1, lat2, lng2) {
-        if (Math.abs(lat1) > 90 || Math.abs(lat2) > 90) {
-          return '';
-        }
-        if (Math.abs(lng1) > 180 || Math.abs(lng2) > 180) {
-          return '';
-        }
-        var radLat1 = this.rad(lat1);
-        var radLat2 = this.rad(lat2);
-        var a = radLat1 - radLat2;
-        var b = this.rad(lng1) - this.rad(lng2);
-        var s =
+    getDistance(lat1, lng1, lat2, lng2) {
+      if (Math.abs(lat1) > 90 || Math.abs(lat2) > 90) {
+        return ''
+      }
+      if (Math.abs(lng1) > 180 || Math.abs(lng2) > 180) {
+        return ''
+      }
+      var radLat1 = this.rad(lat1)
+      var radLat2 = this.rad(lat2)
+      var a = radLat1 - radLat2
+      var b = this.rad(lng1) - this.rad(lng2)
+      var s =
           2 *
           Math.asin(
             Math.sqrt(
               Math.pow(Math.sin(a / 2), 2) +
-                Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2),
-            ),
-          );
-        s = s * 6378.137; // EARTH_RADIUS;
-        s = Math.round(s * 10000) / 10000;
-        if (s.toFixed(2) < 1) {
-          return s.toFixed(2) * 1000 + '米';
-        } else {
-          return s.toFixed(2) + '公里';
-        }
-      },
-      /**
+                Math.cos(radLat1) * Math.cos(radLat2) * Math.pow(Math.sin(b / 2), 2)
+            )
+          )
+      s = s * 6378.137 // EARTH_RADIUS;
+      s = Math.round(s * 10000) / 10000
+      if (s.toFixed(2) < 1) {
+        return s.toFixed(2) * 1000 + '米'
+      } else {
+        return s.toFixed(2) + '公里'
+      }
+    },
+    /**
        * 距离计算定义方法
        */
-      rad(d) {
-        return (d * Math.PI) / 180.0;
-      },
-      /**
+    rad(d) {
+      return (d * Math.PI) / 180.0
+    },
+    /**
        * 获取当前位置信息
        */
-      getLocation() {
-        console.log('获取当前位置信息');
-        // 先将原有位置信息清空, 再重新定位, 位置信息发生变化, 才能将当前定位置于屏幕中心
-        uni.getLocation({
-          type: 'gcj02',
-          success: (res) => {
-            uni.setStorage({
-              key: 'location',
-              data: res,
-            });
-            this.person = res;
-            this.getEcOrgOfficeInfoById();
-          },
-          fail: (err) => {
-            // uni.showModal({
-            //     title: '提示',
-            //     content: '请确认定位相关权限已开启',
-            //     showCancel:false,
-            //     success: function (res) {
-            //         if (res.confirm) {
-            //         }
-            //     }
-            // });
-            this.getEcOrgOfficeInfoById();
-          },
-        });
-      },
-      /**
+    getLocation() {
+      console.log('获取当前位置信息')
+      // 先将原有位置信息清空, 再重新定位, 位置信息发生变化, 才能将当前定位置于屏幕中心
+      uni.getLocation({
+        type: 'gcj02',
+        success: (res) => {
+          uni.setStorage({
+            key: 'location',
+            data: res
+          })
+          this.person = res
+          this.getEcOrgOfficeInfoById()
+        },
+        fail: (err) => {
+          // uni.showModal({
+          //     title: '提示',
+          //     content: '请确认定位相关权限已开启',
+          //     showCancel:false,
+          //     success: function (res) {
+          //         if (res.confirm) {
+          //         }
+          //     }
+          // });
+          this.getEcOrgOfficeInfoById()
+        }
+      })
+    },
+    /**
        * 拨打电话按钮事件
        */
-      makeToTel(item) {
-        this.phoneList = [];
-        if (item.scenic_area_tel) {
-          const phoneNumber = item.scenic_area_tel.replace(/\//g, ',').replace(/\;/g, ',');
-          phoneNumber.split(',').forEach((item1) => {
-            this.phoneList.push(item1);
-          });
-        } else {
-          showToast({
-            title: '暂无电话',
-          });
-          return;
-        }
-        this.actionSheetItems = this.phoneList;
-        this.$refs.actionSheet.open();
-      },
-      /**
+    makeToTel(item) {
+      this.phoneList = []
+      if (item.scenic_area_tel) {
+        const phoneNumber = item.scenic_area_tel.replace(/\//g, ',').replace(/\;/g, ',')
+        phoneNumber.split(',').forEach((item1) => {
+          this.phoneList.push(item1)
+        })
+      } else {
+        showToast({
+          title: '暂无电话'
+        })
+        return
+      }
+      this.actionSheetItems = this.phoneList
+      this.$refs.actionSheet.open()
+    },
+    /**
        * action sheet 弹窗点击回调
        */
-      handleActionSheetItemClick(index) {
-        uni.makePhoneCall({
-          phoneNumber: this.phoneList[index],
-        });
-      },
-      /**
+    handleActionSheetItemClick(index) {
+      uni.makePhoneCall({
+        phoneNumber: this.phoneList[index]
+      })
+    },
+    /**
        * 是否显示电话
        */
-      showTel(tel) {
-        if (typeof tel == 'string') {
-          return true;
-        } else {
-          return false;
-        }
-      },
-      // 导航点击事件
-      handleDirectionClick() {
-        let item = this.item;
-        console.log('item导航点击事件:', item);
-        uni.navigateTo({
-          url: '/pages/map/direction',
-          success: (res) => {
-            if (this.list === '0') {
-              res.eventChannel.emit('didOpenPageFinish', {
-                name: item.name,
-                longitude: item.longitude - 0,
-                latitude: item.latitude - 0,
-                distance: item.distance,
-                // address: item.address,
-              });
-            }
+    showTel(tel) {
+      if (typeof tel == 'string') {
+        return true
+      } else {
+        return false
+      }
+    },
+    // 导航点击事件
+    handleDirectionClick() {
+      const item = this.item
+      console.log('item导航点击事件:', item)
+      uni.navigateTo({
+        url: '/pages/map/direction',
+        success: (res) => {
+          if (this.list === '0') {
+            res.eventChannel.emit('didOpenPageFinish', {
+              name: item.name,
+              longitude: item.longitude - 0,
+              latitude: item.latitude - 0,
+              distance: item.distance
+              // address: item.address,
+            })
+          }
 
-            console.log('传参成功');
-          },
-          fail: (err) => {
-            console.log('fail:', err);
-          },
-          complete: (res) => {
-            if (this.list === '1') {
-              res.eventChannel.emit('didOpenPageFinish', {
-                name: item.name,
-                longitude: item.longitude - 0,
-                latitude: item.latitude - 0,
-                distance: item.distance,
-                // address: item.address,
-              });
-            }
-            console.log('complete:', res);
-          },
-        });
-      },
-      /**
+          console.log('传参成功')
+        },
+        fail: (err) => {
+          console.log('fail:', err)
+        },
+        complete: (res) => {
+          if (this.list === '1') {
+            res.eventChannel.emit('didOpenPageFinish', {
+              name: item.name,
+              longitude: item.longitude - 0,
+              latitude: item.latitude - 0,
+              distance: item.distance
+              // address: item.address,
+            })
+          }
+          console.log('complete:', res)
+        }
+      })
+    },
+    /**
        * 点击收藏
        */
-      handleCollected(item) {
-        if (!uni.getStorageSync('token')) {
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
-        }
-        if (item.isCollected == 0) {
-          api.saveCollect({
-            data: {
-              colId: item.orgOfficeId,
-              colType: '2',
-              coordinate: item.longitude + ',' + item.latitude,
-            },
-            success: (data) => {
-              item.isCollected = 1;
-            },
-          });
-        } else {
-          api.updateCollect({
-            data: {
-              requestColSingleDTOList: [
-                {
-                  delFlag: '1',
-                  colId: item.orgOfficeId,
-                },
-              ],
-            },
-            success: (data) => {
-              item.isCollected = 0;
-            },
-          });
-        }
-      },
-    },
-    destroyed() {},
-  };
+    handleCollected(item) {
+      if (!uni.getStorageSync('token')) {
+        uni.navigateTo({
+          url: '/pages/user-center/login'
+        })
+        return
+      }
+      if (item.isCollected == 0) {
+        api.saveCollect({
+          data: {
+            colId: item.orgOfficeId,
+            colType: '2',
+            coordinate: item.longitude + ',' + item.latitude
+          },
+          success: (data) => {
+            item.isCollected = 1
+          }
+        })
+      } else {
+        api.updateCollect({
+          data: {
+            requestColSingleDTOList: [
+              {
+                delFlag: '1',
+                colId: item.orgOfficeId
+              }
+            ]
+          },
+          success: (data) => {
+            item.isCollected = 0
+          }
+        })
+      }
+    }
+  },
+  destroyed() {}
+}
 </script>
 
 <style lang="scss" scoped>

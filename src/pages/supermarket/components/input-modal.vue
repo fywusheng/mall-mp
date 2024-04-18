@@ -44,24 +44,24 @@ export default {
   props: {
     title: {
       type: String,
-      default: '提示',
+      default: '提示'
     },
     text: {
       type: String,
-      default: '',
+      default: ''
     },
     modImg: {
       type: String,
-      default: '0', //''0':领证；'1':赡养抚养'2':亲情 ；'4'：不展示图片
+      default: '0' // ''0':领证；'1':赡养抚养'2':亲情 ；'4'：不展示图片
     },
     cancelText: {
       type: String,
-      default: '放弃添加',
+      default: '放弃添加'
     },
     confirmText: {
       type: String,
-      default: '立刻添加',
-    },
+      default: '立刻添加'
+    }
   },
   data() {
     return {}
@@ -69,7 +69,7 @@ export default {
   computed: {},
   methods: {
     confirm() {
-      let msg = { from: 'confirm', confirm: true }
+      const msg = { from: 'confirm', confirm: true }
       this.$emit('confirm')
       // this.$emit('event', msg)
     },
@@ -78,15 +78,15 @@ export default {
       this.$emit('cancel')
       // this.$emit('event', msg)
     },
-    //关闭弹框
+    // 关闭弹框
     close() {
       this.$refs.popup.close()
     },
     // 打开弹框
     open() {
       this.$refs.popup.open()
-    },
-  },
+    }
+  }
 }
 </script>
 

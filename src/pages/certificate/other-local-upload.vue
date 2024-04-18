@@ -46,136 +46,136 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  export default {
-    data() {
-      return {
-        // 头像路径
-        avatarURL: '',
-        // 身份证照数据
-        params: {},
-        // 用户数据
-        userInfo: {},
+import api from '@/apis/index.js'
+export default {
+  data() {
+    return {
+      // 头像路径
+      avatarURL: '',
+      // 身份证照数据
+      params: {},
+      // 用户数据
+      userInfo: {},
 
-        imgWidth: '',
-        imgHeight: '',
-      };
-    },
-    onLoad(e) {
-      const eventChannel = this.getOpenerEventChannel();
-      eventChannel.on('sendPrevImg', (info) => {
-        this.params = info;
-      });
-    },
-    methods: {
-      /**
+      imgWidth: '',
+      imgHeight: ''
+    }
+  },
+  onLoad(e) {
+    const eventChannel = this.getOpenerEventChannel()
+    eventChannel.on('sendPrevImg', (info) => {
+      this.params = info
+    })
+  },
+  methods: {
+    /**
        * 添加图片点击事件
        */
-      handleChooseImageClick() {
-        uni.chooseImage({
-          sourceType: ['album'],
-          count: 1,
-          success: (res) => {
-            // uni.getFileSystemManager().readFile({
-            //   filePath: res.tempFilePaths[0],
-            //   encoding: 'base64',
-            //   success: (rs) => {
-            //     // 去背景图片
-            //     this.getBackGroundImg(rs.data)
-            //   },
-            // })
+    handleChooseImageClick() {
+      uni.chooseImage({
+        sourceType: ['album'],
+        count: 1,
+        success: (res) => {
+          // uni.getFileSystemManager().readFile({
+          //   filePath: res.tempFilePaths[0],
+          //   encoding: 'base64',
+          //   success: (rs) => {
+          //     // 去背景图片
+          //     this.getBackGroundImg(rs.data)
+          //   },
+          // })
 
-            //#ifdef MP-WEIXIN
+          // #ifdef MP-WEIXIN
 
-            uni.getFileSystemManager().readFile({
-              filePath: res.tempFilePaths[0],
-              encoding: 'base64',
-              success: (rs) => {
-                console.log('图片选取成功：', rs);
-                // 去背景图片
-                this.getBackGroundImg(rs.data);
-              },
-            });
-            //#endif
+          uni.getFileSystemManager().readFile({
+            filePath: res.tempFilePaths[0],
+            encoding: 'base64',
+            success: (rs) => {
+              console.log('图片选取成功：', rs)
+              // 去背景图片
+              this.getBackGroundImg(rs.data)
+            }
+          })
+          // #endif
 
-            //#ifdef MP-ALIPAY
-            my.getImageInfo({
-              src: res.tempFilePaths[0],
-              success: (resImg) => {
-                console.log('图片数据resImg：', resImg);
-                this.imgWidth = resImg.width;
-                this.imgHeight = resImg.height;
-                let canvas = my.createCanvasContext('canvas');
-                canvas.drawImage(res.tempFilePaths[0], 0, 0, this.imgWidth, this.imgHeight);
-                // 1. 绘制图片至canvas
-                // 绘制完成后执行回调
-                canvas.draw(false, () => {
-                  console.log('绘制完成后执行回调');
-                  canvas
-                    .toDataURL({
-                      width: this.imgWidth,
-                      height: this.imgHeight,
-                      quality: 1,
-                    })
-                    .then((baseImg) => {
-                      console.log('图片baseImg：', baseImg);
-                      // let base64 = baseImg.replace("data:image/png;base64,", "");
-                      let base64 = baseImg.split(',')[1];
-                      console.log('图片base64：', base64);
-                      this.getBackGroundImg(base64);
-                    });
-                  //  console.log("图片base64：",base64)
-                  // base64 = base64.replace("data:image/png;base64,", "");
-                  // 身份证识别
-                });
-              },
-            });
+          // #ifdef MP-ALIPAY
+          my.getImageInfo({
+            src: res.tempFilePaths[0],
+            success: (resImg) => {
+              console.log('图片数据resImg：', resImg)
+              this.imgWidth = resImg.width
+              this.imgHeight = resImg.height
+              const canvas = my.createCanvasContext('canvas')
+              canvas.drawImage(res.tempFilePaths[0], 0, 0, this.imgWidth, this.imgHeight)
+              // 1. 绘制图片至canvas
+              // 绘制完成后执行回调
+              canvas.draw(false, () => {
+                console.log('绘制完成后执行回调')
+                canvas
+                  .toDataURL({
+                    width: this.imgWidth,
+                    height: this.imgHeight,
+                    quality: 1
+                  })
+                  .then((baseImg) => {
+                    console.log('图片baseImg：', baseImg)
+                    // let base64 = baseImg.replace("data:image/png;base64,", "");
+                    const base64 = baseImg.split(',')[1]
+                    console.log('图片base64：', base64)
+                    this.getBackGroundImg(base64)
+                  })
+                //  console.log("图片base64：",base64)
+                // base64 = base64.replace("data:image/png;base64,", "");
+                // 身份证识别
+              })
+            }
+          })
 
-            //#endif
-          },
-        });
-      },
-      /**
+          // #endif
+        }
+      })
+    },
+    /**
        * 确认上传点击事件
        */
-      handleUploadClick() {
-        uni.setStorageSync('customFace', this.resinfo);
-        uni.navigateBack({
-          delta: 1,
-        });
+    handleUploadClick() {
+      uni.setStorageSync('customFace', this.resinfo)
+      uni.navigateBack({
+        delta: 1
+      })
 
-        // uni.navigateTo({
-        //   url: '/pages/certificate/avatar-confirm-other',
-        //   success: (res) => {
-        //     console.log('成功com:', res)
-        //     res.eventChannel.emit('didOpenPageFinish', info, this.resinfo)
-        //   },
-        //   complete: (com) => {
-        //     console.log('完成com:', com)
-        //   },
-        //   fail: (err) => {
-        //     console.log('出错err:', err)
-        //   },
-        // })
-      },
-      /**
+      // uni.navigateTo({
+      //   url: '/pages/certificate/avatar-confirm-other',
+      //   success: (res) => {
+      //     console.log('成功com:', res)
+      //     res.eventChannel.emit('didOpenPageFinish', info, this.resinfo)
+      //   },
+      //   complete: (com) => {
+      //     console.log('完成com:', com)
+      //   },
+      //   fail: (err) => {
+      //     console.log('出错err:', err)
+      //   },
+      // })
+    },
+    /**
        * 获取去除背景图片
        */
-      getBackGroundImg(faceImg) {
-        api.clearBg({
-          data: {
-            photoBase64: faceImg,
-          },
-          showsLoading: true,
-          success: (resinfo) => {
-            console.log('抠图结果resinfo:', resinfo);
-            this.avatarURL = 'data:image/jpg;base64,' + resinfo.photoBase64;
-            this.resinfo = resinfo;
-          },
-        });
-      },
-    },
-  };
+    getBackGroundImg(faceImg) {
+      api.clearBg({
+        data: {
+          photoBase64: faceImg
+        },
+        showsLoading: true,
+        success: (resinfo) => {
+          console.log('抠图结果resinfo:', resinfo)
+          this.avatarURL = 'data:image/jpg;base64,' + resinfo.photoBase64
+          this.resinfo = resinfo
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

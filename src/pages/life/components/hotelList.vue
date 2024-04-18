@@ -40,81 +40,81 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
-  import parse from 'mini-html-parser2';
-  export default {
-    data() {
-      return {
-        strings: '',
-        pageNum: 1,
-        pageSize: 20,
-        list: [],
-        loading: 1,
-      };
+import api from '@/apis/index.js'
+import parse from 'mini-html-parser2'
+export default {
+  data() {
+    return {
+      strings: '',
+      pageNum: 1,
+      pageSize: 20,
+      list: [],
+      loading: 1
+    }
+  },
+  created() {
+    this.hotelList()
+  },
+  onReachBottom() {
+    // 上拉加载
+    this.hotelList()
+  },
+  onPullDownRefresh() {
+    // 下拉刷新
+    this.hotelList()
+  },
+  methods: {
+    turnValue(match) {
+      return `<span style="color:red">${match}</span>`
     },
-    created() {
-      this.hotelList();
+    change(value) {
+      if (!value) {
+        this.strings = ''
+        return ''
+      } else {
+        const str = value.replace(/\d+/g, this.turnValue)
+        // TODO Alipay必须 parse 富文本才会解析
+        parse(str, (e, newstring) => {
+          this.strings = newstring
+        })
+        // #ifdef MP-WEIXIN
+        return value.replace(/\d+/g, this.turnValue)
+        // #endif
+        // #ifdef MP-ALIPAY
+        return this.strings
+        // #endif
+      }
     },
-    onReachBottom() {
-      // 上拉加载
-      this.hotelList();
-    },
-    onPullDownRefresh() {
-      // 下拉刷新
-      this.hotelList();
-    },
-    methods: {
-      turnValue(match) {
-        return `<span style="color:red">${match}</span>`;
-      },
-      change(value) {
-        if (!value) {
-          this.strings = '';
-          return '';
-        } else {
-          const str = value.replace(/\d+/g, this.turnValue);
-          // TODO Alipay必须 parse 富文本才会解析
-          parse(str, (e, newstring) => {
-            this.strings = newstring;
-          });
-          // #ifdef MP-WEIXIN
-          return value.replace(/\d+/g, this.turnValue);
-          // #endif
-          // #ifdef MP-ALIPAY
-          return this.strings;
-          // #endif
-        }
-      },
-      hostDetail(item) {
-        uni.navigateTo({
-          url:
+    hostDetail(item) {
+      uni.navigateTo({
+        url:
             '/pages/life/hotelDetail?hotelDiscountId=' +
             item.hotelDiscountId +
-            '&type=2&isShowPrice=2&change=null',
-        });
-      },
-      hotelList() {
-        api.gethotelList({
-          data: { page: this.pageNum, pageSize: this.pageSize },
-          success: (res) => {
-            const list = res.list || [];
-            if (list.length > 0) {
-              this.pageNum = this.pageNum + 1;
-              list.forEach((element) => {
-                const ele = element;
-                ele['show_num'] = this.change(ele.hotelDiscountDesc);
-                this.list.push(ele);
-              });
-            }
-            if (list.length == 0) {
-              this.loading = 2;
-            }
-          },
-          fail: (res) => {},
-        });
-      },
+            '&type=2&isShowPrice=2&change=null'
+      })
     },
-  };
+    hotelList() {
+      api.gethotelList({
+        data: { page: this.pageNum, pageSize: this.pageSize },
+        success: (res) => {
+          const list = res.list || []
+          if (list.length > 0) {
+            this.pageNum = this.pageNum + 1
+            list.forEach((element) => {
+              const ele = element
+              ele['show_num'] = this.change(ele.hotelDiscountDesc)
+              this.list.push(ele)
+            })
+          }
+          if (list.length == 0) {
+            this.loading = 2
+          }
+        },
+        fail: (res) => {}
+      })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .status-box2 {

@@ -52,73 +52,73 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
-  import modalKnow from '@/pages/life/components/modal-know.vue';
+import api from '@/apis/index.js'
+import modalKnow from '@/pages/life/components/modal-know.vue'
 
-  export default {
-    components: { modalKnow },
-    data() {
-      return {
-        list: [],
-        h: 12,
-        m: 10,
-        s: 60,
-      };
+export default {
+  components: { modalKnow },
+  data() {
+    return {
+      list: [],
+      h: 12,
+      m: 10,
+      s: 60
+    }
+  },
+  created() {
+    this.getProductList()
+    this.countDown()
+    this.timeCount = setInterval(() => {
+      this.countDown()
+    }, 1000)
+  },
+  // onShow(){
+  //     console.log("===onready---",this.h)
+  //   this.countDown()
+  //   this.timeCount =  setInterval(()=>{
+  //       console.log("===倒计时处理中---")
+  //       this.countDown()
+  //   }, 1000)
+  // },
+  destroyed() {
+    clearInterval(this.timeCount)
+  },
+  onShareAppMessage() {
+    return {
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
+    // return {
+    //     title:'买菜',
+    //     path:"/pages/life/bugshopping",
+    //  };
+  },
+  methods: {
+    show() {
+      this.$refs.notice.open()
     },
-    created() {
-      this.getProductList();
-      this.countDown();
-      this.timeCount = setInterval(() => {
-        this.countDown();
-      }, 1000);
+    countDown() {
+      var startTime = +new Date(2023, 11, 17)
+      var nowTime = +new Date()
+      var times = (startTime - nowTime) / 1000
+      this.h = parseInt((times / 60 / 60) % 24)
+      this.h = this.h < 10 ? '0' + this.h : this.h
+      this.m = parseInt((times / 60) % 60)
+      this.m = this.m < 10 ? '0' + this.m : this.m
+      this.s = parseInt(times % 60)
+      this.s = this.s < 10 ? '0' + this.s : this.s
     },
-    // onShow(){
-    //     console.log("===onready---",this.h)
-    //   this.countDown()
-    //   this.timeCount =  setInterval(()=>{
-    //       console.log("===倒计时处理中---")
-    //       this.countDown()
-    //   }, 1000)
-    // },
-    destroyed() {
-      clearInterval(this.timeCount);
-    },
-    onShareAppMessage() {
-      return {
-        title: '',
-        path: '/pages/index/index?index=0',
-      };
-      // return {
-      //     title:'买菜',
-      //     path:"/pages/life/bugshopping",
-      //  };
-    },
-    methods: {
-      show() {
-        this.$refs.notice.open();
-      },
-      countDown() {
-        var startTime = +new Date(2023, 11, 17);
-        var nowTime = +new Date();
-        var times = (startTime - nowTime) / 1000;
-        this.h = parseInt((times / 60 / 60) % 24);
-        this.h = this.h < 10 ? '0' + this.h : this.h;
-        this.m = parseInt((times / 60) % 60);
-        this.m = this.m < 10 ? '0' + this.m : this.m;
-        this.s = parseInt(times % 60);
-        this.s = this.s < 10 ? '0' + this.s : this.s;
-      },
-      getProductList() {
-        api.getProductList({
-          data: {},
-          success: (res) => {
-            console.log('买菜---', res);
-            this.list = res;
-          },
-        });
-      },
-    },
-  };
+    getProductList() {
+      api.getProductList({
+        data: {},
+        success: (res) => {
+          console.log('买菜---', res)
+          this.list = res
+        }
+      })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .bugshopping {

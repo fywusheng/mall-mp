@@ -77,92 +77,92 @@
 </template>
 
 <script>
-  import NavigationBar from '../../components/common/navigation-bar.vue';
-  import Modal from '@/components/common/modal.vue';
-  export default {
-    components: { NavigationBar, Modal },
-    data() {
-      return {
-        // 导航栏高度
-        // #ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        // #endif
-        // #ifdef MP-ALIPAY
-        navigationBarHeight:
+import NavigationBar from '../../components/common/navigation-bar.vue'
+import Modal from '@/components/common/modal.vue'
+export default {
+  components: { NavigationBar, Modal },
+  data() {
+    return {
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        // #endif
-        // 是否为自己申领
-        isForSelf: true,
-        // 是否显示积分弹窗
-        showsCreditsPopup: false,
-        time: 3,
-        reFale: null, // 1-返回
-      };
+      // #endif
+      // 是否为自己申领
+      isForSelf: true,
+      // 是否显示积分弹窗
+      showsCreditsPopup: false,
+      time: 3,
+      reFale: null // 1-返回
+    }
+  },
+  onLoad() {
+    // this.statrTime();
+  },
+  methods: {
+    detailPoint() {
+      uni.navigateTo({ url: '/pages/user-center/my-points' })
     },
-    onLoad() {
-      // this.statrTime();
+    clear() {
+      clearInterval(this.timer)
     },
-    methods: {
-      detailPoint() {
-        uni.navigateTo({ url: '/pages/user-center/my-points' });
-      },
-      clear() {
-        clearInterval(this.timer);
-      },
-      loading() {
-        this.time--;
-      },
-      statrTime() {
-        this.loading();
-        this.timer = setInterval(() => {
-          if (this.time === 1) {
-            this.clear();
-            this.showsCreditsPopup = false;
-          } else {
-            this.loading();
-          }
-        }, 1000);
-      },
+    loading() {
+      this.time--
+    },
+    statrTime() {
+      this.loading()
+      this.timer = setInterval(() => {
+        if (this.time === 1) {
+          this.clear()
+          this.showsCreditsPopup = false
+        } else {
+          this.loading()
+        }
+      }, 1000)
+    },
 
-      cancel() {
-        this.$refs.confirmpop.close();
-        console.log('/pages/index/index');
-        uni.reLaunch({
-          url: '/pages/index/index',
-        });
-      },
-      confirm() {
-        this.$refs.confirmpop.close();
-        console.log('/pages/support/index');
-        uni.navigateTo({
-          url: '/pages/support/index',
-        });
-      },
-      /**
+    cancel() {
+      this.$refs.confirmpop.close()
+      console.log('/pages/index/index')
+      uni.reLaunch({
+        url: '/pages/index/index'
+      })
+    },
+    confirm() {
+      this.$refs.confirmpop.close()
+      console.log('/pages/support/index')
+      uni.navigateTo({
+        url: '/pages/support/index'
+      })
+    },
+    /**
        * 导航栏返回键的点击事件
        */
-      handleNavigationBack() {
-        this.reFale = 1; // 返回
-        if (this.isForSelf) {
-          this.$refs.confirmpop.open();
-        }
-      },
-      /**
+    handleNavigationBack() {
+      this.reFale = 1 // 返回
+      if (this.isForSelf) {
+        this.$refs.confirmpop.open()
+      }
+    },
+    /**
        * 返回首页点击事件  我知道了
        */
-      handleBackToHomeClick() {
-        this.reFale = 0; // 我知道了
-        if (this.isForSelf) {
-          this.$refs.confirmpop.open();
-        } else {
-          // 不会出现我给他人领取的情况  暂时留存
-          uni.reLaunch({
-            url: '/pages/index/index',
-          });
-        }
-      },
-    },
-  };
+    handleBackToHomeClick() {
+      this.reFale = 0 // 我知道了
+      if (this.isForSelf) {
+        this.$refs.confirmpop.open()
+      } else {
+        // 不会出现我给他人领取的情况  暂时留存
+        uni.reLaunch({
+          url: '/pages/index/index'
+        })
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

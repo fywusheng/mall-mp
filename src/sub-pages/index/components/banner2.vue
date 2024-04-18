@@ -9,39 +9,39 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      content: {
-        type: Object,
-        default: {},
-      }
-    },
-    data() {
-      return {
-        height: 750,
-        list: [],
-      }
-    },
-    methods: {
-      onLoad(e, data) {
-        data.height = e.mp.detail.height / e.mp.detail.width * 275;
-        this.height = data.height;
-      },
-      onTap(data) {
-        XIU.genLink(data.link)
-      }
-    },
-    async mounted() {
-      console.info(this.content)
-      if (this.content.list) {
-        this.content.list.forEach(data => {
-          data.height = 400;
-          data.image_url = XIU.getImgFormat(data.image_url,  '/resize,w_750')
-        })
-      }
-      this.list = this.content.list || [];
+export default {
+  props: {
+    content: {
+      type: Object,
+      default: {}
     }
+  },
+  data() {
+    return {
+      height: 750,
+      list: []
+    }
+  },
+  methods: {
+    onLoad(e, data) {
+      data.height = e.mp.detail.height / e.mp.detail.width * 275
+      this.height = data.height
+    },
+    onTap(data) {
+      XIU.genLink(data.link)
+    }
+  },
+  async mounted() {
+    console.info(this.content)
+    if (this.content.list) {
+      this.content.list.forEach(data => {
+        data.height = 400
+        data.image_url = XIU.getImgFormat(data.image_url, '/resize,w_750')
+      })
+    }
+    this.list = this.content.list || []
   }
+}
 </script>
 
 <style lang="scss">

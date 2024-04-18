@@ -89,164 +89,164 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import EasyHover from './components/easy-hover.vue';
-  import NavigationBar from '../../components/common/navigation-bar.vue';
-  export default {
-    components: { EasyHover, NavigationBar },
-    data() {
-      return {
-        // 轮播图列表
-        banners: [{}],
-        // 商超列表
-        supermarketList: [],
-        // 商超的城市信息
-        city: {},
+import api from '@/apis/index.js'
+import EasyHover from './components/easy-hover.vue'
+import NavigationBar from '../../components/common/navigation-bar.vue'
+export default {
+  components: { EasyHover, NavigationBar },
+  data() {
+    return {
+      // 轮播图列表
+      banners: [{}],
+      // 商超列表
+      supermarketList: [],
+      // 商超的城市信息
+      city: {},
 
-        iconUrl: 'http://192.168.1.187:10088/static/supermarket/img-myOrder.png',
+      iconUrl: 'http://192.168.1.187:10088/static/supermarket/img-myOrder.png',
 
-        title: '优惠买单',
+      title: '优惠买单',
 
-        // 导航栏高度
-        // #ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        // #endif
-        // #ifdef MP-ALIPAY
-        navigationBarHeight:
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        // #endif
-        // 状态栏高度
-        statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-      };
+      // #endif
+      // 状态栏高度
+      statusBarHeight: uni.getSystemInfoSync().statusBarHeight
+    }
+  },
+  onLoad() {
+    this.getBannerList()
+    this.getSupermarketList()
+    // this.getLocation()
+  },
+  onShareAppMessage() {
+    return {
+      title: '优惠买单',
+      path: '/pages/index/index?index=0'
+    }
+  },
+  methods: {
+    // 点击我的订单
+    handleEasyClick() {
+      uni.navigateTo({
+        url: '/pages/supermarket/myOrder'
+      })
     },
-    onLoad() {
-      this.getBannerList();
-      this.getSupermarketList();
-      // this.getLocation()
+    // 点击说明
+    handleDesc() {
+      uni.navigateTo({
+        url: '/pages/supermarket/discount-detail'
+      })
     },
-    onShareAppMessage() {
-      return {
-        title: '优惠买单',
-        path: '/pages/index/index?index=0',
-      };
+    // 返回上一页
+    handleNavBack() {
+      uni.navigateBack()
     },
-    methods: {
-      // 点击我的订单
-      handleEasyClick() {
-        uni.navigateTo({
-          url: '/pages/supermarket/myOrder',
-        });
-      },
-      // 点击说明
-      handleDesc() {
-        uni.navigateTo({
-          url: '/pages/supermarket/discount-detail',
-        });
-      },
-      // 返回上一页
-      handleNavBack() {
-        uni.navigateBack();
-      },
 
-      /**
+    /**
        * 获取当前定位
        */
-      getLocation() {
-        uni.getLocation({
-          type: 'gcj02',
-          success: (res) => {
-            uni.setStorageSync('location', res);
-            // 调用高德地图 API 逆地理编码, 通过经纬度获取当前位置城市信息
-            api.regeoMap(
-              {
-                location: res.longitude + ',' + res.latitude,
-              },
-              {
-                success: (amap) => {
-                  const city = {
-                    code: amap.regeocode.addressComponent.adcode.substr(0, 4) + '00',
-                    longitude: res.longitude,
-                    latitude: res.latitude,
-                  };
-                  // 当城市是省直辖县时返回为空，以及城市为北京、上海、天津、重庆四个直辖市时，该字段返回为[],否则为城市名称（字符串）
-                  if (amap.regeocode.addressComponent.city.length === 0) {
-                    city.name = amap.regeocode.addressComponent.province;
-                  } else {
-                    city.name = amap.regeocode.addressComponent.city;
-                  }
-                  uni.setStorageSync('supermarketCity', city);
-                  this.city = city;
-                  this.getSupermarketList();
-                },
-              },
-            );
-          },
-          fail: () => {
-            // // 定位失败默认北京市
-            // const city = { code: 110100, name: '北京市' }
-            // this.handleSelectCity(city)
-          },
-        });
-      },
-      // 获取 轮播列表
-      getBannerList() {
-        api.bannerForPay({
-          success: (data) => {
-            this.banners = data;
-          },
-        });
-      },
-      // 获取品牌商家列表（有排序）
-      getSupermarketList() {
-        api.getSupermarket({
-          data: {
-            isOnlyCheck: '0',
-            // lat: this.city.latitude,
-            // lon: this.city.longitude,
-            // cityCode: this.city.code,
-          },
-          showsLoading: true,
-          success: (data) => {
-            console.log('超市列表：', data.result);
-            if (data && data.result) {
-              this.supermarketList = data.result;
+    getLocation() {
+      uni.getLocation({
+        type: 'gcj02',
+        success: (res) => {
+          uni.setStorageSync('location', res)
+          // 调用高德地图 API 逆地理编码, 通过经纬度获取当前位置城市信息
+          api.regeoMap(
+            {
+              location: res.longitude + ',' + res.latitude
+            },
+            {
+              success: (amap) => {
+                const city = {
+                  code: amap.regeocode.addressComponent.adcode.substr(0, 4) + '00',
+                  longitude: res.longitude,
+                  latitude: res.latitude
+                }
+                // 当城市是省直辖县时返回为空，以及城市为北京、上海、天津、重庆四个直辖市时，该字段返回为[],否则为城市名称（字符串）
+                if (amap.regeocode.addressComponent.city.length === 0) {
+                  city.name = amap.regeocode.addressComponent.province
+                } else {
+                  city.name = amap.regeocode.addressComponent.city
+                }
+                uni.setStorageSync('supermarketCity', city)
+                this.city = city
+                this.getSupermarketList()
+              }
             }
-          },
-        });
-      },
-      /**
+          )
+        },
+        fail: () => {
+          // // 定位失败默认北京市
+          // const city = { code: 110100, name: '北京市' }
+          // this.handleSelectCity(city)
+        }
+      })
+    },
+    // 获取 轮播列表
+    getBannerList() {
+      api.bannerForPay({
+        success: (data) => {
+          this.banners = data
+        }
+      })
+    },
+    // 获取品牌商家列表（有排序）
+    getSupermarketList() {
+      api.getSupermarket({
+        data: {
+          isOnlyCheck: '0'
+          // lat: this.city.latitude,
+          // lon: this.city.longitude,
+          // cityCode: this.city.code,
+        },
+        showsLoading: true,
+        success: (data) => {
+          console.log('超市列表：', data.result)
+          if (data && data.result) {
+            this.supermarketList = data.result
+          }
+        }
+      })
+    },
+    /**
        * 轮播图加载失败事件
        */
-      handleBannerLoadFail(index) {
-        // 图片加载失败时显示默认图片
-        this.banners[index].bannerUrl =
-          'http://192.168.1.187:10088/static/home/banner-home-default.png';
-      },
+    handleBannerLoadFail(index) {
+      // 图片加载失败时显示默认图片
+      this.banners[index].bannerUrl =
+          'http://192.168.1.187:10088/static/home/banner-home-default.png'
+    },
 
-      // 进入超市
-      handleDetailClick(data) {
-        uni.navigateTo({
-          url: '/pages/supermarket/market?info=' + encodeURIComponent(JSON.stringify(data)),
-        });
-      },
-    },
-    filters: {
-      markrtDiscount(num) {
-        // let arr = ((Number(num) * 10) + '').split('.')
-        // let numFloat = ''
-        // if(!arr[1]){
-        //   numFloat = '00'
-        // }else if(arr[1] && arr[1].length === 1){
-        //   numFloat = arr[1]+'0'
-        // }else{
-        //   numFloat = arr[1]
-        // }
-        // console.log(arr[0]+ '.'+numFloat)
-        // return arr[0]+ '.'+numFloat
-        return (Number(num) * 10).toFixed(2);
-      },
-    },
-  };
+    // 进入超市
+    handleDetailClick(data) {
+      uni.navigateTo({
+        url: '/pages/supermarket/market?info=' + encodeURIComponent(JSON.stringify(data))
+      })
+    }
+  },
+  filters: {
+    markrtDiscount(num) {
+      // let arr = ((Number(num) * 10) + '').split('.')
+      // let numFloat = ''
+      // if(!arr[1]){
+      //   numFloat = '00'
+      // }else if(arr[1] && arr[1].length === 1){
+      //   numFloat = arr[1]+'0'
+      // }else{
+      //   numFloat = arr[1]
+      // }
+      // console.log(arr[0]+ '.'+numFloat)
+      // return arr[0]+ '.'+numFloat
+      return (Number(num) * 10).toFixed(2)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

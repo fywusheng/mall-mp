@@ -232,217 +232,217 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import { validateEmail, validatePhoneNumber } from '@/utils/validation.js';
-  import Modal from '@/components/common/modal.vue';
-  import NavigationBar from '../../components/common/navigation-bar.vue';
+import api from '@/apis/index.js'
+import { validateEmail, validatePhoneNumber } from '@/utils/validation.js'
+import Modal from '@/components/common/modal.vue'
+import NavigationBar from '../../components/common/navigation-bar.vue'
 
-  export default {
-    components: { Modal, NavigationBar },
-    data() {
-      return {
-        // 导航栏高度
-        // #ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        // #endif
-        // #ifdef MP-ALIPAY
-        navigationBarHeight:
+export default {
+  components: { Modal, NavigationBar },
+  data() {
+    return {
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        // #endif
-        // 状态栏高度
-        statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-        params: {
-          invoiceHeaderName: '', // 发票抬头名称
-          invoiceType: '0', // 类型（个人为0、单位为1）
-          taxNo: '', // 发票税号（类型为单位时传）
-          bankName: '', // 银行名称
-          bankAccount: '', // 银行账户
-          registeredAddress: '', // 注册地址
-          registeredPhone: '', //	注册电话
-          payeeName: '', //	收票人姓名
-          payeePhone: '', //	收票人手机号
-          payeeEmail: '', //	收票人邮箱
-        },
-        invoiceHeaderId: undefined,
-        // 标题
-        title: '',
-        isClick: true,
-        timer: '',
-      };
+      // #endif
+      // 状态栏高度
+      statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
+      params: {
+        invoiceHeaderName: '', // 发票抬头名称
+        invoiceType: '0', // 类型（个人为0、单位为1）
+        taxNo: '', // 发票税号（类型为单位时传）
+        bankName: '', // 银行名称
+        bankAccount: '', // 银行账户
+        registeredAddress: '', // 注册地址
+        registeredPhone: '', //	注册电话
+        payeeName: '', //	收票人姓名
+        payeePhone: '', //	收票人手机号
+        payeeEmail: '' //	收票人邮箱
+      },
+      invoiceHeaderId: undefined,
+      // 标题
+      title: '',
+      isClick: true,
+      timer: ''
+    }
+  },
+  watch: {},
+  onLoad(e) {
+    if (e.info) {
+      const info = JSON.parse(e.info)
+      console.log('info:', info)
+      this.params.invoiceHeaderName = info.invoiceHeaderName || ''
+      this.params.invoiceType = info.invoiceType === 'C' ? '0' : '1'
+      this.params.taxNo = info.taxNo || ''
+      this.params.bankName = info.bankName || ''
+      this.params.bankAccount = info.bankAccount || ''
+      this.params.registeredAddress = info.registeredAddress || ''
+      this.params.registeredPhone = info.registeredPhone || ''
+      this.params.payeeName = info.payeeName || ''
+      this.params.payeePhone = info.payeePhone || ''
+      this.params.payeeEmail = info.payeeEmail || ''
+      this.invoiceHeaderId = info.invoiceHeaderId || undefined
+      this.title = '编辑发票抬头'
+      // this.$uni.setTitle('编辑发票抬头')
+    } else {
+      this.title = '添加发票抬头'
+      // this.$uni.setTitle('添加发票抬头')
+    }
+  },
+  destroyed() {
+    clearTimeout(this.timer)
+  },
+  methods: {
+    // 更改发票类型
+    changeInvoiceType(type) {
+      this.params.invoiceType = type
+      // if(this.title === '编辑发票抬头'){
+      //   return
+      // }
+      // this.params.invoiceHeaderName = ''
+      // this.params.taxNo = ''
+      // this.params.bankName = ''
+      // this.params.bankAccount = ''
+      // this.params.registeredAddress = ''
+      // this.params.registeredPhone = ''
+      // this.params.payeeName = ''
+      // this.params.payeePhone = ''
+      // this.params.payeeEmail = ''
     },
-    watch: {},
-    onLoad(e) {
-      if (e.info) {
-        const info = JSON.parse(e.info);
-        console.log('info:', info);
-        this.params.invoiceHeaderName = info.invoiceHeaderName || '';
-        this.params.invoiceType = info.invoiceType === 'C' ? '0' : '1';
-        this.params.taxNo = info.taxNo || '';
-        this.params.bankName = info.bankName || '';
-        this.params.bankAccount = info.bankAccount || '';
-        this.params.registeredAddress = info.registeredAddress || '';
-        this.params.registeredPhone = info.registeredPhone || '';
-        this.params.payeeName = info.payeeName || '';
-        this.params.payeePhone = info.payeePhone || '';
-        this.params.payeeEmail = info.payeeEmail || '';
-        this.invoiceHeaderId = info.invoiceHeaderId || undefined;
-        this.title = '编辑发票抬头';
-        // this.$uni.setTitle('编辑发票抬头')
-      } else {
-        this.title = '添加发票抬头';
-        // this.$uni.setTitle('添加发票抬头')
+    // 点击返回上一页
+    handleNavigationBack() {
+      if (this.title === '添加发票抬头') {
+        uni.navigateBack({
+          delta: 1
+        })
+        return
       }
-    },
-    destroyed() {
-      clearTimeout(this.timer);
-    },
-    methods: {
-      // 更改发票类型
-      changeInvoiceType(type) {
-        this.params.invoiceType = type;
-        // if(this.title === '编辑发票抬头'){
-        //   return
-        // }
-        // this.params.invoiceHeaderName = ''
-        // this.params.taxNo = ''
-        // this.params.bankName = ''
-        // this.params.bankAccount = ''
-        // this.params.registeredAddress = ''
-        // this.params.registeredPhone = ''
-        // this.params.payeeName = ''
-        // this.params.payeePhone = ''
-        // this.params.payeeEmail = ''
-      },
-      // 点击返回上一页
-      handleNavigationBack() {
-        if (this.title === '添加发票抬头') {
+      this.$uni.showConfirm({
+        content: '是否保存本次编辑结果?',
+        confirmText: '保存',
+        cancelText: '不保存',
+        title: '',
+        confirm: () => {
+          this.handleAddClick()
+        },
+        cancel: () => {
           uni.navigateBack({
-            delta: 1,
-          });
-          return;
+            delta: 1
+          })
         }
-        this.$uni.showConfirm({
-          content: '是否保存本次编辑结果?',
-          confirmText: '保存',
-          cancelText: '不保存',
-          title: '',
-          confirm: () => {
-            this.handleAddClick();
-          },
-          cancel: () => {
-            uni.navigateBack({
-              delta: 1,
-            });
-          },
-        });
-      },
-      // 发票税号说明弹框，点击我知道了
-      checkConfirm() {
-        this.$refs.taxNoPop.close();
-      },
-      // 发票税号说明弹框
-      showTaxNoPop() {
-        this.$refs.taxNoPop.open();
-      },
-      /**
+      })
+    },
+    // 发票税号说明弹框，点击我知道了
+    checkConfirm() {
+      this.$refs.taxNoPop.close()
+    },
+    // 发票税号说明弹框
+    showTaxNoPop() {
+      this.$refs.taxNoPop.open()
+    },
+    /**
        * 输入校验
        */
-      checkInput() {
-        if (!this.params.invoiceHeaderName) {
-          this.$uni.showToast('请填写发票抬头');
-          return false;
-        }
-        if (!this.params.taxNo && this.params.invoiceType === '1') {
-          this.$uni.showToast('请填写发票税号');
-          return false;
-        }
-        if (this.params.registeredPhone && !validatePhoneNumber(this.params.registeredPhone)) {
-          this.$uni.showToast('注册电话格式不正确');
-          return false;
-        }
+    checkInput() {
+      if (!this.params.invoiceHeaderName) {
+        this.$uni.showToast('请填写发票抬头')
+        return false
+      }
+      if (!this.params.taxNo && this.params.invoiceType === '1') {
+        this.$uni.showToast('请填写发票税号')
+        return false
+      }
+      if (this.params.registeredPhone && !validatePhoneNumber(this.params.registeredPhone)) {
+        this.$uni.showToast('注册电话格式不正确')
+        return false
+      }
 
-        if (!this.params.payeeName) {
-          console.log(this.params.payeeName);
-          this.$uni.showToast('请填写收票人姓名');
-          return false;
-        }
-        // if (!/^[\u4E00-\u9FA5]+$/.test(this.params.payeeName)) {
-        //   console.log(this.params.payeeName)
-        //   this.$uni.showToast('请填写收票人姓名')
-        //   return false
-        // }
+      if (!this.params.payeeName) {
+        console.log(this.params.payeeName)
+        this.$uni.showToast('请填写收票人姓名')
+        return false
+      }
+      // if (!/^[\u4E00-\u9FA5]+$/.test(this.params.payeeName)) {
+      //   console.log(this.params.payeeName)
+      //   this.$uni.showToast('请填写收票人姓名')
+      //   return false
+      // }
 
-        if (!this.params.payeePhone) {
-          this.$uni.showToast('请填写收票人手机号');
-          return false;
-        }
-        if (!validatePhoneNumber(this.params.payeePhone)) {
-          this.$uni.showToast('收票人手机号格式不正确');
-          return false;
-        }
+      if (!this.params.payeePhone) {
+        this.$uni.showToast('请填写收票人手机号')
+        return false
+      }
+      if (!validatePhoneNumber(this.params.payeePhone)) {
+        this.$uni.showToast('收票人手机号格式不正确')
+        return false
+      }
 
-        if (!this.params.payeeEmail) {
-          this.$uni.showToast('请填写收票人邮箱');
-          return false;
-        }
-        if (!validateEmail(this.params.payeeEmail)) {
-          this.$uni.showToast('邮箱格式不正确');
-          return false;
-        }
-        return true;
-      },
-      /**
+      if (!this.params.payeeEmail) {
+        this.$uni.showToast('请填写收票人邮箱')
+        return false
+      }
+      if (!validateEmail(this.params.payeeEmail)) {
+        this.$uni.showToast('邮箱格式不正确')
+        return false
+      }
+      return true
+    },
+    /**
        * 确定点击事件
        */
-      handleAddClick() {
-        if (this.isClick) {
-          this.isClick = false;
-          if (!this.checkInput()) return;
-          const data = {
-            invoiceHeaderId: this.invoiceHeaderId || '',
-            invoiceType: this.params.invoiceType === '0' ? 'C' : 'P',
+    handleAddClick() {
+      if (this.isClick) {
+        this.isClick = false
+        if (!this.checkInput()) return
+        const data = {
+          invoiceHeaderId: this.invoiceHeaderId || '',
+          invoiceType: this.params.invoiceType === '0' ? 'C' : 'P',
 
-            typeName: this.params.invoiceType === '0' ? '个人' : '单位',
-            invoiceHeaderName: this.params.invoiceHeaderName,
-            taxNo: this.params.invoiceType === '1' ? this.params.taxNo : '',
-            bankName: this.params.invoiceType === '1' ? this.params.bankName : '',
-            bankAccount: this.params.invoiceType === '1' ? this.params.bankAccount : '',
-            registeredAddress: this.params.invoiceType === '1' ? this.params.registeredAddress : '',
-            registeredPhone: this.params.invoiceType === '1' ? this.params.registeredPhone : '',
-            payeeName: this.params.payeeName,
-            payeePhone: this.params.payeePhone,
-            payeeEmail: this.params.payeeEmail,
-          };
-          api.handleUpdateOrAddHeader({
-            showsLoading: true,
-            data,
-            success: (res) => {
-              console.log('添加成功:', res);
-              if (this.invoiceHeaderId) {
-                this.$uni.showToast({ title: '发票抬头内容修改成功' });
-              } else {
-                this.$uni.showToast({ title: '添加成功' });
-              }
-
-              setTimeout(() => {
-                uni.$emit('didAddInvoice', true);
-                uni.navigateBack();
-              }, 1500);
-            },
-            fail: (err) => {
-              console.log('添加失败：', err);
-              this.$uni.showToast(err.message);
-            },
-          });
-          this.timer = setTimeout(() => {
-            this.isClick = true;
-          }, 3000);
+          typeName: this.params.invoiceType === '0' ? '个人' : '单位',
+          invoiceHeaderName: this.params.invoiceHeaderName,
+          taxNo: this.params.invoiceType === '1' ? this.params.taxNo : '',
+          bankName: this.params.invoiceType === '1' ? this.params.bankName : '',
+          bankAccount: this.params.invoiceType === '1' ? this.params.bankAccount : '',
+          registeredAddress: this.params.invoiceType === '1' ? this.params.registeredAddress : '',
+          registeredPhone: this.params.invoiceType === '1' ? this.params.registeredPhone : '',
+          payeeName: this.params.payeeName,
+          payeePhone: this.params.payeePhone,
+          payeeEmail: this.params.payeeEmail
         }
-      },
-    },
+        api.handleUpdateOrAddHeader({
+          showsLoading: true,
+          data,
+          success: (res) => {
+            console.log('添加成功:', res)
+            if (this.invoiceHeaderId) {
+              this.$uni.showToast({ title: '发票抬头内容修改成功' })
+            } else {
+              this.$uni.showToast({ title: '添加成功' })
+            }
 
-    filters: {},
-  };
+            setTimeout(() => {
+              uni.$emit('didAddInvoice', true)
+              uni.navigateBack()
+            }, 1500)
+          },
+          fail: (err) => {
+            console.log('添加失败：', err)
+            this.$uni.showToast(err.message)
+          }
+        })
+        this.timer = setTimeout(() => {
+          this.isClick = true
+        }, 3000)
+      }
+    }
+  },
+
+  filters: {}
+}
 </script>
 
 <style lang="scss" scoped>

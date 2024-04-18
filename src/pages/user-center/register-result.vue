@@ -28,39 +28,39 @@
 </template>
 
 <script>
-  // import ScanOrInputPopup from './common/scan-or-input-popup.vue';
-  import api from '@/apis/index.js';
-  export default {
-    // components: { ScanOrInputPopup },
-    data() {
-      return {
-        // 录入方式是否有图片
-        showImg: false,
-      };
-    },
-    onLoad() {},
-    methods: {
-      /**
+// import ScanOrInputPopup from './common/scan-or-input-popup.vue';
+import api from '@/apis/index.js'
+export default {
+  // components: { ScanOrInputPopup },
+  data() {
+    return {
+      // 录入方式是否有图片
+      showImg: false
+    }
+  },
+  onLoad() {},
+  methods: {
+    /**
        * 立即开通
        */
-      handleApplyClick() {
-        uni.navigateTo({
-          url: '/pages/user-center/activate-member',
-        });
-      },
-      /**
+    handleApplyClick() {
+      uni.navigateTo({
+        url: '/pages/user-center/activate-member'
+      })
+    },
+    /**
        * 暂不开通
        */
-      handleBackToHomeClick() {
-        uni.navigateTo({
-          url: '/pages/user-center/applicant-info',
-        });
-      },
-    },
-    mounted() {
-      //  this.$refs.popup.open()
-    },
-  };
+    handleBackToHomeClick() {
+      uni.navigateTo({
+        url: '/pages/user-center/applicant-info'
+      })
+    }
+  },
+  mounted() {
+    //  this.$refs.popup.open()
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -123,334 +123,334 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import cuProgress from './components/cu-progress.vue';
-  import parse from 'mini-html-parser2';
-  import { UniPopup } from '@dcloudio/uni-ui';
+import api from '@/apis/index.js'
+import cuProgress from './components/cu-progress.vue'
+import parse from 'mini-html-parser2'
+import { UniPopup } from '@dcloudio/uni-ui'
 
-  export default {
-    components: { cuProgress, UniPopup },
-    data() {
-      return {
-        isShare: 'true',
-        // 文章id
-        contId: '',
-        // 播放比例
-        progress: 0,
-        // 当前时间
-        current: 0,
-        // 总时长
-        duration: 0,
-        // 详情
-        detail: {},
-        // 富文本节点
-        nodes: '',
-        // 是否播放
-        play: false,
-        // 是否暂停
-        paused: false,
-        // 详情的图片
-        imgs: null,
-      };
-    },
-    watch: {},
-    onLoad(option) {
-      console.log('===kan---', option);
-      this.contId = option.contId;
-      this.isShare = option.isShare;
-      if (option.imgs) {
-        this.imgs = JSON.parse(option.imgs);
-      } else {
-        this.imgs = null;
+export default {
+  components: { cuProgress, UniPopup },
+  data() {
+    return {
+      isShare: 'true',
+      // 文章id
+      contId: '',
+      // 播放比例
+      progress: 0,
+      // 当前时间
+      current: 0,
+      // 总时长
+      duration: 0,
+      // 详情
+      detail: {},
+      // 富文本节点
+      nodes: '',
+      // 是否播放
+      play: false,
+      // 是否暂停
+      paused: false,
+      // 详情的图片
+      imgs: null
+    }
+  },
+  watch: {},
+  onLoad(option) {
+    console.log('===kan---', option)
+    this.contId = option.contId
+    this.isShare = option.isShare
+    if (option.imgs) {
+      this.imgs = JSON.parse(option.imgs)
+    } else {
+      this.imgs = null
+    }
+    console.log('this.imgs:', this.imgs)
+  },
+  onShow() {
+    this.getContById()
+  },
+  methods: {
+    // 获取文章详情
+    getContById() {
+      let userId = ''
+      if (uni.getStorageSync('userInfo')) {
+        userId = uni.getStorageSync('userInfo').uactId
       }
-      console.log('this.imgs:', this.imgs);
-    },
-    onShow() {
-      this.getContById();
-    },
-    methods: {
-      // 获取文章详情
-      getContById() {
-        let userId = '';
-        if (uni.getStorageSync('userInfo')) {
-          userId = uni.getStorageSync('userInfo').uactId;
+      const data = {
+        contId: this.contId,
+        userId: userId
+      }
+      uni.showLoading({
+        title: '加载中'
+      })
+      // if(this.pageNum>1){
+      //     this.bottomTips = "loading"
+      // }
+      api.getContById({
+        data,
+        success: (res) => {
+          uni.hideLoading()
+          if (res) {
+            this.detail = res
+            const nodesList = []
+
+            console.log('this.nodes:', this.nodes)
+            const handlerStr = res.cont || '' // mode="aspectFill"
+            const s = handlerStr.replace(
+              /<img/g,
+              '<img style="width:100%;margin-left:-40px" mode="scaleToFill"'
+            )
+            var regEx = /\s+/g
+            const ab = s.replace(regEx, ' ')
+            const res2 = ab.replace(/0em/g, '2em')
+            res.cont = res2
+            parse(res.cont, (err, nodesList) => {
+              this.nodes = nodesList
+              // 创建音频播放实例
+              this.innerAudioContext = uni.createInnerAudioContext()
+              // this.innerAudioContext.autoplay = true
+
+              // #ifdef MP-WEIXIN
+              this.innerAudioContext.src = this.detail.mediaUrl
+              // #endif
+
+              // #ifdef MP-ALIPAY
+              this.innerAudioContext.src = this.detail.youkuUrl || this.detail.mediaUrl
+              // #endif
+
+              this.innerAudioContext.onPlay(() => {})
+
+              // 监听播放事件
+              this.innerAudioContext.onTimeUpdate(() => {
+                // 音频播放进度更新事件
+                console.log('音频播放进度更新事件')
+                this.progress =
+                    (this.innerAudioContext.currentTime / this.innerAudioContext.duration) * 100
+                this.current = this.innerAudioContext.currentTime
+                this.duration = this.innerAudioContext.duration
+                // console.log('音频播放进度更新事件',(this.innerAudioContext.currentTime/this.innerAudioContext.duration)*100);
+              })
+              // 监听播放出错事件
+              this.innerAudioContext.onError((res) => {
+                console.log('播放出错', res.errMsg)
+              })
+              // 监听自然播放结束事件
+              this.innerAudioContext.onEnded((res) => {
+                console.log('监听自然播放结束事件')
+                this.progress = 0
+                // 是否播放
+                this.play = false
+                // 是否暂停
+                this.paused = false
+                this.current = 0
+              })
+              // 监听暂停事件
+              this.innerAudioContext.onPause((res) => {})
+              // 监听音频停止事件
+              this.innerAudioContext.onStop((res) => {})
+              // 监听音频停止事件
+              this.innerAudioContext.onPlay((res) => {
+                this.paused = false
+              })
+              // 监听音频跳转事件
+              this.innerAudioContext.onSeeking((res) => {
+                console.log('监听音频跳转事件')
+              })
+              // 监听音频跳转事件结束
+              this.innerAudioContext.onSeeked((res) => {
+                console.log('监听音频跳转事件结束')
+                this.innerAudioContext.src // 天坑。如果不执行这行就不能继续执行onTimeUpdate方法！！！！！！！
+                this.innerAudioContext.play()
+              })
+            })
+          }
+          //
+        },
+        fail: (err) => {
+          uni.hideLoading()
         }
-        const data = {
-          contId: this.contId,
-          userId: userId,
-        };
-        uni.showLoading({
-          title: '加载中',
-        });
-        // if(this.pageNum>1){
-        //     this.bottomTips = "loading"
-        // }
-        api.getContById({
-          data,
-          success: (res) => {
-            uni.hideLoading();
-            if (res) {
-              this.detail = res;
-              const nodesList = [];
-
-              console.log('this.nodes:', this.nodes);
-              const handlerStr = res.cont || ''; // mode="aspectFill"
-              const s = handlerStr.replace(
-                /<img/g,
-                '<img style="width:100%;margin-left:-40px" mode="scaleToFill"',
-              );
-              var regEx = /\s+/g;
-              const ab = s.replace(regEx, ' ');
-              const res2 = ab.replace(/0em/g, '2em');
-              res.cont = res2;
-              parse(res.cont, (err, nodesList) => {
-                this.nodes = nodesList;
-                // 创建音频播放实例
-                this.innerAudioContext = uni.createInnerAudioContext();
-                // this.innerAudioContext.autoplay = true
-
-                // #ifdef MP-WEIXIN
-                this.innerAudioContext.src = this.detail.mediaUrl;
-                // #endif
-
-                // #ifdef MP-ALIPAY
-                this.innerAudioContext.src = this.detail.youkuUrl || this.detail.mediaUrl;
-                // #endif
-
-                this.innerAudioContext.onPlay(() => {});
-
-                // 监听播放事件
-                this.innerAudioContext.onTimeUpdate(() => {
-                  // 音频播放进度更新事件
-                  console.log('音频播放进度更新事件');
-                  this.progress =
-                    (this.innerAudioContext.currentTime / this.innerAudioContext.duration) * 100;
-                  this.current = this.innerAudioContext.currentTime;
-                  this.duration = this.innerAudioContext.duration;
-                  // console.log('音频播放进度更新事件',(this.innerAudioContext.currentTime/this.innerAudioContext.duration)*100);
-                });
-                // 监听播放出错事件
-                this.innerAudioContext.onError((res) => {
-                  console.log('播放出错', res.errMsg);
-                });
-                // 监听自然播放结束事件
-                this.innerAudioContext.onEnded((res) => {
-                  console.log('监听自然播放结束事件');
-                  this.progress = 0;
-                  // 是否播放
-                  this.play = false;
-                  // 是否暂停
-                  this.paused = false;
-                  this.current = 0;
-                });
-                // 监听暂停事件
-                this.innerAudioContext.onPause((res) => {});
-                // 监听音频停止事件
-                this.innerAudioContext.onStop((res) => {});
-                // 监听音频停止事件
-                this.innerAudioContext.onPlay((res) => {
-                  this.paused = false;
-                });
-                // 监听音频跳转事件
-                this.innerAudioContext.onSeeking((res) => {
-                  console.log('监听音频跳转事件');
-                });
-                // 监听音频跳转事件结束
-                this.innerAudioContext.onSeeked((res) => {
-                  console.log('监听音频跳转事件结束');
-                  this.innerAudioContext.src; // 天坑。如果不执行这行就不能继续执行onTimeUpdate方法！！！！！！！
-                  this.innerAudioContext.play();
-                });
-              });
-            }
-            //
-          },
-          fail: (err) => {
-            uni.hideLoading();
-          },
-        });
-      },
-      // 开始拖动
-      dragstart(data) {
-        console.log('开始拖动：', data);
-      },
-      // 拖动中
-      dragging(data) {
-        console.log('拖动中：', data);
-      },
-      // 拖动结束
-      dragged(data) {
-        console.log('拖动结束：', data);
-        console.log('总时长', this.duration);
-        console.log('播放位置：', typeof ((this.duration * data.value) / 100).toFixed(0));
-        this.innerAudioContext.seek(Number(((this.duration * data.value) / 100).toFixed(0)));
-      },
-      // 取消拖动
-      dragcancel(data) {
-        console.log('取消拖动：', data);
-      },
-      // 图片加载失败
-      handleImageLoadFail() {
-        // 图片加载失败时显示默认图片
-        this.detail.image = 'http://192.168.1.187:10088/static/home/image-home-article-default.png';
-      },
-      handleNoimg() {
-        if (!this.play) {
-          this.innerAudioContext.play();
-          this.play = true;
-        } else if (this.play && !this.paused) {
-          this.innerAudioContext.pause();
-          this.paused = true;
-        } else if (this.play && this.paused) {
-          this.innerAudioContext.play();
-          this.paused = false;
-        }
-      },
-      /**
+      })
+    },
+    // 开始拖动
+    dragstart(data) {
+      console.log('开始拖动：', data)
+    },
+    // 拖动中
+    dragging(data) {
+      console.log('拖动中：', data)
+    },
+    // 拖动结束
+    dragged(data) {
+      console.log('拖动结束：', data)
+      console.log('总时长', this.duration)
+      console.log('播放位置：', typeof ((this.duration * data.value) / 100).toFixed(0))
+      this.innerAudioContext.seek(Number(((this.duration * data.value) / 100).toFixed(0)))
+    },
+    // 取消拖动
+    dragcancel(data) {
+      console.log('取消拖动：', data)
+    },
+    // 图片加载失败
+    handleImageLoadFail() {
+      // 图片加载失败时显示默认图片
+      this.detail.image = 'http://192.168.1.187:10088/static/home/image-home-article-default.png'
+    },
+    handleNoimg() {
+      if (!this.play) {
+        this.innerAudioContext.play()
+        this.play = true
+      } else if (this.play && !this.paused) {
+        this.innerAudioContext.pause()
+        this.paused = true
+      } else if (this.play && this.paused) {
+        this.innerAudioContext.play()
+        this.paused = false
+      }
+    },
+    /**
        * 点击收藏按钮事件
        */
-      handleCollect() {
-        if (!uni.getStorageSync('token')) {
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
-        }
-        if (this.detail.colFlag === '0') {
-          api.saveCollect({
-            data: {
-              colId: this.contId,
-              colType: '4',
-            },
-            success: (data) => {
-              this.detail.colFlag = '1';
-              this.$uni.showToast('收藏成功');
-            },
-          });
-        } else {
-          api.updateCollect({
-            data: {
-              requestColSingleDTOList: [
-                {
-                  delFlag: '1',
-                  colId: this.contId,
-                },
-              ],
-            },
-            success: (data) => {
-              this.detail.colFlag = '0';
-              this.$uni.showToast('取消收藏');
-              uni.setStorageSync('colId', this.contId);
-            },
-          });
-        }
-      },
-      // 点击复制链接
-      handleCopyClick() {
-        uni.setClipboardData({
-          data: `${ENV.H5}/#/discovery/app-detail/` + this.contId,
-          success: (res) => {
-            console.log(res);
-            uni.getClipboardData({
-              success: (resp) => {
-                this.$refs.popup.close();
-                console.log('resp:', resp);
-                uni.showToast({
-                  title: '已复制到剪贴板',
-                });
-              },
-            });
+    handleCollect() {
+      if (!uni.getStorageSync('token')) {
+        uni.navigateTo({
+          url: '/pages/user-center/login'
+        })
+        return
+      }
+      if (this.detail.colFlag === '0') {
+        api.saveCollect({
+          data: {
+            colId: this.contId,
+            colType: '4'
           },
-        });
-      },
-      // 点击分享
-      handleShareClick() {
-        if (!uni.getStorageSync('token')) {
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
-        }
-        this.$refs.popup.open();
-      },
-      // 关闭分享
-      handleCloseClick() {
-        this.$refs.popup.close();
-      },
-      /**
-       * 获取收藏列表
-       */
-      getCollect() {
-        if (uni.getStorageSync('token')) {
-          api.findListByParmas({
-            data: {
-              pageNum: 1,
-              pageSize: 100,
-              colType: '4',
-              isDistanceOrder: true,
-            },
-            success: (data) => {
-              if (data) {
-                data.finalList.some((item) => {
-                  if (item.colId == this.dataDetail.rid) {
-                    this.dataDetail['isCollected'] = 1;
-                    return true;
-                  }
-                });
+          success: (data) => {
+            this.detail.colFlag = '1'
+            this.$uni.showToast('收藏成功')
+          }
+        })
+      } else {
+        api.updateCollect({
+          data: {
+            requestColSingleDTOList: [
+              {
+                delFlag: '1',
+                colId: this.contId
               }
-            },
-            fail: (data) => {},
-          });
-        }
-      },
-    },
-    onUnload() {
-      if (this.innerAudioContext) {
-        this.innerAudioContext.destroy();
+            ]
+          },
+          success: (data) => {
+            this.detail.colFlag = '0'
+            this.$uni.showToast('取消收藏')
+            uni.setStorageSync('colId', this.contId)
+          }
+        })
       }
     },
-    // 分享好友
-    onShareAppMessage(res) {
-      return {
-        title: this.detail.ttl,
-        path: '/pages/find/article-detail?contId=' + this.contId,
-        imageUrl: this.imgs ? this.imgs[0] : '',
-        success(res) {
-          this.$uni.showToast({
-            title: '分享成功',
-          });
-        },
-        fail(res) {
-          this.$uni.showToast({
-            title: '分享失败',
-            icon: 'none',
-          });
-        },
-      };
+    // 点击复制链接
+    handleCopyClick() {
+      uni.setClipboardData({
+        data: `${ENV.H5}/#/discovery/app-detail/` + this.contId,
+        success: (res) => {
+          console.log(res)
+          uni.getClipboardData({
+            success: (resp) => {
+              this.$refs.popup.close()
+              console.log('resp:', resp)
+              uni.showToast({
+                title: '已复制到剪贴板'
+              })
+            }
+          })
+        }
+      })
     },
-    // 分享到朋友圈
-    onShareTimeline() {
-      return {
-        title: this.detail.ttl,
-        path: '/pages/find/article-detail',
-        query: 'contId=' + this.contId,
-        imageUrl: this.imgs
-          ? this.imgs[0]
-          : 'http://192.168.1.187:10088/static/common/bg-share.png',
-        success(res) {
-          uni.showToast({
-            title: '分享成功',
-          });
-        },
-        fail(res) {
-          uni.showToast({
-            title: '分享失败',
-            icon: 'none',
-          });
-        },
-      };
+    // 点击分享
+    handleShareClick() {
+      if (!uni.getStorageSync('token')) {
+        uni.navigateTo({
+          url: '/pages/user-center/login'
+        })
+        return
+      }
+      this.$refs.popup.open()
     },
-  };
+    // 关闭分享
+    handleCloseClick() {
+      this.$refs.popup.close()
+    },
+    /**
+       * 获取收藏列表
+       */
+    getCollect() {
+      if (uni.getStorageSync('token')) {
+        api.findListByParmas({
+          data: {
+            pageNum: 1,
+            pageSize: 100,
+            colType: '4',
+            isDistanceOrder: true
+          },
+          success: (data) => {
+            if (data) {
+              data.finalList.some((item) => {
+                if (item.colId == this.dataDetail.rid) {
+                  this.dataDetail['isCollected'] = 1
+                  return true
+                }
+              })
+            }
+          },
+          fail: (data) => {}
+        })
+      }
+    }
+  },
+  onUnload() {
+    if (this.innerAudioContext) {
+      this.innerAudioContext.destroy()
+    }
+  },
+  // 分享好友
+  onShareAppMessage(res) {
+    return {
+      title: this.detail.ttl,
+      path: '/pages/find/article-detail?contId=' + this.contId,
+      imageUrl: this.imgs ? this.imgs[0] : '',
+      success(res) {
+        this.$uni.showToast({
+          title: '分享成功'
+        })
+      },
+      fail(res) {
+        this.$uni.showToast({
+          title: '分享失败',
+          icon: 'none'
+        })
+      }
+    }
+  },
+  // 分享到朋友圈
+  onShareTimeline() {
+    return {
+      title: this.detail.ttl,
+      path: '/pages/find/article-detail',
+      query: 'contId=' + this.contId,
+      imageUrl: this.imgs
+        ? this.imgs[0]
+        : 'http://192.168.1.187:10088/static/common/bg-share.png',
+      success(res) {
+        uni.showToast({
+          title: '分享成功'
+        })
+      },
+      fail(res) {
+        uni.showToast({
+          title: '分享失败',
+          icon: 'none'
+        })
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

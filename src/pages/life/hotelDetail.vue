@@ -66,102 +66,102 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
-  import right from '@/pages/life/components/right.vue';
-  import modalKnow from '@/pages/life/components/modal-know.vue';
-  import parse from 'mini-html-parser2';
-  export default {
-    components: { right, modalKnow },
-    data() {
-      return {
-        strings: '',
-        hotelDiscountId: '',
-        item: {},
-        picArray: [],
-        picConent: [],
-        type: 1,
-        isShowPrice: 1,
-        hotelDiscountDesc: '',
-        changeP: '',
-      };
+import api from '@/apis/index.js'
+import right from '@/pages/life/components/right.vue'
+import modalKnow from '@/pages/life/components/modal-know.vue'
+import parse from 'mini-html-parser2'
+export default {
+  components: { right, modalKnow },
+  data() {
+    return {
+      strings: '',
+      hotelDiscountId: '',
+      item: {},
+      picArray: [],
+      picConent: [],
+      type: 1,
+      isShowPrice: 1,
+      hotelDiscountDesc: '',
+      changeP: ''
+    }
+  },
+  created() {},
+  onShareAppMessage() {
+    return {
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
+    // return {
+    //         title:'酒店',
+    //         path:"/pages/life/hotelHome",
+    //      };
+  },
+  onLoad(option) {
+    this.hotelDiscountId = option.hotelDiscountId
+    console.log('====接受---', option)
+    if (option.change) {
+      this.changeP = option.change
+    }
+    if (option.isShowPrice) {
+      this.isShowPrice = option.isShowPrice
+    }
+    if (option.type) {
+      this.type = option.type
+    }
+    this.hotelName = option.hotelName
+    this.hotelId = option.hotelId
+    this.queryByDiscountId()
+  },
+  filters: {
+    formaterMoney(v) {
+      return (v / 100).toFixed(2)
+    }
+  },
+  methods: {
+    turnValue(match) {
+      return `<span style="color:red">${match}</span>`
     },
-    created() {},
-    onShareAppMessage() {
-      return {
-        title: '',
-        path: '/pages/index/index?index=0',
-      };
-      // return {
-      //         title:'酒店',
-      //         path:"/pages/life/hotelHome",
-      //      };
-    },
-    onLoad(option) {
-      this.hotelDiscountId = option.hotelDiscountId;
-      console.log('====接受---', option);
-      if (option.change) {
-        this.changeP = option.change;
+    change(value) {
+      if (!value) {
+        return ''
+      } else {
+        return value.replace(/\d+/g, this.turnValue)
       }
-      if (option.isShowPrice) {
-        this.isShowPrice = option.isShowPrice;
-      }
-      if (option.type) {
-        this.type = option.type;
-      }
-      this.hotelName = option.hotelName;
-      this.hotelId = option.hotelId;
-      this.queryByDiscountId();
     },
-    filters: {
-      formaterMoney(v) {
-        return (v / 100).toFixed(2);
-      },
-    },
-    methods: {
-      turnValue(match) {
-        return `<span style="color:red">${match}</span>`;
-      },
-      change(value) {
-        if (!value) {
-          return '';
-        } else {
-          return value.replace(/\d+/g, this.turnValue);
-        }
-      },
-      buy() {
-        // this.$refs.notice.open()
-        const change = this.changeP;
-        const hotelDiscountId = this.hotelDiscountId;
+    buy() {
+      // this.$refs.notice.open()
+      const change = this.changeP
+      const hotelDiscountId = this.hotelDiscountId
 
-        uni.navigateTo({
-          url: `/pages/life/submitOrder?change=${change}&hotelDiscountId=${hotelDiscountId}&hotelId=${this.hotelId}&hotelName=${this.hotelName}`,
-        });
-      },
-      clickItem(type) {
-        this.type = type;
-      },
-      queryByDiscountId() {
-        api.queryByDiscountId({
-          data: { hotelDiscountId: this.hotelDiscountId, isTransaction: this.changeP },
-          success: (res) => {
-            this.item = res;
-            this.hotelDiscountDesc = res.hotelDiscountDesc;
-            const hotelList = res.hotelDiscountContent;
-            this.picArray = hotelList.split(',');
-            let listpic = hotelList.split(',');
-
-            listpic.push(res.hotelDiscountRule);
-            this.picConent = listpic.slice(1, listpic.length);
-            let str = this.change(this.hotelDiscountDesc);
-            parse(str, (e, newstring) => {
-              this.strings = newstring;
-            });
-          },
-          fail: (res) => {},
-        });
-      },
+      uni.navigateTo({
+        url: `/pages/life/submitOrder?change=${change}&hotelDiscountId=${hotelDiscountId}&hotelId=${this.hotelId}&hotelName=${this.hotelName}`
+      })
     },
-  };
+    clickItem(type) {
+      this.type = type
+    },
+    queryByDiscountId() {
+      api.queryByDiscountId({
+        data: { hotelDiscountId: this.hotelDiscountId, isTransaction: this.changeP },
+        success: (res) => {
+          this.item = res
+          this.hotelDiscountDesc = res.hotelDiscountDesc
+          const hotelList = res.hotelDiscountContent
+          this.picArray = hotelList.split(',')
+          const listpic = hotelList.split(',')
+
+          listpic.push(res.hotelDiscountRule)
+          this.picConent = listpic.slice(1, listpic.length)
+          const str = this.change(this.hotelDiscountDesc)
+          parse(str, (e, newstring) => {
+            this.strings = newstring
+          })
+        },
+        fail: (res) => {}
+      })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .hotelDetail {

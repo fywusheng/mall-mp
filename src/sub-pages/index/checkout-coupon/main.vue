@@ -62,48 +62,48 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        couponList: [],
-        status: 0,
-      };
+export default {
+  data() {
+    return {
+      couponList: [],
+      status: 0
+    }
+  },
+  computed: {
+    notuseList() {
+      if (Store.state.checkout.couponData) {
+        return Store.state.checkout.couponData.cannotUsedList || []
+      }
+      return []
     },
-    computed: {
-      notuseList() {
-        if (Store.state.checkout.couponData) {
-          return Store.state.checkout.couponData.cannotUsedList || [];
-        }
-        return [];
-      },
-      canuseList() {
-        if (Store.state.checkout.couponData) {
-          return Store.state.checkout.couponData.canUsedList || [];
-        }
-        return [];
-      },
+    canuseList() {
+      if (Store.state.checkout.couponData) {
+        return Store.state.checkout.couponData.canUsedList || []
+      }
+      return []
+    }
+  },
+  components: {},
+  methods: {
+    toSelectCount(coupon) {
+      console.info('coupon:', coupon)
+      Store.commit(VUEX.CHECKOUT.SET_COUPON, coupon)
+      Store.dispatch('getCheckoutData', false)
+      uni.navigateBack()
     },
-    components: {},
-    methods: {
-      toSelectCount(coupon) {
-        console.info('coupon:', coupon);
-        Store.commit(VUEX.CHECKOUT.SET_COUPON, coupon);
-        Store.dispatch('getCheckoutData', false);
-        uni.navigateBack();
-      },
-      changeTab(status) {
-        this.status = status;
-      },
-      selectCoupon(coupon) {
-        if (coupon.status != 0) {
-          return false;
-        }
-        Store.commit(VUEX.CHECKOUT.SET_COUPON, coupon);
-        wx.navigateBack();
-      },
+    changeTab(status) {
+      this.status = status
     },
-    mounted() {},
-  };
+    selectCoupon(coupon) {
+      if (coupon.status != 0) {
+        return false
+      }
+      Store.commit(VUEX.CHECKOUT.SET_COUPON, coupon)
+      wx.navigateBack()
+    }
+  },
+  mounted() {}
+}
 </script>
 
 <style lang="scss">

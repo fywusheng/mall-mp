@@ -58,97 +58,97 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
-  export default {
-    data() {
-      return {
-        banners: [],
-        select: 0,
-        status: 'more',
-        pageNum: 1,
-        prodList: [],
-        tabs: [],
-      };
+import api from '@/apis/index.js'
+export default {
+  data() {
+    return {
+      banners: [],
+      select: 0,
+      status: 'more',
+      pageNum: 1,
+      prodList: [],
+      tabs: []
+    }
+  },
+  async created() {
+    this.getBanners()
+  },
+  onLoad(e) {
+    this.getListByParentCode(e.code)
+  },
+  methods: {
+    handleBannerClick() {},
+    toTop() {
+      my.pageScrollTo({
+        scrollTop: 0,
+        duration: 500
+      })
     },
-    async created() {
-      this.getBanners();
+    // tabClick
+    handleTabClick(item, index) {
+      this.pageNum = 1
+      this.prodList = []
+      this.getProdList()
     },
-    onLoad(e) {
-      this.getListByParentCode(e.code);
-    },
-    methods: {
-      handleBannerClick() {},
-      toTop() {
-        my.pageScrollTo({
-          scrollTop: 0,
-          duration: 500,
-        });
-      },
-      // tabClick
-      handleTabClick(item, index) {
-        this.pageNum = 1;
-        this.prodList = [];
-        this.getProdList();
-      },
-      // 商品列表
-      async getProdList() {
-        this.status = 'loading';
-        const params = {
-          isCreditPoints: 0,
-          displayCategoryId: this.tabs.length > 0 ? this.tabs[this.select].id : 'BC00002950',
+    // 商品列表
+    async getProdList() {
+      this.status = 'loading'
+      const params = {
+        isCreditPoints: 0,
+        displayCategoryId: this.tabs.length > 0 ? this.tabs[this.select].id : 'BC00002950',
 
-          pageNum: this.pageNum,
-          pageSize: 20,
-        };
-        try {
-          const res = await Axios.post('/product/getProductSearchList', params);
-          if (res.code === '200') {
-            const data = res.data || {};
-            const esProducts = data.esProducts || [];
-            if (esProducts.length) {
-              this.prodList = this.prodList.concat(esProducts);
-              this.status = data.totalPage > data.pageNum ? 'more' : 'noMore';
-            }
-            if (this.prodList.length == 0) {
-              this.status = 'noMore';
-            }
+        pageNum: this.pageNum,
+        pageSize: 20
+      }
+      try {
+        const res = await Axios.post('/product/getProductSearchList', params)
+        if (res.code === '200') {
+          const data = res.data || {}
+          const esProducts = data.esProducts || []
+          if (esProducts.length) {
+            this.prodList = this.prodList.concat(esProducts)
+            this.status = data.totalPage > data.pageNum ? 'more' : 'noMore'
           }
-        } catch (error) {
-          this.status = 'noMore';
-          console.log(error);
+          if (this.prodList.length == 0) {
+            this.status = 'noMore'
+          }
         }
-      },
-      // 获取分类
-      async getListByParentCode(parentCode) {
-        const data = { parentCode };
-        const res = await Axios.post('/category/getListByParentCode', data);
-        if (res.code == '200') {
-          this.tabs = res.data || {};
+      } catch (error) {
+        this.status = 'noMore'
+        console.log(error)
+      }
+    },
+    // 获取分类
+    async getListByParentCode(parentCode) {
+      const data = { parentCode }
+      const res = await Axios.post('/category/getListByParentCode', data)
+      if (res.code == '200') {
+        this.tabs = res.data || {}
+      }
+      this.getProdList()
+    },
+    // 去详情
+    goItemClick({ id }) {
+      uni.navigateTo({
+        url: `/sub-pages/index/item/main?id=${id}&sceneType=积分兑换`
+      })
+    },
+    // 获取banner
+    getBanners() {
+      api.getBanners({
+        data: { bannerType: '22', status: '1' },
+        success: (data) => {
+          this.banners = data
         }
-        this.getProdList();
-      },
-      // 去详情
-      goItemClick({ id }) {
-        uni.navigateTo({
-          url: `/sub-pages/index/item/main?id=${id}&sceneType=积分兑换`,
-        });
-      },
-      // 获取banner
-      getBanners() {
-        api.getBanners({
-          data: { bannerType: '22', status: '1' },
-          success: (data) => {
-            this.banners = data;
-          },
-        });
-      },
-    },
-    onReachBottom() {
-      if (this.status === 'noMore') return;
-      this.pageNum++;
-      this.getProdList();
-    },
-  };
+      })
+    }
+  },
+  onReachBottom() {
+    if (this.status === 'noMore') return
+    this.pageNum++
+    this.getProdList()
+  }
+}
 </script>
 <style lang="scss" scoped>
   .bede-house {

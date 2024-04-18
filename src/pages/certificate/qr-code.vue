@@ -65,117 +65,117 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import generator from '@/utils/code-generator.js';
-  import ScanOrInputPopup from '@/components/pop-entry-method/pop-entry-method.vue';
-  import { desensitizeName, desensitizeInfo } from '@/utils/desensitization.js';
-  export default {
-    components: { ScanOrInputPopup },
-    props: {
-      hasCard: {
-        type: Boolean,
-        default: false,
-      },
+import api from '@/apis/index.js'
+import generator from '@/utils/code-generator.js'
+import ScanOrInputPopup from '@/components/pop-entry-method/pop-entry-method.vue'
+import { desensitizeName, desensitizeInfo } from '@/utils/desensitization.js'
+export default {
+  components: { ScanOrInputPopup },
+  props: {
+    hasCard: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      // 是否展示条形码大图
+      showsBarCode: false,
+      // 是否展示二维码大图
+      showsQRCode: false,
+      // 自动刷新定时器
+      timer: null,
+      // 用户信息
+      info: {}
+    }
+  },
+  filters: {
+    // 姓名过滤器, 用于姓名脱敏
+    nameFilter(value) {
+      return desensitizeName(value) || ''
     },
-    data() {
-      return {
-        // 是否展示条形码大图
-        showsBarCode: false,
-        // 是否展示二维码大图
-        showsQRCode: false,
-        // 自动刷新定时器
-        timer: null,
-        // 用户信息
-        info: {},
-      };
-    },
-    filters: {
-      // 姓名过滤器, 用于姓名脱敏
-      nameFilter(value) {
-        return desensitizeName(value) || '';
-      },
-      // 身份证号过滤器, 用于身份证号脱敏
-      idCardNumberFilter(value) {
-        return desensitizeInfo(value) || '';
-      },
-    },
-    onReady() {
-      this.handleRefreshClick();
-    },
-    onUnload() {
-      // 退出页面时销毁定时器
-      if (this.timer) {
-        console.log('执行onUnload');
-        clearInterval(this.timer);
-        this.timer = null;
-      }
-    },
-    methods: {
-      /**
+    // 身份证号过滤器, 用于身份证号脱敏
+    idCardNumberFilter(value) {
+      return desensitizeInfo(value) || ''
+    }
+  },
+  onReady() {
+    this.handleRefreshClick()
+  },
+  onUnload() {
+    // 退出页面时销毁定时器
+    if (this.timer) {
+      console.log('执行onUnload')
+      clearInterval(this.timer)
+      this.timer = null
+    }
+  },
+  methods: {
+    /**
        * 刷新点击事件
        */
-      handleRefreshClick() {
-        this.setTimer();
-        this.requestData();
-      },
-      /**
+    handleRefreshClick() {
+      this.setTimer()
+      this.requestData()
+    },
+    /**
        * 立即领取点击事件 2已经实名
        */
-      handleGetButtonClick() {
-        //TODO  去掉立即领取 亮证区域
-        const userInfo = uni.getStorageSync('userInfo');
-        if (userInfo.crtfStas !== '2') {
-          this.$refs.popup.open('1');
-          return;
-        }
-        this.$refs.popup.open(2);
+    handleGetButtonClick() {
+      // TODO  去掉立即领取 亮证区域
+      const userInfo = uni.getStorageSync('userInfo')
+      if (userInfo.crtfStas !== '2') {
+        this.$refs.popup.open('1')
+        return
+      }
+      this.$refs.popup.open(2)
 
-        // console.log('2342')
-        // uni.navigateTo({
-        //   url: '/pages/certificate/fillout-step-2'
-        // })
-        //  uni.reLaunch({
-        //       url: "/pages/certificate/identity-info",
-        //     });
+      // console.log('2342')
+      // uni.navigateTo({
+      //   url: '/pages/certificate/fillout-step-2'
+      // })
+      //  uni.reLaunch({
+      //       url: "/pages/certificate/identity-info",
+      //     });
 
-        //this.$refs.popup.open(1);
-      },
-      /**
+      // this.$refs.popup.open(1);
+    },
+    /**
        * 请求数据   展二维码
        */
-      requestData() {
-        const userInfo = uni.getStorageSync('userInfo');
-        if (!userInfo.authCode) {
-          return false;
+    requestData() {
+      const userInfo = uni.getStorageSync('userInfo')
+      if (!userInfo.authCode) {
+        return false
+      }
+      // 展二维码
+      api.getQRCodeInfo({
+        showsLoading: false,
+        data: {
+          appId: '53928a083adb4a7dad2eecf05564873f',
+          authCode: userInfo.authCode
+        },
+        success: (data) => {
+          this.info = data
+          generator.barcode('bar-code', this, data.ecQrCode, 560, 128)
+          generator.barcode('bar-code-big', this, data.ecQrCode, 1120, 256)
+          generator.qrcode('qr-code', this, data.ecQrCode, 500, 500)
+          generator.qrcode('qr-code-big', this, data.ecQrCode, 720, 720)
         }
-        //展二维码
-        api.getQRCodeInfo({
-          showsLoading: false,
-          data: {
-            appId: '53928a083adb4a7dad2eecf05564873f',
-            authCode: userInfo.authCode,
-          },
-          success: (data) => {
-            this.info = data;
-            generator.barcode('bar-code', this, data.ecQrCode, 560, 128);
-            generator.barcode('bar-code-big', this, data.ecQrCode, 1120, 256);
-            generator.qrcode('qr-code', this, data.ecQrCode, 500, 500);
-            generator.qrcode('qr-code-big', this, data.ecQrCode, 720, 720);
-          },
-        });
-      },
-      /**
+      })
+    },
+    /**
        * 设置定时器
        */
-      setTimer() {
-        this.timer = null;
-        this.timer = setInterval(() => {
-          this.requestData();
-        }, 6000);
-      },
-    },
-    onHide() {},
-  };
+    setTimer() {
+      this.timer = null
+      this.timer = setInterval(() => {
+        this.requestData()
+      }, 6000)
+    }
+  },
+  onHide() {}
+}
 </script>
 
 <style lang="scss" scoped>

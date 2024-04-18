@@ -23,65 +23,65 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  // import NavigationBar from '@/components/common/navigation-bar.vue'
-  export default {
-    components: {},
-    data() {
-      return {
-        backUrl: '',
-        // 导航栏高度
-        // #ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        // #endif
-        // #ifdef MP-ALIPAY
-        navigationBarHeight:
+import api from '@/apis/index.js'
+// import NavigationBar from '@/components/common/navigation-bar.vue'
+export default {
+  components: {},
+  data() {
+    return {
+      backUrl: '',
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        // #endif
-        // 是否为自己申领
-        isForSelf: false,
-        // 是否显示积分弹窗
-        showsCreditsPopup: false,
-      };
+      // #endif
+      // 是否为自己申领
+      isForSelf: false,
+      // 是否显示积分弹窗
+      showsCreditsPopup: false
+    }
+  },
+  onLoad() {
+    this.backUrl = uni.getStorageSync('mili_back_url')
+  },
+  methods: {
+    goback() {
+      api.getUserAndAddress({
+        data: {},
+        success: (data) => {
+          const { appid, sign, timestamp } = data
+          const token = encodeURIComponent(JSON.parse(data.data).token)
+          const env = 'wechat_miniapp'
+          const url = `${ENV.MILI_URL}/#/pages/encrypted-entry/index?data=${token}&appid=${appid}&timestamp=${timestamp}&sign=${sign}&env=${env}&redirectUrl=${this.backUrl}`
+          console.log(url, '返回url:')
+          uni.navigateTo({
+            url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
+          })
+        },
+        fail: (error) => {
+          console.log(error)
+        }
+      })
     },
-    onLoad() {
-      this.backUrl = uni.getStorageSync('mili_back_url');
-    },
-    methods: {
-      goback() {
-        api.getUserAndAddress({
-          data: {},
-          success: (data) => {
-            const { appid, sign, timestamp } = data;
-            const token = encodeURIComponent(JSON.parse(data.data).token);
-            const env = 'wechat_miniapp';
-            const url = `${ENV.MILI_URL}/#/pages/encrypted-entry/index?data=${token}&appid=${appid}&timestamp=${timestamp}&sign=${sign}&env=${env}&redirectUrl=${this.backUrl}`;
-            console.log(url, '返回url:');
-            uni.navigateTo({
-              url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-            });
-          },
-          fail: (error) => {
-            console.log(error);
-          },
-        });
-      },
-      /**
+    /**
        * 导航栏返回键的点击事件
        */
-      handleNavigationBack() {
-        console.log('处理导航栏返回键点击事件');
-        this.goback();
-      },
-      /**
+    handleNavigationBack() {
+      console.log('处理导航栏返回键点击事件')
+      this.goback()
+    },
+    /**
        * 返回首页点击事件
        */
-      handleBackToHomeClick() {
-        console.log('===fanh');
-        this.goback();
-      },
-    },
-  };
+    handleBackToHomeClick() {
+      console.log('===fanh')
+      this.goback()
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -12,58 +12,58 @@
 </template>
 
 <script>
-  import Layout from '@/sub-pages/index/components/layout.vue';
-  import Top from '@/sub-pages/index/components/top.vue';
-  import wx from 'utils/wx';
+import Layout from '@/sub-pages/index/components/layout.vue'
+import Top from '@/sub-pages/index/components/top.vue'
+import wx from 'utils/wx'
 
-  export default {
-    data() {
-      return {
-        showTip: true,
-        pageId: 'app_home',
-      };
+export default {
+  data() {
+    return {
+      showTip: true,
+      pageId: 'app_home'
+    }
+  },
+  components: {
+    Layout,
+    Top
+  },
+  onShareAppMessage() {
+    return {
+      title: ''
+    }
+  },
+  async onPullDownRefresh() {
+    await this.$refs.layout.refresh()
+    setTimeout(function () {
+      wx.stopPullDownRefresh()
+    }, 3000)
+  },
+  methods: {
+    change() {
+      wx.stopPullDownRefresh()
     },
-    components: {
-      Layout,
-      Top,
+    async toSearch() {
+      wx.navigateTo({
+        url: '/sub-pages/index/search/main'
+      })
     },
-    onShareAppMessage() {
-      return {
-        title: '',
-      };
-    },
-    async onPullDownRefresh() {
-      await this.$refs.layout.refresh();
-      setTimeout(function () {
-        wx.stopPullDownRefresh();
-      }, 3000);
-    },
-    methods: {
-      change() {
-        wx.stopPullDownRefresh();
-      },
-      async toSearch() {
-        wx.navigateTo({
-          url: '/sub-pages/index/search/main',
-        });
-      },
-      async getUserInfo(userInfo) {
-        Store.dispatch('login', userInfo);
-      },
-    },
-    onPageScroll(e) {
-      uni.$emit('pageScroll');
-      this.$refs.toTop.show(e.scrollTop > App.systemInfo.screenHeight);
-    },
-    onShow() {
-      // App.updateCartNum();
-    },
-    async onLoad() {
-      if (!Store.getters.isLogin) {
-        await Store.dispatch('login');
-      }
-    },
-  };
+    async getUserInfo(userInfo) {
+      Store.dispatch('login', userInfo)
+    }
+  },
+  onPageScroll(e) {
+    uni.$emit('pageScroll')
+    this.$refs.toTop.show(e.scrollTop > App.systemInfo.screenHeight)
+  },
+  onShow() {
+    // App.updateCartNum();
+  },
+  async onLoad() {
+    if (!Store.getters.isLogin) {
+      await Store.dispatch('login')
+    }
+  }
+}
 </script>
 
 <style lang="scss">

@@ -61,70 +61,70 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
-  export default {
-    data() {
-      return {
-        loading: 1,
-        childValue: '',
-        selValue: '',
-        list: [],
-        seletName: '',
-      };
+import api from '@/apis/index.js'
+export default {
+  data() {
+    return {
+      loading: 1,
+      childValue: '',
+      selValue: '',
+      list: [],
+      seletName: ''
+    }
+  },
+  created() {
+    this.getTradeList()
+  },
+  mounted() {},
+  onShow() {
+    this.selValue = uni.getStorageSync('parentChoice')
+    this.childValue = uni.getStorageSync('childChoice')
+    this.seletName = uni.getStorageSync('seletName')
+  },
+  // 分享处理
+  onShareAppMessage() {
+    return {
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
+  },
+  methods: {
+    resetHandler() {
+      uni.removeStorageSync('childChoice')
+      uni.removeStorageSync('seletName')
+      uni.navigateBack()
     },
-    created() {
-      this.getTradeList();
+    okHandler() {
+      uni.setStorageSync('parentChoice', this.selValue)
+      uni.setStorageSync('childChoice', this.childValue)
+      uni.setStorageSync('seletName', this.seletName)
+      uni.navigateBack()
     },
-    mounted() {},
-    onShow() {
-      this.selValue = uni.getStorageSync('parentChoice');
-      this.childValue = uni.getStorageSync('childChoice');
-      this.seletName = uni.getStorageSync('seletName');
+    selectJob(item) {
+      this.selValue = item.id
     },
-    // 分享处理
-    onShareAppMessage() {
-      return {
-        title: '',
-        path: '/pages/index/index?index=0',
-      };
+    childClick(v) {
+      this.childValue = v.id
+      this.seletName = v.postTypeName
+      console.log('===点击--', v.id, v.postTypeName)
     },
-    methods: {
-      resetHandler() {
-        uni.removeStorageSync('childChoice');
-        uni.removeStorageSync('seletName');
-        uni.navigateBack();
-      },
-      okHandler() {
-        uni.setStorageSync('parentChoice', this.selValue);
-        uni.setStorageSync('childChoice', this.childValue);
-        uni.setStorageSync('seletName', this.seletName);
-        uni.navigateBack();
-      },
-      selectJob(item) {
-        this.selValue = item.id;
-      },
-      childClick(v) {
-        this.childValue = v.id;
-        this.seletName = v.postTypeName;
-        console.log('===点击--', v.id, v.postTypeName);
-      },
-      getTradeList() {
-        api.getTradeList({
-          success: (data) => {
-            this.list = data || [];
-            if (this.list.length > 0) {
-              this.selValue = this.list[0].id;
-            } else {
-              this.loading = 2;
-            }
-          },
-          fail: (erro) => {
-            this.loading = 2;
-          },
-        });
-      },
-    },
-  };
+    getTradeList() {
+      api.getTradeList({
+        success: (data) => {
+          this.list = data || []
+          if (this.list.length > 0) {
+            this.selValue = this.list[0].id
+          } else {
+            this.loading = 2
+          }
+        },
+        fail: (erro) => {
+          this.loading = 2
+        }
+      })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .trade {

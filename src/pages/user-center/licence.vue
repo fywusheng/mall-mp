@@ -71,226 +71,226 @@
 </template>
 
 <script>
-  import ModalKnow from '@/pages/user-center/common/modal-know.vue';
-  import CertificatesCard from './common/certificates-card.vue';
-  import { desensitizeName } from '@/utils/desensitization.js';
-  const { wxml, style } = require('@/utils/DomData.js');
-  export default {
-    components: { ModalKnow, CertificatesCard },
-    data() {
-      return {
-        icon: {
-          // 会员权益卡
-          memberCard: 'http://192.168.1.187:10088/static/user-center/card-member.png',
-          // 老年卡
-          old: 'http://192.168.1.187:10088/static/user-center/icon-old-card-new.png',
-          // 电子凭证
-          electronic: 'http://192.168.1.187:10088/static/user-center/icon-electronic-card-new.png',
-          // 医保卡
-          insuranceCard:
+import ModalKnow from '@/pages/user-center/common/modal-know.vue'
+import CertificatesCard from './common/certificates-card.vue'
+import { desensitizeName } from '@/utils/desensitization.js'
+const { wxml, style } = require('@/utils/DomData.js')
+export default {
+  components: { ModalKnow, CertificatesCard },
+  data() {
+    return {
+      icon: {
+        // 会员权益卡
+        memberCard: 'http://192.168.1.187:10088/static/user-center/card-member.png',
+        // 老年卡
+        old: 'http://192.168.1.187:10088/static/user-center/icon-old-card-new.png',
+        // 电子凭证
+        electronic: 'http://192.168.1.187:10088/static/user-center/icon-electronic-card-new.png',
+        // 医保卡
+        insuranceCard:
             'http://192.168.1.187:10088/static/user-center/icon-insurance-card-new.png',
-          // 健康码
-          healthy: 'http://192.168.1.187:10088/static/user-center/icon-healthy-card-new.png',
-        },
-        userInfo: {},
-        succFlag: false,
-        // 生成图片
-        canvasWidth: 632 / 2, // 默认canvas宽高
-        canvasHeight: 345 / 2,
-        screenWidth: null, // 设备宽度
-        name: '',
-        age: '',
-        code: '',
-        widget: null,
-        msg: '加载中，请稍等...', // 提示语
-      };
+        // 健康码
+        healthy: 'http://192.168.1.187:10088/static/user-center/icon-healthy-card-new.png'
+      },
+      userInfo: {},
+      succFlag: false,
+      // 生成图片
+      canvasWidth: 632 / 2, // 默认canvas宽高
+      canvasHeight: 345 / 2,
+      screenWidth: null, // 设备宽度
+      name: '',
+      age: '',
+      code: '',
+      widget: null,
+      msg: '加载中，请稍等...' // 提示语
+    }
+  },
+
+  methods: {
+    memberCardPopclose() {
+      this.$refs.memberCardPopup.close()
     },
+    memberPopclose() {
+      this.$refs.memberPopup.close()
+    },
+    showMemberCard() {
+      this.userInfo = uni.getStorageSync('userInfo')
+      // 未登录, 跳转到登录页面
+      if (!uni.getStorageSync('token')) {
+        uni.navigateTo({
+          url: '/pages/user-center/login'
+        })
+        return
+      }
 
-    methods: {
-      memberCardPopclose() {
-        this.$refs.memberCardPopup.close();
-      },
-      memberPopclose() {
-        this.$refs.memberPopup.close();
-      },
-      showMemberCard() {
-        this.userInfo = uni.getStorageSync('userInfo');
-        // 未登录, 跳转到登录页面
-        if (!uni.getStorageSync('token')) {
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
+      // 未实名
+      if (this.userInfo.crtfStas === '0') {
+        this.$refs.realpop.open(1)
+        return
+      }
+
+      // 已实名但小于60周岁
+      if (this.userInfo.age < 50) {
+        this.$uni.showToast('抱歉，您未满50周岁，无法使用会员权益卡')
+        return
+      }
+
+      setTimeout(() => {
+        this.renderImgFile()
+      }, 1000)
+      this.$refs.memberCardPopup.open()
+    },
+    // 生成图片并保存
+    renderImgFile() {
+      this.name = desensitizeName(this.userInfo.psnName)
+      this.age = this.userInfo.age
+      this.code = this.userInfo.authCode
+
+      // 获取设备信息
+      wx.getSystemInfo({
+        success: (res) => {
+          this.screenWidth = res.screenWidth
+          // this.canvasWidth = this.screenWidth * 0.9;
+          // this.canvasHeight = this.screenWidth * 1.1;
+          console.log('screenWidth', this.screenWidth)
+
+          this.show = true
+          // 数字容器宽度 动态设置
+          setTimeout(() => {
+            // wx.showLoading({ title: '图片生成中...' });
+            this.widget = this.selectComponent('.widget')
+            this.renderToCanvas()
+          }, 1000)
         }
-
-        // 未实名
-        if (this.userInfo.crtfStas === '0') {
-          this.$refs.realpop.open(1);
-          return;
-        }
-
-        // 已实名但小于60周岁
-        if (this.userInfo.age < 50) {
-          this.$uni.showToast('抱歉，您未满50周岁，无法使用会员权益卡');
-          return;
-        }
-
-        setTimeout(() => {
-          this.renderImgFile();
-        }, 1000);
-        this.$refs.memberCardPopup.open();
-      },
-      // 生成图片并保存
-      renderImgFile() {
-        this.name = desensitizeName(this.userInfo.psnName);
-        this.age = this.userInfo.age;
-        this.code = this.userInfo.authCode;
-
-        // 获取设备信息
-        wx.getSystemInfo({
+      })
+    },
+    // wxml 转 canvas
+    renderToCanvas() {
+      console.log('this.widget', this.widget)
+      const _wxml = wxml(this.name, this.age, this.code)
+      const _style = style(this.screenWidth, this.canvasWidth, this.canvasHeight)
+      const p1 = this.widget.renderToCanvas({ wxml: _wxml, style: _style })
+      p1.then((res) => {
+        console.log('图片生成成功')
+        wx.hideLoading()
+        // this.container = res
+      }).catch((err) => {
+        console.log('生成失败')
+      })
+    },
+    // 保存到朋友圈
+    extraImage() {
+      debugger
+      console.log('12312')
+      if (!this.show) {
+        wx.showToast({ title: '海报生成失败，无法分享到朋友圈', icon: 'none' })
+        return
+      }
+      const p2 = this.widget.canvasToTempFilePath()
+      const that = this
+      p2.then((result) => {
+        const path = result.tempFilePath
+        wx.getSetting({
           success: (res) => {
-            this.screenWidth = res.screenWidth;
-            // this.canvasWidth = this.screenWidth * 0.9;
-            // this.canvasHeight = this.screenWidth * 1.1;
-            console.log('screenWidth', this.screenWidth);
-
-            this.show = true;
-            // 数字容器宽度 动态设置
-            setTimeout(() => {
-              // wx.showLoading({ title: '图片生成中...' });
-              this.widget = this.selectComponent('.widget');
-              this.renderToCanvas();
-            }, 1000);
-          },
-        });
-      },
-      // wxml 转 canvas
-      renderToCanvas() {
-        console.log('this.widget', this.widget);
-        const _wxml = wxml(this.name, this.age, this.code);
-        const _style = style(this.screenWidth, this.canvasWidth, this.canvasHeight);
-        const p1 = this.widget.renderToCanvas({ wxml: _wxml, style: _style });
-        p1.then((res) => {
-          console.log('图片生成成功');
-          wx.hideLoading();
-          // this.container = res
-        }).catch((err) => {
-          console.log('生成失败');
-        });
-      },
-      // 保存到朋友圈
-      extraImage() {
-        debugger;
-        console.log('12312');
-        if (!this.show) {
-          wx.showToast({ title: '海报生成失败，无法分享到朋友圈', icon: 'none' });
-          return;
-        }
-        const p2 = this.widget.canvasToTempFilePath();
-        let that = this;
-        p2.then((result) => {
-          let path = result.tempFilePath;
-          wx.getSetting({
-            success: (res) => {
-              // 非初始化且未授权的情况，需要再次弹窗提示授权
-              if (
-                res.authSetting['scope.writePhotosAlbum'] != undefined &&
+            // 非初始化且未授权的情况，需要再次弹窗提示授权
+            if (
+              res.authSetting['scope.writePhotosAlbum'] != undefined &&
                 res.authSetting['scope.writePhotosAlbum'] != true
-              ) {
-                wx.showModal({
-                  title: '是否授权相册权限',
-                  content: '需要获取相册权限，请确认授权，否则无法使用相关功能',
-                  success: (res) => {
-                    if (res.confirm) {
-                      wx.openSetting({
-                        success: (dataAu) => {
-                          if (dataAu.authSetting['scope.writePhotosAlbum'] == true) {
-                            wx.showToast({
-                              title: '授权成功',
-                              icon: 'none',
-                              duration: 1000,
-                            });
-                            that.saveIMg(path);
-                          } else {
-                            wx.showToast({
-                              title: '授权失败',
-                              icon: 'success',
-                              duration: 1000,
-                            });
-                          }
-                        },
-                      });
-                    }
-                  },
-                });
-              } else {
-                // 初始化且未授权，系统默认会弹窗提示授权
-                // 非初始化且已授权，也会进入这里
-                that.saveIMg(path);
-              }
-            },
-          });
-        });
-      },
-      // 保存到相册
-      async saveIMg(tempFilePath) {
-        wx.saveImageToPhotosAlbum({
-          filePath: tempFilePath,
-          success: async (res) => {
-            this.$uni.showToast('图片已保存');
-          },
+            ) {
+              wx.showModal({
+                title: '是否授权相册权限',
+                content: '需要获取相册权限，请确认授权，否则无法使用相关功能',
+                success: (res) => {
+                  if (res.confirm) {
+                    wx.openSetting({
+                      success: (dataAu) => {
+                        if (dataAu.authSetting['scope.writePhotosAlbum'] == true) {
+                          wx.showToast({
+                            title: '授权成功',
+                            icon: 'none',
+                            duration: 1000
+                          })
+                          that.saveIMg(path)
+                        } else {
+                          wx.showToast({
+                            title: '授权失败',
+                            icon: 'success',
+                            duration: 1000
+                          })
+                        }
+                      }
+                    })
+                  }
+                }
+              })
+            } else {
+              // 初始化且未授权，系统默认会弹窗提示授权
+              // 非初始化且已授权，也会进入这里
+              that.saveIMg(path)
+            }
+          }
+        })
+      })
+    },
+    // 保存到相册
+    async saveIMg(tempFilePath) {
+      wx.saveImageToPhotosAlbum({
+        filePath: tempFilePath,
+        success: async (res) => {
+          this.$uni.showToast('图片已保存')
+        },
 
-          fail: function (res) {
-            wx.showToast({
-              title: '您取消了授权',
-              icon: 'none',
-              duration: 2000,
-            });
-          },
-        });
-      },
-      async succFlag(flag) {
-        if (flag == 1) {
-          const userinfor = await this.getUserInfo();
-          uni.setStorageSync('userInfo', userinfor);
-          this.userInfo = userinfor;
-          this.$refs.realpop.close();
-          uni.navigateTo({
-            url: `/pages/user-center/real-name-result2?back=${'/pages/user-center/licence'}`,
-          });
+        fail: function (res) {
+          wx.showToast({
+            title: '您取消了授权',
+            icon: 'none',
+            duration: 2000
+          })
         }
-      },
-      /**
+      })
+    },
+    async succFlag(flag) {
+      if (flag == 1) {
+        const userinfor = await this.getUserInfo()
+        uni.setStorageSync('userInfo', userinfor)
+        this.userInfo = userinfor
+        this.$refs.realpop.close()
+        uni.navigateTo({
+          url: `/pages/user-center/real-name-result2?back=${'/pages/user-center/licence'}`
+        })
+      }
+    },
+    /**
        * 获取用户信息
        */
-      getUserInfo() {
-        return new Promise((resolve, reject) => {
-          api.getUserInfo({
-            data: {
-              accessToken: uni.getStorageSync('token'),
-            },
-            success: (data) => {
-              resolve(data);
-            },
-            fail: (error) => {
-              reject(error);
-            },
-          });
-        });
-      },
-      handleShowCardClick() {
-        this.$refs.memberCardPopup.open();
-      },
-      handleClick() {
-        //    this.$refs.noticeModal.open();
-        // https://api.hpgjzlinfo.com/nepsp-api/nun/api/family/removeFamily
-        this.$uni.showToast({
-          title: '当前所在地区功能开通中',
-          duration: 2000,
-        });
-      },
+    getUserInfo() {
+      return new Promise((resolve, reject) => {
+        api.getUserInfo({
+          data: {
+            accessToken: uni.getStorageSync('token')
+          },
+          success: (data) => {
+            resolve(data)
+          },
+          fail: (error) => {
+            reject(error)
+          }
+        })
+      })
     },
-  };
+    handleShowCardClick() {
+      this.$refs.memberCardPopup.open()
+    },
+    handleClick() {
+      //    this.$refs.noticeModal.open();
+      // https://api.hpgjzlinfo.com/nepsp-api/nun/api/family/removeFamily
+      this.$uni.showToast({
+        title: '当前所在地区功能开通中',
+        duration: 2000
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

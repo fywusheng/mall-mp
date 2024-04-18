@@ -74,120 +74,120 @@
 </template>
 
 <script>
-  import NavigationBar from '@/components/common/navigation-bar.vue';
-  import Modal from '@/components/common/modal.vue';
-  import OneInput from './components/myp-one.vue';
-  import api from '@/apis/index.js';
-  export default {
-    components: { NavigationBar, Modal, OneInput },
-    data() {
-      return {
-        title: '验证码',
-        isValid: false,
-        validCode: '',
-        showTip: false,
-        time: null,
-        // iconPath
-        checked: true,
-        userInfo: {},
-        cardInfo: {},
-        autoFocus: true,
-        icon: {
-          auth: 'http://192.168.1.187:10088/static/pay/icon-warn-circle-blue.png',
-          delete: 'http://192.168.1.187:10088/static/pay/icon-input-delete.png',
-          circleGre: 'http://192.168.1.187:10088/static/pay/icon-warn-circle.png',
-          checked: 'http://192.168.1.187:10088/static/pay/icon-radio-checked.png',
-          noChecked: 'http://192.168.1.187:10088/static/pay/icon-radio-default.png',
-        },
-        // 导航栏高度
-        //#ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        //#endif
-        //#ifdef MP-ALIPAY
-        navigationBarHeight:
+import NavigationBar from '@/components/common/navigation-bar.vue'
+import Modal from '@/components/common/modal.vue'
+import OneInput from './components/myp-one.vue'
+import api from '@/apis/index.js'
+export default {
+  components: { NavigationBar, Modal, OneInput },
+  data() {
+    return {
+      title: '验证码',
+      isValid: false,
+      validCode: '',
+      showTip: false,
+      time: null,
+      // iconPath
+      checked: true,
+      userInfo: {},
+      cardInfo: {},
+      autoFocus: true,
+      icon: {
+        auth: 'http://192.168.1.187:10088/static/pay/icon-warn-circle-blue.png',
+        delete: 'http://192.168.1.187:10088/static/pay/icon-input-delete.png',
+        circleGre: 'http://192.168.1.187:10088/static/pay/icon-warn-circle.png',
+        checked: 'http://192.168.1.187:10088/static/pay/icon-radio-checked.png',
+        noChecked: 'http://192.168.1.187:10088/static/pay/icon-radio-default.png'
+      },
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        //#endif
-        // 状态栏高度
-        statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-      };
-    },
-    onLoad(e) {
-      this.cardInfo = JSON.parse(decodeURIComponent(e.cardInfo));
-      this.userInfo = uni.getStorageSync('userInfo');
-      this.sendSms();
-    },
-    onShow() {},
-    computed: {
-      enableNext() {
-        return new String(this.validCode).length === 6;
-      },
-    },
-    methods: {
-      // 发送验证码
-      sendSms() {
-        api.getValidCodeForBindCard({
-          data: {
-            bankCardNum: this.cardInfo.bankCardNum,
-            phone: this.cardInfo.phone,
-          },
-          success: (res) => {
-            this.showTip = res ? false : true;
-            if (res) {
-              this.startTime();
-              this.requestId = res;
-            }
-          },
-        });
-      },
-      // 倒计时
-      startTime() {
-        this.time = 60;
-        this.timer = setInterval(() => {
-          if (this.time === 0) {
-            clearInterval(this.timer);
-            return false;
+      // #endif
+      // 状态栏高度
+      statusBarHeight: uni.getSystemInfoSync().statusBarHeight
+    }
+  },
+  onLoad(e) {
+    this.cardInfo = JSON.parse(decodeURIComponent(e.cardInfo))
+    this.userInfo = uni.getStorageSync('userInfo')
+    this.sendSms()
+  },
+  onShow() {},
+  computed: {
+    enableNext() {
+      return new String(this.validCode).length === 6
+    }
+  },
+  methods: {
+    // 发送验证码
+    sendSms() {
+      api.getValidCodeForBindCard({
+        data: {
+          bankCardNum: this.cardInfo.bankCardNum,
+          phone: this.cardInfo.phone
+        },
+        success: (res) => {
+          this.showTip = !res
+          if (res) {
+            this.startTime()
+            this.requestId = res
           }
-          this.time--;
-        }, 1000);
-      },
-      finishedOne() {},
-      // 提示
-      handlePopPhoneModal() {
-        this.$refs.phoneModal.open();
-      },
-      // 返回上一页
-      handleNavBack() {
-        // this.$refs.tipModal.open()
-        uni.navigateBack();
-      },
-      // 返回首页
-      handleHomeBack() {
-        uni.reLaunch({
-          url: '/pages/index/index',
-        });
-      },
-      // 下一步
-      handleNext() {
-        api.openOnlinePay({
-          data: {
-            requestId: this.requestId,
-            smsCode: this.validCode,
-          },
-          success: (res) => {
-            if (res) {
-              uni.navigateTo({
-                url: '/pages/pay/add-bank-card-success',
-              });
-            }
-          },
-          fail: () => {
-            console.log('23423432423-----');
-            this.showTip = true;
-          },
-        });
-      },
+        }
+      })
     },
-  };
+    // 倒计时
+    startTime() {
+      this.time = 60
+      this.timer = setInterval(() => {
+        if (this.time === 0) {
+          clearInterval(this.timer)
+          return false
+        }
+        this.time--
+      }, 1000)
+    },
+    finishedOne() {},
+    // 提示
+    handlePopPhoneModal() {
+      this.$refs.phoneModal.open()
+    },
+    // 返回上一页
+    handleNavBack() {
+      // this.$refs.tipModal.open()
+      uni.navigateBack()
+    },
+    // 返回首页
+    handleHomeBack() {
+      uni.reLaunch({
+        url: '/pages/index/index'
+      })
+    },
+    // 下一步
+    handleNext() {
+      api.openOnlinePay({
+        data: {
+          requestId: this.requestId,
+          smsCode: this.validCode
+        },
+        success: (res) => {
+          if (res) {
+            uni.navigateTo({
+              url: '/pages/pay/add-bank-card-success'
+            })
+          }
+        },
+        fail: () => {
+          console.log('23423432423-----')
+          this.showTip = true
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

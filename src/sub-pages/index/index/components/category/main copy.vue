@@ -62,62 +62,62 @@
 </template>
 
 <script>
-  import wx from 'utils/wx';
-  export default {
-    data() {
-      return {
-        categoryList: [],
-        subList: [],
-        currentIndex: 0,
-        brandList: [],
-        bannerList: [],
-        operation: {},
-        height: App.systemInfo.windowHeight - 37 + 'px',
-      };
+import wx from 'utils/wx'
+export default {
+  data() {
+    return {
+      categoryList: [],
+      subList: [],
+      currentIndex: 0,
+      brandList: [],
+      bannerList: [],
+      operation: {},
+      height: App.systemInfo.windowHeight - 37 + 'px'
+    }
+  },
+  components: {},
+  methods: {
+    toSearch() {
+      uni.upx2px
+      wx.navigateTo({
+        url: '/sub-pages/index/search/main'
+      })
     },
-    components: {},
-    methods: {
-      toSearch() {
-        uni.upx2px;
-        wx.navigateTo({
-          url: '/sub-pages/index/search/main',
-        });
-      },
-      toBanner(link) {
-        XIU.bridge.genLink(link);
-      },
-      changeCategory(category, index) {
-        this.currentIndex = index;
-        this.subList = category.children;
-      },
-      toCategory(cate) {
-        XIU.bridge.goCategory(cate.code);
-      },
-      async loadData() {
-        wx.showLoading();
-        const result = await Axios.post('/category/getCategoryList', {
-          // params: {
-          type: 2,
-          // }
-        });
-        wx.hideLoading();
-        if (result.code == 200) {
-          this.categoryList = result.data;
-          this.changeCategory(this.categoryList[this.currentIndex], 0);
-        } else {
-          wx.showToast(result.result.message);
-        }
-      },
+    toBanner(link) {
+      XIU.bridge.genLink(link)
     },
-    async mounted() {
-      const result = await Axios.get(`${ENV.CMS}/operationContent/getByCode?code=SEARCH_BANNER`);
-      if (result.code === 200) {
-        this.bannerList = result.data.contentList;
-        this.operation = result.data.operation;
+    changeCategory(category, index) {
+      this.currentIndex = index
+      this.subList = category.children
+    },
+    toCategory(cate) {
+      XIU.bridge.goCategory(cate.code)
+    },
+    async loadData() {
+      wx.showLoading()
+      const result = await Axios.post('/category/getCategoryList', {
+        // params: {
+        type: 2
+        // }
+      })
+      wx.hideLoading()
+      if (result.code == 200) {
+        this.categoryList = result.data
+        this.changeCategory(this.categoryList[this.currentIndex], 0)
+      } else {
+        wx.showToast(result.result.message)
       }
-      await this.loadData();
-    },
-  };
+    }
+  },
+  async mounted() {
+    const result = await Axios.get(`${ENV.CMS}/operationContent/getByCode?code=SEARCH_BANNER`)
+    if (result.code === 200) {
+      this.bannerList = result.data.contentList
+      this.operation = result.data.operation
+    }
+    await this.loadData()
+  }
+}
 </script>
 
 <style lang="scss">

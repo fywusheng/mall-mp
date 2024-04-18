@@ -63,151 +63,151 @@
 </template>
 
 <script>
-  import Top from '@/sub-pages/index/components/top.vue';
+import Top from '@/sub-pages/index/components/top.vue'
 
-  export default {
-    data() {
-      return {
-        sortList: [
-          {
-            id: 1,
-            sort: 0,
-            name: '按时间',
-          },
-          {
-            id: 2,
-            sort: 0,
-            name: '按销量',
-          },
-          {
-            id: 3,
-            sort: 0,
-            name: '按价格',
-          },
-        ],
-        activeId: 0,
-        itemList: [],
-        scrollTop: 0,
-        height: 750,
-        brandInfo: {},
-      };
-    },
-    components: {
-      Top,
-    },
-    methods: {
-      goHome() {
-        wx.navigateTo({
-          url: '/sub-pages/index/index/main',
-        });
-      },
-      onUnload() {
-        this.brandInfo = {};
-        this.itemList = [];
-      },
-      onLoad(e) {
-        this.height = parseInt((e.mp.detail.height / e.mp.detail.width) * 750);
-      },
-      changeFilter(sort) {
-        if (this.activeId === sort.id) {
-          sort.sort = sort.sort === 1 ? 0 : 1;
+export default {
+  data() {
+    return {
+      sortList: [
+        {
+          id: 1,
+          sort: 0,
+          name: '按时间'
+        },
+        {
+          id: 2,
+          sort: 0,
+          name: '按销量'
+        },
+        {
+          id: 3,
+          sort: 0,
+          name: '按价格'
         }
-        this.activeId = sort.id;
-        let sortType;
-        switch (this.activeId) {
-          case 1:
-            sortType = sort.sort === 1 ? 12 : 11;
-            break;
-          case 2:
-            sortType = sort.sort === 1 ? 32 : 31;
-            break;
-          case 3:
-            sortType = sort.sort === 1 ? 22 : 21;
-            break;
-        }
-        this.sortType = sortType;
-        this.loadItem();
-      },
-      async changeAttention() {
-        wx.showLoading({
-          title: '正在提交...',
-        });
-        const result = await wx.request({
-          data: {
-            method: this.brandInfo.isAttention == 0 ? 'brand.addconcern' : 'brand.delconcern',
-            brandId: this.id,
-          },
-        });
-        wx.hideLoading();
-        if (result.result.result == 1) {
-          wx.showToast({
-            title: this.brandInfo.isAttention == 0 ? '关注成功' : '取消成功',
-            icon: 'none',
-          });
-          this.brandInfo.isAttention = this.brandInfo.isAttention == 0 ? 1 : 0;
-        } else {
-          wx.showToast({
-            title: result.result.message,
-            icon: 'none',
-          });
-        }
-      },
-      toDetail(data) {
-        wx.navigateTo({
-          url: `/pages/item/main?id=` + data.productSid,
-        });
-      },
-      async loadItem() {
-        const params = {
-          pageSize: 100,
-          pageNum: 1,
-          brandId: this.id,
-        };
-        if (this.sortType) {
-          params.sortType = this.sortType;
-        }
-        // const itemResult = await wx.request({
-        //   url: BASE_SEARCH_URL,
-        //   data: params
-        // })
-        // if (itemResult.result.result == 1) {
-        //   this.itemList = itemResult.data.esProducts;
-        // } else {
-        //   wx.showToast({
-        //     title: itemResult.result.message,
-        //     icon: 'none'
-        //   })
-        // }
-      },
+      ],
+      activeId: 0,
+      itemList: [],
+      scrollTop: 0,
+      height: 750,
+      brandInfo: {}
+    }
+  },
+  components: {
+    Top
+  },
+  methods: {
+    goHome() {
+      wx.navigateTo({
+        url: '/sub-pages/index/index/main'
+      })
     },
-    onPageScroll(e) {
-      this.$refs.toTop.show(e.scrollTop > App.systemInfo.screenHeight);
+    onUnload() {
+      this.brandInfo = {}
+      this.itemList = []
     },
-    async mounted() {
-      this.id = this.$root.$mp.query.id;
-      console.info(this.id);
-      wx.showLoading({ title: '正在获取数据...', mask: true });
+    onLoad(e) {
+      this.height = parseInt((e.mp.detail.height / e.mp.detail.width) * 750)
+    },
+    changeFilter(sort) {
+      if (this.activeId === sort.id) {
+        sort.sort = sort.sort === 1 ? 0 : 1
+      }
+      this.activeId = sort.id
+      let sortType
+      switch (this.activeId) {
+        case 1:
+          sortType = sort.sort === 1 ? 12 : 11
+          break
+        case 2:
+          sortType = sort.sort === 1 ? 32 : 31
+          break
+        case 3:
+          sortType = sort.sort === 1 ? 22 : 21
+          break
+      }
+      this.sortType = sortType
+      this.loadItem()
+    },
+    async changeAttention() {
+      wx.showLoading({
+        title: '正在提交...'
+      })
       const result = await wx.request({
         data: {
-          method: 'product.brandInfo',
-          brandId: this.id,
-        },
-      });
-      wx.hideLoading();
+          method: this.brandInfo.isAttention == 0 ? 'brand.addconcern' : 'brand.delconcern',
+          brandId: this.id
+        }
+      })
+      wx.hideLoading()
       if (result.result.result == 1) {
-        this.brandInfo = result.data;
+        wx.showToast({
+          title: this.brandInfo.isAttention == 0 ? '关注成功' : '取消成功',
+          icon: 'none'
+        })
+        this.brandInfo.isAttention = this.brandInfo.isAttention == 0 ? 1 : 0
       } else {
         wx.showToast({
           title: result.result.message,
-          icon: 'none',
-        });
+          icon: 'none'
+        })
       }
-      wx.setNavigationBarTitle({
-        title: '品牌详情',
-      });
-      this.loadItem();
     },
-  };
+    toDetail(data) {
+      wx.navigateTo({
+        url: `/pages/item/main?id=` + data.productSid
+      })
+    },
+    async loadItem() {
+      const params = {
+        pageSize: 100,
+        pageNum: 1,
+        brandId: this.id
+      }
+      if (this.sortType) {
+        params.sortType = this.sortType
+      }
+      // const itemResult = await wx.request({
+      //   url: BASE_SEARCH_URL,
+      //   data: params
+      // })
+      // if (itemResult.result.result == 1) {
+      //   this.itemList = itemResult.data.esProducts;
+      // } else {
+      //   wx.showToast({
+      //     title: itemResult.result.message,
+      //     icon: 'none'
+      //   })
+      // }
+    }
+  },
+  onPageScroll(e) {
+    this.$refs.toTop.show(e.scrollTop > App.systemInfo.screenHeight)
+  },
+  async mounted() {
+    this.id = this.$root.$mp.query.id
+    console.info(this.id)
+    wx.showLoading({ title: '正在获取数据...', mask: true })
+    const result = await wx.request({
+      data: {
+        method: 'product.brandInfo',
+        brandId: this.id
+      }
+    })
+    wx.hideLoading()
+    if (result.result.result == 1) {
+      this.brandInfo = result.data
+    } else {
+      wx.showToast({
+        title: result.result.message,
+        icon: 'none'
+      })
+    }
+    wx.setNavigationBarTitle({
+      title: '品牌详情'
+    })
+    this.loadItem()
+  }
+}
 </script>
 
 <style lang="scss">

@@ -44,81 +44,81 @@
 </template>
 
 <script>
-  const Icon1 = 'http://192.168.1.187:10088/static/user-center/icon-user-center-show-password.png';
-  const Icon2 = 'http://192.168.1.187:10088/static/user-center/icon-user-center-hide-password.png';
-  import api from '@/apis/index.js';
-  import sha256 from 'crypto-js/sha256';
-  import { validatePassword } from '@/utils/validation.js';
-  export default {
-    data() {
-      return {
-        title: '重置密码',
-        // 是否明文显示密码
-        showsPasswordText: false,
-        // 是否明文显示确认密码
-        showsConfirmPasswordText: false,
-        // 表单数据
-        params: {
-          phoneNumber: '',
-          password: '',
-          confirmPassword: '',
-        },
-        // 1.更换手机(人脸)
-        type: '1',
-      };
-    },
-    computed: {
-      // 密码图标地址
-      passwordIconURL() {
-        return this.showsPasswordText ? Icon1 : Icon2;
+const Icon1 = 'http://192.168.1.187:10088/static/user-center/icon-user-center-show-password.png'
+const Icon2 = 'http://192.168.1.187:10088/static/user-center/icon-user-center-hide-password.png'
+import api from '@/apis/index.js'
+import sha256 from 'crypto-js/sha256'
+import { validatePassword } from '@/utils/validation.js'
+export default {
+  data() {
+    return {
+      title: '重置密码',
+      // 是否明文显示密码
+      showsPasswordText: false,
+      // 是否明文显示确认密码
+      showsConfirmPasswordText: false,
+      // 表单数据
+      params: {
+        phoneNumber: '',
+        password: '',
+        confirmPassword: ''
       },
-      // 确认密码图标地址
-      confirmPasswordIconURL() {
-        return this.showsConfirmPasswordText ? Icon1 : Icon2;
-      },
+      // 1.更换手机(人脸)
+      type: '1'
+    }
+  },
+  computed: {
+    // 密码图标地址
+    passwordIconURL() {
+      return this.showsPasswordText ? Icon1 : Icon2
     },
-    onLoad(e) {
-      this.params.phoneNumber = e.phoneNumber;
-      this.type = e.type;
-      if (e.title === '设置密码') {
-        this.title = e.title;
-      }
-    },
-    methods: {
-      /**
+    // 确认密码图标地址
+    confirmPasswordIconURL() {
+      return this.showsConfirmPasswordText ? Icon1 : Icon2
+    }
+  },
+  onLoad(e) {
+    this.params.phoneNumber = e.phoneNumber
+    this.type = e.type
+    if (e.title === '设置密码') {
+      this.title = e.title
+    }
+  },
+  methods: {
+    /**
        * 完成点击事件
        */
-      handleResetClick() {
-        if (!this.params.password) {
-          this.$uni.showToast('请输入密码');
-          return;
-        }
-        if (!validatePassword(this.params.password, /^[0-9]{6,8}$/)) {
-          this.$uni.showToast('请输入 6-8 位由数字组成的密码');
-          return;
-        }
-        if (this.params.password !== this.params.confirmPassword) {
-          this.$uni.showToast('两次输入的密码不一致');
-          return;
-        }
+    handleResetClick() {
+      if (!this.params.password) {
+        this.$uni.showToast('请输入密码')
+        return
+      }
+      if (!validatePassword(this.params.password, /^[0-9]{6,8}$/)) {
+        this.$uni.showToast('请输入 6-8 位由数字组成的密码')
+        return
+      }
+      if (this.params.password !== this.params.confirmPassword) {
+        this.$uni.showToast('两次输入的密码不一致')
+        return
+      }
 
-        api.resetPassword({
-          data: {
-            mobile: this.params.phoneNumber,
-            newPwd: sha256(this.params.password).toString(),
-          },
-          success: () => {
-            this.$uni.showToast('密码设置成功');
-            setTimeout(() => {
-              uni.redirectTo({
-                url: '/pages/user-center/login?goUrl=' + '/pages/index/index?index=4',
-              });
-            }, 1500);
-          },
-        });
-      },
-    },
-  };
+      api.resetPassword({
+        data: {
+          mobile: this.params.phoneNumber,
+          newPwd: sha256(this.params.password).toString()
+        },
+        success: () => {
+          this.$uni.showToast('密码设置成功')
+          setTimeout(() => {
+            uni.redirectTo({
+              url: '/pages/user-center/login?goUrl=' + '/pages/index/index?index=4'
+            })
+          }, 1500)
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

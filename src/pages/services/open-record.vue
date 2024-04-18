@@ -14,46 +14,46 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
-  import dayjs from 'dayjs';
-  export default {
-    data() {
-      return {
-        list: [],
-      };
-    },
-    created() {
-      this.getMemberRecordInfo();
-    },
-    methods: {
-      getMemberRecordInfo() {
-        api.getOrderList({
-          data: {
-            pageNum: 1,
-            pageSize: 100,
-            orderSource: 6,
-            orderStatus: 3,
-          },
-          success: (data) => {
-            const firstData = data.list[0];
-            firstData.actived = dayjs().isBefore(firstData.orderDetailDTO.expirationTime);
-            data.list.forEach((element) => {
-              element.paymentTime = element.paymentTime.split('-').join('.');
-              element.orderDetailDTO.usageTime = element.orderDetailDTO.usageTime
-                .split('-')
-                .join('.');
-              element.orderDetailDTO.expirationTime = element.orderDetailDTO.expirationTime
-                .split('-')
-                .join('.');
-            });
-            this.list = data.list;
+import api from '@/apis/index.js'
+import dayjs from 'dayjs'
+export default {
+  data() {
+    return {
+      list: []
+    }
+  },
+  created() {
+    this.getMemberRecordInfo()
+  },
+  methods: {
+    getMemberRecordInfo() {
+      api.getOrderList({
+        data: {
+          pageNum: 1,
+          pageSize: 100,
+          orderSource: 6,
+          orderStatus: 3
+        },
+        success: (data) => {
+          const firstData = data.list[0]
+          firstData.actived = dayjs().isBefore(firstData.orderDetailDTO.expirationTime)
+          data.list.forEach((element) => {
+            element.paymentTime = element.paymentTime.split('-').join('.')
+            element.orderDetailDTO.usageTime = element.orderDetailDTO.usageTime
+              .split('-')
+              .join('.')
+            element.orderDetailDTO.expirationTime = element.orderDetailDTO.expirationTime
+              .split('-')
+              .join('.')
+          })
+          this.list = data.list
 
-            console.log('data: ', data);
-          },
-        });
-      },
-    },
-  };
+          console.log('data: ', data)
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

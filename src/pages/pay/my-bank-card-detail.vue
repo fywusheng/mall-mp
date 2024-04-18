@@ -80,142 +80,142 @@
 </template>
 
 <script>
-  import NavigationBar from '@/components/common/navigation-bar.vue';
-  import Modal from '@/components/common/modal.vue';
-  import api from '@/apis/index.js';
-  import { startFacialRecognitionVerify, getBankBg } from '@/utils/utils.js';
-  export default {
-    components: { NavigationBar, Modal },
-    data() {
-      return {
-        isClick: true,
-        timer: '',
-        title: '我的银行卡',
-        // iconPath
-        checked: true,
-        cardInfo: {},
-        icon: {
-          bank: 'http://192.168.1.187:10088/static/pay/icon-bank-pattern.png',
-          // bank: 'http://192.168.1.187:10088/static/pay/icon-bank-bg-circle.png',
-          unBind: 'http://192.168.1.187:10088/static/pay/icon-unbind.png',
-        },
-        // 导航栏高度
-        //#ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        //#endif
-        //#ifdef MP-ALIPAY
-        navigationBarHeight:
+import NavigationBar from '@/components/common/navigation-bar.vue'
+import Modal from '@/components/common/modal.vue'
+import api from '@/apis/index.js'
+import { startFacialRecognitionVerify, getBankBg } from '@/utils/utils.js'
+export default {
+  components: { NavigationBar, Modal },
+  data() {
+    return {
+      isClick: true,
+      timer: '',
+      title: '我的银行卡',
+      // iconPath
+      checked: true,
+      cardInfo: {},
+      icon: {
+        bank: 'http://192.168.1.187:10088/static/pay/icon-bank-pattern.png',
+        // bank: 'http://192.168.1.187:10088/static/pay/icon-bank-bg-circle.png',
+        unBind: 'http://192.168.1.187:10088/static/pay/icon-unbind.png'
+      },
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        //#endif
-        // 状态栏高度
-        statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-      };
+      // #endif
+      // 状态栏高度
+      statusBarHeight: uni.getSystemInfoSync().statusBarHeight
+    }
+  },
+  onLoad(e) {
+    console.log(e)
+    this.recordId = e.recordId
+    this.userInfo = uni.getStorageSync('userInfo')
+    this.getCardDetail(this.recordId)
+  },
+  onShow() {},
+  destroyed() {
+    clearTimeout(this.timer)
+  },
+  methods: {
+    openBind() {
+      this.$refs.popup.open()
     },
-    onLoad(e) {
-      console.log(e);
-      this.recordId = e.recordId;
-      this.userInfo = uni.getStorageSync('userInfo');
-      this.getCardDetail(this.recordId);
+    handleCloseClick() {
+      this.$refs.popup.close()
     },
-    onShow() {},
-    destroyed() {
-      clearTimeout(this.timer);
+    // 获取银行卡背景
+    getBankBg(name) {
+      return getBankBg(name)
     },
-    methods: {
-      openBind() {
-        this.$refs.popup.open();
-      },
-      handleCloseClick() {
-        this.$refs.popup.close();
-      },
-      // 获取银行卡背景
-      getBankBg(name) {
-        return getBankBg(name);
-      },
-      // 获取银行卡详情
-      getCardDetail(recordId) {
-        api.getBankCardDetail({
-          data: { recordId },
-          success: (res) => {
-            this.cardInfo = res;
+    // 获取银行卡详情
+    getCardDetail(recordId) {
+      api.getBankCardDetail({
+        data: { recordId },
+        success: (res) => {
+          this.cardInfo = res
+        }
+      })
+    },
+    // 解绑银行卡
+    handleUnBind() {
+      if (this.isClick) {
+        this.isClick = false
+        // 开启人脸识别
+        startFacialRecognitionVerify({
+          name: this.userInfo.psnName,
+          idCard: this.userInfo.idCard,
+          returnUrl: '/pages/certificate/avatar-confirm', // 认证成功返回页面
+          success: () => {
+            api.deleteBankCard({
+              data: { recordId: this.recordId },
+              success: (res) => {
+                if (res) {
+                  this.$uni.showToast('解绑成功')
+                  setTimeout(() => {
+                    uni.reLaunch({
+                      url: '/pages/pay/my-bank-card'
+                    })
+                  }, 1500)
+                }
+              }
+            })
           },
-        });
-      },
-      // 解绑银行卡
-      handleUnBind() {
-        if (this.isClick) {
-          this.isClick = false;
-          // 开启人脸识别
-          startFacialRecognitionVerify({
-            name: this.userInfo.psnName,
-            idCard: this.userInfo.idCard,
-            returnUrl: '/pages/certificate/avatar-confirm', // 认证成功返回页面
-            success: () => {
-              api.deleteBankCard({
-                data: { recordId: this.recordId },
-                success: (res) => {
-                  if (res) {
-                    this.$uni.showToast('解绑成功');
-                    setTimeout(() => {
-                      uni.reLaunch({
-                        url: '/pages/pay/my-bank-card',
-                      });
-                    }, 1500);
-                  }
-                },
-              });
-            },
-            fail: () => {
-              this.$refs.tipModal.open();
-            },
-          });
-          this.timer = setTimeout(() => {
-            this.isClick = true;
-          }, 3000);
-        }
-      },
-      // 稍后再说
-      handleCancel() {
-        uni.navigateTo({
-          url: '/pages/pay/my-bank-card',
-        });
-      },
-      // 再试一次
-      handleConfirm() {
-        this.handleUnBind();
-      },
-      // 返回上一页
-      handleNavBack() {
-        // this.$refs.tipModal.open()
-        uni.navigateBack();
-      },
-      // 返回首页
-      handleHomeBack() {
-        uni.reLaunch({
-          url: '/pages/index/index',
-        });
-      },
+          fail: () => {
+            this.$refs.tipModal.open()
+          }
+        })
+        this.timer = setTimeout(() => {
+          this.isClick = true
+        }, 3000)
+      }
     },
-    filters: {
-      formatBankNum(bankNum) {
-        if (!bankNum) return '';
-        let val = bankNum;
-        let front = 4;
-        let back = 4;
-        let placeholder = 8;
-        const length = val.length;
-        placeholder = placeholder || length - front - back;
-
-        if (length > front + back) {
-          const frontVal = val.slice(0, front);
-          const backVal = back ? val.slice(-back) : '';
-          return frontVal + ' ' + '*'.repeat(placeholder) + ' ' + backVal;
-        }
-
-        return val;
-      },
+    // 稍后再说
+    handleCancel() {
+      uni.navigateTo({
+        url: '/pages/pay/my-bank-card'
+      })
     },
-  };
+    // 再试一次
+    handleConfirm() {
+      this.handleUnBind()
+    },
+    // 返回上一页
+    handleNavBack() {
+      // this.$refs.tipModal.open()
+      uni.navigateBack()
+    },
+    // 返回首页
+    handleHomeBack() {
+      uni.reLaunch({
+        url: '/pages/index/index'
+      })
+    }
+  },
+  filters: {
+    formatBankNum(bankNum) {
+      if (!bankNum) return ''
+      const val = bankNum
+      const front = 4
+      const back = 4
+      let placeholder = 8
+      const length = val.length
+      placeholder = placeholder || length - front - back
+
+      if (length > front + back) {
+        const frontVal = val.slice(0, front)
+        const backVal = back ? val.slice(-back) : ''
+        return frontVal + ' ' + '*'.repeat(placeholder) + ' ' + backVal
+      }
+
+      return val
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -101,86 +101,86 @@
 </template>
 
 <script>
-  import ActionSheet from '@/components/common/action-sheet';
-  export default {
-    components: { ActionSheet },
-    props: {
-      dataDetail: {
-        type: Object,
-        default: () => {
-          return {};
-        },
-      },
-    },
-    data() {
-      return {
-        //是否全文显示
-        textShow: false,
-        //电话列表
-        phoneList: [],
-        // 拨打电话弹窗选项
-        actionSheetItems: [],
-      };
-    },
-    methods: {
-      /**
+import ActionSheet from '@/components/common/action-sheet'
+export default {
+  components: { ActionSheet },
+  props: {
+    dataDetail: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    }
+  },
+  data() {
+    return {
+      // 是否全文显示
+      textShow: false,
+      // 电话列表
+      phoneList: [],
+      // 拨打电话弹窗选项
+      actionSheetItems: []
+    }
+  },
+  methods: {
+    /**
        * 图片点击事件
        */
-      handleImageClick(item) {
-        console.log('---hospital---');
-        uni.navigateTo({
-          url: '/pages/map/image-gallery?imgs=' + encodeURIComponent(JSON.stringify(item)),
-          success: (res) => {
-            res.eventChannel.emit('openPhotoDetail', {
-              item: item,
-            });
-          },
-        });
-      },
-      /**
+    handleImageClick(item) {
+      console.log('---hospital---')
+      uni.navigateTo({
+        url: '/pages/map/image-gallery?imgs=' + encodeURIComponent(JSON.stringify(item)),
+        success: (res) => {
+          res.eventChannel.emit('openPhotoDetail', {
+            item: item
+          })
+        }
+      })
+    },
+    /**
        * 点击位置
        */
-      handleMap() {
-        uni.navigateBack();
-      },
-      /**
+    handleMap() {
+      uni.navigateBack()
+    },
+    /**
        * 电话按钮事件
        */
-      handlePhone() {
-        this.phoneList = [];
-        if (this.dataDetail.scenic_area_tel) {
-          const phoneNumber = this.dataDetail.scenic_area_tel.replace(/\//g, ',');
-          phoneNumber.split(',').forEach((item) => {
-            this.phoneList.push(item);
-          });
-        } else {
-          return;
-        }
-        this.actionSheetItems = this.phoneList;
-        this.$refs.actionSheet.open();
-      },
-      /**
+    handlePhone() {
+      this.phoneList = []
+      if (this.dataDetail.scenic_area_tel) {
+        const phoneNumber = this.dataDetail.scenic_area_tel.replace(/\//g, ',')
+        phoneNumber.split(',').forEach((item) => {
+          this.phoneList.push(item)
+        })
+      } else {
+        return
+      }
+      this.actionSheetItems = this.phoneList
+      this.$refs.actionSheet.open()
+    },
+    /**
        * action sheet 弹窗点击回调
        */
-      handleActionSheetItemClick(index) {
-        uni.makePhoneCall({
-          phoneNumber: this.phoneList[index],
-        });
-      },
-      /**
+    handleActionSheetItemClick(index) {
+      uni.makePhoneCall({
+        phoneNumber: this.phoneList[index]
+      })
+    },
+    /**
        * 点击全文
        */
-      handleText() {
-        this.textShow = !this.textShow;
-      },
-      /**
+    handleText() {
+      this.textShow = !this.textShow
+    },
+    /**
        * 截取字符串
        */
-      getString(string) {
-        return string.substring(0, 100);
-      },
-    },
-  };
+    getString(string) {
+      return string.substring(0, 100)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

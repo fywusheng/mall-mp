@@ -214,301 +214,301 @@
 </template>
 
 <script>
-  import RightPanel from './components/right-panel.vue';
-  import { UniPopup } from '@dcloudio/uni-ui';
-  import api from '@/apis/index.js';
-  import ModalKnow from '@/pages/rights/components/modal-know.vue';
-  export default {
-    components: { RightPanel, UniPopup, ModalKnow },
-    data() {
-      return {
-        // 已领取权益信息
-        receivedRightsInfo: {
-          title: '已有的权益',
-          text: '已领取',
-          percent: '0',
-          count: '0',
-          color1: '#FF5000',
-          color2: '#FF8800',
-        },
-        // 未领取权益信息
-        unreceivedRightsInfo: {
-          title: '',
-          text: '',
-          percent: '',
-          count: '',
-          color1: '',
-          color2: '',
-        },
-        // 是否显示养老金具体数值
-        showsAnnuityValue: true,
-        // 是否显示高龄补贴具体数值
-        showsAllowanceValue: true,
-        // 是否显示医保账户余额具体数值
-        showsBalanceValue: true,
-        //养老金
-        pension: {
-          grantAmount: '',
-        },
-        //高龄津贴
-        ageAllowance: {
-          grantAmount: '',
-        },
-        //医保记录
-        healInsuConsRecord: {
-          restAmount: '',
-        },
-        // 优待说明
-        description: '',
-        //预约体检
-        medical: '',
-        //医生
-        doctor: {},
-      };
-    },
-    onLoad() {
-      // this.$refs.noticeModal.open();
-      this.init();
-      // this.setPanelData()
-    },
-    mounted() {
-      this.$refs.noticeModal.open();
-    },
-    onShareAppMessage() {
-      return {
-        title: '个人权益',
-        path: '/pages/index/index?index=0',
-      };
-    },
-    methods: {
-      /**
+import RightPanel from './components/right-panel.vue'
+import { UniPopup } from '@dcloudio/uni-ui'
+import api from '@/apis/index.js'
+import ModalKnow from '@/pages/rights/components/modal-know.vue'
+export default {
+  components: { RightPanel, UniPopup, ModalKnow },
+  data() {
+    return {
+      // 已领取权益信息
+      receivedRightsInfo: {
+        title: '已有的权益',
+        text: '已领取',
+        percent: '0',
+        count: '0',
+        color1: '#FF5000',
+        color2: '#FF8800'
+      },
+      // 未领取权益信息
+      unreceivedRightsInfo: {
+        title: '',
+        text: '',
+        percent: '',
+        count: '',
+        color1: '',
+        color2: ''
+      },
+      // 是否显示养老金具体数值
+      showsAnnuityValue: true,
+      // 是否显示高龄补贴具体数值
+      showsAllowanceValue: true,
+      // 是否显示医保账户余额具体数值
+      showsBalanceValue: true,
+      // 养老金
+      pension: {
+        grantAmount: ''
+      },
+      // 高龄津贴
+      ageAllowance: {
+        grantAmount: ''
+      },
+      // 医保记录
+      healInsuConsRecord: {
+        restAmount: ''
+      },
+      // 优待说明
+      description: '',
+      // 预约体检
+      medical: '',
+      // 医生
+      doctor: {}
+    }
+  },
+  onLoad() {
+    // this.$refs.noticeModal.open();
+    this.init()
+    // this.setPanelData()
+  },
+  mounted() {
+    this.$refs.noticeModal.open()
+  },
+  onShareAppMessage() {
+    return {
+      title: '个人权益',
+      path: '/pages/index/index?index=0'
+    }
+  },
+  methods: {
+    /**
        * 获取接口数据
        */
-      init() {
-        api.getIndividualRights({
-          data: {},
-          showsLoading: true,
-          success: (res) => {
-            console.log('res:', res);
-            //数据处理
+    init() {
+      api.getIndividualRights({
+        data: {},
+        showsLoading: true,
+        success: (res) => {
+          console.log('res:', res)
+          // 数据处理
 
-            this.unreceivedRightsInfo = {
-              title: '未领取的权益',
-              text: '未领取',
-              percent:
+          this.unreceivedRightsInfo = {
+            title: '未领取的权益',
+            text: '未领取',
+            percent:
                 (
                   res.notBroughtEquity.length /
                   (res.hasBroughtEquity.length + res.notBroughtEquity.length)
                 ).toFixed(3) *
                   100 +
                 '',
-              count: res.notBroughtEquity.length + '',
-              color1: '#2CA3F6',
-              color2: '#14C8F7',
-            };
-            this.receivedRightsInfo = {
-              title: '已有的权益',
-              text: '已领取',
-              percent:
+            count: res.notBroughtEquity.length + '',
+            color1: '#2CA3F6',
+            color2: '#14C8F7'
+          }
+          this.receivedRightsInfo = {
+            title: '已有的权益',
+            text: '已领取',
+            percent:
                 (
                   res.hasBroughtEquity.length /
                   (res.hasBroughtEquity.length + res.notBroughtEquity.length)
                 ).toFixed(2) *
                   100 +
                 '',
-              count: res.hasBroughtEquity.length + '',
-              color1: '#FF5000',
-              color2: '#FF8800',
-            };
-            //养老金
-            this.pension = res.pension;
-            //高龄津贴
-            this.ageAllowance = res.ageAllowance;
-            //医保记录
-            this.healInsuConsRecord = res.healInsuConsRecord;
-            // 优待说明
-            let arr = res.preTreatPoliDesc['北京市'].description.split('北京市');
-            let nameArr = [];
-            arr.map((item, index) => {
-              if (index < arr.length - 1) {
-                nameArr.push({
-                  name: 'span',
-                  children: [
-                    {
-                      type: 'text',
-                      text: item,
-                    },
-                  ],
-                });
-                nameArr.push({
-                  name: 'span',
-                  attrs: {
-                    style: 'color:#ff5000',
-                  },
-                  children: [
-                    {
-                      type: 'text',
-                      text: '北京市',
-                    },
-                  ],
-                });
-              } else {
-                nameArr.push({
-                  name: 'span',
-                  children: [
-                    {
-                      type: 'text',
-                      text: item,
-                    },
-                  ],
-                });
-              }
-            });
-            this.description = nameArr;
-            if (res.healthCare.medical) {
-              this.medical = res.healthCare.medical;
+            count: res.hasBroughtEquity.length + '',
+            color1: '#FF5000',
+            color2: '#FF8800'
+          }
+          // 养老金
+          this.pension = res.pension
+          // 高龄津贴
+          this.ageAllowance = res.ageAllowance
+          // 医保记录
+          this.healInsuConsRecord = res.healInsuConsRecord
+          // 优待说明
+          const arr = res.preTreatPoliDesc['北京市'].description.split('北京市')
+          const nameArr = []
+          arr.map((item, index) => {
+            if (index < arr.length - 1) {
+              nameArr.push({
+                name: 'span',
+                children: [
+                  {
+                    type: 'text',
+                    text: item
+                  }
+                ]
+              })
+              nameArr.push({
+                name: 'span',
+                attrs: {
+                  style: 'color:#ff5000'
+                },
+                children: [
+                  {
+                    type: 'text',
+                    text: '北京市'
+                  }
+                ]
+              })
+            } else {
+              nameArr.push({
+                name: 'span',
+                children: [
+                  {
+                    type: 'text',
+                    text: item
+                  }
+                ]
+              })
             }
-            console.log('this.medical:', this.medical);
-            //家庭医生
-            this.doctor = res.familyDoctor.callPhyVisit;
-            this.doctor.headPortrait = 'https://images.weserv.nl/?url=' + this.doctor.headPortrait;
-          },
-        });
-      },
-      /**
+          })
+          this.description = nameArr
+          if (res.healthCare.medical) {
+            this.medical = res.healthCare.medical
+          }
+          console.log('this.medical:', this.medical)
+          // 家庭医生
+          this.doctor = res.familyDoctor.callPhyVisit
+          this.doctor.headPortrait = 'https://images.weserv.nl/?url=' + this.doctor.headPortrait
+        }
+      })
+    },
+    /**
        * 权益面板按钮点击事件
        */
-      handlePanelButtonClick(index) {
-        switch (index) {
-          case 0:
-            uni.navigateTo({
-              url: '/pages/rights/right-list',
-            });
-            break;
-          case 1:
-            uni.navigateTo({
-              url: '/pages/rights/right-unclaimed',
-            });
-            break;
-        }
-      },
-      /**
+    handlePanelButtonClick(index) {
+      switch (index) {
+        case 0:
+          uni.navigateTo({
+            url: '/pages/rights/right-list'
+          })
+          break
+        case 1:
+          uni.navigateTo({
+            url: '/pages/rights/right-unclaimed'
+          })
+          break
+      }
+    },
+    /**
        * 医生头像加载失败
        */
-      handleHeadLoadFail() {
-        // 图片加载失败时显示默认图片
-        // this.doctor.headPortrait = require("http://192.168.1.187:10088/static/common/icon-common-logo-watermark.png");
-      },
-      /**
+    handleHeadLoadFail() {
+      // 图片加载失败时显示默认图片
+      // this.doctor.headPortrait = require("http://192.168.1.187:10088/static/common/icon-common-logo-watermark.png");
+    },
+    /**
        * 查看明细点击事件
        */
-      handleSeeDetailClick(type) {
-        switch (type) {
-          case 'annuity':
-          case 'allowance':
-            //养老金查询 高龄津贴
-            uni.navigateTo({
-              url: `/pages/rights/record-list?type=${type}`,
-            });
-            break;
-          case 'consumption':
-            // 医保消费记录查询
-            uni.navigateTo({
-              url: '/pages/rights/consumption-record',
-            });
-            break;
-          case 'policy':
-            // 优待政策说明
-            uni.navigateTo({
-              url: '/pages/rights/right-detail',
-            });
-            break;
-          default:
-            break;
-        }
-      },
-      /**
+    handleSeeDetailClick(type) {
+      switch (type) {
+        case 'annuity':
+        case 'allowance':
+          // 养老金查询 高龄津贴
+          uni.navigateTo({
+            url: `/pages/rights/record-list?type=${type}`
+          })
+          break
+        case 'consumption':
+          // 医保消费记录查询
+          uni.navigateTo({
+            url: '/pages/rights/consumption-record'
+          })
+          break
+        case 'policy':
+          // 优待政策说明
+          uni.navigateTo({
+            url: '/pages/rights/right-detail'
+          })
+          break
+        default:
+          break
+      }
+    },
+    /**
        * 预约体检点击事件
        */
-      handleExaminationReserveClick() {
-        this.$uni.showToast('当前所在地区功能开通中');
-        // if(this.medical){
-        //   uni.navigateTo({
-        //     url: '/pages/rights/hospital-list?medical='+ this.medical + '&list=0',
-        //   })
-        // }else{
-        //   this.$uni.showToast('功能建设中，敬请期待~')
-        // }
-      },
-      /**
+    handleExaminationReserveClick() {
+      this.$uni.showToast('当前所在地区功能开通中')
+      // if(this.medical){
+      //   uni.navigateTo({
+      //     url: '/pages/rights/hospital-list?medical='+ this.medical + '&list=0',
+      //   })
+      // }else{
+      //   this.$uni.showToast('功能建设中，敬请期待~')
+      // }
+    },
+    /**
        * 健康档案点击事件
        */
-      handleHealthRecordClick() {
-        this.$uni.showToast('当前所在地区功能开通中');
-      },
-      /**
+    handleHealthRecordClick() {
+      this.$uni.showToast('当前所在地区功能开通中')
+    },
+    /**
        * 电话问诊点击事件
        */
-      handlePhoneInquiryClick() {
-        this.$uni.showToast('当前所在地区功能开通中');
-        // this.$refs.popup.open()
-      },
-      /**
+    handlePhoneInquiryClick() {
+      this.$uni.showToast('当前所在地区功能开通中')
+      // this.$refs.popup.open()
+    },
+    /**
        * 在线问诊点击事件
        */
-      handleOnlineInquiryClick() {
-        this.$uni.showToast('当前所在地区功能开通中');
-      },
-      /**
+    handleOnlineInquiryClick() {
+      this.$uni.showToast('当前所在地区功能开通中')
+    },
+    /**
        * 弹窗关闭图标点击事件
        */
-      handlePopupCloseClick() {
-        this.$refs.popup.close();
-      },
-      /**
+    handlePopupCloseClick() {
+      this.$refs.popup.close()
+    },
+    /**
        * 立即拨打点击事件
        */
-      handleMakeCallClick() {
-        uni.makePhoneCall({
-          phoneNumber: this.doctor.tel,
-        });
-      },
-      /**
+    handleMakeCallClick() {
+      uni.makePhoneCall({
+        phoneNumber: this.doctor.tel
+      })
+    },
+    /**
        * 设置权益面板数据
        */
-      setPanelData() {
-        this.receivedRightsInfo = {
-          title: '已有的权益',
-          text: '已领取',
-          percent: '90',
-          count: '10',
-          color1: '#FF5000',
-          color2: '#FF8800',
-        };
-        this.unreceivedRightsInfo = {
-          title: '未领取的权益',
-          text: '未领取',
-          percent: '8',
-          count: '2',
-          color1: '#2CA3F6',
-          color2: '#14C8F7',
-        };
-      },
-      /**
+    setPanelData() {
+      this.receivedRightsInfo = {
+        title: '已有的权益',
+        text: '已领取',
+        percent: '90',
+        count: '10',
+        color1: '#FF5000',
+        color2: '#FF8800'
+      }
+      this.unreceivedRightsInfo = {
+        title: '未领取的权益',
+        text: '未领取',
+        percent: '8',
+        count: '2',
+        color1: '#2CA3F6',
+        color2: '#14C8F7'
+      }
+    },
+    /**
        * 获取小眼睛图标路径
        */
-      getStateIconURL(index) {
-        const showIcon =
-          'http://192.168.1.187:10088/static/user-center/icon-user-center-show-password.png';
-        const hideIcon =
-          'http://192.168.1.187:10088/static/user-center/icon-user-center-hide-password.png';
-        const isShow = [this.showsAnnuityValue, this.showsAllowanceValue, this.showsBalanceValue][
-          index
-        ];
-        return isShow ? showIcon : hideIcon;
-      },
-    },
-  };
+    getStateIconURL(index) {
+      const showIcon =
+          'http://192.168.1.187:10088/static/user-center/icon-user-center-show-password.png'
+      const hideIcon =
+          'http://192.168.1.187:10088/static/user-center/icon-user-center-hide-password.png'
+      const isShow = [this.showsAnnuityValue, this.showsAllowanceValue, this.showsBalanceValue][
+        index
+      ]
+      return isShow ? showIcon : hideIcon
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -13,25 +13,25 @@
 
 <script>
 export default {
-	props: {
-		option: Object, // up的配置项
-		type: Number // 上拉加载的状态：0（loading前），1（loading中），2（没有更多了,显示END文本提示），3（没有更多了,不显示END文本提示）
-	},
-	computed: {
-		// 支付宝小程序需写成计算属性,prop定义default仍报错
-		mOption() {
-			return this.option || {};
-		},
-		// 加载中
-		isUpLoading() {
-			return this.type === 1;
-		},
-		// 没有更多了
-		isUpNoMore() {
-			return this.type === 2;
-		}
-	}
-};
+  props: {
+    option: Object, // up的配置项
+    type: Number // 上拉加载的状态：0（loading前），1（loading中），2（没有更多了,显示END文本提示），3（没有更多了,不显示END文本提示）
+  },
+  computed: {
+    // 支付宝小程序需写成计算属性,prop定义default仍报错
+    mOption() {
+      return this.option || {}
+    },
+    // 加载中
+    isUpLoading() {
+      return this.type === 1
+    },
+    // 没有更多了
+    isUpNoMore() {
+      return this.type === 2
+    }
+  }
+}
 </script>
 
 <style>

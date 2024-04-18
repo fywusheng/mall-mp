@@ -93,140 +93,140 @@
 </template>
 
 <script>
-  import { UniPopup } from '@dcloudio/uni-ui';
-  import api from '@/apis/index.js';
-  export default {
-    components: { UniPopup },
-    data() {
-      return {
-        // 列表数据
-        list: [],
-        //预约体检
-        medical: '',
-        //医生
-        doctor: {},
-      };
-    },
-    onLoad() {
-      this.init();
-      this.setData();
-    },
-    methods: {
-      /**
+import { UniPopup } from '@dcloudio/uni-ui'
+import api from '@/apis/index.js'
+export default {
+  components: { UniPopup },
+  data() {
+    return {
+      // 列表数据
+      list: [],
+      // 预约体检
+      medical: '',
+      // 医生
+      doctor: {}
+    }
+  },
+  onLoad() {
+    this.init()
+    this.setData()
+  },
+  methods: {
+    /**
        * 按钮点击事件
        */
-      handleButtonClick(index) {
-        uni.navigateTo({
-          url: `/pages/rights/right-detail?index=${index}`,
-        });
-      },
-      /**
+    handleButtonClick(index) {
+      uni.navigateTo({
+        url: `/pages/rights/right-detail?index=${index}`
+      })
+    },
+    /**
        * 查看明细点击事件
        */
-      jumpPage(path) {
-        uni.navigateTo({
-          url: path,
-        });
-      },
-      /**
+    jumpPage(path) {
+      uni.navigateTo({
+        url: path
+      })
+    },
+    /**
        * 设置列表数据
        */
-      setData() {
-        this.list = [
-          { title: '养老金查询', path: '/pages/rights/record-list?type=annuity' },
-          { title: '高龄津贴', path: '/pages/rights/record-list?type=allowance' },
-          { title: '医保消费记录查询', path: '/pages/rights/consumption-record' },
-          {
-            title: '免费体检',
-            items: [
-              { title: '预约体检', path: '/pages/rights/consumption-record' },
-              { title: '健康档案' },
-            ],
-          },
-          {
-            title: '家庭医生',
-            items: [{ title: '电话问诊' }, { title: '在线问诊' }],
-          },
-        ];
-      },
-      /**
+    setData() {
+      this.list = [
+        { title: '养老金查询', path: '/pages/rights/record-list?type=annuity' },
+        { title: '高龄津贴', path: '/pages/rights/record-list?type=allowance' },
+        { title: '医保消费记录查询', path: '/pages/rights/consumption-record' },
+        {
+          title: '免费体检',
+          items: [
+            { title: '预约体检', path: '/pages/rights/consumption-record' },
+            { title: '健康档案' }
+          ]
+        },
+        {
+          title: '家庭医生',
+          items: [{ title: '电话问诊' }, { title: '在线问诊' }]
+        }
+      ]
+    },
+    /**
        * 获取接口数据
        */
-      init() {
-        api.getIndividualRights({
-          data: {},
-          showsLoading: true,
-          success: (res) => {
-            console.log('res:', res);
-            //数据处理
-            if (res.healthCare.medical) {
-              this.medical = res.healthCare.medical;
-            }
-            console.log('this.medical:', this.medical);
-            //家庭医生
-            this.doctor = res.familyDoctor.callPhyVisit;
-            this.doctor.headPortrait = 'https://images.weserv.nl/?url=' + this.doctor.headPortrait;
-          },
-        });
-      },
-      /**
+    init() {
+      api.getIndividualRights({
+        data: {},
+        showsLoading: true,
+        success: (res) => {
+          console.log('res:', res)
+          // 数据处理
+          if (res.healthCare.medical) {
+            this.medical = res.healthCare.medical
+          }
+          console.log('this.medical:', this.medical)
+          // 家庭医生
+          this.doctor = res.familyDoctor.callPhyVisit
+          this.doctor.headPortrait = 'https://images.weserv.nl/?url=' + this.doctor.headPortrait
+        }
+      })
+    },
+    /**
        * 预约体检点击事件
        */
-      handleExaminationReserveClick(title) {
-        this.$uni.showToast('当前所在地区功能开通中');
-        return;
-        if (title === '预约体检') {
-          if (this.medical) {
-            uni.navigateTo({
-              url: '/pages/rights/hospital-list?medical=' + this.medical + '&list=1',
-            });
-          } else {
-            this.$uni.showToast('功能建设中，敬请期待~');
-          }
-        } else if (title === '健康档案') {
-          this.$uni.showToast('功能建设中，敬请期待~');
-        } else if (title === '电话问诊') {
-          this.$refs.popup.open();
-        } else if (title === '在线问诊') {
-          this.$uni.showToast('功能建设中，敬请期待~');
+    handleExaminationReserveClick(title) {
+      this.$uni.showToast('当前所在地区功能开通中')
+      return
+      if (title === '预约体检') {
+        if (this.medical) {
+          uni.navigateTo({
+            url: '/pages/rights/hospital-list?medical=' + this.medical + '&list=1'
+          })
+        } else {
+          this.$uni.showToast('功能建设中，敬请期待~')
         }
-      },
-      /**
+      } else if (title === '健康档案') {
+        this.$uni.showToast('功能建设中，敬请期待~')
+      } else if (title === '电话问诊') {
+        this.$refs.popup.open()
+      } else if (title === '在线问诊') {
+        this.$uni.showToast('功能建设中，敬请期待~')
+      }
+    },
+    /**
        * 弹窗关闭图标点击事件
        */
-      handlePopupCloseClick() {
-        this.$refs.popup.close();
-      },
-      /**
+    handlePopupCloseClick() {
+      this.$refs.popup.close()
+    },
+    /**
        * 立即拨打点击事件
        */
-      handleMakeCallClick() {
-        // console.log("被点击了：",this.doctor.tel)
-        uni.makePhoneCall({
-          phoneNumber: this.doctor.tel,
-        });
-      },
-      /**
+    handleMakeCallClick() {
+      // console.log("被点击了：",this.doctor.tel)
+      uni.makePhoneCall({
+        phoneNumber: this.doctor.tel
+      })
+    },
+    /**
        * 健康档案点击事件
        */
-      handleHealthRecordClick() {
-        this.$uni.showToast('功能建设中，敬请期待~');
-      },
-      /**
+    handleHealthRecordClick() {
+      this.$uni.showToast('功能建设中，敬请期待~')
+    },
+    /**
        * 电话问诊点击事件
        */
-      handlePhoneInquiryClick() {
-        // this.$uni.showToast('功能建设中，敬请期待~')
-        this.$refs.popup.open();
-      },
-      /**
+    handlePhoneInquiryClick() {
+      // this.$uni.showToast('功能建设中，敬请期待~')
+      this.$refs.popup.open()
+    },
+    /**
        * 在线问诊点击事件
        */
-      handleOnlineInquiryClick() {
-        this.$uni.showToast('功能建设中，敬请期待~');
-      },
-    },
-  };
+    handleOnlineInquiryClick() {
+      this.$uni.showToast('功能建设中，敬请期待~')
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

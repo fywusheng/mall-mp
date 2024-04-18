@@ -36,15 +36,15 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      step: {
-        type: Number,
-        default: 1,
-        validator: (value) => [1, 2, 3].indexOf(value) !== -1,
-      },
-    },
-  };
+export default {
+  props: {
+    step: {
+      type: Number,
+      default: 1,
+      validator: (value) => [1, 2, 3].indexOf(value) !== -1
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

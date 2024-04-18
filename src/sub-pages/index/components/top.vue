@@ -18,50 +18,50 @@
   </div>
 </template>
 <script>
-  export default {
-    props: {
-      bottom: {
-        type: Number,
-        default: 60,
-      },
-      showContact: {
-        type: Boolean,
-        default: true,
-      },
-      showTop: {
-        type: Boolean,
-        default: true,
-      },
-      showShop: {
-        type: Boolean,
-        default: false,
-      },
+export default {
+  props: {
+    bottom: {
+      type: Number,
+      default: 60
     },
-    data() {
-      return {
-        showContainer: false,
-      };
+    showContact: {
+      type: Boolean,
+      default: true
     },
-    methods: {
-      goBuy() {
-        uni.navigateTo({
-          url: '/sub-pages/index/index/main?index=4&sceneType=' + '积分兑换',
-        });
-      },
-      show(flag) {
-        this.showContainer = flag;
-      },
-      toTop() {
-        this.$emit('toTop');
-        uni.pageScrollTo({
-          scrollTop: 0,
-        });
-      },
+    showTop: {
+      type: Boolean,
+      default: true
     },
-    async mounted() {
-      console.log(this.showContact);
+    showShop: {
+      type: Boolean,
+      default: false
+    }
+  },
+  data() {
+    return {
+      showContainer: false
+    }
+  },
+  methods: {
+    goBuy() {
+      uni.navigateTo({
+        url: '/sub-pages/index/index/main?index=4&sceneType=' + '积分兑换'
+      })
     },
-  };
+    show(flag) {
+      this.showContainer = flag
+    },
+    toTop() {
+      this.$emit('toTop')
+      uni.pageScrollTo({
+        scrollTop: 0
+      })
+    }
+  },
+  async mounted() {
+    console.log(this.showContact)
+  }
+}
 </script>
 
 <style lang="scss">

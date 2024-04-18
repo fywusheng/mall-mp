@@ -27,93 +27,93 @@
   </view>
 </template>
 <script>
-  import VideoList from './component/video-list.vue';
-  export default {
-    components: { VideoList },
-    data() {
-      return {
-        tabIndex: 0,
-        colName: '',
-        titleLables: [
-          {
-            index: 0,
-            name: '玩转手机',
-          },
-          {
-            index: 1,
-            name: '花卉养护',
-          },
-          {
-            index: 2,
-            name: '华尔兹',
-          },
-        ],
-      };
-    },
-    onLoad(e) {
-      if (e.index) {
-        this.tabIndex = parseInt(e.index) || 0;
-        this.colName = this.titleLables[e.index].name;
-        this.$nextTick(() => {
-          this.$refs.base.getColData();
-        });
-      }
-      uni.$on('didLogin', () => {
-        this.$refs.base.getColData();
-      });
-    },
-    onReachBottom() {
-      this.$refs.base.selectArtiListByColId();
-    },
-    watch: {
-      tabIndex(newV, old) {
-        if (newV == 0 || newV == 2) {
-          if (this.$refs.base) {
-            this.$refs.base.destoryInstance();
-          }
+import VideoList from './component/video-list.vue'
+export default {
+  components: { VideoList },
+  data() {
+    return {
+      tabIndex: 0,
+      colName: '',
+      titleLables: [
+        {
+          index: 0,
+          name: '玩转手机'
+        },
+        {
+          index: 1,
+          name: '花卉养护'
+        },
+        {
+          index: 2,
+          name: '华尔兹'
         }
-      },
-    },
-    onUnload() {
-      if (this.$refs.base) {
-        this.$refs.base.destoryInstance();
-        this.$refs.base.showAudio = false;
+      ]
+    }
+  },
+  onLoad(e) {
+    if (e.index) {
+      this.tabIndex = parseInt(e.index) || 0
+      this.colName = this.titleLables[e.index].name
+      this.$nextTick(() => {
+        this.$refs.base.getColData()
+      })
+    }
+    uni.$on('didLogin', () => {
+      this.$refs.base.getColData()
+    })
+  },
+  onReachBottom() {
+    this.$refs.base.selectArtiListByColId()
+  },
+  watch: {
+    tabIndex(newV, old) {
+      if (newV == 0 || newV == 2) {
+        if (this.$refs.base) {
+          this.$refs.base.destoryInstance()
+        }
       }
-    },
-    onHide() {
-      if (this.$refs.base) {
-        this.$refs.base.destoryInstance();
-        this.$refs.base.showAudio = false;
-      }
-    },
-    methods: {
-      activeClick(index) {
-        this.tabIndex = index;
-        this.colName = this.titleLables[index].name;
-        this.$nextTick(() => {
-          this.$refs.base.getColData();
-        });
+    }
+  },
+  onUnload() {
+    if (this.$refs.base) {
+      this.$refs.base.destoryInstance()
+      this.$refs.base.showAudio = false
+    }
+  },
+  onHide() {
+    if (this.$refs.base) {
+      this.$refs.base.destoryInstance()
+      this.$refs.base.showAudio = false
+    }
+  },
+  methods: {
+    activeClick(index) {
+      this.tabIndex = index
+      this.colName = this.titleLables[index].name
+      this.$nextTick(() => {
+        this.$refs.base.getColData()
+      })
+    }
+  },
+  // 分享好友
+  onShareAppMessage(res) {
+    return {
+      title: '老有所为',
+      path: '/pages/protect-service/oldAgeWei',
+      success(res) {
+        this.$uni.showToast({
+          title: '分享成功'
+        })
       },
-    },
-    // 分享好友
-    onShareAppMessage(res) {
-      return {
-        title: '老有所为',
-        path: '/pages/protect-service/oldAgeWei',
-        success(res) {
-          this.$uni.showToast({
-            title: '分享成功',
-          });
-        },
-        fail(res) {
-          this.$uni.showToast({
-            title: '分享失败',
-            icon: 'none',
-          });
-        },
-      };
-    },
-  };
+      fail(res) {
+        this.$uni.showToast({
+          title: '分享失败',
+          icon: 'none'
+        })
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

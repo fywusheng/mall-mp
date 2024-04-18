@@ -40,118 +40,118 @@
 </template>
 
 <script>
-  export default {
-    components: {},
-    data() {
-      return {
-        // 商店列表
-        list: [],
-        // 当前页
-        pageNum: 1,
-        showEmpty: false,
-        // 每页size
-        pageSize: 15,
-        // 城市信息
-        city: {},
-        supplierId: '', // 店铺id
-        sceneid: '',
-      };
+export default {
+  components: {},
+  data() {
+    return {
+      // 商店列表
+      list: [],
+      // 当前页
+      pageNum: 1,
+      showEmpty: false,
+      // 每页size
+      pageSize: 15,
+      // 城市信息
+      city: {},
+      supplierId: '', // 店铺id
+      sceneid: ''
+    }
+  },
+  onLoad(e) {
+    if (e.supplierId) {
+      this.supplierId = e.supplierId
+    }
+    if (e.scene) {
+      this.sceneid = e.scene
+    }
+    console.log('----info:', e)
+    // this.city = uni.getStorageSync('supermarketCity')
+    this.getStoreList()
+  },
+  // 下拉刷新
+  onPullDownRefresh() {
+    this.pageNum = 1
+    this.list = []
+    this.getStoreList()
+  },
+  // 上拉加载
+  onReachBottom() {
+    console.log('上拉加载')
+    this.getStoreList()
+  },
+  methods: {
+    telClick(item) {
+      uni.makePhoneCall({
+        phoneNumber: item.storesPhone
+      })
     },
-    onLoad(e) {
-      if (e.supplierId) {
-        this.supplierId = e.supplierId;
-      }
-      if (e.scene) {
-        this.sceneid = e.scene;
-      }
-      console.log('----info:', e);
-      // this.city = uni.getStorageSync('supermarketCity')
-      this.getStoreList();
-    },
-    // 下拉刷新
-    onPullDownRefresh() {
-      this.pageNum = 1;
-      this.list = [];
-      this.getStoreList();
-    },
-    // 上拉加载
-    onReachBottom() {
-      console.log('上拉加载');
-      this.getStoreList();
-    },
-    methods: {
-      telClick(item) {
-        uni.makePhoneCall({
-          phoneNumber: item.storesPhone,
-        });
-      },
-      // 门店列表
-      async getStoreList() {
-        // TODO 本地位置获取替换北京
-        const location = uni.getStorageSync('location');
-        const city = uni.getStorageSync('city');
-        const params = {
-          supplierId: this.supplierId,
-          pageNum: this.pageNum,
-          pageSize: this.pageSize,
-          queryObject: {
-            cusLt: location.longitude,
-            cusLat: location.latitude,
-          },
-        };
-        const params_c = {
-          pageNum: this.pageNum,
-          pageSize: this.pageSize,
-          queryObject: {
-            cusLt: location.longitude,
-            cusLat: location.latitude,
-            storesAddress: city.name,
-          },
-        };
-        const result = await Axios.post(
-          '/srm/stores/listByPageNo',
-          this.sceneid ? params_c : params,
-        );
-        if (result.code == '200') {
-          const data = result.data;
-          const list = data.list || [];
-          if (list.length > 0) {
-            this.list = this.list.concat(list);
-            this.pageNum = this.pageNum + 1;
-          }
-          if (this.list.length == 0) {
-            this.showEmpty = true;
-          }
+    // 门店列表
+    async getStoreList() {
+      // TODO 本地位置获取替换北京
+      const location = uni.getStorageSync('location')
+      const city = uni.getStorageSync('city')
+      const params = {
+        supplierId: this.supplierId,
+        pageNum: this.pageNum,
+        pageSize: this.pageSize,
+        queryObject: {
+          cusLt: location.longitude,
+          cusLat: location.latitude
         }
-      },
-      // 导航事件
-      handleLineClick(item) {
-        const data = {
-          name: item.storesName,
-          longitude: item.longitude,
-          latitude: item.latitude,
-          distance: item.distance,
-          address: item.storesAddress,
-        };
-        uni.navigateTo({
-          url: '/pages/map/direction?data=' + encodeURIComponent(JSON.stringify(data)),
-          success: (res) => {
-            res.eventChannel.emit('didOpenPageFinish', data);
-          },
-        });
-      },
-    },
-    filters: {
-      setDistance(item) {
-        const s = Number(item) / 1000;
-        if (s.toFixed(3) < 1) {
-          return parseInt(s * 1000) + 'm';
-        } else {
-          return s.toFixed(1) + 'km';
+      }
+      const params_c = {
+        pageNum: this.pageNum,
+        pageSize: this.pageSize,
+        queryObject: {
+          cusLt: location.longitude,
+          cusLat: location.latitude,
+          storesAddress: city.name
         }
-      },
+      }
+      const result = await Axios.post(
+        '/srm/stores/listByPageNo',
+        this.sceneid ? params_c : params
+      )
+      if (result.code == '200') {
+        const data = result.data
+        const list = data.list || []
+        if (list.length > 0) {
+          this.list = this.list.concat(list)
+          this.pageNum = this.pageNum + 1
+        }
+        if (this.list.length == 0) {
+          this.showEmpty = true
+        }
+      }
     },
-  };
+    // 导航事件
+    handleLineClick(item) {
+      const data = {
+        name: item.storesName,
+        longitude: item.longitude,
+        latitude: item.latitude,
+        distance: item.distance,
+        address: item.storesAddress
+      }
+      uni.navigateTo({
+        url: '/pages/map/direction?data=' + encodeURIComponent(JSON.stringify(data)),
+        success: (res) => {
+          res.eventChannel.emit('didOpenPageFinish', data)
+        }
+      })
+    }
+  },
+  filters: {
+    setDistance(item) {
+      const s = Number(item) / 1000
+      if (s.toFixed(3) < 1) {
+        return parseInt(s * 1000) + 'm'
+      } else {
+        return s.toFixed(1) + 'km'
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

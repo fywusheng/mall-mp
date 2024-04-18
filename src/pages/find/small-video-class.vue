@@ -51,109 +51,109 @@
 </template>
 
 <script>
-  import smallVideo from '@/pages/find/small-video.vue';
-  import api from '@/apis/index.js';
-  export default {
-    components: {
-      smallVideo,
-    },
-    data() {
-      return {
-        list: [[]],
-        pageNum: 1,
-        pageSize: 20,
-        contId: '',
-        categoryName: '',
-        logoUrl: '',
-        showDefault: false,
-        bottomTips: '',
-        loading_test: { 22: '暂无数据', 3: '加载失败' },
-        loading: 1,
-      };
-    },
-    onLoad(e) {
-      console.log('---type娃哈哈---', e);
-      this.categoryName = e.categoryName || '';
-      this.logoUrl = e.logoUrl || '';
-      if (e.contId) {
-        this.contId = e.contId || '';
-        this.getTypeList(this.contId);
+import smallVideo from '@/pages/find/small-video.vue'
+import api from '@/apis/index.js'
+export default {
+  components: {
+    smallVideo
+  },
+  data() {
+    return {
+      list: [[]],
+      pageNum: 1,
+      pageSize: 20,
+      contId: '',
+      categoryName: '',
+      logoUrl: '',
+      showDefault: false,
+      bottomTips: '',
+      loading_test: { 22: '暂无数据', 3: '加载失败' },
+      loading: 1
+    }
+  },
+  onLoad(e) {
+    console.log('---type娃哈哈---', e)
+    this.categoryName = e.categoryName || ''
+    this.logoUrl = e.logoUrl || ''
+    if (e.contId) {
+      this.contId = e.contId || ''
+      this.getTypeList(this.contId)
+    }
+  },
+  onReachBottom() {
+    // 上拉加载
+    this.getTypeList(this.contId)
+  },
+  onPullDownRefresh() {
+    // 下拉刷新
+    this.getTypeList(this.contId)
+  },
+  methods: {
+    // 判断底部提示文字
+    judgeBottomTips(type) {
+      switch (type) {
+        case 'nomore':
+          return '没有更多数据了'
+          break
+        case 'loading':
+          return '正在努力加载中...'
+          break
+        case 'more':
+          return '上拉加载更多'
+          break
+        default:
+          break
       }
     },
-    onReachBottom() {
-      // 上拉加载
-      this.getTypeList(this.contId);
+    defaultImg() {
+      this.showDefault = true
     },
-    onPullDownRefresh() {
-      // 下拉刷新
-      this.getTypeList(this.contId);
+    reurnData(data) {
+      console.log('---data---', data)
+      uni.redirectTo({
+        url:
+            '/pages/find/video-swiper?transInfor=' + `${encodeURIComponent(JSON.stringify(data))}`
+      })
     },
-    methods: {
-      // 判断底部提示文字
-      judgeBottomTips(type) {
-        switch (type) {
-          case 'nomore':
-            return '没有更多数据了';
-            break;
-          case 'loading':
-            return '正在努力加载中...';
-            break;
-          case 'more':
-            return '上拉加载更多';
-            break;
-          default:
-            break;
+    getTypeList(contId) {
+      uni.showLoading({
+        title: '加载中'
+      })
+      // const userInfo = uni.getStorageSync('userInfo') || {}
+      api.getCategoryList({
+        data: {
+          // userId: userInfo.memberId ? userInfo.memberId : '',
+          contId: contId,
+          pageNum: this.pageNum,
+          pageSize: this.pageSize
+        },
+        success: (res) => {
+          this.loading = 2
+          const getList = res.list || []
+          getList.map((v) => {
+            v['logoUrl'] = this.logoUrl
+          })
+          if (getList.length > 0) {
+            this.$set(this.list, 0, this.list[0].concat(getList))
+            this.pageNum++
+            this.bottomTips = ''
+          } else {
+            this.bottomTips = 'nomore'
+          }
+          uni.stopPullDownRefresh()
+          uni.hideLoading()
+        },
+        fail: (error) => {
+          uni.showToast(error.message)
+          uni.stopPullDownRefresh()
+          uni.hideLoading()
+          this.bottomTips = ''
+          this.loading = 3
         }
-      },
-      defaultImg() {
-        this.showDefault = true;
-      },
-      reurnData(data) {
-        console.log('---data---', data);
-        uni.redirectTo({
-          url:
-            '/pages/find/video-swiper?transInfor=' + `${encodeURIComponent(JSON.stringify(data))}`,
-        });
-      },
-      getTypeList(contId) {
-        uni.showLoading({
-          title: '加载中',
-        });
-        // const userInfo = uni.getStorageSync('userInfo') || {}
-        api.getCategoryList({
-          data: {
-            // userId: userInfo.memberId ? userInfo.memberId : '',
-            contId: contId,
-            pageNum: this.pageNum,
-            pageSize: this.pageSize,
-          },
-          success: (res) => {
-            this.loading = 2;
-            const getList = res.list || [];
-            getList.map((v) => {
-              v['logoUrl'] = this.logoUrl;
-            });
-            if (getList.length > 0) {
-              this.$set(this.list, 0, this.list[0].concat(getList));
-              this.pageNum++;
-              this.bottomTips = '';
-            } else {
-              this.bottomTips = 'nomore';
-            }
-            uni.stopPullDownRefresh();
-            uni.hideLoading();
-          },
-          fail: (error) => {
-            uni.showToast(error.message);
-            uni.stopPullDownRefresh();
-            uni.hideLoading();
-            this.bottomTips = '';
-            this.loading = 3;
-          },
-        });
-      },
-    },
-  };
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss">

@@ -56,105 +56,105 @@
 </template>
 
 <script>
-  import NavigationBar from '@/components/common/navigation-bar.vue';
-  import drag from './components/drag.js';
-  import api from '@/apis/index.js';
-  export default {
-    components: { NavigationBar },
-    mixins: [drag],
-    data() {
-      return {
-        // 结果类型 0-成功 1-失败
-        resultType: 0,
-        title: '设置卡片顺序',
-        // 银行卡列表
-        list: [],
-        // iconPath
-        icon: {
-          success: 'http://192.168.1.187:10088/static/pay/icon-success.png',
-          fail: 'http://192.168.1.187:10088/static/pay/icon-fail.png',
-          drag: 'http://192.168.1.187:10088/static/pay/icon-drag.png',
-        },
-        // 导航栏高度
-        //#ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        //#endif
-        //#ifdef MP-ALIPAY
-        navigationBarHeight:
+import NavigationBar from '@/components/common/navigation-bar.vue'
+import drag from './components/drag.js'
+import api from '@/apis/index.js'
+export default {
+  components: { NavigationBar },
+  mixins: [drag],
+  data() {
+    return {
+      // 结果类型 0-成功 1-失败
+      resultType: 0,
+      title: '设置卡片顺序',
+      // 银行卡列表
+      list: [],
+      // iconPath
+      icon: {
+        success: 'http://192.168.1.187:10088/static/pay/icon-success.png',
+        fail: 'http://192.168.1.187:10088/static/pay/icon-fail.png',
+        drag: 'http://192.168.1.187:10088/static/pay/icon-drag.png'
+      },
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        //#endif
-        // 状态栏高度
-        statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-        pageHeight: uni.getSystemInfoSync().screenHeight,
-      };
-    },
-    onLoad(e) {
-      this.getBankList();
-    },
-    onShow() {},
-    methods: {
-      // 银行列表
-      getBankList() {
-        api.getBankList({
-          data: {},
-          success: (res) => {
-            console.log(res);
-            let mockRes = [
-              {
-                recordId: '03158c14149543a29354e853b35b82a6',
-                bankName: '民生银行',
-                bankIcon:
+      // #endif
+      // 状态栏高度
+      statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
+      pageHeight: uni.getSystemInfoSync().screenHeight
+    }
+  },
+  onLoad(e) {
+    this.getBankList()
+  },
+  onShow() {},
+  methods: {
+    // 银行列表
+    getBankList() {
+      api.getBankList({
+        data: {},
+        success: (res) => {
+          console.log(res)
+          const mockRes = [
+            {
+              recordId: '03158c14149543a29354e853b35b82a6',
+              bankName: '民生银行',
+              bankIcon:
                   'http://120.42.37.88:10088/nepsp-file/group1/M00/45/FF/wKgupGF45reAEFJCAAAf2PbeKz8685.png',
-                bankCardNum: '12312312',
-                encryptCardNum: '****7777',
-              },
-              {
-                recordId: '21cab20a8d08413e98f3aa18dffb6b9b',
-                bankName: '广厦银行',
-                bankIcon:
+              bankCardNum: '12312312',
+              encryptCardNum: '****7777'
+            },
+            {
+              recordId: '21cab20a8d08413e98f3aa18dffb6b9b',
+              bankName: '广厦银行',
+              bankIcon:
                   'http://120.42.37.88:10088/nepsp-file/group1/M00/45/FF/wKgupGF45reAEFJCAAAf2PbeKz8685.png',
-                bankCardNum: '12312312',
-                encryptCardNum: '****7777',
-              },
-            ];
-            this.list = res || mockRes;
-          },
-        });
-      },
-      // 返回上一页
-      handleNavBack() {
-        this.$refs.tipModal.open();
-        // uni.navigateBack();
-      },
-      // 返回首页
-      handleHomeBack() {
-        uni.reLaunch({
-          url: '/pages/index/index',
-        });
-      },
-      // 完成，更新银行卡顺序
-      handleDone() {
-        const data = this.sortList.map((item, index) => {
-          return { recordId: item.recordId, srt: index + 1 };
-        });
+              bankCardNum: '12312312',
+              encryptCardNum: '****7777'
+            }
+          ]
+          this.list = res || mockRes
+        }
+      })
+    },
+    // 返回上一页
+    handleNavBack() {
+      this.$refs.tipModal.open()
+      // uni.navigateBack();
+    },
+    // 返回首页
+    handleHomeBack() {
+      uni.reLaunch({
+        url: '/pages/index/index'
+      })
+    },
+    // 完成，更新银行卡顺序
+    handleDone() {
+      const data = this.sortList.map((item, index) => {
+        return { recordId: item.recordId, srt: index + 1 }
+      })
 
-        api.updateBankCardNo({
-          data,
-          success: function (res) {
-            res &&
+      api.updateBankCardNo({
+        data,
+        success: function (res) {
+          res &&
               uni.navigateTo({
-                url: '/pages/pay/my-bank-card',
-              });
-          },
-        });
-      },
-    },
-    filters: {
-      formatBankNum(bankNum) {
-        return bankNum.substring(bankNum.length - 4);
-      },
-    },
-  };
+                url: '/pages/pay/my-bank-card'
+              })
+        }
+      })
+    }
+  },
+  filters: {
+    formatBankNum(bankNum) {
+      return bankNum.substring(bankNum.length - 4)
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .drag-box {

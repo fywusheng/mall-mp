@@ -59,119 +59,119 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
-  // import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
-  import { desensitizeInfo } from '@/utils/desensitization.js';
-  import api from '@/apis/index.js';
+import { mapState } from 'vuex'
+// import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
+import { desensitizeInfo } from '@/utils/desensitization.js'
+import api from '@/apis/index.js'
 
-  export default {
-    components: {},
-    data() {
-      return {
-        showTop: false,
-      };
-    },
-    filters: {
-      // 手机号过滤器, 用于手机号脱敏
-      phoneNumberFilter(value) {
-        return desensitizeInfo(value);
-      },
-    },
-    computed: {
-      ...mapState({
-        userInfo: (state) => state.user.userInfo,
-      }),
-      realName() {
-        if (this.userInfo && this.userInfo.name !== '' && this.userInfo.name !== ' ') {
-          return '已实名';
+export default {
+  components: {},
+  data() {
+    return {
+      showTop: false
+    }
+  },
+  filters: {
+    // 手机号过滤器, 用于手机号脱敏
+    phoneNumberFilter(value) {
+      return desensitizeInfo(value)
+    }
+  },
+  computed: {
+    ...mapState({
+      userInfo: (state) => state.user.userInfo
+    }),
+    realName() {
+      if (this.userInfo && this.userInfo.name !== '' && this.userInfo.name !== ' ') {
+        return '已实名'
+      }
+      return '未实名'
+    }
+  },
+  methods: {
+    exitLoad() {
+      this.$uni.showConfirm({
+        content: '是否退出登录',
+        confirm: () => {
+          api.logout({
+            success: () => {
+              Store.dispatch('logout')
+              setTimeout(() => {
+                // uni.reLaunch({
+                //   url: '/pages/index/index',
+                // });
+              }, 2000)
+            }
+          })
         }
-        return '未实名';
-      },
+      })
     },
-    methods: {
-      exitLoad() {
-        this.$uni.showConfirm({
-          content: '是否退出登录',
-          confirm: () => {
-            api.logout({
-              success: () => {
-                Store.dispatch('logout');
-                setTimeout(() => {
-                  // uni.reLaunch({
-                  //   url: '/pages/index/index',
-                  // });
-                }, 2000);
-              },
-            });
-          },
-        });
-      },
-      delUser() {
-        // TODO 注销账号
-        uni.navigateTo({ url: '/pages/user-center/cancel-user' });
-      },
-      about() {
-        uni.navigateTo({ url: '/pages/user-center/about' });
-      },
-      /**
+    delUser() {
+      // TODO 注销账号
+      uni.navigateTo({ url: '/pages/user-center/cancel-user' })
+    },
+    about() {
+      uni.navigateTo({ url: '/pages/user-center/about' })
+    },
+    /**
        * 获取用户信息
        */
-      getUserInfo() {
-        return new Promise((resolve, reject) => {
-          api.getUserInfo({
-            data: {
-              accessToken: uni.getStorageSync('token'),
-            },
-            success: (data) => {
-              resolve(data);
-            },
-            fail: (error) => {
-              reject(error);
-            },
-          });
-        });
-      },
-      async succFlag(flag) {
-        if (flag == 1) {
-          const userinfor = await this.getUserInfo();
-          uni.setStorageSync('userInfo', userinfor);
-          this.userInfo = userinfor;
-          this.$refs.realpop.close();
-          uni.navigateTo({
-            url: `/pages/user-center/real-name-result2?back=${'/pages/user-center/setting'}`,
-          });
-        }
-      },
-      realClick() {
-        // if (!this.userInfo.tel) {
-        //   uni.navigateTo({
-        //     url: '/pages/user-center/login',
-        //   });
-        //   return;
-        // }
-        // if (this.userInfo.crtfStas != '0') {
-        //   return;
-        // }
-        // this.$refs.realpop.open();
-      },
-      /**
+    getUserInfo() {
+      return new Promise((resolve, reject) => {
+        api.getUserInfo({
+          data: {
+            accessToken: uni.getStorageSync('token')
+          },
+          success: (data) => {
+            resolve(data)
+          },
+          fail: (error) => {
+            reject(error)
+          }
+        })
+      })
+    },
+    async succFlag(flag) {
+      if (flag == 1) {
+        const userinfor = await this.getUserInfo()
+        uni.setStorageSync('userInfo', userinfor)
+        this.userInfo = userinfor
+        this.$refs.realpop.close()
+        uni.navigateTo({
+          url: `/pages/user-center/real-name-result2?back=${'/pages/user-center/setting'}`
+        })
+      }
+    },
+    realClick() {
+      // if (!this.userInfo.tel) {
+      //   uni.navigateTo({
+      //     url: '/pages/user-center/login',
+      //   });
+      //   return;
+      // }
+      // if (this.userInfo.crtfStas != '0') {
+      //   return;
+      // }
+      // this.$refs.realpop.open();
+    },
+    /**
        * 修改手机号点击事件
        */
-      handleModifyPhoneNumberClick() {
-        uni.navigateTo({
-          url: '/pages/user-center/modify-phone-number',
-        });
-      },
-      /**
+    handleModifyPhoneNumberClick() {
+      uni.navigateTo({
+        url: '/pages/user-center/modify-phone-number'
+      })
+    },
+    /**
        * 修改密码点击事件
        */
-      handleModifyPasswordClick() {
-        uni.navigateTo({
-          url: '/pages/user-center/modify-password',
-        });
-      },
-    },
-  };
+    handleModifyPasswordClick() {
+      uni.navigateTo({
+        url: '/pages/user-center/modify-password'
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

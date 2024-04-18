@@ -33,48 +33,48 @@
 </template>
 
 <script>
-  import Modal from '@/components/common/modal.vue';
-  import api from '@/apis/index.js';
+import Modal from '@/components/common/modal.vue'
+import api from '@/apis/index.js'
 
-  export default {
-    components: { Modal },
-    data() {
-      return {};
-    },
-    computed: {},
-    onLoad(e) {},
-    events: {},
+export default {
+  components: { Modal },
+  data() {
+    return {}
+  },
+  computed: {},
+  onLoad(e) {},
+  events: {},
 
-    methods: {
-      agreement() {
-        const url = `${ENV.H5}/#/agreement?type=5`;
-        uni.navigateTo({
-          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-        });
-      },
-      handleCancel() {
-        this.$refs.tipModal.close();
-      },
-      openModel() {
-        this.$refs.tipModal.open();
-      },
-      confirm() {
-        const userInfo = uni.getStorageSync('userInfo');
-        api.cancel({
-          data: { uactId: userInfo.memberId },
-          success: (data) => {
-            this.$refs.tipModal.close();
-            if (data) {
-              Store.dispatch('login');
-              uni.navigateTo({ url: '/pages/user-center/result?type=1' });
-            } else {
-              uni.navigateTo({ url: '/pages/user-center/result?type=2' });
-            }
-          },
-        });
-      },
+  methods: {
+    agreement() {
+      const url = `${ENV.H5}/#/agreement?type=5`
+      uni.navigateTo({
+        url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
+      })
     },
-  };
+    handleCancel() {
+      this.$refs.tipModal.close()
+    },
+    openModel() {
+      this.$refs.tipModal.open()
+    },
+    confirm() {
+      const userInfo = uni.getStorageSync('userInfo')
+      api.cancel({
+        data: { uactId: userInfo.memberId },
+        success: (data) => {
+          this.$refs.tipModal.close()
+          if (data) {
+            Store.dispatch('login')
+            uni.navigateTo({ url: '/pages/user-center/result?type=1' })
+          } else {
+            uni.navigateTo({ url: '/pages/user-center/result?type=2' })
+          }
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -183,345 +183,345 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
-  import api from '@/apis/index.js';
-  import NavigationBars from '../../components/common/navigation-bar.vue';
-  import ServicePop from '@/components/common/service-pop.vue';
-  import ScanOrInputPopup from '@/components/pop-entry-method/pop-entry-method.vue';
-  import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
-  export default {
-    components: {
-      NavigationBars,
-      ServicePop,
-      ScanOrInputPopup,
-      RealNamePop,
-    },
-    data() {
-      return {
-        popUrl: '',
-        type: '2', // 维权推荐
-        showPop: false,
-        showDots: false,
-        // 导航栏高度
-        // #ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        // #endif
-        // #ifdef MP-ALIPAY
-        navigationBarHeight:
+import { mapState } from 'vuex'
+import api from '@/apis/index.js'
+import NavigationBars from '../../components/common/navigation-bar.vue'
+import ServicePop from '@/components/common/service-pop.vue'
+import ScanOrInputPopup from '@/components/pop-entry-method/pop-entry-method.vue'
+import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue'
+export default {
+  components: {
+    NavigationBars,
+    ServicePop,
+    ScanOrInputPopup,
+    RealNamePop
+  },
+  data() {
+    return {
+      popUrl: '',
+      type: '2', // 维权推荐
+      showPop: false,
+      showDots: false,
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        // #endif
-        // 城市信息
-        city: uni.getStorageSync('city'),
-        // 轮播图列表
-        banners: [],
-        poptype: '0',
-        // 模态框参数
-        modal: {
-          modImg: '1',
-          cancelText: '取消',
-          confirmText: '确定',
-        },
-        dotsStyles: {
-          width: 6,
-          height: 6,
-          // bottom: 30,
-          backgroundColor: '#FDFDFD',
-          border: 'none',
-          selectedBackgroundColor: '#FF5500',
-          selectedBorder: 'none',
-        },
-        current: 0,
-        currentIn: 0,
-        pointList: [],
-        parts: [],
-        status: 'more',
-        pageNum: 1,
-        prodList: [],
-      };
-    },
-    mounted() {
-      uni.removeStorageSync('current_city');
-      this.getLocation();
-      this.getCateGoryList();
-      this.recommend1(21);
-      // 监听城市选择回调
-      uni.$on('didSelectCity', this.handleSelectCity);
-    },
-    computed: {
-      ...mapState({
-        userInfo: (state) => state.user.userInfo,
-      }),
-      // 是否会员
-      member() {
-        return this.userInfo && this.userInfo.memberStatus === '1';
+      // #endif
+      // 城市信息
+      city: uni.getStorageSync('city'),
+      // 轮播图列表
+      banners: [],
+      poptype: '0',
+      // 模态框参数
+      modal: {
+        modImg: '1',
+        cancelText: '取消',
+        confirmText: '确定'
       },
+      dotsStyles: {
+        width: 6,
+        height: 6,
+        // bottom: 30,
+        backgroundColor: '#FDFDFD',
+        border: 'none',
+        selectedBackgroundColor: '#FF5500',
+        selectedBorder: 'none'
+      },
+      current: 0,
+      currentIn: 0,
+      pointList: [],
+      parts: [],
+      status: 'more',
+      pageNum: 1,
+      prodList: []
+    }
+  },
+  mounted() {
+    uni.removeStorageSync('current_city')
+    this.getLocation()
+    this.getCateGoryList()
+    this.recommend1(21)
+    // 监听城市选择回调
+    uni.$on('didSelectCity', this.handleSelectCity)
+  },
+  computed: {
+    ...mapState({
+      userInfo: (state) => state.user.userInfo
+    }),
+    // 是否会员
+    member() {
+      return this.userInfo && this.userInfo.memberStatus === '1'
+    }
+  },
+  onShow() {
+    const curPages = getCurrentPages()[0]
+    if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
+      curPages.getTabBar().setData({
+        tabIndex: 1 // 表示当前菜单的索引，该值在不同的页面表示不同
+      })
+    }
+  },
+  // onReachBottom() {
+  //   console.log("到底了～～～～");
+  //   if (this.status === "noMore") return;
+  //   this.pageNum++;
+  //   this.getProdList();
+  // },
+  methods: {
+    goItemClick(item) {
+      const sceneType = item.isCreditPoints === 1 ? '积分兑换' : '商品购买'
+      uni.navigateTo({
+        url: `/sub-pages/index/item/main?id=${item.id}&sceneType=${sceneType}`
+      })
     },
-    onShow() {
-      const curPages = getCurrentPages()[0];
-      if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
-        curPages.getTabBar().setData({
-          tabIndex: 1, // 表示当前菜单的索引，该值在不同的页面表示不同
-        });
+    toTop() {
+      uni.pageScrollTo({
+        scrollTop: 0,
+        duration: 500
+      })
+    },
+    goPath() {
+      console.log(123)
+      uni.navigateTo({ url: '/sub-pages/point/index' })
+    },
+    hanldeBannerChange(e) {
+      this.currentIn = e.detail.current
+    },
+    typeList(v, index) {
+      if (index === 7) {
+        uni.switchTab({
+          url: '/pages/index/category'
+        })
+        return
+      }
+      uni.navigateTo({
+        url: `/sub-pages/index/item-list/main?cateId=${v.id}&level=${v.level}`
+      })
+    },
+    async getCateGoryList() {
+      const { data, code, msg } = await Axios.post('/category/getCategoryList', { type: 2 })
+      if (code === '200') {
+        if (data.length >= 7) {
+          const temp = data.slice(0, 7)
+          temp.push({
+            name: '全部分类',
+            iconUrl: 'http://192.168.1.187:10088/static/home/all.png'
+          })
+          this.parts = temp
+        } else {
+          this.parts = data
+        }
+      } else {
+        this.$uni.showToast(msg)
       }
     },
-    // onReachBottom() {
-    //   console.log("到底了～～～～");
-    //   if (this.status === "noMore") return;
-    //   this.pageNum++;
-    //   this.getProdList();
-    // },
-    methods: {
-      goItemClick(item) {
-        const sceneType = item.isCreditPoints === 1 ? '积分兑换' : '商品购买';
+    // 精选商品列表
+    async recommend1(flag) {
+      const params = { productType: flag }
+      const list = await Axios.post('/product/getProductListByType', params)
+      console.log('list: ', list)
+      if (list.code == '200') {
+        this.prodList = list.data || []
+      } else {
+        this.$uni.showToast(list.msg)
+      }
+    },
+    handlerClickPop(flag) {
+      const token = uni.getStorageSync('token')
+      if (!token) {
+        uni.navigateTo({ url: '/pages/user-center/login' })
+        return
+      }
+      if (flag == 1) {
         uni.navigateTo({
-          url: `/sub-pages/index/item/main?id=${item.id}&sceneType=${sceneType}`,
-        });
-      },
-      toTop() {
-        uni.pageScrollTo({
-          scrollTop: 0,
-          duration: 500,
-        });
-      },
-      goPath() {
-        console.log(123);
-        uni.navigateTo({ url: '/sub-pages/point/index' });
-      },
-      hanldeBannerChange(e) {
-        this.currentIn = e.detail.current;
-      },
-      typeList(v, index) {
-        if (index === 7) {
-          uni.switchTab({
-            url: '/pages/index/category',
-          });
-          return;
-        }
-        uni.navigateTo({
-          url: `/sub-pages/index/item-list/main?cateId=${v.id}&level=${v.level}`,
-        });
-      },
-      async getCateGoryList() {
-        const { data, code, msg } = await Axios.post('/category/getCategoryList', { type: 2 });
-        if (code === '200') {
-          if (data.length >= 7) {
-            const temp = data.slice(0, 7);
-            temp.push({
-              name: '全部分类',
-              iconUrl: 'http://192.168.1.187:10088/static/home/all.png',
-            });
-            this.parts = temp;
-          } else {
-            this.parts = data;
-          }
-        } else {
-          this.$uni.showToast(msg);
-        }
-      },
-      // 精选商品列表
-      async recommend1(flag) {
-        const params = { productType: flag };
-        const list = await Axios.post('/product/getProductListByType', params);
-        console.log('list: ', list);
-        if (list.code == '200') {
-          this.prodList = list.data || [];
-        } else {
-          this.$uni.showToast(list.msg);
-        }
-      },
-      handlerClickPop(flag) {
-        const token = uni.getStorageSync('token');
-        if (!token) {
-          uni.navigateTo({ url: '/pages/user-center/login' });
-          return;
-        }
-        if (flag == 1) {
-          uni.navigateTo({
-            url: '/pages/user-center/message-center',
-          });
-        } else if (flag == 2) {
-          this.showPop = !this.showPop;
-        }
-      },
+          url: '/pages/user-center/message-center'
+        })
+      } else if (flag == 2) {
+        this.showPop = !this.showPop
+      }
+    },
 
-      handlConfirmPop() {
-        this.$refs.confirmPop.close();
-      },
-      /**
+    handlConfirmPop() {
+      this.$refs.confirmPop.close()
+    },
+    /**
        * 获取用户信息
        */
-      getUserInfo() {
-        return new Promise((resolve, reject) => {
-          api.getUserInfo({
-            data: {
-              accessToken: uni.getStorageSync('token'),
-            },
-            success: (data) => {
-              resolve(data);
-            },
-            fail: (error) => {
-              reject(error);
-            },
-          });
-        });
-      },
+    getUserInfo() {
+      return new Promise((resolve, reject) => {
+        api.getUserInfo({
+          data: {
+            accessToken: uni.getStorageSync('token')
+          },
+          success: (data) => {
+            resolve(data)
+          },
+          fail: (error) => {
+            reject(error)
+          }
+        })
+      })
+    },
 
-      async succFlag(flag) {
-        console.log('---实名认证成功后的回调----');
-        if (flag == 1) {
-          const userinfor = await this.getUserInfo();
-          uni.setStorageSync('userInfo', userinfor);
-          this.userInfo = userinfor;
-          this.$refs.realpop.close();
-          uni.navigateTo({
-            url: `/pages/user-center/real-name-result2?back=${'/pages/index/index'}`,
-          });
-        }
-      },
+    async succFlag(flag) {
+      console.log('---实名认证成功后的回调----')
+      if (flag == 1) {
+        const userinfor = await this.getUserInfo()
+        uni.setStorageSync('userInfo', userinfor)
+        this.userInfo = userinfor
+        this.$refs.realpop.close()
+        uni.navigateTo({
+          url: `/pages/user-center/real-name-result2?back=${'/pages/index/index'}`
+        })
+      }
+    },
 
-      /**
+    /**
        * 首页待操作弹窗提示
        */
-      getHomePop() {
-        api.getHomePop({
-          data: {
-            userId: uni.getStorageSync('userInfo').uactId,
-          },
-          success: (res) => {
-            // 弹框类型 0-领卡提醒2-亲情绑定提醒 1-赡养抚养提醒
-            if (res.popoverType !== undefined) {
-              this.$set(this.modal, 'modImg', res.popoverType);
-              this.poptype = res.popoverType;
-              if (res.popoverType === '0') {
-                this.modal.cancelText = '放弃申领';
-                this.modal.confirmText = '立刻申领';
-                this.$refs.popup.open();
-              } else if (res.popoverType === '2') {
-                this.modal.cancelText = '放弃添加';
-                this.modal.confirmText = '立刻添加';
-                this.$refs.popup.open();
-              } else if (res.popoverType === '1') {
-                this.modal.cancelText = '放弃绑定';
-                this.modal.confirmText = '立刻绑定';
-                this.$refs.popup.open();
-              } else if (res.popoverType === '5') {
-                this.$refs.realpop.open();
-              }
+    getHomePop() {
+      api.getHomePop({
+        data: {
+          userId: uni.getStorageSync('userInfo').uactId
+        },
+        success: (res) => {
+          // 弹框类型 0-领卡提醒2-亲情绑定提醒 1-赡养抚养提醒
+          if (res.popoverType !== undefined) {
+            this.$set(this.modal, 'modImg', res.popoverType)
+            this.poptype = res.popoverType
+            if (res.popoverType === '0') {
+              this.modal.cancelText = '放弃申领'
+              this.modal.confirmText = '立刻申领'
+              this.$refs.popup.open()
+            } else if (res.popoverType === '2') {
+              this.modal.cancelText = '放弃添加'
+              this.modal.confirmText = '立刻添加'
+              this.$refs.popup.open()
+            } else if (res.popoverType === '1') {
+              this.modal.cancelText = '放弃绑定'
+              this.modal.confirmText = '立刻绑定'
+              this.$refs.popup.open()
+            } else if (res.popoverType === '5') {
+              this.$refs.realpop.open()
             }
-          },
-        });
-      },
+          }
+        }
+      })
+    },
 
-      /**
+    /**
        * 城市选择回调
        */
-      handleSelectCity(city) {
-        this.city = city;
-        uni.setStorageSync('city', city);
-        this.requestData();
-      },
-      /**
+    handleSelectCity(city) {
+      this.city = city
+      uni.setStorageSync('city', city)
+      this.requestData()
+    },
+    /**
        * 城市点击事件
        */
-      handleCityClick() {
-        uni.navigateTo({
-          url: '/pages/common/city-picker',
-        });
-      },
-      /**
+    handleCityClick() {
+      uni.navigateTo({
+        url: '/pages/common/city-picker'
+      })
+    },
+    /**
        * 语音输入点击事件
        */
-      handleVoiceSearchClick() {
-        uni.navigateTo({
-          url: '/sub-pages/index/search/main',
-        });
-      },
-      /**
+    handleVoiceSearchClick() {
+      uni.navigateTo({
+        url: '/sub-pages/index/search/main'
+      })
+    },
+    /**
        * 轮播图加载失败事件
        */
-      handleBannerLoadFail(index) {
-        // 图片加载失败时显示默认图片
-        this.banners[index].bannerUrl =
-          'http://192.168.1.187:10088/static/home/banner-home-default.png';
-      },
-      /**
+    handleBannerLoadFail(index) {
+      // 图片加载失败时显示默认图片
+      this.banners[index].bannerUrl =
+          'http://192.168.1.187:10088/static/home/banner-home-default.png'
+    },
+    /**
        * 轮播图 banner 点击事件
        */
-      handleBannerClick(index) {
-        const item = this.banners[index];
-        if (item.jumpUrl) {
-          uni.navigateTo({
-            url: item.jumpUrl,
-          });
-        }
-      },
+    handleBannerClick(index) {
+      const item = this.banners[index]
+      if (item.jumpUrl) {
+        uni.navigateTo({
+          url: item.jumpUrl
+        })
+      }
+    },
 
-      /**
+    /**
        * 请求数据
        */
-      requestData() {
-        // 获取轮播图数据
-        api.getBanners({
-          data: { bannerType: '21', status: '1' },
-          success: (data) => {
-            this.banners = data;
-            this.info = data;
-          },
-        });
-        this.recommend(11);
-      },
-      async recommend(flag) {
-        const params = { productType: flag };
-        const list = await Axios.post('/product/getProductListByType', params);
-        if (list.code == 200) {
-          this.pointList = list.data.slice(0, 2) || [];
-        } else {
-          uni.showToast(list.msg);
+    requestData() {
+      // 获取轮播图数据
+      api.getBanners({
+        data: { bannerType: '21', status: '1' },
+        success: (data) => {
+          this.banners = data
+          this.info = data
         }
-      },
-      /**
+      })
+      this.recommend(11)
+    },
+    async recommend(flag) {
+      const params = { productType: flag }
+      const list = await Axios.post('/product/getProductListByType', params)
+      if (list.code == 200) {
+        this.pointList = list.data.slice(0, 2) || []
+      } else {
+        uni.showToast(list.msg)
+      }
+    },
+    /**
        * 获取当前定位
        */
-      getLocation() {
-        uni.getLocation({
-          type: 'gcj02',
-          success: (res) => {
-            uni.setStorageSync('location', res);
-            // 调用高德地图 API 逆地理编码, 通过经纬度获取当前位置城市信息
-            api.regeoMap(
-              {
-                location: res.longitude + ',' + res.latitude,
-              },
-              {
-                success: (res) => {
-                  let city = {};
-                  // 当城市是省直辖县时返回为空，以及城市为北京、上海、天津、重庆四个直辖市时，该字段返回为[],否则为城市名称（字符串）
-                  if (res.regeocode.addressComponent.city.length === 0) {
-                    city = {
-                      code: res.regeocode.addressComponent.adcode.substr(0, 2) + '0100',
-                      name: res.regeocode.addressComponent.province,
-                      realCode: res.regeocode.addressComponent.adcode.substr(0, 2) + '0000',
-                    };
-                  } else {
-                    city = {
-                      code: res.regeocode.addressComponent.adcode.substr(0, 4) + '00',
-                      name: res.regeocode.addressComponent.city,
-                    };
+    getLocation() {
+      uni.getLocation({
+        type: 'gcj02',
+        success: (res) => {
+          uni.setStorageSync('location', res)
+          // 调用高德地图 API 逆地理编码, 通过经纬度获取当前位置城市信息
+          api.regeoMap(
+            {
+              location: res.longitude + ',' + res.latitude
+            },
+            {
+              success: (res) => {
+                let city = {}
+                // 当城市是省直辖县时返回为空，以及城市为北京、上海、天津、重庆四个直辖市时，该字段返回为[],否则为城市名称（字符串）
+                if (res.regeocode.addressComponent.city.length === 0) {
+                  city = {
+                    code: res.regeocode.addressComponent.adcode.substr(0, 2) + '0100',
+                    name: res.regeocode.addressComponent.province,
+                    realCode: res.regeocode.addressComponent.adcode.substr(0, 2) + '0000'
                   }
-                  this.handleSelectCity(city);
-                },
-              },
-            );
-          },
-          fail: () => {
-            // 定位失败默认北京市
-            const city = { code: 110100, name: '北京市' };
-            this.handleSelectCity(city);
-          },
-        });
-      },
-    },
-  };
+                } else {
+                  city = {
+                    code: res.regeocode.addressComponent.adcode.substr(0, 4) + '00',
+                    name: res.regeocode.addressComponent.city
+                  }
+                }
+                this.handleSelectCity(city)
+              }
+            }
+          )
+        },
+        fail: () => {
+          // 定位失败默认北京市
+          const city = { code: 110100, name: '北京市' }
+          this.handleSelectCity(city)
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

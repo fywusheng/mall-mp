@@ -131,247 +131,247 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
-  import uniPopup from '@/components/uni-popup/uni-popup.vue';
-  export default {
-    components: { uniPopup },
-    data() {
-      return {
-        maskClick: false,
-        name: '',
-        loading: 1,
-        selectType: '',
-        cityName: '全部城市',
-        eatName: '全部餐段',
-        weekName: '全部星期',
-        cityArray: [],
-        eatTimeArray: [],
-        result: [], //单选结果
-        resultMap: { all: 1 }, //多选结果  this.selectType == 1 ? '' : (this.selectType == 2 ? '全部餐段' : 'all'),
-        clickValue: '',
-        demoType: '',
-        type: 1,
-        list: [],
-        diskObject: {},
-        showListValue: {},
-        latitude: '',
-        longitude: '',
-        cityA: '',
-        Bvalue: '全部餐段',
-        weekmap: {
-          all: '全部星期',
-          Mon: '星期一',
-          Tues: '星期二',
-          Wed: '星期三',
-          Thur: '星期四',
-          Fri: '星期五',
-          Sat: '星期六',
-          Sun: '星期日',
-        },
-      };
-    },
-    props: {
-      hotelDiscountId: {
-        type: String,
-        default: '',
+import api from '@/apis/index.js'
+import uniPopup from '@/components/uni-popup/uni-popup.vue'
+export default {
+  components: { uniPopup },
+  data() {
+    return {
+      maskClick: false,
+      name: '',
+      loading: 1,
+      selectType: '',
+      cityName: '全部城市',
+      eatName: '全部餐段',
+      weekName: '全部星期',
+      cityArray: [],
+      eatTimeArray: [],
+      result: [], // 单选结果
+      resultMap: { all: 1 }, // 多选结果  this.selectType == 1 ? '' : (this.selectType == 2 ? '全部餐段' : 'all'),
+      clickValue: '',
+      demoType: '',
+      type: 1,
+      list: [],
+      diskObject: {},
+      showListValue: {},
+      latitude: '',
+      longitude: '',
+      cityA: '',
+      Bvalue: '全部餐段',
+      weekmap: {
+        all: '全部星期',
+        Mon: '星期一',
+        Tues: '星期二',
+        Wed: '星期三',
+        Thur: '星期四',
+        Fri: '星期五',
+        Sat: '星期六',
+        Sun: '星期日'
+      }
+    }
+  },
+  props: {
+    hotelDiscountId: {
+      type: String,
+      default: ''
+    }
+  },
+  created() {
+    this.getHotelDic()
+    uni.getLocation({
+      type: 'gcj02',
+      success: (res) => {
+        this.latitude = res.latitude
+        this.longitude = res.longitude
+        this.dynamicQuery()
       },
+      fail: (err) => {
+        this.$uni.showToast(err)
+      }
+    })
+  },
+  methods: {
+    goDetail(item) {
+      const params = {
+        address: item.address,
+        hotelName: item.hotelName,
+        hotelPhoto: item.hotelPhoto,
+        lat: item.lat,
+        lon: item.lon,
+        distance: item.distance
+      }
+      uni.redirectTo({
+        url:
+            '/pages/life/hotelHomeDetail?params=' + `${encodeURIComponent(JSON.stringify(params))}`
+      })
     },
-    created() {
-      this.getHotelDic();
-      uni.getLocation({
-        type: 'gcj02',
-        success: (res) => {
-          this.latitude = res.latitude;
-          this.longitude = res.longitude;
-          this.dynamicQuery();
-        },
-        fail: (err) => {
-          this.$uni.showToast(err);
-        },
-      });
+    goMap(item) {
+      const params = {
+        name: item.hotelName,
+        longitude: item.lon - 0,
+        latitude: item.lat - 0,
+        distance: item.distance,
+        address: item.address,
+        hotelPhoto: item.hotelPhoto
+      }
+      uni.navigateTo({
+        url: '/pages/life/mapShow?params=' + `${encodeURIComponent(JSON.stringify(params))}`
+      })
     },
-    methods: {
-      goDetail(item) {
-        const params = {
-          address: item.address,
-          hotelName: item.hotelName,
-          hotelPhoto: item.hotelPhoto,
-          lat: item.lat,
-          lon: item.lon,
-          distance: item.distance,
-        };
-        uni.redirectTo({
-          url:
-            '/pages/life/hotelHomeDetail?params=' + `${encodeURIComponent(JSON.stringify(params))}`,
-        });
-      },
-      goMap(item) {
-        const params = {
-          name: item.hotelName,
-          longitude: item.lon - 0,
-          latitude: item.lat - 0,
-          distance: item.distance,
-          address: item.address,
-          hotelPhoto: item.hotelPhoto,
-        };
-        uni.navigateTo({
-          url: '/pages/life/mapShow?params=' + `${encodeURIComponent(JSON.stringify(params))}`,
-        });
-      },
-      cancel() {
-        this.result = [];
-        // this.resultMap = {}
-        this.$refs.notice.close();
+    cancel() {
+      this.result = []
+      // this.resultMap = {}
+      this.$refs.notice.close()
 
-        switch (this.type) {
-          case 1:
-            this.cityA = uni.getStorageSync('title');
-            break;
-          case 2:
-            this.Bvalue = uni.getStorageSync('title');
-            break;
-          case 3:
-            this.resultMap = uni.getStorageSync('title');
-            break;
-            return;
-        }
-      },
-      confirm() {
-        let week_name = '';
-        let keys = Object.keys(this.resultMap);
-        const end_keys = keys.filter((key, index) => {
-          return this.resultMap[key] == 1;
-        });
-        if (end_keys.length === 1) {
-          week_name = this.weekmap[end_keys[0]];
-        } else {
-          week_name = this.weekmap[end_keys[0]] + '...';
-        }
-        switch (this.type) {
-          case 1:
-            this.cityName = this.name;
-            break;
-          case 2:
-            this.eatName = this.name;
-            break;
-          case 3:
-            this.weekName = week_name;
-            break;
-            return;
-        }
-        this.dynamicQuery();
-        this.$refs.notice.close();
-      },
-      itemClick(itemType, type, name) {
-        this.selectType = type;
-        this.name = name;
-        this.demoType = itemType;
-        if (type === 3) {
-          // 多选择情况
-          if (itemType == 'all') {
-            this.resultMap = {};
-            this.resultMap[itemType] = 1;
-            return;
-          }
-          if (!this.resultMap[itemType]) {
-            this.resultMap[itemType] = 1;
-            this.resultMap['all'] = 0;
-          } else {
-            this.resultMap[itemType] = 0;
-            this.resultMap['all'] = 0;
-          }
-        } else {
-          //单选择情况
-          if (!this.result.includes(itemType)) {
-            this.clickValue = itemType;
-            type == 1 ? (this.cityA = itemType) : (this.Bvalue = itemType);
-            this.result = [];
-            this.result.push(itemType);
-          } else {
-            this.result = [];
-            this.clickValue = '';
-            type == 1 ? (this.cityA = '') : (this.Bvalue = '');
-          }
-          type == 1 ? (this.cityArray = this.result) : (this.eatTimeArray = this.result);
-        }
-      },
-      selectItem(type) {
-        this.type = type;
-        const params = {
-          1: {
-            title: '城市选择',
-            selectList: this.diskObject.cityDic,
-            stashValue: this.cityA,
-            name: this.cityName,
-          },
-          2: {
-            title: '餐段',
-            selectList: this.diskObject.locationDic,
-            stashValue: this.Bvalue,
-            name: this.eatName,
-          },
-          3: {
-            title: '选择星期',
-            selectList: this.diskObject.weekdayDic,
-            stashValue: this.resultMap,
-            name: this.weekName,
-          },
-        };
-        this.showListValue = params[type];
-        uni.setStorageSync('title', params[type]['stashValue']);
-        this.name = params[type]['name'];
-        this.$refs.notice.open();
-      },
-      //字典
-      getHotelDic() {
-        api.getHotelDic({
-          data: { hotelDiscountId: this.hotelDiscountId },
-          success: (res) => {
-            let cityDic = res.cityDic;
-            let locationDic = res.locationDic;
-            let weekdayDic = res.weekdayDic;
-            cityDic.unshift({ cityName: '全部城市', cityCode: '' });
-            locationDic.unshift({ eatTime: '全部餐段' });
-            weekdayDic.unshift('all');
-            this.diskObject.cityDic = cityDic;
-            this.diskObject.locationDic = locationDic;
-            this.diskObject.weekdayDic = weekdayDic;
-          },
-          fail: (res) => {},
-        });
-      },
-      dynamicQuery() {
-        let keys = Object.keys(this.resultMap);
-        this.cityCode = this.cityArray.length > 0 ? this.cityArray[0] : '';
-        this.eatTime = this.eatTimeArray.length > 0 ? this.eatTimeArray[0] : '';
-        if (keys.length > 0) {
-          const keyArray = keys.filter((key, i) => {
-            return this.resultMap[key] == 1;
-          });
-          this.canUseTime = keyArray.join(',');
-        } else {
-          this.canUseTime = '';
-        }
-        api.dynamicQuery({
-          data: {
-            hotelDiscountId: this.hotelDiscountId,
-            cityCode: this.cityCode,
-            eatTime: this.eatTime == '全部餐段' ? '' : this.eatTime,
-            canUseTime: this.canUseTime == 'all' ? '' : this.canUseTime,
-            lat: this.latitude,
-            lon: this.longitude,
-          },
-          success: (res) => {
-            this.list = res;
-            if (this.list.length == 0) {
-              this.loading = 2;
-            }
-          },
-          fail: (res) => {},
-        });
-      },
+      switch (this.type) {
+        case 1:
+          this.cityA = uni.getStorageSync('title')
+          break
+        case 2:
+          this.Bvalue = uni.getStorageSync('title')
+          break
+        case 3:
+          this.resultMap = uni.getStorageSync('title')
+          break
+          return
+      }
     },
-  };
+    confirm() {
+      let week_name = ''
+      const keys = Object.keys(this.resultMap)
+      const end_keys = keys.filter((key, index) => {
+        return this.resultMap[key] == 1
+      })
+      if (end_keys.length === 1) {
+        week_name = this.weekmap[end_keys[0]]
+      } else {
+        week_name = this.weekmap[end_keys[0]] + '...'
+      }
+      switch (this.type) {
+        case 1:
+          this.cityName = this.name
+          break
+        case 2:
+          this.eatName = this.name
+          break
+        case 3:
+          this.weekName = week_name
+          break
+          return
+      }
+      this.dynamicQuery()
+      this.$refs.notice.close()
+    },
+    itemClick(itemType, type, name) {
+      this.selectType = type
+      this.name = name
+      this.demoType = itemType
+      if (type === 3) {
+        // 多选择情况
+        if (itemType == 'all') {
+          this.resultMap = {}
+          this.resultMap[itemType] = 1
+          return
+        }
+        if (!this.resultMap[itemType]) {
+          this.resultMap[itemType] = 1
+          this.resultMap['all'] = 0
+        } else {
+          this.resultMap[itemType] = 0
+          this.resultMap['all'] = 0
+        }
+      } else {
+        // 单选择情况
+        if (!this.result.includes(itemType)) {
+          this.clickValue = itemType
+          type == 1 ? (this.cityA = itemType) : (this.Bvalue = itemType)
+          this.result = []
+          this.result.push(itemType)
+        } else {
+          this.result = []
+          this.clickValue = ''
+          type == 1 ? (this.cityA = '') : (this.Bvalue = '')
+        }
+        type == 1 ? (this.cityArray = this.result) : (this.eatTimeArray = this.result)
+      }
+    },
+    selectItem(type) {
+      this.type = type
+      const params = {
+        1: {
+          title: '城市选择',
+          selectList: this.diskObject.cityDic,
+          stashValue: this.cityA,
+          name: this.cityName
+        },
+        2: {
+          title: '餐段',
+          selectList: this.diskObject.locationDic,
+          stashValue: this.Bvalue,
+          name: this.eatName
+        },
+        3: {
+          title: '选择星期',
+          selectList: this.diskObject.weekdayDic,
+          stashValue: this.resultMap,
+          name: this.weekName
+        }
+      }
+      this.showListValue = params[type]
+      uni.setStorageSync('title', params[type]['stashValue'])
+      this.name = params[type]['name']
+      this.$refs.notice.open()
+    },
+    // 字典
+    getHotelDic() {
+      api.getHotelDic({
+        data: { hotelDiscountId: this.hotelDiscountId },
+        success: (res) => {
+          const cityDic = res.cityDic
+          const locationDic = res.locationDic
+          const weekdayDic = res.weekdayDic
+          cityDic.unshift({ cityName: '全部城市', cityCode: '' })
+          locationDic.unshift({ eatTime: '全部餐段' })
+          weekdayDic.unshift('all')
+          this.diskObject.cityDic = cityDic
+          this.diskObject.locationDic = locationDic
+          this.diskObject.weekdayDic = weekdayDic
+        },
+        fail: (res) => {}
+      })
+    },
+    dynamicQuery() {
+      const keys = Object.keys(this.resultMap)
+      this.cityCode = this.cityArray.length > 0 ? this.cityArray[0] : ''
+      this.eatTime = this.eatTimeArray.length > 0 ? this.eatTimeArray[0] : ''
+      if (keys.length > 0) {
+        const keyArray = keys.filter((key, i) => {
+          return this.resultMap[key] == 1
+        })
+        this.canUseTime = keyArray.join(',')
+      } else {
+        this.canUseTime = ''
+      }
+      api.dynamicQuery({
+        data: {
+          hotelDiscountId: this.hotelDiscountId,
+          cityCode: this.cityCode,
+          eatTime: this.eatTime == '全部餐段' ? '' : this.eatTime,
+          canUseTime: this.canUseTime == 'all' ? '' : this.canUseTime,
+          lat: this.latitude,
+          lon: this.longitude
+        },
+        success: (res) => {
+          this.list = res
+          if (this.list.length == 0) {
+            this.loading = 2
+          }
+        },
+        fail: (res) => {}
+      })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .status-box2 {

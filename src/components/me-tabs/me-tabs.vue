@@ -70,7 +70,7 @@
 </template>
 
 <script>
-  /**
+/**
    * v-tabs
    * @property {Number} value 选中的下标
    * @property {Array} tabs tabs 列表
@@ -95,204 +95,204 @@
    *
    * @event {Function(current)} change 改变标签触发
    */
-  export default {
-    props: {
-      value: {
-        type: Number,
-        default: 0,
-      },
-      tabs: {
-        type: Array,
-        default() {
-          return [];
-        },
-      },
-      bgColor: {
-        type: String,
-        default: '#fff',
-      },
-      padding: {
-        type: String,
-        default: '0',
-      },
-      color: {
-        type: String,
-        default: '#666666',
-      },
-      activeColor: {
-        type: String,
-        default: '#333333',
-      },
-      fontSize: {
-        type: String,
-        default: '28rpx',
-      },
-      activeFontSize: {
-        type: String,
-        default: '32rpx',
-      },
-      bold: {
-        type: Boolean,
-        default: true,
-      },
-      scroll: {
-        type: Boolean,
-        default: true,
-      },
-      height: {
-        type: String,
-        default: '85rpx',
-      },
-      lineColor: {
-        type: String,
-        default: '#ff5d28',
-      },
-      lineHeight: {
-        type: String,
-        default: '10rpx',
-      },
-      lineScale: {
-        type: Number,
-        default: 0.5,
-      },
-      lineRadius: {
-        type: String,
-        default: '10rpx',
-      },
-      pills: {
-        type: Boolean,
-        deafult: false,
-      },
-      pillsColor: {
-        type: String,
-        default: '#ff5d28',
-      },
-      pillsBorderRadius: {
-        type: String,
-        default: '10rpx',
-      },
-      field: {
-        type: String,
-        default: '',
-      },
-      fixed: {
-        type: Boolean,
-        default: false,
-      },
-      paddingItem: {
-        type: String,
-        default: '0 22rpx',
-      },
+export default {
+  props: {
+    value: {
+      type: Number,
+      default: 0
     },
-    data() {
-      return {
-        elId: '',
-        lineWidth: 30,
-        currentWidth: 0, // 当前选项的宽度
-        lineLeft: 0, // 滑块距离左侧的位置
-        pillsLeft: 0, // 胶囊距离左侧的位置
-        scrollLeft: 0, // 距离左边的位置
-        containerWidth: 0, // 容器的宽度
-        current: 0, // 当前选中项
-      };
+    tabs: {
+      type: Array,
+      default() {
+        return []
+      }
     },
-    watch: {
-      value(newVal) {
-        this.current = newVal;
-        this.$nextTick(() => {
-          this.getTabItemWidth();
-        });
-      },
-      current(newVal) {
-        this.$emit('input', newVal);
-      },
-      tabs(newVal) {
-        this.$nextTick(() => {
-          this.getTabItemWidth();
-        });
-      },
+    bgColor: {
+      type: String,
+      default: '#fff'
     },
-    methods: {
-      // 产生随机字符串
-      randomString(len) {
-        len = len || 32;
-        const $chars =
-          'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678'; /** **默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
-        const maxPos = $chars.length;
-        let pwd = '';
-        for (let i = 0; i < len; i++) {
-          pwd += $chars.charAt(Math.floor(Math.random() * maxPos));
-        }
-        return pwd;
-      },
-      // 切换事件
-      change(v, index) {
-        if (this.current !== index) {
-          this.current = index;
-          this.$emit('update:value', index);
-          this.$emit('change', v, index);
-        }
-      },
-      // 获取左移动位置
-      getTabItemWidth() {
-        const query = uni
-          .createSelectorQuery()
-          // #ifndef MP-ALIPAY
-          .in(this);
+    padding: {
+      type: String,
+      default: '0'
+    },
+    color: {
+      type: String,
+      default: '#666666'
+    },
+    activeColor: {
+      type: String,
+      default: '#333333'
+    },
+    fontSize: {
+      type: String,
+      default: '28rpx'
+    },
+    activeFontSize: {
+      type: String,
+      default: '32rpx'
+    },
+    bold: {
+      type: Boolean,
+      default: true
+    },
+    scroll: {
+      type: Boolean,
+      default: true
+    },
+    height: {
+      type: String,
+      default: '85rpx'
+    },
+    lineColor: {
+      type: String,
+      default: '#ff5d28'
+    },
+    lineHeight: {
+      type: String,
+      default: '10rpx'
+    },
+    lineScale: {
+      type: Number,
+      default: 0.5
+    },
+    lineRadius: {
+      type: String,
+      default: '10rpx'
+    },
+    pills: {
+      type: Boolean,
+      deafult: false
+    },
+    pillsColor: {
+      type: String,
+      default: '#ff5d28'
+    },
+    pillsBorderRadius: {
+      type: String,
+      default: '10rpx'
+    },
+    field: {
+      type: String,
+      default: ''
+    },
+    fixed: {
+      type: Boolean,
+      default: false
+    },
+    paddingItem: {
+      type: String,
+      default: '0 22rpx'
+    }
+  },
+  data() {
+    return {
+      elId: '',
+      lineWidth: 30,
+      currentWidth: 0, // 当前选项的宽度
+      lineLeft: 0, // 滑块距离左侧的位置
+      pillsLeft: 0, // 胶囊距离左侧的位置
+      scrollLeft: 0, // 距离左边的位置
+      containerWidth: 0, // 容器的宽度
+      current: 0 // 当前选中项
+    }
+  },
+  watch: {
+    value(newVal) {
+      this.current = newVal
+      this.$nextTick(() => {
+        this.getTabItemWidth()
+      })
+    },
+    current(newVal) {
+      this.$emit('input', newVal)
+    },
+    tabs(newVal) {
+      this.$nextTick(() => {
+        this.getTabItemWidth()
+      })
+    }
+  },
+  methods: {
+    // 产生随机字符串
+    randomString(len) {
+      len = len || 32
+      const $chars =
+          'ABCDEFGHJKMNPQRSTWXYZabcdefhijkmnprstwxyz2345678' /** **默认去掉了容易混淆的字符oOLl,9gq,Vv,Uu,I1****/
+      const maxPos = $chars.length
+      let pwd = ''
+      for (let i = 0; i < len; i++) {
+        pwd += $chars.charAt(Math.floor(Math.random() * maxPos))
+      }
+      return pwd
+    },
+    // 切换事件
+    change(v, index) {
+      if (this.current !== index) {
+        this.current = index
+        this.$emit('update:value', index)
+        this.$emit('change', v, index)
+      }
+    },
+    // 获取左移动位置
+    getTabItemWidth() {
+      const query = uni
+        .createSelectorQuery()
+      // #ifndef MP-ALIPAY
+        .in(this)
         // #endif
         // 获取容器的宽度
-        query
-          .select(`#scrollContainer`)
-          .boundingClientRect((data) => {
-            if (!this.containerWidth && data) {
-              this.containerWidth = data.width;
-            }
-          })
-          .exec();
+      query
+        .select(`#scrollContainer`)
+        .boundingClientRect((data) => {
+          if (!this.containerWidth && data) {
+            this.containerWidth = data.width
+          }
+        })
+        .exec()
         // 获取所有的 tab-item 的宽度
-        query
-          .selectAll('.v-tabs__container-item')
-          .boundingClientRect((data) => {
-            if (!data) {
-              return;
-            }
-            let lineLeft = 0;
-            let currentWidth = 0;
-            if (data) {
-              for (let i = 0; i < data.length; i++) {
-                if (i < this.current) {
-                  lineLeft += data[i].width;
-                } else if (i == this.current) {
-                  currentWidth = data[i].width;
-                } else {
-                  break;
-                }
+      query
+        .selectAll('.v-tabs__container-item')
+        .boundingClientRect((data) => {
+          if (!data) {
+            return
+          }
+          let lineLeft = 0
+          let currentWidth = 0
+          if (data) {
+            for (let i = 0; i < data.length; i++) {
+              if (i < this.current) {
+                lineLeft += data[i].width
+              } else if (i == this.current) {
+                currentWidth = data[i].width
+              } else {
+                break
               }
             }
-            // 当前滑块的宽度
-            this.currentWidth = currentWidth;
-            // 缩放后的滑块宽度
-            this.lineWidth = currentWidth * this.lineScale * 1;
-            // 滑块作移动的位置
-            this.lineLeft = lineLeft + currentWidth / 2;
-            // 胶囊距离左侧的位置
-            this.pillsLeft = lineLeft;
-            // 计算滚动的距离左侧的位置
-            if (this.scroll) {
-              this.scrollLeft = this.lineLeft - this.containerWidth / 2;
-            }
-          })
-          .exec();
-      },
-    },
-    mounted() {
-      this.elId = 'xfjpeter_' + this.randomString();
-      this.current = this.value;
-      this.$nextTick(() => {
-        this.getTabItemWidth();
-      });
-    },
-  };
+          }
+          // 当前滑块的宽度
+          this.currentWidth = currentWidth
+          // 缩放后的滑块宽度
+          this.lineWidth = currentWidth * this.lineScale * 1
+          // 滑块作移动的位置
+          this.lineLeft = lineLeft + currentWidth / 2
+          // 胶囊距离左侧的位置
+          this.pillsLeft = lineLeft
+          // 计算滚动的距离左侧的位置
+          if (this.scroll) {
+            this.scrollLeft = this.lineLeft - this.containerWidth / 2
+          }
+        })
+        .exec()
+    }
+  },
+  mounted() {
+    this.elId = 'xfjpeter_' + this.randomString()
+    this.current = this.value
+    this.$nextTick(() => {
+      this.getTabItemWidth()
+    })
+  }
+}
 </script>
 
 <style lang="scss" scoped>

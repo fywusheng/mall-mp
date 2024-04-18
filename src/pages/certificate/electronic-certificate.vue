@@ -55,85 +55,85 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import dayjs from 'dayjs';
-  import generator from '@/utils/code-generator.js';
-  import ActionSheet from '@/components/common/action-sheet';
-  export default {
-    components: { ActionSheet },
-    data() {
-      return {
-        // 电子证号
-        cardNumber: '',
-        // 头像
-        avatar: '',
-        // 电子证信息
-        info: {},
-        // 拨打电话弹窗选项
-        actionSheetItems: [],
-      };
-    },
-    filters: {
-      // 日期过滤器, 用于格式化日期
-      dateFilter(value) {
-        return dayjs(value).format('YYYY年MM月DD日');
-      },
-    },
-    onReady() {
-      this.requestData();
-    },
-    methods: {
-      /**
+import api from '@/apis/index.js'
+import dayjs from 'dayjs'
+import generator from '@/utils/code-generator.js'
+import ActionSheet from '@/components/common/action-sheet'
+export default {
+  components: { ActionSheet },
+  data() {
+    return {
+      // 电子证号
+      cardNumber: '',
+      // 头像
+      avatar: '',
+      // 电子证信息
+      info: {},
+      // 拨打电话弹窗选项
+      actionSheetItems: []
+    }
+  },
+  filters: {
+    // 日期过滤器, 用于格式化日期
+    dateFilter(value) {
+      return dayjs(value).format('YYYY年MM月DD日')
+    }
+  },
+  onReady() {
+    this.requestData()
+  },
+  methods: {
+    /**
        * 证件管理点击事件
        */
-      handleManageButtonClick() {
-        this.actionSheetItems = ['证照信息变更', '更改绑定手机号', '添加赡养扶养人关系'];
-        this.$refs.actionSheet.open();
-      },
-      /**
+    handleManageButtonClick() {
+      this.actionSheetItems = ['证照信息变更', '更改绑定手机号', '添加赡养扶养人关系']
+      this.$refs.actionSheet.open()
+    },
+    /**
        * action sheet 弹窗点击回调
        */
-      handleActionSheetItemClick(index) {
-        switch (this.actionSheetItems[index]) {
-          case '证照信息变更':
-            this.$uni.showToast('功能建设中，敬请期待。');
-            break;
-          case '更改绑定手机号':
-            uni.navigateTo({
-              url: '/pages/user-center/modify-phone-number',
-            });
-            break;
-          case '添加赡养扶养人关系':
-            uni.navigateTo({
-              url: '/pages/support/index',
-            });
-            break;
-        }
-      },
-      /**
+    handleActionSheetItemClick(index) {
+      switch (this.actionSheetItems[index]) {
+        case '证照信息变更':
+          this.$uni.showToast('功能建设中，敬请期待。')
+          break
+        case '更改绑定手机号':
+          uni.navigateTo({
+            url: '/pages/user-center/modify-phone-number'
+          })
+          break
+        case '添加赡养扶养人关系':
+          uni.navigateTo({
+            url: '/pages/support/index'
+          })
+          break
+      }
+    },
+    /**
        * 请求数据 获取证接口
        */
-      requestData() {
-        const userInfo = uni.getStorageSync('userInfo');
-        console.log('=====子组件的接口---', userInfo);
-        if (userInfo.authCode) {
-          //已领证已授权
-          api.getCertificateInfo({
-            data: {
-              chnlId: '53928a083adb4a7dad2eecf05564873f',
-              authCode: userInfo.authCode,
-            },
-            success: (data) => {
-              this.cardNumber = data.ecShowCardNo;
-              this.avatar = data.ecCertPhoto;
-              this.info = data.ecCertExtendDTO;
-              generator.qrcode('qr-code-card', this, this.cardNumber, 112, 112);
-            },
-          });
-        }
-      },
-    },
-  };
+    requestData() {
+      const userInfo = uni.getStorageSync('userInfo')
+      console.log('=====子组件的接口---', userInfo)
+      if (userInfo.authCode) {
+        // 已领证已授权
+        api.getCertificateInfo({
+          data: {
+            chnlId: '53928a083adb4a7dad2eecf05564873f',
+            authCode: userInfo.authCode
+          },
+          success: (data) => {
+            this.cardNumber = data.ecShowCardNo
+            this.avatar = data.ecCertPhoto
+            this.info = data.ecCertExtendDTO
+            generator.qrcode('qr-code-card', this, this.cardNumber, 112, 112)
+          }
+        })
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

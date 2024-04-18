@@ -44,92 +44,92 @@
 </template>
 
 <script>
-  const Icon1 = 'http://192.168.1.187:10088/static/user-center/icon-user-center-show-password.png';
-  const Icon2 = 'http://192.168.1.187:10088/static/user-center/icon-user-center-hide-password.png';
-  import api from '@/apis/index.js';
-  import sha256 from 'crypto-js/sha256';
-  import { validatePassword } from '@/utils/validation.js';
-  export default {
-    data() {
-      return {
-        // 是否明文显示密码
-        showsPasswordText: false,
-        // 是否明文显示确认密码
-        showsConfirmPasswordText: false,
-        // 表单数据
-        params: {
-          phoneNumber: '',
-          password: '',
-          confirmPassword: '',
-        },
-      };
+const Icon1 = 'http://192.168.1.187:10088/static/user-center/icon-user-center-show-password.png'
+const Icon2 = 'http://192.168.1.187:10088/static/user-center/icon-user-center-hide-password.png'
+import api from '@/apis/index.js'
+import sha256 from 'crypto-js/sha256'
+import { validatePassword } from '@/utils/validation.js'
+export default {
+  data() {
+    return {
+      // 是否明文显示密码
+      showsPasswordText: false,
+      // 是否明文显示确认密码
+      showsConfirmPasswordText: false,
+      // 表单数据
+      params: {
+        phoneNumber: '',
+        password: '',
+        confirmPassword: ''
+      }
+    }
+  },
+  computed: {
+    // 密码图标地址
+    passwordIconURL() {
+      return this.showsPasswordText ? Icon1 : Icon2
     },
-    computed: {
-      // 密码图标地址
-      passwordIconURL() {
-        return this.showsPasswordText ? Icon1 : Icon2;
-      },
-      // 确认密码图标地址
-      confirmPasswordIconURL() {
-        return this.showsConfirmPasswordText ? Icon1 : Icon2;
-      },
-    },
-    onLoad(e) {
-      this.params.phoneNumber = e.phoneNumber;
-    },
-    methods: {
-      /**
+    // 确认密码图标地址
+    confirmPasswordIconURL() {
+      return this.showsConfirmPasswordText ? Icon1 : Icon2
+    }
+  },
+  onLoad(e) {
+    this.params.phoneNumber = e.phoneNumber
+  },
+  methods: {
+    /**
        * 注册并登录点击事件
        */
-      handleRegisterClick() {
-        if (!this.params.password) {
-          this.$uni.showToast('请输入密码');
-          return;
-        }
-        if (!validatePassword(this.params.password, /^[0-9]{6,8}$/)) {
-          this.$uni.showToast('请输入 6-8 位由数字组成的密码');
-          return;
-        }
-        if (!this.params.confirmPassword) {
-          this.$uni.showToast('请确认密码');
-          return;
-        }
-        if (this.params.password !== this.params.confirmPassword) {
-          this.$uni.showToast('两次输入的密码不一致');
-          return;
-        }
+    handleRegisterClick() {
+      if (!this.params.password) {
+        this.$uni.showToast('请输入密码')
+        return
+      }
+      if (!validatePassword(this.params.password, /^[0-9]{6,8}$/)) {
+        this.$uni.showToast('请输入 6-8 位由数字组成的密码')
+        return
+      }
+      if (!this.params.confirmPassword) {
+        this.$uni.showToast('请确认密码')
+        return
+      }
+      if (this.params.password !== this.params.confirmPassword) {
+        this.$uni.showToast('两次输入的密码不一致')
+        return
+      }
 
-        let platform = '';
-        // #ifdef MP-WEIXIN
-        platform = 'wechat';
-        // #endif
-        // #ifdef MP-ALIPAY
-        platform = 'alipay';
-        // #endif
-        // #ifdef MP-BAIDU
-        platform = 'baidu';
-        // #endif
-        // #ifdef MP-TOUTIAO
-        platform = 'toutiao';
-        // #endif
+      let platform = ''
+      // #ifdef MP-WEIXIN
+      platform = 'wechat'
+      // #endif
+      // #ifdef MP-ALIPAY
+      platform = 'alipay'
+      // #endif
+      // #ifdef MP-BAIDU
+      platform = 'baidu'
+      // #endif
+      // #ifdef MP-TOUTIAO
+      platform = 'toutiao'
+      // #endif
 
-        api.register({
-          data: {
-            mobile: this.params.phoneNumber,
-            password: sha256(this.params.password).toString(),
-            regChnl: platform,
-          },
-          success: (data) => {
-            uni.setStorageSync('token', data.accessToken);
-            Store.dispatch('setToken', data.accessToken);
-            Store.dispatch('login').then((result) => {
-              uni.navigateTo({ url: '/pages/user-center/register-result' });
-            });
-          },
-        });
-      },
-    },
-  };
+      api.register({
+        data: {
+          mobile: this.params.phoneNumber,
+          password: sha256(this.params.password).toString(),
+          regChnl: platform
+        },
+        success: (data) => {
+          uni.setStorageSync('token', data.accessToken)
+          Store.dispatch('setToken', data.accessToken)
+          Store.dispatch('login').then((result) => {
+            uni.navigateTo({ url: '/pages/user-center/register-result' })
+          })
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

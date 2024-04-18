@@ -60,64 +60,64 @@
 </template>
 
 <script>
-  import NavigationBar from '@/components/common/navigation-bar.vue';
-  export default {
-    components: { NavigationBar },
-    data() {
-      return {
-        title: '选择卡类型',
-        cardType: 0, // 0 信用卡 1 储蓄卡
-        checkList: [
-          {
-            value: 0,
-            label: '信用卡',
-            checked: true,
-          },
-          {
-            value: 1,
-            label: '储蓄卡',
-            checked: false,
-          },
-        ],
-        // iconPath
-        icon: {
-          delete: 'http://192.168.1.187:10088/static/pay/icon-input-delete.png',
-          checked: 'http://192.168.1.187:10088/static/pay/icon-radio-checked.png',
-          noChecked: 'http://192.168.1.187:10088/static/pay/icon-radio-default.png',
-          bg: 'http://192.168.1.187:10088/static/pay/icon-bank-bg.png',
+import NavigationBar from '@/components/common/navigation-bar.vue'
+export default {
+  components: { NavigationBar },
+  data() {
+    return {
+      title: '选择卡类型',
+      cardType: 0, // 0 信用卡 1 储蓄卡
+      checkList: [
+        {
+          value: 0,
+          label: '信用卡',
+          checked: true
         },
-        // 导航栏高度
-        //#ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        //#endif
-        //#ifdef MP-ALIPAY
-        navigationBarHeight:
+        {
+          value: 1,
+          label: '储蓄卡',
+          checked: false
+        }
+      ],
+      // iconPath
+      icon: {
+        delete: 'http://192.168.1.187:10088/static/pay/icon-input-delete.png',
+        checked: 'http://192.168.1.187:10088/static/pay/icon-radio-checked.png',
+        noChecked: 'http://192.168.1.187:10088/static/pay/icon-radio-default.png',
+        bg: 'http://192.168.1.187:10088/static/pay/icon-bank-bg.png'
+      },
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        //#endif
-        // 状态栏高度
-        statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-      };
+      // #endif
+      // 状态栏高度
+      statusBarHeight: uni.getSystemInfoSync().statusBarHeight
+    }
+  },
+  onLoad(e) {},
+  onShow() {},
+  methods: {
+    // 银行卡类型选择事件
+    handleRaioChecked(item) {
+      this.checkList.map((item) => (item.checked = false))
+      item.checked = true
     },
-    onLoad(e) {},
-    onShow() {},
-    methods: {
-      // 银行卡类型选择事件
-      handleRaioChecked(item) {
-        this.checkList.map((item) => (item.checked = false));
-        item.checked = true;
-      },
-      // 返回上一页
-      handleNavBack() {
-        uni.navigateBack();
-      },
-      // 返回首页
-      handleHomeBack() {
-        uni.reLaunch({
-          url: '/pages/index/index',
-        });
-      },
+    // 返回上一页
+    handleNavBack() {
+      uni.navigateBack()
     },
-  };
+    // 返回首页
+    handleHomeBack() {
+      uni.reLaunch({
+        url: '/pages/index/index'
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

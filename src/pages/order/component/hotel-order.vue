@@ -95,135 +95,135 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import dayjs from 'dayjs';
-  import Modal from '@/components/common/modal.vue';
-  export default {
-    components: { Modal },
-    props: {
-      list: {
-        type: Array,
-        default: [],
-      },
-    },
-    data() {
-      return {
-        activeIndex: 0,
-        dialogContent: '',
-        icon: 'http://192.168.1.187:10088/static/life/warning-circle.png',
-        statusList: [
-          { id: null, label: '全部' },
-          { id: 1, label: '待支付' },
-          { id: 2, label: '待使用' },
-          { id: 3, label: '已完成' },
-        ],
-      };
-    },
-    created() {},
-    onLoad(e) {},
-    // watch:{
-    //   list(v){
-    //     console.log(v, 'list改变了---')
-    //   }
-    // },
-    // 下拉刷新
-    onPullDownRefresh() {},
-    // 上拉加载
-    onReachBottom() {},
-    methods: {
-      // 立即支付
-      handlePay(item) {
-        const url = `https://api.hpgjzlinfo.com/#/checkstand?cashId=${item.orderId}`;
+import api from '@/apis/index.js'
+import dayjs from 'dayjs'
+import Modal from '@/components/common/modal.vue'
+export default {
+  components: { Modal },
+  props: {
+    list: {
+      type: Array,
+      default: []
+    }
+  },
+  data() {
+    return {
+      activeIndex: 0,
+      dialogContent: '',
+      icon: 'http://192.168.1.187:10088/static/life/warning-circle.png',
+      statusList: [
+        { id: null, label: '全部' },
+        { id: 1, label: '待支付' },
+        { id: 2, label: '待使用' },
+        { id: 3, label: '已完成' }
+      ]
+    }
+  },
+  created() {},
+  onLoad(e) {},
+  // watch:{
+  //   list(v){
+  //     console.log(v, 'list改变了---')
+  //   }
+  // },
+  // 下拉刷新
+  onPullDownRefresh() {},
+  // 上拉加载
+  onReachBottom() {},
+  methods: {
+    // 立即支付
+    handlePay(item) {
+      const url = `https://api.hpgjzlinfo.com/#/checkstand?cashId=${item.orderId}`
 
-        // #ifdef MP-ALIPAY
-        uni.navigateTo({
-          url: `/pages/common/webpage?url=${url}`,
-        });
-        // #endif
+      // #ifdef MP-ALIPAY
+      uni.navigateTo({
+        url: `/pages/common/webpage?url=${url}`
+      })
+      // #endif
 
-        // #ifdef MP-WEIXIN
-        uni.navigateTo({
-          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-        });
-        // #endif
-      },
-      // 校验过期
-      checkExpirationTime(expTime) {
-        return new Date(expTime).getTime() - new Date().getTime() > 0;
-      },
-      // 申请退款
-      handleReturn({ orderId }) {
-        uni.navigateTo({
-          url: `/pages/life/applyRefund?orderId=${orderId}`,
-        });
-      },
-      // 预定
-      handlePre(isPre, item) {
-        if (isPre) {
-          this.dialogContent = '您需要拨打电话预定酒店服务，是否立即拨打';
-        } else {
-          this.dialogContent = '您已预定酒店服务，是否拨打电话取消预定';
-        }
-        this.customerService = item.customerService;
-        this.$refs.callPhonePop.open();
-      },
-      // 拨打电话
-      marketPopConfirm() {
-        this.$refs.callPhonePop.close();
-        uni.makePhoneCall({
-          phoneNumber: this.customerService,
-        });
-      },
-      // 取消
-      marketPopCancel() {
-        this.$refs.callPhonePop.close();
-      },
-      handleItemClick(index, i) {
-        this.activeIndex = index;
-        this.$emit('resetOptions', i.id);
-      },
-      // 点击订单
-      handleOrderInfo({ orderId }) {
-        uni.navigateTo({
-          url: `/pages/life/orderInfo?orderId=${orderId}`,
-        });
-      },
+      // #ifdef MP-WEIXIN
+      uni.navigateTo({
+        url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
+      })
+      // #endif
     },
-    filters: {
-      formateOrderStatus(v) {
-        // 1-未支付、2-已支付、3-已完成、5-部分退款、6-已退款、7-退款中
-        // 订单状态 （1-未支付、2-已支付、3-已完成、5-部分退款、6-已退款、7-退款中）
-        const mapObj = {
-          1: '待付款',
-          2: '待使用',
-          3: '已完成',
-          4: '已关闭',
-          5: '部分退款',
-          6: '已退款',
-          7: '退款中',
-          8: '已过期',
-        };
-        return mapObj[v] || '';
-      },
-      setDistance(item) {
-        const s = Number(item) / 1000;
-        if (s.toFixed(3) < 1) {
-          return parseInt(s * 1000) + 'm';
-        } else {
-          return s.toFixed(1) + 'km';
-        }
-      },
-      formaterMoney(v) {
-        return (v / 100).toFixed(2);
-      },
-      // 日期过滤器, 用于格式化日期
-      dateFilter(value) {
-        // console.log("value:",value)
-        // console.log("dayjs:",dayjs(value).format("YYYY-MM-DD HH:mm:ss"))
-        return dayjs(value).format('YYYY-MM-DD HH:mm');
-      },
+    // 校验过期
+    checkExpirationTime(expTime) {
+      return new Date(expTime).getTime() - new Date().getTime() > 0
     },
-  };
+    // 申请退款
+    handleReturn({ orderId }) {
+      uni.navigateTo({
+        url: `/pages/life/applyRefund?orderId=${orderId}`
+      })
+    },
+    // 预定
+    handlePre(isPre, item) {
+      if (isPre) {
+        this.dialogContent = '您需要拨打电话预定酒店服务，是否立即拨打'
+      } else {
+        this.dialogContent = '您已预定酒店服务，是否拨打电话取消预定'
+      }
+      this.customerService = item.customerService
+      this.$refs.callPhonePop.open()
+    },
+    // 拨打电话
+    marketPopConfirm() {
+      this.$refs.callPhonePop.close()
+      uni.makePhoneCall({
+        phoneNumber: this.customerService
+      })
+    },
+    // 取消
+    marketPopCancel() {
+      this.$refs.callPhonePop.close()
+    },
+    handleItemClick(index, i) {
+      this.activeIndex = index
+      this.$emit('resetOptions', i.id)
+    },
+    // 点击订单
+    handleOrderInfo({ orderId }) {
+      uni.navigateTo({
+        url: `/pages/life/orderInfo?orderId=${orderId}`
+      })
+    }
+  },
+  filters: {
+    formateOrderStatus(v) {
+      // 1-未支付、2-已支付、3-已完成、5-部分退款、6-已退款、7-退款中
+      // 订单状态 （1-未支付、2-已支付、3-已完成、5-部分退款、6-已退款、7-退款中）
+      const mapObj = {
+        1: '待付款',
+        2: '待使用',
+        3: '已完成',
+        4: '已关闭',
+        5: '部分退款',
+        6: '已退款',
+        7: '退款中',
+        8: '已过期'
+      }
+      return mapObj[v] || ''
+    },
+    setDistance(item) {
+      const s = Number(item) / 1000
+      if (s.toFixed(3) < 1) {
+        return parseInt(s * 1000) + 'm'
+      } else {
+        return s.toFixed(1) + 'km'
+      }
+    },
+    formaterMoney(v) {
+      return (v / 100).toFixed(2)
+    },
+    // 日期过滤器, 用于格式化日期
+    dateFilter(value) {
+      // console.log("value:",value)
+      // console.log("dayjs:",dayjs(value).format("YYYY-MM-DD HH:mm:ss"))
+      return dayjs(value).format('YYYY-MM-DD HH:mm')
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

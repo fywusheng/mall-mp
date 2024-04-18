@@ -226,329 +226,329 @@
 </template>
 
 <script>
-  import dayjs from 'dayjs';
-  import { UniDataPicker } from '@dcloudio/uni-ui';
-  import api from '@/apis/index.js';
-  import ModalKnow from '@/pages/rights/components/modal-know.vue';
-  export default {
-    components: { UniDataPicker, ModalKnow },
-    data() {
-      return {
-        isShow: false,
-        // 城市列表
-        cities: [
-          { value: '0', text: '北京' },
-          { value: '1', text: '成都' },
-        ],
-        // 就诊类型
-        types: [
-          { value: '0', text: '就诊类型' },
-          { value: '1', text: '门诊' },
-          { value: '2', text: '药店' },
-          { value: '3', text: '住院' },
-        ],
-        // 年份列表
-        years: [2021],
-        // 接口入参
-        params: {
-          city: { value: '0', text: '北京' },
-          text: '北京',
-          type: { value: '0', text: '就诊类型' },
-          year: 2021,
-        },
-        // 数据列表
-        list: [{}],
-        //消费笔数
-        times: 0,
-        // 年度消费总额
-        totalAnnualExpenses: 0,
-        // 医保支付总额
-        totalPayment: 0,
-        // 自付金额
-        selfPayAmount: 0,
-        // 门诊比例
-        outpatient: 0,
-        // 药店比例
-        pharmacy: 0,
-        // 住院比例
-        hospitalization: 0,
-        //总数据
-        initData: {},
-      };
-    },
-    computed: {
-      // 当前选择的年份下标, 用于初始化年份选择器默认值
-      yearIndex() {
-        return this.years.indexOf(this.params.year);
+import dayjs from 'dayjs'
+import { UniDataPicker } from '@dcloudio/uni-ui'
+import api from '@/apis/index.js'
+import ModalKnow from '@/pages/rights/components/modal-know.vue'
+export default {
+  components: { UniDataPicker, ModalKnow },
+  data() {
+    return {
+      isShow: false,
+      // 城市列表
+      cities: [
+        { value: '0', text: '北京' },
+        { value: '1', text: '成都' }
+      ],
+      // 就诊类型
+      types: [
+        { value: '0', text: '就诊类型' },
+        { value: '1', text: '门诊' },
+        { value: '2', text: '药店' },
+        { value: '3', text: '住院' }
+      ],
+      // 年份列表
+      years: [2021],
+      // 接口入参
+      params: {
+        city: { value: '0', text: '北京' },
+        text: '北京',
+        type: { value: '0', text: '就诊类型' },
+        year: 2021
       },
+      // 数据列表
+      list: [{}],
+      // 消费笔数
+      times: 0,
+      // 年度消费总额
+      totalAnnualExpenses: 0,
+      // 医保支付总额
+      totalPayment: 0,
+      // 自付金额
+      selfPayAmount: 0,
+      // 门诊比例
+      outpatient: 0,
+      // 药店比例
+      pharmacy: 0,
+      // 住院比例
+      hospitalization: 0,
+      // 总数据
+      initData: {}
+    }
+  },
+  computed: {
+    // 当前选择的年份下标, 用于初始化年份选择器默认值
+    yearIndex() {
+      return this.years.indexOf(this.params.year)
+    }
+  },
+  onLoad() {
+    // this.$refs.noticeModal.open();
+    // this.setCities();
+    // this.setTypes();
+    // this.setYears();
+    this.init()
+  },
+  mounted() {
+    this.$refs.noticeModal.open()
+    // this.isShow=  false;
+    uni
+      .createSelectorQuery()
+      .select('.card')
+      .boundingClientRect((res) => {
+        uni.pageScrollTo({ duration: 0, scrollTop: 1000 })
+      })
+      .exec()
+  },
+  onShareAppMessage() {
+    return {
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
+  },
+  methods: {
+    closeHander(flag) {
+      console.log('====首页--', flag)
+      if (flag == 1) {
+        // #ifdef MP-WEIXIN
+        this.isShow = true
+        // #endif
+      }
     },
-    onLoad() {
-      // this.$refs.noticeModal.open();
-      // this.setCities();
-      // this.setTypes();
-      // this.setYears();
-      this.init();
-    },
-    mounted() {
-      this.$refs.noticeModal.open();
-      // this.isShow=  false;
-      uni
-        .createSelectorQuery()
-        .select('.card')
-        .boundingClientRect((res) => {
-          uni.pageScrollTo({ duration: 0, scrollTop: 1000 });
-        })
-        .exec();
-    },
-    onShareAppMessage() {
-      return {
-        title: '',
-        path: '/pages/index/index?index=0',
-      };
-    },
-    methods: {
-      closeHander(flag) {
-        console.log('====首页--', flag);
-        if (flag == 1) {
-          //#ifdef MP-WEIXIN
-          this.isShow = true;
-          //#endif
-        }
-      },
-      /**
+    /**
        * 城市选择器选择回调
        */
-      handleCityChange(e) {
-        // console.log("城市选择：",e.detail.value[e.detail.value.length - 1].value)
-        this.params.city = e.detail.value[e.detail.value.length - 1].value;
-        console.log('===hahah---', this.params.city);
-        // const city = {0:'北京',1:'成都'}
-        // this.params.city =  city[e.detail.value]
-        // this.params.city = this.cities[e.detail.value];
-      },
-      handleTypeChange2(e) {
-        this.params.city = this.cities[e.detail.value];
-        console.log('this.params.type:', this.params.type.value);
-      },
-      /**
+    handleCityChange(e) {
+      // console.log("城市选择：",e.detail.value[e.detail.value.length - 1].value)
+      this.params.city = e.detail.value[e.detail.value.length - 1].value
+      console.log('===hahah---', this.params.city)
+      // const city = {0:'北京',1:'成都'}
+      // this.params.city =  city[e.detail.value]
+      // this.params.city = this.cities[e.detail.value];
+    },
+    handleTypeChange2(e) {
+      this.params.city = this.cities[e.detail.value]
+      console.log('this.params.type:', this.params.type.value)
+    },
+    /**
        * 就诊类型选择器选择回调
        */
-      handleTypeChange(e) {
-        this.params.type = this.types[e.detail.value];
-        console.log('this.params.type:', this.params.type.value);
-        setTimeout(() => {
-          this.screenFun(this.params.type.value);
-        }, 100);
-      },
-      /**
+    handleTypeChange(e) {
+      this.params.type = this.types[e.detail.value]
+      console.log('this.params.type:', this.params.type.value)
+      setTimeout(() => {
+        this.screenFun(this.params.type.value)
+      }, 100)
+    },
+    /**
        * 年份选择器选择回调
        */
-      handleYearChange(e) {
-        this.params.year = this.years[e.detail.value];
-      },
-      /**
+    handleYearChange(e) {
+      this.params.year = this.years[e.detail.value]
+    },
+    /**
        * 设置地区列表
        */
-      setCities() {
-        function map(list) {
-          return list.map((item) => {
-            const isProvince = item.code.endsWith('0000');
-            const municipalities = ['北京市', '天津市', '上海市', '重庆市'];
-            const isMunicipality = municipalities.indexOf(item.name) !== -1;
-            return {
-              text: item.name,
-              value: item.code,
-              children: isProvince && !isMunicipality ? map(item.list) : [],
-            };
-          });
-        }
-        this.cities = map(cities);
-      },
-      /**
+    setCities() {
+      function map(list) {
+        return list.map((item) => {
+          const isProvince = item.code.endsWith('0000')
+          const municipalities = ['北京市', '天津市', '上海市', '重庆市']
+          const isMunicipality = municipalities.indexOf(item.name) !== -1
+          return {
+            text: item.name,
+            value: item.code,
+            children: isProvince && !isMunicipality ? map(item.list) : []
+          }
+        })
+      }
+      this.cities = map(cities)
+    },
+    /**
        * 设置就诊类型列表
        */
-      setTypes() {
-        this.types = [
-          { text: '类型 1', value: 'value1' },
-          { text: '类型 2', value: 'value2' },
-          { text: '类型 3', value: 'value3' },
-        ];
-      },
-      /**
+    setTypes() {
+      this.types = [
+        { text: '类型 1', value: 'value1' },
+        { text: '类型 2', value: 'value2' },
+        { text: '类型 3', value: 'value3' }
+      ]
+    },
+    /**
        * 设置年份列表
        */
-      setYears() {
-        this.years = Array.from({ length: 2100 })
-          .map((item, index) => index + 1)
-          .filter((item) => item > 1900)
-          .filter((item) => item <= Number(dayjs().format('YYYY')));
-      },
-      /**
+    setYears() {
+      this.years = Array.from({ length: 2100 })
+        .map((item, index) => index + 1)
+        .filter((item) => item > 1900)
+        .filter((item) => item <= Number(dayjs().format('YYYY')))
+    },
+    /**
        * 获取接口数据
        */
-      init() {
-        api.getIndividualRights({
-          data: {},
-          showsLoading: true,
-          success: (res) => {
-            console.log('res:', res);
-            //全部数据
-            this.inindata = res.healInsuConsRecord['2021']['北京市'];
-            this.screenFun('0');
-          },
-        });
-      },
-      // 数据处理函数
-      screenFun(key) {
-        //  年度消费总额
-        let total =
+    init() {
+      api.getIndividualRights({
+        data: {},
+        showsLoading: true,
+        success: (res) => {
+          console.log('res:', res)
+          // 全部数据
+          this.inindata = res.healInsuConsRecord['2021']['北京市']
+          this.screenFun('0')
+        }
+      })
+    },
+    // 数据处理函数
+    screenFun(key) {
+      //  年度消费总额
+      const total =
           this.inindata['住院']['annualSummary']['totalAnnualExpenses'] +
           this.inindata['药店']['annualSummary']['totalAnnualExpenses'] +
-          this.inindata['门诊']['annualSummary']['totalAnnualExpenses'];
-        switch (key) {
-          case '0':
-            // 选择全部
-            // 消费笔数
-            this.times =
+          this.inindata['门诊']['annualSummary']['totalAnnualExpenses']
+      switch (key) {
+        case '0':
+          // 选择全部
+          // 消费笔数
+          this.times =
               this.inindata['住院']['detail'].length +
               this.inindata['药店']['detail'].length +
-              this.inindata['门诊']['detail'].length;
-            //  年度消费总额
-            this.totalAnnualExpenses = total;
-            // 医保支付总额
-            this.totalPayment =
+              this.inindata['门诊']['detail'].length
+          //  年度消费总额
+          this.totalAnnualExpenses = total
+          // 医保支付总额
+          this.totalPayment =
               this.inindata['住院']['annualSummary']['totalPayment'] +
               this.inindata['药店']['annualSummary']['totalPayment'] +
-              this.inindata['门诊']['annualSummary']['totalPayment'];
-            // 自付金额
-            this.selfPayAmount =
+              this.inindata['门诊']['annualSummary']['totalPayment']
+          // 自付金额
+          this.selfPayAmount =
               this.inindata['住院']['annualSummary']['selfPayAmount'] +
               this.inindata['药店']['annualSummary']['selfPayAmount'] +
-              this.inindata['门诊']['annualSummary']['selfPayAmount'];
-            // 门诊比例
-            this.outpatient = (
-              (this.inindata['门诊']['annualSummary']['totalAnnualExpenses'] /
+              this.inindata['门诊']['annualSummary']['selfPayAmount']
+          // 门诊比例
+          this.outpatient = (
+            (this.inindata['门诊']['annualSummary']['totalAnnualExpenses'] /
                 this.totalAnnualExpenses) *
               100
-            ).toFixed(1);
-            // 药店比例
-            this.pharmacy = (
-              (this.inindata['药店']['annualSummary']['totalAnnualExpenses'] /
+          ).toFixed(1)
+          // 药店比例
+          this.pharmacy = (
+            (this.inindata['药店']['annualSummary']['totalAnnualExpenses'] /
                 this.totalAnnualExpenses) *
               100
-            ).toFixed(1);
-            // 住院比例
-            this.hospitalization = (
-              (this.inindata['住院']['annualSummary']['totalAnnualExpenses'] /
+          ).toFixed(1)
+          // 住院比例
+          this.hospitalization = (
+            (this.inindata['住院']['annualSummary']['totalAnnualExpenses'] /
                 this.totalAnnualExpenses) *
               100
-            ).toFixed(1);
-            // 列表
-            this.list = this.inindata['门诊']['detail']
-              .concat(this.inindata['药店']['detail'])
-              .concat(this.inindata['住院']['detail']);
-            console.log('门诊比例:', this.outpatient);
-            console.log('药店比例:', this.pharmacy);
-            console.log('住院比例:', this.hospitalization);
-            this.draw('canvas-1', { color: '#17E58F', percent: this.outpatient });
-            this.draw('canvas-2', { color: '#17D4E5', percent: this.pharmacy });
-            this.draw('canvas-3', { color: '#176DE5', percent: this.hospitalization });
-            break;
-          case '1':
-            // 消费笔数
-            this.times = this.inindata['门诊']['detail'].length;
-            //  年度消费总额
-            this.totalAnnualExpenses =
-              this.inindata['门诊']['annualSummary']['totalAnnualExpenses'];
+          ).toFixed(1)
+          // 列表
+          this.list = this.inindata['门诊']['detail']
+            .concat(this.inindata['药店']['detail'])
+            .concat(this.inindata['住院']['detail'])
+          console.log('门诊比例:', this.outpatient)
+          console.log('药店比例:', this.pharmacy)
+          console.log('住院比例:', this.hospitalization)
+          this.draw('canvas-1', { color: '#17E58F', percent: this.outpatient })
+          this.draw('canvas-2', { color: '#17D4E5', percent: this.pharmacy })
+          this.draw('canvas-3', { color: '#176DE5', percent: this.hospitalization })
+          break
+        case '1':
+          // 消费笔数
+          this.times = this.inindata['门诊']['detail'].length
+          //  年度消费总额
+          this.totalAnnualExpenses =
+              this.inindata['门诊']['annualSummary']['totalAnnualExpenses']
 
-            // 医保支付总额
-            this.totalPayment = this.inindata['门诊']['annualSummary']['totalPayment'];
-            // 自付金额
-            this.selfPayAmount = this.inindata['门诊']['annualSummary']['selfPayAmount'];
-            // 门诊比例
-            this.outpatient = (
-              (this.inindata['门诊']['annualSummary']['totalAnnualExpenses'] / total) *
+          // 医保支付总额
+          this.totalPayment = this.inindata['门诊']['annualSummary']['totalPayment']
+          // 自付金额
+          this.selfPayAmount = this.inindata['门诊']['annualSummary']['selfPayAmount']
+          // 门诊比例
+          this.outpatient = (
+            (this.inindata['门诊']['annualSummary']['totalAnnualExpenses'] / total) *
               100
-            ).toFixed(1);
-            // 列表
-            this.list = this.inindata['门诊']['detail'];
-            this.draw('canvas-1', { color: '#176DE5', percent: this.outpatient });
-            break;
-          case '2':
-            // 消费笔数
-            this.times = this.inindata['药店']['detail'].length;
-            //  年度消费总额
-            this.totalAnnualExpenses =
-              this.inindata['药店']['annualSummary']['totalAnnualExpenses'];
-            // 医保支付总额
-            this.totalPayment = this.inindata['药店']['annualSummary']['totalPayment'];
-            // 自付金额
-            this.selfPayAmount = this.inindata['药店']['annualSummary']['selfPayAmount'];
-            // 药店比例
-            this.pharmacy = (
-              (this.inindata['药店']['annualSummary']['totalAnnualExpenses'] / total) *
+          ).toFixed(1)
+          // 列表
+          this.list = this.inindata['门诊']['detail']
+          this.draw('canvas-1', { color: '#176DE5', percent: this.outpatient })
+          break
+        case '2':
+          // 消费笔数
+          this.times = this.inindata['药店']['detail'].length
+          //  年度消费总额
+          this.totalAnnualExpenses =
+              this.inindata['药店']['annualSummary']['totalAnnualExpenses']
+          // 医保支付总额
+          this.totalPayment = this.inindata['药店']['annualSummary']['totalPayment']
+          // 自付金额
+          this.selfPayAmount = this.inindata['药店']['annualSummary']['selfPayAmount']
+          // 药店比例
+          this.pharmacy = (
+            (this.inindata['药店']['annualSummary']['totalAnnualExpenses'] / total) *
               100
-            ).toFixed(1);
-            // 列表
-            this.list = this.inindata['药店']['detail'];
-            this.draw('canvas-2', { color: '#17E58F', percent: this.pharmacy });
-            break;
-          case '3':
-            // 消费笔数
-            this.times = this.inindata['住院']['detail'].length;
-            //  年度消费总额
-            this.totalAnnualExpenses =
-              this.inindata['住院']['annualSummary']['totalAnnualExpenses'];
-            // 医保支付总额
-            this.totalPayment = this.inindata['住院']['annualSummary']['totalPayment'];
-            // 自付金额
-            this.selfPayAmount = this.inindata['住院']['annualSummary']['selfPayAmount'];
-            // 住院比例
-            this.hospitalization = (
-              (this.inindata['住院']['annualSummary']['totalAnnualExpenses'] / total) *
+          ).toFixed(1)
+          // 列表
+          this.list = this.inindata['药店']['detail']
+          this.draw('canvas-2', { color: '#17E58F', percent: this.pharmacy })
+          break
+        case '3':
+          // 消费笔数
+          this.times = this.inindata['住院']['detail'].length
+          //  年度消费总额
+          this.totalAnnualExpenses =
+              this.inindata['住院']['annualSummary']['totalAnnualExpenses']
+          // 医保支付总额
+          this.totalPayment = this.inindata['住院']['annualSummary']['totalPayment']
+          // 自付金额
+          this.selfPayAmount = this.inindata['住院']['annualSummary']['selfPayAmount']
+          // 住院比例
+          this.hospitalization = (
+            (this.inindata['住院']['annualSummary']['totalAnnualExpenses'] / total) *
               100
-            ).toFixed(1);
-            // 列表
-            this.list = this.inindata['住院']['detail'];
-            this.draw('canvas-3', { color: '#17D4E5', percent: this.hospitalization });
+          ).toFixed(1)
+          // 列表
+          this.list = this.inindata['住院']['detail']
+          this.draw('canvas-3', { color: '#17D4E5', percent: this.hospitalization })
 
-            break;
-          default:
-            break;
-        }
-      },
-      draw(canvasID, data) {
-        const context = uni.createCanvasContext(canvasID, this);
-
-        // 画灰色底环
-        context.beginPath();
-        context.arc(this.convert(84), this.convert(84), this.convert(84) - 6, 0, 2 * Math.PI);
-        context.setLineWidth(12);
-        context.setStrokeStyle('#f2f2f2');
-        context.stroke();
-
-        // 计算角度
-        const degree = (Number(data.percent) / 100).toFixed(2) * 2 * Math.PI;
-        // 画进度条
-        context.beginPath();
-        context.arc(
-          this.convert(84),
-          this.convert(84),
-          this.convert(84) - 6,
-          -Math.PI / 2,
-          degree - Math.PI / 2,
-        );
-        context.setLineWidth(12);
-        context.setLineCap('round');
-        context.setStrokeStyle(data.color);
-        context.stroke();
-        context.draw();
-      },
-      convert(length) {
-        return Math.round((uni.getSystemInfoSync().windowWidth * length) / 750);
-      },
+          break
+        default:
+          break
+      }
     },
-  };
+    draw(canvasID, data) {
+      const context = uni.createCanvasContext(canvasID, this)
+
+      // 画灰色底环
+      context.beginPath()
+      context.arc(this.convert(84), this.convert(84), this.convert(84) - 6, 0, 2 * Math.PI)
+      context.setLineWidth(12)
+      context.setStrokeStyle('#f2f2f2')
+      context.stroke()
+
+      // 计算角度
+      const degree = (Number(data.percent) / 100).toFixed(2) * 2 * Math.PI
+      // 画进度条
+      context.beginPath()
+      context.arc(
+        this.convert(84),
+        this.convert(84),
+        this.convert(84) - 6,
+        -Math.PI / 2,
+        degree - Math.PI / 2
+      )
+      context.setLineWidth(12)
+      context.setLineCap('round')
+      context.setStrokeStyle(data.color)
+      context.stroke()
+      context.draw()
+    },
+    convert(length) {
+      return Math.round((uni.getSystemInfoSync().windowWidth * length) / 750)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

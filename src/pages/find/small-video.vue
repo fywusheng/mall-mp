@@ -12,30 +12,30 @@
 </template>
 
 <script>
-  export default {
-    components: {},
-    props: {
-      datalist: {
-        type: Array,
-        default: () => [],
-      },
-      showBottom: {
-        type: Boolean,
-        default: true,
-      },
+export default {
+  components: {},
+  props: {
+    datalist: {
+      type: Array,
+      default: () => []
     },
-    data() {
-      return {
-        list: [],
-      };
-    },
-    onLoad() {},
-    methods: {
-      clickItem(item) {
-        this.$emit('return_data', item);
-      },
-    },
-  };
+    showBottom: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data() {
+    return {
+      list: []
+    }
+  },
+  onLoad() {},
+  methods: {
+    clickItem(item) {
+      this.$emit('return_data', item)
+    }
+  }
+}
 </script>
 
 <style lang="scss">

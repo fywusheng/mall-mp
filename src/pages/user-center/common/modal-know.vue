@@ -18,31 +18,31 @@
   </view>
 </template>
 <script>
-  import uniPopup from '@/components/uni-popup/uni-popup.vue';
-  export default {
-    components: { uniPopup },
-    props: {
-      title: {
-        type: String,
-        default: '当前所在地区功能开通中',
-      },
-      content: {
-        type: String,
-        default: '当前所在地区功能开通中',
-      },
+import uniPopup from '@/components/uni-popup/uni-popup.vue'
+export default {
+  components: { uniPopup },
+  props: {
+    title: {
+      type: String,
+      default: '当前所在地区功能开通中'
     },
-    data() {
-      return {};
+    content: {
+      type: String,
+      default: '当前所在地区功能开通中'
+    }
+  },
+  data() {
+    return {}
+  },
+  methods: {
+    close() {
+      this.$refs.popupM.close()
     },
-    methods: {
-      close() {
-        this.$refs.popupM.close();
-      },
-      open() {
-        this.$refs.popupM.open();
-      },
-    },
-  };
+    open() {
+      this.$refs.popupM.open()
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .notice {

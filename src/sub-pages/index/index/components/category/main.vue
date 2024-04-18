@@ -28,49 +28,49 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        categoryList: [],
-        subList: [],
-        currentIndex: 0,
-        brandList: [],
-        bannerList: [],
-        operation: {},
-        height: App.systemInfo.windowHeight - 37 + 'px',
-      };
+export default {
+  data() {
+    return {
+      categoryList: [],
+      subList: [],
+      currentIndex: 0,
+      brandList: [],
+      bannerList: [],
+      operation: {},
+      height: App.systemInfo.windowHeight - 37 + 'px'
+    }
+  },
+  methods: {
+    toSearch() {
+      wx.navigateTo({
+        url: '/sub-pages/index/search/main'
+      })
     },
-    methods: {
-      toSearch() {
-        wx.navigateTo({
-          url: '/sub-pages/index/search/main',
-        });
-      },
-      changeCategory(category, index) {
-        this.currentIndex = index;
-        this.subList = category.children;
-      },
-      toCategory(cate) {
-        XIU.bridge.goCategory(cate.code);
-      },
-      async loadData() {
-        uni.showLoading();
-        const result = await Axios.post('/product/getProductListByType', {
-          productType: 3,
-        });
-        uni.hideLoading();
-        if (result.code == 200) {
-          this.categoryList = result.data;
-          this.changeCategory(this.categoryList[this.currentIndex], 0);
-        } else {
-          wx.showToast(result.result.message);
-        }
-      },
+    changeCategory(category, index) {
+      this.currentIndex = index
+      this.subList = category.children
     },
-    async mounted() {
-      await this.loadData();
+    toCategory(cate) {
+      XIU.bridge.goCategory(cate.code)
     },
-  };
+    async loadData() {
+      uni.showLoading()
+      const result = await Axios.post('/product/getProductListByType', {
+        productType: 3
+      })
+      uni.hideLoading()
+      if (result.code == 200) {
+        this.categoryList = result.data
+        this.changeCategory(this.categoryList[this.currentIndex], 0)
+      } else {
+        wx.showToast(result.result.message)
+      }
+    }
+  },
+  async mounted() {
+    await this.loadData()
+  }
+}
 </script>
 
 <style lang="scss" scoped>

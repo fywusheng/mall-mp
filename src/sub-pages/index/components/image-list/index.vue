@@ -11,68 +11,67 @@
 
 <script>
 
-  export default {
-    name: 'Banner',
-    props: ['mode', 'instance_id', 'common', 'content'],
-    data() {
-      return {
-        dataList: [],
-        feature: {},
-        space_height: '30rpx'
+export default {
+  name: 'Banner',
+  props: ['mode', 'instance_id', 'common', 'content'],
+  data() {
+    return {
+      dataList: [],
+      feature: {},
+      space_height: '30rpx'
+    }
+  },
+  watch: {
+    'content.code': {
+      handler() {
+        this.getData()
       }
-    },
-    watch: {
-      'content.code': {
-        handler() {
-          this.getData()
-        }
-      }
-    },
-    methods: {
-      async getData() {
-        if (this.content.code) {
-          const result = await Axios.get(`${ENV.CMS}/operationContent/getByCode?code=${this.content.code}`)
-          if(result.code === 200){
-            this.space_height = (result.data.operation.space_height || 30) + 'rpx'
-            let number = 1;
-            const dataList = [];
-            switch (result.data.operation.style) {
-              case 'column1':
-                number = 1;
-                break;
-              case 'column2':
-                number = 2;
-                break;
-              case 'column3':
-                number = 3;
-                break;
-              case 'column4':
-                number = 4;
-                break;
-              case 'column5':
-                number = 5;
-                break;
-
-            }
-            result.data.contentList.forEach(content => {
-              content.image_url = XIU.getImgFormat(content.image_url, '/resize,w_750')
-            })
-            while (result.data.contentList.length) {
-              dataList.push(result.data.contentList.splice(0, number))
-            }
-            this.dataList = dataList;
+    }
+  },
+  methods: {
+    async getData() {
+      if (this.content.code) {
+        const result = await Axios.get(`${ENV.CMS}/operationContent/getByCode?code=${this.content.code}`)
+        if (result.code === 200) {
+          this.space_height = (result.data.operation.space_height || 30) + 'rpx'
+          let number = 1
+          const dataList = []
+          switch (result.data.operation.style) {
+            case 'column1':
+              number = 1
+              break
+            case 'column2':
+              number = 2
+              break
+            case 'column3':
+              number = 3
+              break
+            case 'column4':
+              number = 4
+              break
+            case 'column5':
+              number = 5
+              break
           }
+          result.data.contentList.forEach(content => {
+            content.image_url = XIU.getImgFormat(content.image_url, '/resize,w_750')
+          })
+          while (result.data.contentList.length) {
+            dataList.push(result.data.contentList.splice(0, number))
+          }
+          this.dataList = dataList
         }
-      },
-      onClick(data) {
-        XIU.genLink(data)
       }
     },
-    components: {},
-    mounted() {
-      this.getData();
-    },
+    onClick(data) {
+      XIU.genLink(data)
+    }
+  },
+  components: {},
+  mounted() {
+    this.getData()
   }
+}
 </script>
 <style lang="scss" scoped>
   @import "~@/styles/base";

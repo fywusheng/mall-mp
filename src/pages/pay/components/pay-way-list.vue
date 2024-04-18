@@ -29,59 +29,59 @@
 </template>
 
 <script>
-  import UniPopup from '@/components/uni-popup/uni-popup.vue';
-  export default {
-    components: { UniPopup },
-    props: {
-      title: {
-        type: String,
-        default: '',
-      },
-      showsCancel: {
-        type: Boolean,
-        default: true,
-      },
-      list: {
-        type: Array,
-        default: () => [],
-      },
-      selectIndex: {
-        type: Number,
-        default: 0,
-      },
+import UniPopup from '@/components/uni-popup/uni-popup.vue'
+export default {
+  components: { UniPopup },
+  props: {
+    title: {
+      type: String,
+      default: ''
     },
-    data() {
-      return {
-        icon: {
-          back: 'http://192.168.1.187:10088/static/supermarket/icon-arrow-left.png',
-          balance: 'http://192.168.1.187:10088/static/pay/icon-balance.png',
-          checked: 'http://192.168.1.187:10088/static/pay/icon-checked.png',
-        },
-      };
+    showsCancel: {
+      type: Boolean,
+      default: true
     },
-    methods: {
-      /**
+    list: {
+      type: Array,
+      default: () => []
+    },
+    selectIndex: {
+      type: Number,
+      default: 0
+    }
+  },
+  data() {
+    return {
+      icon: {
+        back: 'http://192.168.1.187:10088/static/supermarket/icon-arrow-left.png',
+        balance: 'http://192.168.1.187:10088/static/pay/icon-balance.png',
+        checked: 'http://192.168.1.187:10088/static/pay/icon-checked.png'
+      }
+    }
+  },
+  methods: {
+    /**
        * 取消点击事件
        */
-      handleCancelClick() {
-        this.$refs.popup.close();
-        this.$emit('back');
-      },
-      /**
+    handleCancelClick() {
+      this.$refs.popup.close()
+      this.$emit('back')
+    },
+    /**
        * 选中支付方式
        */
-      handleItemClick(index) {
-        this.$refs.popup.close();
-        this.$emit('select', index);
-      },
-      /**
+    handleItemClick(index) {
+      this.$refs.popup.close()
+      this.$emit('select', index)
+    },
+    /**
        * 给外部调用的方法
        */
-      open() {
-        this.$refs.popup.open();
-      },
-    },
-  };
+    open() {
+      this.$refs.popup.open()
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

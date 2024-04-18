@@ -119,206 +119,206 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  export default {
-    data() {
-      return {
-        returnsTypeLabel: '',
-        reasonType: '',
-        // reasonTypeList: [],
-        goodsTypeName: '已收到货',
-        goodsTypes: [
-          {
-            id: 1,
-            name: '未收到货',
-          },
-          {
-            id: 2,
-            name: '已收到货',
-          },
-        ],
-        price: 0,
-        returnTransferPrice: 0,
-        expressName: '',
-        dataForm: {
-          id: '',
-          expressId: '',
-          expressName: '',
-          expressNum: '',
+import api from '@/apis/index.js'
+export default {
+  data() {
+    return {
+      returnsTypeLabel: '',
+      reasonType: '',
+      // reasonTypeList: [],
+      goodsTypeName: '已收到货',
+      goodsTypes: [
+        {
+          id: 1,
+          name: '未收到货'
         },
-        imgList: [],
-        previewList: [],
-        expressSuppliers: [],
-      };
+        {
+          id: 2,
+          name: '已收到货'
+        }
+      ],
+      price: 0,
+      returnTransferPrice: 0,
+      expressName: '',
+      dataForm: {
+        id: '',
+        expressId: '',
+        expressName: '',
+        expressNum: ''
+      },
+      imgList: [],
+      previewList: [],
+      expressSuppliers: []
+    }
+  },
+  components: {},
+  methods: {
+    goHome() {
+      uni.switchTab({ url: '/pages/index/index' })
     },
-    components: {},
-    methods: {
-      goHome() {
-        uni.switchTab({ url: '/pages/index/index' });
-      },
-      async cancel() {
-        wx.showLoading({ title: '正在取消...', mask: true });
-        const result = await Axios.post('/aftersale/returns/cancel', this.dataForm);
-        wx.hideLoading();
-        if (result.code == 200) {
-          wx.showToast({
-            title: result.msg,
-            icon: 'none',
-          });
-          uni.reLaunch({
-            url: '/pages/order/orderList',
-          });
-          // wx.navigateTo({
-          //   url: `../refund-detail/main?orderId=${this.orderId}&productId=${this.productId}&skuId=${this.skuId}`,
-          // });
-        } else {
-          wx.showToast({
-            title: result.msg,
-            icon: 'none',
-          });
-        }
-      },
-      async save() {
-        if (!this.dataForm.expressId) {
-          wx.showToast({
-            title: '请选择退单承运商！',
-            icon: 'none',
-          });
-          return false;
-        }
-        if (!this.dataForm.expressNum) {
-          wx.showToast({
-            title: '请输入退货运单号！',
-            icon: 'none',
-          });
-          return false;
-        }
-        if (this.imgList.length != 0) {
-          this.imgList.forEach((img, index) => {
-            this.dataForm[`expressImg${index + 1}`] = img;
-          });
-        } else {
-          wx.showToast({
-            title: '请上传退货快递凭证！',
-            icon: 'none',
-          });
-          return false;
-        }
-        wx.showLoading({ title: '正在提交...', mask: true });
-        const result = await Axios.post('/aftersale/returns/update', this.dataForm);
-        wx.hideLoading();
-        if (result.code == 200) {
-          wx.showToast({
-            title: result.msg,
-            icon: 'none',
-          });
-          // wx.navigateTo({ url: '../refund-detail/main?returnId=' + this.dataForm.id })
-          wx.navigateTo({
-            url: `../refund-detail/main?orderId=${this.orderId}&productId=${this.productId}&skuId=${this.skuId}`,
-          });
-        } else {
-          wx.showToast({
-            title: result.msg,
-            icon: 'none',
-          });
-        }
-      },
-      changeExpress(e) {
-        const index = e.mp.detail.value;
-        this.dataForm.expressId = this.expressSuppliers[index].id;
-        this.dataForm.expressName = this.expressSuppliers[index].name;
-      },
-      remove(index) {
-        this.imgList.splice(index, 1);
-        this.previewList.splice(index, 1);
-      },
-
-      async chooseImage() {
-        if (this.imgList.length == 3) {
-          uni.showToast({
-            title: '最多只能上传3张图片',
-            icon: 'none',
-          });
-          return false;
-        }
-
-        uni.chooseImage({
-          sourceType: ['album', 'camera'],
-          count: 1,
-          success: (res) => {
-            // 名称
-            const imageName = res.tempFilePaths[0].split('/').pop();
-            const arr = imageName.split('.');
-            // 后缀
-            const imageExt = arr[arr.length - 1];
-
-            uni.getFileSystemManager().readFile({
-              filePath: res.tempFilePaths[0],
-              encoding: 'base64',
-              success: (rs) => {
-                api.imgUpload({
-                  data: {
-                    base64String: rs.data,
-                    imageName,
-                    imageExt,
-                  },
-                  showsLoading: true,
-                  success: (imgres) => {
-                    this.previewList.push(imgres.absoluteUrl);
-                    this.imgList.push(imgres.absoluteUrl);
-                  },
-                });
-              },
-            });
-          },
-        });
-      },
-    },
-    onUnload() {
-      this.dataForm = {
-        remark: '',
-        goodsState: 2,
-      };
-      this.imgList = [];
-      this.previewList = [];
-    },
-    async mounted() {
-      if (!Store.getters.isLogin) {
-        await Store.dispatch('login');
-      }
-      this.dataForm.id = this.$root.$mp.query.id;
-      this.orderId = this.$root.$mp.query.orderId;
-      this.productId = this.$root.$mp.query.productId;
-      this.skuId = this.$root.$mp.query.skuId;
-
-      wx.showLoading({ title: '正在加载...', mask: true });
-      const expressCompanies = await Axios.get('/express/provider/list', {});
-      if (expressCompanies.code == 200) {
-        this.expressSuppliers = expressCompanies.data;
-      }
-      const returnResult = await Axios.post('/aftersale/getReturns', {
-        // id: this.dataForm.id,
-        orderId: this.orderId,
-        productId: this.productId,
-        skuId: this.skuId,
-      });
-      wx.hideLoading();
-      if (returnResult.code == 200) {
-        this.dataForm.id = returnResult.data.id;
-        const title = '售后申请';
-        wx.setNavigationBarTitle({
-          title: title,
-        });
-        this.dataForm = returnResult.data;
-        for (let i = 0; i < 3; i++) {
-          if (returnResult.data[`expressImg${i + 1}`]) {
-            this.imgList.push(returnResult.data[`expressImg${i + 1}`]);
-            this.previewList.push(returnResult.data[`expressImg${i + 1}`]);
-          }
-        }
+    async cancel() {
+      wx.showLoading({ title: '正在取消...', mask: true })
+      const result = await Axios.post('/aftersale/returns/cancel', this.dataForm)
+      wx.hideLoading()
+      if (result.code == 200) {
+        wx.showToast({
+          title: result.msg,
+          icon: 'none'
+        })
+        uni.reLaunch({
+          url: '/pages/order/orderList'
+        })
+        // wx.navigateTo({
+        //   url: `../refund-detail/main?orderId=${this.orderId}&productId=${this.productId}&skuId=${this.skuId}`,
+        // });
+      } else {
+        wx.showToast({
+          title: result.msg,
+          icon: 'none'
+        })
       }
     },
-  };
+    async save() {
+      if (!this.dataForm.expressId) {
+        wx.showToast({
+          title: '请选择退单承运商！',
+          icon: 'none'
+        })
+        return false
+      }
+      if (!this.dataForm.expressNum) {
+        wx.showToast({
+          title: '请输入退货运单号！',
+          icon: 'none'
+        })
+        return false
+      }
+      if (this.imgList.length != 0) {
+        this.imgList.forEach((img, index) => {
+          this.dataForm[`expressImg${index + 1}`] = img
+        })
+      } else {
+        wx.showToast({
+          title: '请上传退货快递凭证！',
+          icon: 'none'
+        })
+        return false
+      }
+      wx.showLoading({ title: '正在提交...', mask: true })
+      const result = await Axios.post('/aftersale/returns/update', this.dataForm)
+      wx.hideLoading()
+      if (result.code == 200) {
+        wx.showToast({
+          title: result.msg,
+          icon: 'none'
+        })
+        // wx.navigateTo({ url: '../refund-detail/main?returnId=' + this.dataForm.id })
+        wx.navigateTo({
+          url: `../refund-detail/main?orderId=${this.orderId}&productId=${this.productId}&skuId=${this.skuId}`
+        })
+      } else {
+        wx.showToast({
+          title: result.msg,
+          icon: 'none'
+        })
+      }
+    },
+    changeExpress(e) {
+      const index = e.mp.detail.value
+      this.dataForm.expressId = this.expressSuppliers[index].id
+      this.dataForm.expressName = this.expressSuppliers[index].name
+    },
+    remove(index) {
+      this.imgList.splice(index, 1)
+      this.previewList.splice(index, 1)
+    },
+
+    async chooseImage() {
+      if (this.imgList.length == 3) {
+        uni.showToast({
+          title: '最多只能上传3张图片',
+          icon: 'none'
+        })
+        return false
+      }
+
+      uni.chooseImage({
+        sourceType: ['album', 'camera'],
+        count: 1,
+        success: (res) => {
+          // 名称
+          const imageName = res.tempFilePaths[0].split('/').pop()
+          const arr = imageName.split('.')
+          // 后缀
+          const imageExt = arr[arr.length - 1]
+
+          uni.getFileSystemManager().readFile({
+            filePath: res.tempFilePaths[0],
+            encoding: 'base64',
+            success: (rs) => {
+              api.imgUpload({
+                data: {
+                  base64String: rs.data,
+                  imageName,
+                  imageExt
+                },
+                showsLoading: true,
+                success: (imgres) => {
+                  this.previewList.push(imgres.absoluteUrl)
+                  this.imgList.push(imgres.absoluteUrl)
+                }
+              })
+            }
+          })
+        }
+      })
+    }
+  },
+  onUnload() {
+    this.dataForm = {
+      remark: '',
+      goodsState: 2
+    }
+    this.imgList = []
+    this.previewList = []
+  },
+  async mounted() {
+    if (!Store.getters.isLogin) {
+      await Store.dispatch('login')
+    }
+    this.dataForm.id = this.$root.$mp.query.id
+    this.orderId = this.$root.$mp.query.orderId
+    this.productId = this.$root.$mp.query.productId
+    this.skuId = this.$root.$mp.query.skuId
+
+    wx.showLoading({ title: '正在加载...', mask: true })
+    const expressCompanies = await Axios.get('/express/provider/list', {})
+    if (expressCompanies.code == 200) {
+      this.expressSuppliers = expressCompanies.data
+    }
+    const returnResult = await Axios.post('/aftersale/getReturns', {
+      // id: this.dataForm.id,
+      orderId: this.orderId,
+      productId: this.productId,
+      skuId: this.skuId
+    })
+    wx.hideLoading()
+    if (returnResult.code == 200) {
+      this.dataForm.id = returnResult.data.id
+      const title = '售后申请'
+      wx.setNavigationBarTitle({
+        title: title
+      })
+      this.dataForm = returnResult.data
+      for (let i = 0; i < 3; i++) {
+        if (returnResult.data[`expressImg${i + 1}`]) {
+          this.imgList.push(returnResult.data[`expressImg${i + 1}`])
+          this.previewList.push(returnResult.data[`expressImg${i + 1}`])
+        }
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss">

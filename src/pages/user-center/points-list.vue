@@ -74,122 +74,122 @@
 </template>
 
 <script>
-  import NavigationBar from '../../components/common/navigation-bar.vue';
-  import api from '@/apis/index.js';
-  import dayjs from 'dayjs';
-  import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
-  export default {
-    components: { NavigationBar, RealNamePop },
-    data() {
-      return {
-        headImg: '',
-        clickId: '',
-        // 导航栏高度
-        // #ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        // #endif
-        // #ifdef MP-ALIPAY
-        navigationBarHeight:
+import NavigationBar from '../../components/common/navigation-bar.vue'
+import api from '@/apis/index.js'
+import dayjs from 'dayjs'
+import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue'
+export default {
+  components: { NavigationBar, RealNamePop },
+  data() {
+    return {
+      headImg: '',
+      clickId: '',
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        // #endif
-        // // 当前可用积分进度条宽度
-        // progressBarWidth: 234,
-        // 选中的下标
-        selectedIndex: 2,
-        // 赚积分任务列表
-        list: [],
-        // 可用积分
-        score: '0',
-        // 最高积分
-        fixScore: '0',
-        // 页码
-        pageNum: 1,
-        // 页数
-        pageSize: 10,
-      };
+      // #endif
+      // // 当前可用积分进度条宽度
+      // progressBarWidth: 234,
+      // 选中的下标
+      selectedIndex: 2,
+      // 赚积分任务列表
+      list: [],
+      // 可用积分
+      score: '0',
+      // 最高积分
+      fixScore: '0',
+      // 页码
+      pageNum: 1,
+      // 页数
+      pageSize: 10
+    }
+  },
+  computed: {
+    indicatorClass() {
+      return ['indicator--left', 'indicator--mid', 'indicator--right'][this.selectedIndex]
     },
-    computed: {
-      indicatorClass() {
-        return ['indicator--left', 'indicator--mid', 'indicator--right'][this.selectedIndex];
-      },
-      progressBarWidth() {
-        // 当前可用积分进度条宽度
-        return Math.ceil((this.score / 1000) * 636);
-      },
-    },
-    onLoad() {
-      this.userInfo = uni.getStorageSync('userInfo');
-      this.handleScoreInfo();
-      this.handleScoreList();
-      // this.setData();
-    },
-    onShow() {
-      // this.handleScoreInfo()
-      // this.getUserTaskInfoByPage()
-    },
-    methods: {
-      /**
+    progressBarWidth() {
+      // 当前可用积分进度条宽度
+      return Math.ceil((this.score / 1000) * 636)
+    }
+  },
+  onLoad() {
+    this.userInfo = uni.getStorageSync('userInfo')
+    this.handleScoreInfo()
+    this.handleScoreList()
+    // this.setData();
+  },
+  onShow() {
+    // this.handleScoreInfo()
+    // this.getUserTaskInfoByPage()
+  },
+  methods: {
+    /**
        * tab 点击事件
        */
-      handleTabClick(index) {
-        if (index === this.selectedIndex) return;
-        this.selectedIndex = index;
-        this.pageNum = 1;
-        this.list = [];
-        this.handleScoreList();
-      },
-      // 获取用户积分
-      handleScoreInfo() {
-        api.scoreInfo({
-          data: {
-            userId: this.userInfo.memberId,
-          },
-          success: (res) => {
-            console.log('用户积分：', res);
-            this.score = res.score;
-            this.fixScore = res.fixScore;
-          },
-        });
-      },
+    handleTabClick(index) {
+      if (index === this.selectedIndex) return
+      this.selectedIndex = index
+      this.pageNum = 1
+      this.list = []
+      this.handleScoreList()
+    },
+    // 获取用户积分
+    handleScoreInfo() {
+      api.scoreInfo({
+        data: {
+          userId: this.userInfo.memberId
+        },
+        success: (res) => {
+          console.log('用户积分：', res)
+          this.score = res.score
+          this.fixScore = res.fixScore
+        }
+      })
+    },
 
-      // 获取积分数据
-      handleScoreList() {
-        api.getScoreList({
-          showsLoading: true,
-          data: {
-            userId: this.userInfo.memberId,
-            chgType: this.selectedIndex < 2 ? this.selectedIndex + '' : '', // 变更类型(0-减少 1新增)
-            pageNum: this.pageNum,
-            pageSize: this.pageSize,
-          },
-          success: (res) => {
-            console.log('res.length', res);
-            if (res.list.length > 0) {
-              res.list.map((item, index) => {
-                this.list.push(item);
-              });
-              this.pageNum = this.pageNum + 1;
+    // 获取积分数据
+    handleScoreList() {
+      api.getScoreList({
+        showsLoading: true,
+        data: {
+          userId: this.userInfo.memberId,
+          chgType: this.selectedIndex < 2 ? this.selectedIndex + '' : '', // 变更类型(0-减少 1新增)
+          pageNum: this.pageNum,
+          pageSize: this.pageSize
+        },
+        success: (res) => {
+          console.log('res.length', res)
+          if (res.list.length > 0) {
+            res.list.map((item, index) => {
+              this.list.push(item)
+            })
+            this.pageNum = this.pageNum + 1
+          } else {
+            if (this.pageNum > 1) {
+              this.$uni.showToast('暂无更多数据')
             } else {
-              if (this.pageNum > 1) {
-                this.$uni.showToast('暂无更多数据');
-              } else {
-                this.$uni.showToast('暂无数据');
-              }
+              this.$uni.showToast('暂无数据')
             }
-          },
-        });
-      },
-    },
-    onReachBottom() {
-      this.handleScoreList();
-    },
-    filters: {
-      // 日期过滤器, 用于格式化日期
-      dateFilter(time) {
-        return dayjs(time).format('YYYY-MM-DD HH:mm:ss');
-      },
-    },
-  };
+          }
+        }
+      })
+    }
+  },
+  onReachBottom() {
+    this.handleScoreList()
+  },
+  filters: {
+    // 日期过滤器, 用于格式化日期
+    dateFilter(time) {
+      return dayjs(time).format('YYYY-MM-DD HH:mm:ss')
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

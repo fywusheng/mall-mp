@@ -30,33 +30,33 @@
   </view>
 </template>
 <script>
-  export default {
-    props: {
-      jobList: {
-        type: Array,
-        default: () => [],
-      },
-    },
-    data() {
-      return {
-        pageNum: 1,
-        pageSize: 20,
-      };
-    },
-    created() {},
-    mounted() {},
-    onShareAppMessage() {
-      return {
-        title: '',
-        path: '/pages/index/index?index=0',
-      };
-    },
-    methods: {
-      goDetailJob(id) {
-        uni.navigateTo({ url: '/pages/job/jobDetail?id=' + id });
-      },
-    },
-  };
+export default {
+  props: {
+    jobList: {
+      type: Array,
+      default: () => []
+    }
+  },
+  data() {
+    return {
+      pageNum: 1,
+      pageSize: 20
+    }
+  },
+  created() {},
+  mounted() {},
+  onShareAppMessage() {
+    return {
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
+  },
+  methods: {
+    goDetailJob(id) {
+      uni.navigateTo({ url: '/pages/job/jobDetail?id=' + id })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   @import '~@/styles/base';

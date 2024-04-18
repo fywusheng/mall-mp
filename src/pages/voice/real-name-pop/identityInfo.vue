@@ -166,189 +166,189 @@
 </template>
 
 <script>
-  import dayjs from 'dayjs';
-  import staticData from '@/utils/dataBase64.js';
-  import api from '@/apis/index.js';
-  import { startFacialRecognitionVerify } from '@/utils/utils.js';
-  // import { UniDataPicker } from '@dcloudio/uni-ui'
-  import { validateIDCardNumber } from '@/utils/validation.js';
-  import { showPoints } from '@/pages/real-name-pop/showPoints.vue';
-  import { alipayCityChoose } from '@/utils/utils.js';
-  // import areaPicker from './area-picker.vue'
-  export default {
-    components: { showPoints },
-    props: {
-      scanInfor: {
-        type: Object,
-        default: () => {},
+import dayjs from 'dayjs'
+import staticData from '@/utils/dataBase64.js'
+import api from '@/apis/index.js'
+import { startFacialRecognitionVerify } from '@/utils/utils.js'
+// import { UniDataPicker } from '@dcloudio/uni-ui'
+import { validateIDCardNumber } from '@/utils/validation.js'
+import { showPoints } from '@/pages/real-name-pop/showPoints.vue'
+import { alipayCityChoose } from '@/utils/utils.js'
+// import areaPicker from './area-picker.vue'
+export default {
+  components: { showPoints },
+  props: {
+    scanInfor: {
+      type: Object,
+      default: () => {}
+    },
+    showTop: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data() {
+    return {
+      auiPicker: {
+        title: '请选择地区',
+        layer: null,
+        data: []
       },
-      showTop: {
-        type: Boolean,
-        default: true,
+      region: [],
+      repeatClick: '',
+      isClick: true,
+      alipayCitys: [],
+      address: '',
+      // 录入方式  scan: 扫描  input: 输入
+      type: '',
+      // 民族选择器数据
+      nations: staticData.nations,
+      // 表单数据
+      params: {
+        name: '',
+        idCardNumber: '',
+        gender: '',
+        nation: '',
+        birthday: '',
+        city: '',
+        address: ''
       },
+      realNmae: false,
+      successFlag: ''
+    }
+  },
+  created() {
+    this.setData()
+    this.getRegions()
+    this.alipayHandler()
+  },
+  onUnload() {
+    // 退出页面时销毁定时器
+    if (this.successFlag) {
+      console.log('执行onUnload')
+      clearTimeout(this.successFlag)
+      this.successFlag = null
+    }
+  },
+  destroyed() {
+    console.log('页面销毁')
+    clearTimeout()
+  },
+  methods: {
+    showPicker(e) {
+      this.$refs.picker.open().then(function () {
+        console.log('picker打开')
+      })
     },
-    data() {
-      return {
-        auiPicker: {
-          title: '请选择地区',
-          layer: null,
-          data: [],
-        },
-        region: [],
-        repeatClick: '',
-        isClick: true,
-        alipayCitys: [],
-        address: '',
-        // 录入方式  scan: 扫描  input: 输入
-        type: '',
-        // 民族选择器数据
-        nations: staticData.nations,
-        // 表单数据
-        params: {
-          name: '',
-          idCardNumber: '',
-          gender: '',
-          nation: '',
-          birthday: '',
-          city: '',
-          address: '',
-        },
-        realNmae: false,
-        successFlag: '',
-      };
+    pickerCallback(e) {
+      this.params.city = e.detail.value.join('')
     },
-    created() {
-      this.setData();
-      this.getRegions();
-      this.alipayHandler();
+    alipayHandler() {
+      api.getRegions({
+        success: (data) => {
+          function map(array) {
+            return array.map((item) => {
+              return {
+                name: item.regnName,
+                code: item.regnCode,
+                subList: map(item.children)
+              }
+            })
+          }
+          this.alipayCitys = map(data)
+        }
+      })
     },
-    onUnload() {
-      // 退出页面时销毁定时器
-      if (this.successFlag) {
-        console.log('执行onUnload');
-        clearTimeout(this.successFlag);
-        this.successFlag = null;
+    clearNo() {
+      this.params.idCardNumber = ''
+    },
+    clearName() {
+      this.params.name = ''
+    },
+    alipayChose() {
+      const params = {
+        list: this.alipayCitys,
+        success: (city) => {
+          this.params.city = city
+        }
       }
+      alipayCityChoose(params)
     },
-    destroyed() {
-      console.log('页面销毁');
-      clearTimeout();
+    success_flag(successFlag) {
+      this.$emit('success_flag', successFlag)
     },
-    methods: {
-      showPicker(e) {
-        this.$refs.picker.open().then(function () {
-          console.log('picker打开');
-        });
-      },
-      pickerCallback(e) {
-        this.params.city = e.detail.value.join('');
-      },
-      alipayHandler() {
-        api.getRegions({
-          success: (data) => {
-            function map(array) {
-              return array.map((item) => {
-                return {
-                  name: item.regnName,
-                  code: item.regnCode,
-                  subList: map(item.children),
-                };
-              });
-            }
-            this.alipayCitys = map(data);
-          },
-        });
-      },
-      clearNo() {
-        this.params.idCardNumber = '';
-      },
-      clearName() {
-        this.params.name = '';
-      },
-      alipayChose() {
-        const params = {
-          list: this.alipayCitys,
-          success: (city) => {
-            this.params.city = city;
-          },
-        };
-        alipayCityChoose(params);
-      },
-      success_flag(successFlag) {
-        this.$emit('success_flag', successFlag);
-      },
-      radioChange(eve) {
-        this.params.gender = eve.detail.value;
-      },
-      // 回退按钮事件
-      handleBack() {
-        this.$emit('closeModal');
-      },
-      /**
+    radioChange(eve) {
+      this.params.gender = eve.detail.value
+    },
+    // 回退按钮事件
+    handleBack() {
+      this.$emit('closeModal')
+    },
+    /**
        * 身份证号输入完成事件
        */
-      handleIDCardNumberInputFinish() {
-        const birthday = this.params.idCardNumber.substring(6, 14);
-        this.params.birthday = dayjs(birthday).format('YYYY-MM-DD');
-        this.params.gender = this.params.idCardNumber.substring(16, 17) % 2;
-      },
-      /**
+    handleIDCardNumberInputFinish() {
+      const birthday = this.params.idCardNumber.substring(6, 14)
+      this.params.birthday = dayjs(birthday).format('YYYY-MM-DD')
+      this.params.gender = this.params.idCardNumber.substring(16, 17) % 2
+    },
+    /**
        * 民族选择器改变回调
        */
-      handleNationChange(e) {
-        console.log('===民族回调---', e.detail.value, this.nations[e.detail.value]);
-        this.params.nation = this.nations[e.detail.value];
-      },
-      /**
+    handleNationChange(e) {
+      console.log('===民族回调---', e.detail.value, this.nations[e.detail.value])
+      this.params.nation = this.nations[e.detail.value]
+    },
+    /**
        * 出生日期选择器改变回调
        */
-      handleBirthdayChange(e) {
-        this.params.birthday = e.target.value;
-      },
-      /**
+    handleBirthdayChange(e) {
+      this.params.birthday = e.target.value
+    },
+    /**
        * 城市选择器改变回调
        */
-      handleCityChange(e) {
-        this.params.city = e.detail.value.map((item) => item.text).join('');
-      },
-      /**
+    handleCityChange(e) {
+      this.params.city = e.detail.value.map((item) => item.text).join('')
+    },
+    /**
        * 重新扫描点击事件
        */
-      handleRescanClick() {
-        uni.chooseImage({
-          sourceType: ['camera'],
-          success: (res) => {
-            uni.getFileSystemManager().readFile({
-              filePath: res.tempFilePaths[0],
-              encoding: 'base64',
-              success: (rs) => {
-                api.getIdentification({
-                  data: { image64: rs.data },
-                  showsLoading: true,
-                  success: (resinfo) => {
-                    if (!resinfo.data) {
-                      this.$uni.showToast('身份证识别失败');
-                      return;
-                    }
-                    // 拍照完成后调用后端识别接口, 并将识别结果传入下个页面
-                    const info = resinfo.data;
-                    const data = {
-                      name: info.name,
-                      idCardNumber: info.id_num,
-                      gender: info.sex,
-                      birthday: info.birth,
-                      nation: info.nation,
-                      address: info.address,
-                    };
-                    this.backfillData(data);
-                  },
-                });
-              },
-            });
-          },
-        });
-      },
-      /**
+    handleRescanClick() {
+      uni.chooseImage({
+        sourceType: ['camera'],
+        success: (res) => {
+          uni.getFileSystemManager().readFile({
+            filePath: res.tempFilePaths[0],
+            encoding: 'base64',
+            success: (rs) => {
+              api.getIdentification({
+                data: { image64: rs.data },
+                showsLoading: true,
+                success: (resinfo) => {
+                  if (!resinfo.data) {
+                    this.$uni.showToast('身份证识别失败')
+                    return
+                  }
+                  // 拍照完成后调用后端识别接口, 并将识别结果传入下个页面
+                  const info = resinfo.data
+                  const data = {
+                    name: info.name,
+                    idCardNumber: info.id_num,
+                    gender: info.sex,
+                    birthday: info.birth,
+                    nation: info.nation,
+                    address: info.address
+                  }
+                  this.backfillData(data)
+                }
+              })
+            }
+          })
+        }
+      })
+    },
+    /**
      * 身份证校验,是否实名认证  女2 -男1
      *  code:
      *  900005  message: "姓名或身份证号输入有误"
@@ -356,223 +356,223 @@
         900001  性别选择有误，请重新选择
         900002  出生日期选择有误，请重新选择
      */
-      validateCardC() {
-        const params = {
-          idCard: this.params.idCardNumber,
-          gend: this.params.gender == 0 ? 2 : 1,
-          brdy: this.params.birthday,
-          userName: this.params.name,
-        };
-        const inputparams = {
-          idCard: this.params.idCardNumber,
-          userName: this.params.name,
-        };
-        const pars = this.type == 'input' ? inputparams : params;
-        console.log('身份证校验params55599--:', pars);
-        return new Promise((resolve, reject) => {
-          api.validateCard({
-            data: { ...pars },
-            success: (res) => {
-              if (res) {
-                resolve(res);
-              }
-            },
-            fail: (res) => {
-              this.$uni.showToast(res.message);
-              reject(false);
-            },
-          });
-        });
-      },
-      // 查询卡状态  TODO
-      getCertificateState(name, card) {
-        return new Promise((resolve, reject) => {
-          api.getCertificateState({
-            data: {
-              appId: '53928a083adb4a7dad2eecf05564873f',
-              idType: '身份证',
-              userName: name,
-              idNo: card,
-            },
-            success: (data) => {
-              resolve(data);
-            },
-            fail: (error) => {
-              reject(error);
-            },
-          });
-        });
-      },
+    validateCardC() {
+      const params = {
+        idCard: this.params.idCardNumber,
+        gend: this.params.gender == 0 ? 2 : 1,
+        brdy: this.params.birthday,
+        userName: this.params.name
+      }
+      const inputparams = {
+        idCard: this.params.idCardNumber,
+        userName: this.params.name
+      }
+      const pars = this.type == 'input' ? inputparams : params
+      console.log('身份证校验params55599--:', pars)
+      return new Promise((resolve, reject) => {
+        api.validateCard({
+          data: { ...pars },
+          success: (res) => {
+            if (res) {
+              resolve(res)
+            }
+          },
+          fail: (res) => {
+            this.$uni.showToast(res.message)
+            reject(false)
+          }
+        })
+      })
+    },
+    // 查询卡状态  TODO
+    getCertificateState(name, card) {
+      return new Promise((resolve, reject) => {
+        api.getCertificateState({
+          data: {
+            appId: '53928a083adb4a7dad2eecf05564873f',
+            idType: '身份证',
+            userName: name,
+            idNo: card
+          },
+          success: (data) => {
+            resolve(data)
+          },
+          fail: (error) => {
+            reject(error)
+          }
+        })
+      })
+    },
 
-      /**
+    /**
        * 下一步点击事件
        */
 
-      async handleNextStepClick() {
-        if (this.isClick) {
-          console.log('---点击事件--');
-          this.isClick = false;
-          const status = await this.chackInput();
-          if (!status) {
-            this.isClick = true;
-            return;
-          }
-
-          const params = {
-            name: this.params.name,
-            idCard: this.params.idCardNumber,
-            returnUrl: '',
-          };
-          params.success = () => {
-            // 进行实名认证
-            api.realPersonAuthenticate({
-              data: {
-                userName: this.params.name,
-                idCard: this.params.idCardNumber,
-              },
-              showsLoading: true,
-              success: (res) => {
-                const userInfo = uni.getStorageSync('userInfo');
-                api.checkLogOutUser({
-                  data: { uactId: userInfo.memberId },
-                  success: (data) => {
-                    console.log('===是否注销过---', data);
-                    if (!data) {
-                      this.$refs.showPoints.showsCreditsPopup = true;
-                    } else {
-                      uni.navigateTo({ url: `/pages/voice/real-name-result` });
-                    }
-                  },
-                });
-                //  this.successFlag = setTimeout(()=>{
-                //     this.$emit("success_flag",1)
-                //   },3000)
-              },
-              fail: (erro) => {
-                console.log('===异常---', erro);
-              },
-            });
-          };
-          // 开启人脸识别
-          startFacialRecognitionVerify(params);
-          this.repeatClick = setTimeout(() => {
-            this.isClick = true;
-          }, 3000);
+    async handleNextStepClick() {
+      if (this.isClick) {
+        console.log('---点击事件--')
+        this.isClick = false
+        const status = await this.chackInput()
+        if (!status) {
+          this.isClick = true
+          return
         }
-      },
-      /**
+
+        const params = {
+          name: this.params.name,
+          idCard: this.params.idCardNumber,
+          returnUrl: ''
+        }
+        params.success = () => {
+          // 进行实名认证
+          api.realPersonAuthenticate({
+            data: {
+              userName: this.params.name,
+              idCard: this.params.idCardNumber
+            },
+            showsLoading: true,
+            success: (res) => {
+              const userInfo = uni.getStorageSync('userInfo')
+              api.checkLogOutUser({
+                data: { uactId: userInfo.memberId },
+                success: (data) => {
+                  console.log('===是否注销过---', data)
+                  if (!data) {
+                    this.$refs.showPoints.showsCreditsPopup = true
+                  } else {
+                    uni.navigateTo({ url: `/pages/voice/real-name-result` })
+                  }
+                }
+              })
+              //  this.successFlag = setTimeout(()=>{
+              //     this.$emit("success_flag",1)
+              //   },3000)
+            },
+            fail: (erro) => {
+              console.log('===异常---', erro)
+            }
+          })
+        }
+        // 开启人脸识别
+        startFacialRecognitionVerify(params)
+        this.repeatClick = setTimeout(() => {
+          this.isClick = true
+        }, 3000)
+      }
+    },
+    /**
        * 获取用户信息
        */
-      getUserInfo() {
-        api.getUserInfo({
-          data: {
-            accessToken: uni.getStorageSync('token'),
-          },
-          success: (data) => {
-            const userinfor = data;
-            uni.setStorageSync('userInfo', userinfor);
-            uni.$emit('didLogin', data);
-            // setTimeout(uni.navigateBack, 1500);
-          },
-        });
-      },
-      /**
+    getUserInfo() {
+      api.getUserInfo({
+        data: {
+          accessToken: uni.getStorageSync('token')
+        },
+        success: (data) => {
+          const userinfor = data
+          uni.setStorageSync('userInfo', userinfor)
+          uni.$emit('didLogin', data)
+          // setTimeout(uni.navigateBack, 1500);
+        }
+      })
+    },
+    /**
        * 设置数据
        */
-      setData() {
-        // TODO 不处理
-        console.log('===读取props中的数据---', this.scanInfor.type);
-        //  this.scanInfor.type = this.type
-        switch (this.scanInfor.type) {
-          case 'scan':
-            this.backfillData(this.scanInfor.info);
-            // this.$uni.setTitle('身份信息确认')
-            break;
-          case 'input':
-            // this.$uni.setTitle('身份信息')
-            break;
-        }
-      },
-      /**
+    setData() {
+      // TODO 不处理
+      console.log('===读取props中的数据---', this.scanInfor.type)
+      //  this.scanInfor.type = this.type
+      switch (this.scanInfor.type) {
+        case 'scan':
+          this.backfillData(this.scanInfor.info)
+          // this.$uni.setTitle('身份信息确认')
+          break
+        case 'input':
+          // this.$uni.setTitle('身份信息')
+          break
+      }
+    },
+    /**
        * 数据回填
        */
-      backfillData(info) {
-        this.params.name = info.name;
-        this.params.idCardNumber = info.idCardNumber;
-        this.params.gender = info.gender === '男' ? 1 : 0;
-        this.params.nation = `${info.nation}族`;
-        this.params.birthday = info.birthday
-          .replace('年', '-')
-          .replace('月', '-')
-          .replace('日', '');
-        const regex = /.+?(省|市|自治区|自治州|县|区)/g;
-        const city = info.address.match(regex).join('');
-        this.params.city = city;
-        //  const address = info.address.replace(city, '')
-        this.params.address = info.address;
-        console.log('数据回填：', this.params);
-      },
-      /**
+    backfillData(info) {
+      this.params.name = info.name
+      this.params.idCardNumber = info.idCardNumber
+      this.params.gender = info.gender === '男' ? 1 : 0
+      this.params.nation = `${info.nation}族`
+      this.params.birthday = info.birthday
+        .replace('年', '-')
+        .replace('月', '-')
+        .replace('日', '')
+      const regex = /.+?(省|市|自治区|自治州|县|区)/g
+      const city = info.address.match(regex).join('')
+      this.params.city = city
+      //  const address = info.address.replace(city, '')
+      this.params.address = info.address
+      console.log('数据回填：', this.params)
+    },
+    /**
        * 获取省市区数据
        */
-      getRegions() {
-        api.getRegions({
-          success: (data) => {
-            function map(array) {
-              return array.map((item) => {
-                return {
-                  name: item.regnName,
-                  id: item.regnCode,
-                  children: map(item.children),
-                };
-              });
-            }
-            this.auiPicker.data = map(data);
-          },
-        });
-      },
-      /**
+    getRegions() {
+      api.getRegions({
+        success: (data) => {
+          function map(array) {
+            return array.map((item) => {
+              return {
+                name: item.regnName,
+                id: item.regnCode,
+                children: map(item.children)
+              }
+            })
+          }
+          this.auiPicker.data = map(data)
+        }
+      })
+    },
+    /**
        * 输入信息校验
        */
-      async chackInput() {
-        const isScan = this.type === 'scan';
-        if (!this.params.name) {
-          this.$uni.showToast('请输入姓名');
-          return false;
-        }
-        if (!this.params.idCardNumber) {
-          this.$uni.showToast('请输入身份证号');
-          return false;
-        }
-        if (!validateIDCardNumber(this.params.idCardNumber)) {
-          this.$uni.showToast('身份证号格式错误，请重新输入');
-          return false;
-        }
-        if (isScan && !(this.params.gender === 0 ? '女' : '男')) {
-          this.$uni.showToast('请选择性别');
-          return false;
-        }
-        if (isScan && !this.params.nation) {
-          this.$uni.showToast('请选择民族');
-          return false;
-        }
-        if (isScan && !this.params.birthday) {
-          this.$uni.showToast('请选择出生日期');
-          return false;
-        }
-        // const today = dayjs();
-        // const birthday = dayjs(this.params.birthday);
-        // if (today.diff(birthday, "year") < 60) {
-        //   this.$uni.showAlert({
-        //     content: "您未满60周岁，不满足申请条件",
-        //   });
-        //   return false;
-        // }
-        return await this.validateCardC();
-      },
-    },
-    mounted() {},
-  };
+    async chackInput() {
+      const isScan = this.type === 'scan'
+      if (!this.params.name) {
+        this.$uni.showToast('请输入姓名')
+        return false
+      }
+      if (!this.params.idCardNumber) {
+        this.$uni.showToast('请输入身份证号')
+        return false
+      }
+      if (!validateIDCardNumber(this.params.idCardNumber)) {
+        this.$uni.showToast('身份证号格式错误，请重新输入')
+        return false
+      }
+      if (isScan && !(this.params.gender === 0 ? '女' : '男')) {
+        this.$uni.showToast('请选择性别')
+        return false
+      }
+      if (isScan && !this.params.nation) {
+        this.$uni.showToast('请选择民族')
+        return false
+      }
+      if (isScan && !this.params.birthday) {
+        this.$uni.showToast('请选择出生日期')
+        return false
+      }
+      // const today = dayjs();
+      // const birthday = dayjs(this.params.birthday);
+      // if (today.diff(birthday, "year") < 60) {
+      //   this.$uni.showAlert({
+      //     content: "您未满60周岁，不满足申请条件",
+      //   });
+      //   return false;
+      // }
+      return await this.validateCardC()
+    }
+  },
+  mounted() {}
+}
 </script>
 
 <style lang="scss" scoped>

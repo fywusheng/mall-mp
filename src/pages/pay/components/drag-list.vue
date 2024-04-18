@@ -1,6 +1,6 @@
 <template>
 	<view class="drag-box">
-		<view 
+		<view
 			v-for="(item,index) in dataList"
 			:key="index"
 			:style="{top: item.top +'px',
@@ -17,8 +17,8 @@
 </template>
 
 <script>
-	export default {
-		props: {
+export default {
+  props: {
 		  list: {
 		    type: Array,
 		    default: () => ([])
@@ -27,17 +27,17 @@
 		    type: [Number],
 		    default: 70
 		  }
-		},
-		data() {
-			return {
-				activeItem: null,
-				isDrag: false,
-				dragTargetY: 0,
-				dataList: [],
-				sortIndexList: [],
-			}
-		},
-		watch: {
+  },
+  data() {
+    return {
+      activeItem: null,
+      isDrag: false,
+      dragTargetY: 0,
+      dataList: [],
+      sortIndexList: []
+    }
+  },
+  watch: {
 		  list: {
 		    immediate: true,
 		    deep: true,
@@ -45,117 +45,117 @@
 		      this.setList(list)
 		    }
 		  }
-		},
-		methods: {
-			touchstart(e){
-				this.dragTargetY = e.touches[0].pageY;
-			},
-			longtap(item){
-				this.activeItem = item;
-				this.isDrag = true;
-				item.isActive = true;
-			},
-			touchmove(e){
-				if(!this.isDrag){
-					return
-				}
-				let newY = e.touches[0].pageY;
-				let d = newY - this.dragTargetY;
-				this.activeItem.top += d;
-				
-				let prevIndex = this.sortIndexList[this.activeItem.index] - 1;
-				let nextIndex = this.sortIndexList[this.activeItem.index] + 1;
-				if (prevIndex >= 0 && d < 0){
-					let item = this.getItemByIndex(prevIndex);
-					if (this.activeItem.top < item.top){
-						this.swapArray(item);
-					}
-				}else if (nextIndex < this.list.length && d > 0) {
-					let item = this.getItemByIndex(nextIndex);
-					if (this.activeItem.top > item.top){
-						this.swapArray(item);
-					}
-				}
-				this.dragTargetY = newY;
-			},
-			touchend(item){
-				if(!this.isDrag){
-					return
-				}
-				this.isDrag = false;
-				item.isActive = false;
-				this.activeItem.top = this.sortIndexList[this.activeItem.index] * this.rowHeight;
-				let sortList = [];
-				Array(this.dataList.length).fill(0).forEach((v,index)=>{
-					let tempObj = this.deepClone(this.getItemByIndex(index));
-					delete tempObj.isActive;
-					delete tempObj.top;
-					delete tempObj.index;
-					sortList.push(tempObj);
-				});
-				this.$emit('change', sortList);
-			},
-			getItemByIndex(index){
-				for (let i = 0;i < this.sortIndexList.length;i++){
-					if (this.sortIndexList[i] === index){
-						return this.dataList[i];
-					}
-				}
-				return null;
-			},
-			swapArray(item) {//列表中两个元素交换位置
-				let index = this.sortIndexList[this.activeItem.index];
-				this.sortIndexList[this.activeItem.index] = this.sortIndexList[item.index];
-				this.sortIndexList[item.index] = index;
-				item.top = index * this.rowHeight;
-				this.count = 0;
-			},
-			setList(list){
-				this.dataList = list.map((item, index) => {
-				  this.sortIndexList.push(index);
+  },
+  methods: {
+    touchstart(e) {
+      this.dragTargetY = e.touches[0].pageY
+    },
+    longtap(item) {
+      this.activeItem = item
+      this.isDrag = true
+      item.isActive = true
+    },
+    touchmove(e) {
+      if (!this.isDrag) {
+        return
+      }
+      const newY = e.touches[0].pageY
+      const d = newY - this.dragTargetY
+      this.activeItem.top += d
+
+      const prevIndex = this.sortIndexList[this.activeItem.index] - 1
+      const nextIndex = this.sortIndexList[this.activeItem.index] + 1
+      if (prevIndex >= 0 && d < 0) {
+        const item = this.getItemByIndex(prevIndex)
+        if (this.activeItem.top < item.top) {
+          this.swapArray(item)
+        }
+      } else if (nextIndex < this.list.length && d > 0) {
+        const item = this.getItemByIndex(nextIndex)
+        if (this.activeItem.top > item.top) {
+          this.swapArray(item)
+        }
+      }
+      this.dragTargetY = newY
+    },
+    touchend(item) {
+      if (!this.isDrag) {
+        return
+      }
+      this.isDrag = false
+      item.isActive = false
+      this.activeItem.top = this.sortIndexList[this.activeItem.index] * this.rowHeight
+      const sortList = []
+      Array(this.dataList.length).fill(0).forEach((v, index) => {
+        const tempObj = this.deepClone(this.getItemByIndex(index))
+        delete tempObj.isActive
+        delete tempObj.top
+        delete tempObj.index
+        sortList.push(tempObj)
+      })
+      this.$emit('change', sortList)
+    },
+    getItemByIndex(index) {
+      for (let i = 0; i < this.sortIndexList.length; i++) {
+        if (this.sortIndexList[i] === index) {
+          return this.dataList[i]
+        }
+      }
+      return null
+    },
+    swapArray(item) { // 列表中两个元素交换位置
+      const index = this.sortIndexList[this.activeItem.index]
+      this.sortIndexList[this.activeItem.index] = this.sortIndexList[item.index]
+      this.sortIndexList[item.index] = index
+      item.top = index * this.rowHeight
+      this.count = 0
+    },
+    setList(list) {
+      this.dataList = list.map((item, index) => {
+				  this.sortIndexList.push(index)
 				  return {
 				    ...item,
 				    isActive: false,
-					top: index * this.rowHeight,
-					index: index
+          top: index * this.rowHeight,
+          index: index
 				  }
-				})
-			},
-			deepClone(obj){
-			    let result={},oClass=this.isClass(obj);
-				console.log(oClass)
-				for(let key in obj){
-					let copy=obj[key];
-					if(this.isClass(copy)=="Object"){
-						result[key]=arguments.callee(copy);
-					}else if(this.isClass(copy)=="Array"){
-						result[key]=arguments.callee(copy);
-					}else{
-						result[key]=obj[key];
-					}
-				}
-				return result;
-			},
-			isClass(o){
-			    if(o===null) return "Null";
-				if(o===undefined) return "Undefined";
-				return Object.prototype.toString.call(o).slice(8,-1);
-			}
-		},
-		mounted() {
-		},
-		computed:{
-			rowHeight(){
-				const res = uni.getSystemInfoSync();
-				let screenWidth = res.screenWidth;
-				if (this.itemHeight){
-					return this.itemHeight*screenWidth/750;
-				}else{
-					return 0;
-				}
-			}
-		}
-	}
+      })
+    },
+    deepClone(obj) {
+			    const result = {}; const oClass = this.isClass(obj)
+      console.log(oClass)
+      for (const key in obj) {
+        const copy = obj[key]
+        if (this.isClass(copy) == 'Object') {
+          result[key] = arguments.callee(copy)
+        } else if (this.isClass(copy) == 'Array') {
+          result[key] = arguments.callee(copy)
+        } else {
+          result[key] = obj[key]
+        }
+      }
+      return result
+    },
+    isClass(o) {
+			    if (o === null) return 'Null'
+      if (o === undefined) return 'Undefined'
+      return Object.prototype.toString.call(o).slice(8, -1)
+    }
+  },
+  mounted() {
+  },
+  computed: {
+    rowHeight() {
+      const res = uni.getSystemInfoSync()
+      const screenWidth = res.screenWidth
+      if (this.itemHeight) {
+        return this.itemHeight * screenWidth / 750
+      } else {
+        return 0
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

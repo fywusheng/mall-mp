@@ -21,49 +21,49 @@ export default {
      */
     initSide: {
       type: String,
-      default: 'right',
+      default: 'right'
     },
     /**
      * 初始化距离上部距离rpx
      */
     initMarginTop: {
       type: Number,
-      default: 100,
+      default: 100
     },
     /**
      * 图标地址
      */
     iconUrl: {
       type: String,
-      default: '',
+      default: ''
     },
     /**
      * 宽度
      */
     width: {
       type: Number,
-      default: 216,
+      default: 216
     },
     /**
      * 高度
      */
     height: {
       type: Number,
-      default: 216,
+      default: 216
     },
     /**
      * 是否是圆形
      */
     circle: {
       type: Boolean,
-      default: false,
+      default: false
     },
     /**
      * 是否贴边
      */
     stickSide: {
       type: Boolean,
-      default: true,
+      default: true
     },
     // 是否能拖动
     enableDrag: {
@@ -87,14 +87,14 @@ export default {
       initTouchX: 0,
       initTouchY: 0,
       // 导航栏高度
-      //#ifdef MP-WEIXIN
+      // #ifdef MP-WEIXIN
       navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-      //#endif
-      //#ifdef MP-ALIPAY
+      // #endif
+      // #ifdef MP-ALIPAY
       navigationBarHeight:
         uni.getSystemInfoSync().statusBarHeight +
-        uni.getSystemInfoSync().titleBarHeight,
-      //#endif
+        uni.getSystemInfoSync().titleBarHeight
+      // #endif
     }
   },
   methods: {
@@ -102,17 +102,17 @@ export default {
      * 初始化参数封装，主要处理界面参数
      */
     initParams() {
-      let phoneParam = uni.getSystemInfoSync()
+      const phoneParam = uni.getSystemInfoSync()
       this.screenWidthMax = phoneParam.windowWidth
       this.screenHeightMax = phoneParam.windowHeight
       console.log('===phoneParam==:', phoneParam)
       // this.screenHeightMax = phoneParam.screenHeight
       this.widthMiddle = phoneParam.windowWidth / 2
       this.menuHeight = phoneParam.windowHeight - phoneParam.windowHeight
-      //计算偏移量
+      // 计算偏移量
       this.xOffset = (this.width * phoneParam.windowWidth) / 750
       this.yOffset = (this.height * phoneParam.windowWidth) / 750
-      //计算top和left
+      // 计算top和left
       console.log('this.menuHeight:', this.menuHeight)
       console.log('phoneParam.windowHeight :', phoneParam.windowHeight)
       this.top = this.menuHeight + (phoneParam.windowHeight - 288)
@@ -121,8 +121,8 @@ export default {
         this.initSide === 'left'
           ? this.xOffset
           : this.initSide === 'right'
-          ? this.screenWidthMax - this.xOffset
-          : 0
+            ? this.screenWidthMax - this.xOffset
+            : 0
       // this.left = this.initSide === 'left' ? (this.xOffset / 2) : this.initSide === 'right' ? (this.screenWidthMax - this
       // 	.xOffset / 2) : 0
     },
@@ -131,8 +131,8 @@ export default {
      * 长按拖动
      */
     touchstart(e) {
-      if(this.enableDrag) return
-      let touch = e.touches[0] || e.changedTouches[0]
+      if (this.enableDrag) return
+      const touch = e.touches[0] || e.changedTouches[0]
       this.initTouchX = touch.clientX
       this.initTouchY = touch.clientY
     },
@@ -140,19 +140,19 @@ export default {
      * 长按拖动
      */
     touchmove(e) {
-      if(this.enableDrag) return
+      if (this.enableDrag) return
       this.isMove = true
-      let touch = e.touches[0] || e.changedTouches[0]
+      const touch = e.touches[0] || e.changedTouches[0]
       // 计算移动的水平距离
-      let distanceX = touch.clientX - this.initTouchX
+      const distanceX = touch.clientX - this.initTouchX
       // 计算将会到达水平的位置
-      let newOffsetX = this.left + distanceX
+      const newOffsetX = this.left + distanceX
       // 计算移动的垂直距离
-      let distanceY = touch.clientY - this.initTouchY
+      const distanceY = touch.clientY - this.initTouchY
       // 计算将会到达垂直的位置
-      let newOffsetY = this.top + distanceY
+      const newOffsetY = this.top + distanceY
 
-      if (0 <= newOffsetX && newOffsetX <= this.screenWidthMax - this.xOffset) {
+      if (newOffsetX >= 0 && newOffsetX <= this.screenWidthMax - this.xOffset) {
         this.left = newOffsetX
       } else if (newOffsetX < 0) {
         this.left = 0
@@ -180,12 +180,12 @@ export default {
      * 贴边计算时因为质心为中心，需要加上偏移量
      */
     touchend(e) {
-      //超过边界放置于边界，不属于贴边，属于通用
+      // 超过边界放置于边界，不属于贴边，属于通用
       // let touch = e.touches[0] || e.changedTouches[0];
-      //开启贴边，贴边原则，只要一遍碰到边就，只要过中线也贴
-      if(this.enableDrag) return
+      // 开启贴边，贴边原则，只要一遍碰到边就，只要过中线也贴
+      if (this.enableDrag) return
       if (this.stickSide) {
-        //x方向小于贴边
+        // x方向小于贴边
         if (this.left < (this.screenWidthMax - this.xOffset) / 2) {
           this.left = 0
         } else {
@@ -204,11 +204,11 @@ export default {
     doTap() {
       console.log('执行点击')
       this.$emit('taped')
-    },
+    }
   },
   created() {
     this.initParams()
-  },
+  }
 }
 </script>
 

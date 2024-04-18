@@ -69,73 +69,73 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
-  export default {
-    data() {
-      return {
-        orderId: '',
-        //  商品信息
-        item: {},
-        selectIndex: 0,
-        //  退款原因
-        reasons: [
-          { id: 1, content: '需要重新购买' },
-          { id: 2, content: '价格问题' },
-          { id: 3, content: '预约问题' },
-          { id: 4, content: '商户引导退款' },
-          { id: 5, content: '不需要了' },
-          { id: 6, content: '其他原因' },
-        ],
-      };
+import api from '@/apis/index.js'
+export default {
+  data() {
+    return {
+      orderId: '',
+      //  商品信息
+      item: {},
+      selectIndex: 0,
+      //  退款原因
+      reasons: [
+        { id: 1, content: '需要重新购买' },
+        { id: 2, content: '价格问题' },
+        { id: 3, content: '预约问题' },
+        { id: 4, content: '商户引导退款' },
+        { id: 5, content: '不需要了' },
+        { id: 6, content: '其他原因' }
+      ]
+    }
+  },
+  created() {},
+  onLoad(option) {
+    this.orderId = option.orderId
+    this.getOrderInfo()
+  },
+  filters: {
+    formatMoney(money) {
+      if (!money) return ''
+      return (money / 100).toFixed(2)
+    }
+  },
+  methods: {
+    handleClick(index) {
+      this.selectIndex = index
     },
-    created() {},
-    onLoad(option) {
-      this.orderId = option.orderId;
-      this.getOrderInfo();
+    // 提交
+    buy() {
+      const params = {
+        uactId: uni.getStorageSync('userInfo').uactId,
+        orderId: this.item.orderId,
+        goodsNum: this.item.payNumber,
+        refundAmount: this.item.payAmount,
+        refundReason: this.reasons[this.selectIndex].content
+      }
+      api.submitRefund({
+        data: params,
+        success: (res) => {
+          this.$uni.showToast('提交成功')
+          setTimeout(() => {
+            uni.$emit('openOrderInfoPage')
+            uni.navigateBack()
+          }, 1000)
+        }
+      })
     },
-    filters: {
-      formatMoney(money) {
-        if (!money) return '';
-        return (money / 100).toFixed(2);
-      },
-    },
-    methods: {
-      handleClick(index) {
-        this.selectIndex = index;
-      },
-      // 提交
-      buy() {
-        const params = {
-          uactId: uni.getStorageSync('userInfo').uactId,
-          orderId: this.item.orderId,
-          goodsNum: this.item.payNumber,
-          refundAmount: this.item.payAmount,
-          refundReason: this.reasons[this.selectIndex].content,
-        };
-        api.submitRefund({
-          data: params,
-          success: (res) => {
-            this.$uni.showToast('提交成功');
-            setTimeout(() => {
-              uni.$emit('openOrderInfoPage');
-              uni.navigateBack();
-            }, 1000);
-          },
-        });
-      },
-      //  订单详情
-      getOrderInfo() {
-        api.getOrderInfo({
-          data: {
-            orderId: this.orderId,
-          },
-          success: (data) => {
-            this.item = data;
-          },
-        });
-      },
-    },
-  };
+    //  订单详情
+    getOrderInfo() {
+      api.getOrderInfo({
+        data: {
+          orderId: this.orderId
+        },
+        success: (data) => {
+          this.item = data
+        }
+      })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .applyRefund {

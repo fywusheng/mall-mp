@@ -11,7 +11,7 @@ export default {
   data() {
     return {
       timer: null,
-      itemList: [],
+      itemList: []
     }
   },
   computed: {
@@ -19,13 +19,13 @@ export default {
       return XIU.getAliImg(this.content.image)
     },
     itemStyle() {
-      return this.itemList ? {width: `${this.itemList.length * 2.66667 + 0.4}rem`} : {};
+      return this.itemList ? { width: `${this.itemList.length * 2.66667 + 0.4}rem` } : {}
     }
   },
   methods: {
     onClick() {
       XIU.genLink(this.content.link)
-    },
+    }
   },
   mounted() {
   }

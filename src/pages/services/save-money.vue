@@ -108,185 +108,185 @@
   </view>
 </template>
 <script>
-  import { mapState } from 'vuex';
-  import dayjs from 'dayjs';
-  import { desensitizeName } from '@/utils/desensitization.js';
-  export default {
-    data() {
-      return {
-        day: 0, // 成为会员天数
-        memberStartTime: '', // 成为会员开始时间
-        startTime: '',
-        endTime: '',
-        percent: 100,
-        select: 0,
-        totalMoney: 0,
-        bottomTips: '',
-        list: [],
-        tabs: [{ name: '累计省钱' }, { name: '本周期省钱' }],
-      };
+import { mapState } from 'vuex'
+import dayjs from 'dayjs'
+import { desensitizeName } from '@/utils/desensitization.js'
+export default {
+  data() {
+    return {
+      day: 0, // 成为会员天数
+      memberStartTime: '', // 成为会员开始时间
+      startTime: '',
+      endTime: '',
+      percent: 100,
+      select: 0,
+      totalMoney: 0,
+      bottomTips: '',
+      list: [],
+      tabs: [{ name: '累计省钱' }, { name: '本周期省钱' }]
+    }
+  },
+  created() {
+    this.setTime()
+    this.getShopOrderList()
+    this.getTotalSaveMoney()
+  },
+  computed: {
+    ...mapState({
+      userInfo: (state) => state.user.userInfo
+    })
+  },
+  methods: {
+    // 姓名过滤器, 用于姓名脱敏
+    nameFilter(value) {
+      return desensitizeName(value)
     },
-    created() {
-      this.setTime();
-      this.getShopOrderList();
-      this.getTotalSaveMoney();
+    handleChangeShowBenefit(index, subIndex) {
+      this.list[index].itemList[subIndex].showBenefit =
+          !this.list[index].itemList[subIndex].showBenefit
     },
-    computed: {
-      ...mapState({
-        userInfo: (state) => state.user.userInfo,
-      }),
+    openMember() {
+      uni.navigateTo({ url: '/pages/user-center/activate-member' })
     },
-    methods: {
-      // 姓名过滤器, 用于姓名脱敏
-      nameFilter(value) {
-        return desensitizeName(value);
-      },
-      handleChangeShowBenefit(index, subIndex) {
-        this.list[index].itemList[subIndex].showBenefit =
-          !this.list[index].itemList[subIndex].showBenefit;
-      },
-      openMember() {
-        uni.navigateTo({ url: '/pages/user-center/activate-member' });
-      },
-      handleTabClick(index) {
-        this.list = [];
-        this.$nextTick(() => {
-          this.setTime();
-          this.getShopOrderList();
-          this.getTotalSaveMoney();
-        });
-      },
-      setTime() {
-        // this.startTime = dayjs()
-        //   .subtract(this.select == 0 ? 5 : 1, 'year')
-        //   .format('YYYY-MM-DD');
-        // this.endTime = dayjs().format('YYYY-MM-DD');
+    handleTabClick(index) {
+      this.list = []
+      this.$nextTick(() => {
+        this.setTime()
+        this.getShopOrderList()
+        this.getTotalSaveMoney()
+      })
+    },
+    setTime() {
+      // this.startTime = dayjs()
+      //   .subtract(this.select == 0 ? 5 : 1, 'year')
+      //   .format('YYYY-MM-DD');
+      // this.endTime = dayjs().format('YYYY-MM-DD');
 
-        // if (this.select == 0) {
-        this.startTime = this.userInfo.usageTime;
-        this.endTime = dayjs().subtract(1, 'day').format('YYYY-MM-DD');
-        // }
+      // if (this.select == 0) {
+      this.startTime = this.userInfo.usageTime
+      this.endTime = dayjs().subtract(1, 'day').format('YYYY-MM-DD')
+      // }
 
-        this.day = dayjs().diff(this.userInfo.usageTime, 'day');
-      },
-      // canvas
-      initCanvas() {
-        const query = uni.createSelectorQuery().in(this);
-        query
-          .select('#saveMoney')
-          .boundingClientRect((data) => {
-            const { width, height } = data;
-            const ctx = uni.createCanvasContext('saveMoney');
-            ctx.scale(width / 126, height / 126); // 页面适配，获取缩放比例进行缩放
-            // 先填充一个完整的圆作为背景
-            ctx.beginPath(); // 开始路径
-            ctx.arc(63, 63, 52, 0, 2 * Math.PI);
-            ctx.setStrokeStyle('#F2F2F2');
-            ctx.setLineWidth(15); // 设置填充线宽
-            ctx.stroke(); // 开始描边
-            ctx.closePath(); // 结束路径
-            // 起始位置在最上面，所以是-(Math.PI / 2)
-            const startRadian = -(Math.PI / 2);
-            // 根据百分比计算对应的弧度得出结束位置
-            const angle = (360 * this.percent) / 100;
-            const radian = (angle * Math.PI) / 180;
-            const endRadian = startRadian + radian;
-            // 绘制进度条
-            ctx.beginPath();
-            ctx.arc(63, 63, 52, startRadian, endRadian); // 创建圆弧
-            ctx.setStrokeStyle('#ff5500'); // 设置填充颜色
-            ctx.setLineWidth(10); // 设置填充线宽
-            ctx.stroke(); // 开始描边
-            ctx.closePath();
-            // 绘制进度条中间文字
-            ctx.beginPath();
-            ctx.setFontSize(14);
-            ctx.setFillStyle('#666666');
-            ctx.setTextAlign('center'); // 设置文字居中
-            ctx.fillText('我累计已省', 126 / 2, 126 / 2 - 5); // 第二个参数需要设置canvas宽度的一半
-            ctx.closePath();
-            // 绘制进度条中间百分比
-            ctx.beginPath();
-            ctx.setFontSize(16);
-            ctx.setFillStyle('#ff5500');
-            ctx.setTextAlign('center');
-            ctx.fillText('¥' + this.totalMoney.toFixed(2), 126 / 2, 126 / 2 + 25);
-            ctx.closePath();
-            ctx.draw();
-          })
-          .exec();
-      },
-      // 获取累计省钱详情
-      async getTotalSaveMoney() {
-        const result = await Axios.post('/order/getMemberSaveMoney', {
-          memberSaveMoneyFlag: true,
-          startTime: this.startTime,
-          endTime: this.endTime,
-        });
-        if (result.code === '200') {
-          this.totalMoney = result.data;
-          this.initCanvas();
-        }
-      },
-      // 获取省钱明细
-      async getShopOrderList() {
-        uni.showLoading({
-          title: '加载中',
-        });
-        const params = {
-          pageNum: 1,
-          numPerPage: 20,
-          sceneType: '',
-          memberSaveMoneyFlag: true,
-          startTime: this.startTime,
-          endTime: this.endTime,
-        };
-        const result = await Axios.post('/order/list', params);
-        uni.hideLoading();
-        if (result.code == 200) {
-          const list = result.data.list || [];
-          const res = [];
-          list.forEach((data) => {
-            const itemList = [];
-            if (data.storeOrderItems) {
-              data.storeOrderItems.forEach((orderItemModel) => {
-                orderItemModel.items.forEach((item) => {
-                  item.showBenefit = false;
-                  itemList.push(item);
-                });
-              });
-              // const tempData = _.pick(data, [
-              //   'createdTime',
-              //   'orderId',
-              //   'orderStatus',
-              //   'totalQuantity',
-              //   'orderType',
-              //   'orderAmount',
-              //   'orderStatusLabel',
-              //   'payableAmount',
-              //   'storeName',
-              //   'storeId',
-              //   'hzhH5',
-              // ]);
-              const tempData = data;
-              tempData.itemList = itemList;
-              tempData.orderMallIcon = data.storeOrderItems[0].orderMallIcon;
-              res.push(tempData);
-            }
-          });
-          // return res;
-          this.list = this.list.concat(res);
-        } else {
-          uni.showToast(result.msg);
-        }
-        if (result.total > 5) {
-          this.bottomTips = result.hasNextPage ? 'more' : 'nomore';
-        } else {
-          this.bottomTips = '';
-        }
-      },
+      this.day = dayjs().diff(this.userInfo.usageTime, 'day')
     },
-  };
+    // canvas
+    initCanvas() {
+      const query = uni.createSelectorQuery().in(this)
+      query
+        .select('#saveMoney')
+        .boundingClientRect((data) => {
+          const { width, height } = data
+          const ctx = uni.createCanvasContext('saveMoney')
+          ctx.scale(width / 126, height / 126) // 页面适配，获取缩放比例进行缩放
+          // 先填充一个完整的圆作为背景
+          ctx.beginPath() // 开始路径
+          ctx.arc(63, 63, 52, 0, 2 * Math.PI)
+          ctx.setStrokeStyle('#F2F2F2')
+          ctx.setLineWidth(15) // 设置填充线宽
+          ctx.stroke() // 开始描边
+          ctx.closePath() // 结束路径
+          // 起始位置在最上面，所以是-(Math.PI / 2)
+          const startRadian = -(Math.PI / 2)
+          // 根据百分比计算对应的弧度得出结束位置
+          const angle = (360 * this.percent) / 100
+          const radian = (angle * Math.PI) / 180
+          const endRadian = startRadian + radian
+          // 绘制进度条
+          ctx.beginPath()
+          ctx.arc(63, 63, 52, startRadian, endRadian) // 创建圆弧
+          ctx.setStrokeStyle('#ff5500') // 设置填充颜色
+          ctx.setLineWidth(10) // 设置填充线宽
+          ctx.stroke() // 开始描边
+          ctx.closePath()
+          // 绘制进度条中间文字
+          ctx.beginPath()
+          ctx.setFontSize(14)
+          ctx.setFillStyle('#666666')
+          ctx.setTextAlign('center') // 设置文字居中
+          ctx.fillText('我累计已省', 126 / 2, 126 / 2 - 5) // 第二个参数需要设置canvas宽度的一半
+          ctx.closePath()
+          // 绘制进度条中间百分比
+          ctx.beginPath()
+          ctx.setFontSize(16)
+          ctx.setFillStyle('#ff5500')
+          ctx.setTextAlign('center')
+          ctx.fillText('¥' + this.totalMoney.toFixed(2), 126 / 2, 126 / 2 + 25)
+          ctx.closePath()
+          ctx.draw()
+        })
+        .exec()
+    },
+    // 获取累计省钱详情
+    async getTotalSaveMoney() {
+      const result = await Axios.post('/order/getMemberSaveMoney', {
+        memberSaveMoneyFlag: true,
+        startTime: this.startTime,
+        endTime: this.endTime
+      })
+      if (result.code === '200') {
+        this.totalMoney = result.data
+        this.initCanvas()
+      }
+    },
+    // 获取省钱明细
+    async getShopOrderList() {
+      uni.showLoading({
+        title: '加载中'
+      })
+      const params = {
+        pageNum: 1,
+        numPerPage: 20,
+        sceneType: '',
+        memberSaveMoneyFlag: true,
+        startTime: this.startTime,
+        endTime: this.endTime
+      }
+      const result = await Axios.post('/order/list', params)
+      uni.hideLoading()
+      if (result.code == 200) {
+        const list = result.data.list || []
+        const res = []
+        list.forEach((data) => {
+          const itemList = []
+          if (data.storeOrderItems) {
+            data.storeOrderItems.forEach((orderItemModel) => {
+              orderItemModel.items.forEach((item) => {
+                item.showBenefit = false
+                itemList.push(item)
+              })
+            })
+            // const tempData = _.pick(data, [
+            //   'createdTime',
+            //   'orderId',
+            //   'orderStatus',
+            //   'totalQuantity',
+            //   'orderType',
+            //   'orderAmount',
+            //   'orderStatusLabel',
+            //   'payableAmount',
+            //   'storeName',
+            //   'storeId',
+            //   'hzhH5',
+            // ]);
+            const tempData = data
+            tempData.itemList = itemList
+            tempData.orderMallIcon = data.storeOrderItems[0].orderMallIcon
+            res.push(tempData)
+          }
+        })
+        // return res;
+        this.list = this.list.concat(res)
+      } else {
+        uni.showToast(result.msg)
+      }
+      if (result.total > 5) {
+        this.bottomTips = result.hasNextPage ? 'more' : 'nomore'
+      } else {
+        this.bottomTips = ''
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

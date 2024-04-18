@@ -19,78 +19,78 @@
   </view>
 </template>
 <script>
-  import bCase from './component/bCase.vue';
-  export default {
-    components: { bCase },
-    data() {
-      return {
-        tabIndex: 0,
-        colName: '养老金',
-        titleLables: [
-          {
-            index: 0,
-            name: '普法卫我',
-          },
-          {
-            index: 1,
-            name: '以案说法',
-          },
-          {
-            index: 2,
-            name: '维权指南',
-          },
-        ],
-      };
-    },
-    onLoad(e) {
-      if (e.index) {
-        this.tabIndex = e.index;
-      }
-    },
-    onReachBottom() {
-      this.$refs.base.selectArtiListByColId();
-    },
-    onShow() {
-      if (this.$refs.base) {
-        this.$refs.base.initRadio();
-      }
-    },
-    watch: {
-      tabIndex(newV, old) {
-        if (newV == 0 || newV == 2) {
-          if (this.$refs.base) {
-            this.$refs.base.destoryInstance();
-          }
+import bCase from './component/bCase.vue'
+export default {
+  components: { bCase },
+  data() {
+    return {
+      tabIndex: 0,
+      colName: '养老金',
+      titleLables: [
+        {
+          index: 0,
+          name: '普法卫我'
+        },
+        {
+          index: 1,
+          name: '以案说法'
+        },
+        {
+          index: 2,
+          name: '维权指南'
         }
-      },
-    },
-    onUnload() {
-      if (this.$refs.base) {
-        this.$refs.base.destoryInstance();
-        this.$refs.base.showAudio = false;
-      }
-    },
-    onHide() {
-      if (this.$refs.base) {
-        this.$refs.base.destoryInstance();
-        this.$refs.base.showAudio = false;
-      }
-    },
-    methods: {
-      startQuest() {
-        const token = uni.getStorageSync('token');
-        if (!token) {
-          uni.navigateTo({ url: '/pages/user-center/login' });
-          return;
+      ]
+    }
+  },
+  onLoad(e) {
+    if (e.index) {
+      this.tabIndex = e.index
+    }
+  },
+  onReachBottom() {
+    this.$refs.base.selectArtiListByColId()
+  },
+  onShow() {
+    if (this.$refs.base) {
+      this.$refs.base.initRadio()
+    }
+  },
+  watch: {
+    tabIndex(newV, old) {
+      if (newV == 0 || newV == 2) {
+        if (this.$refs.base) {
+          this.$refs.base.destoryInstance()
         }
-        const url =
-          'https://znkf.ylzinfo.com/ylzbigdata_znkf_fe/#/web_im_plugin?appId=186d2aceae32456585867dbead757e9d';
-        uni.navigateTo({
-          url: '/pages/common/webpage?url=' + encodeURIComponent(url),
-        });
-      },
-    },
-  };
+      }
+    }
+  },
+  onUnload() {
+    if (this.$refs.base) {
+      this.$refs.base.destoryInstance()
+      this.$refs.base.showAudio = false
+    }
+  },
+  onHide() {
+    if (this.$refs.base) {
+      this.$refs.base.destoryInstance()
+      this.$refs.base.showAudio = false
+    }
+  },
+  methods: {
+    startQuest() {
+      const token = uni.getStorageSync('token')
+      if (!token) {
+        uni.navigateTo({ url: '/pages/user-center/login' })
+        return
+      }
+      const url =
+          'https://znkf.ylzinfo.com/ylzbigdata_znkf_fe/#/web_im_plugin?appId=186d2aceae32456585867dbead757e9d'
+      uni.navigateTo({
+        url: '/pages/common/webpage?url=' + encodeURIComponent(url)
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

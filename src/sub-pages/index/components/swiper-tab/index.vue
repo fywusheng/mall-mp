@@ -44,7 +44,7 @@ export default {
     }
   },
   mounted() {
-    console.log("===里面得到只--", this.tabClickIndex)
+    console.log('===里面得到只--', this.tabClickIndex)
     this.tabIndex = this.tabClickIndex
   },
   methods: {

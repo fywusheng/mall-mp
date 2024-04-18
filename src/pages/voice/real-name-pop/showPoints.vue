@@ -11,34 +11,34 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        showsCreditsPopup: false,
-      };
-    },
-    props: {
-      imgUrl: {
-        type: String,
-        default: 'http://192.168.1.187:10088/static/real-name/real-name-success.png',
-      },
-    },
-    methods: {
-      detailPoint() {
-        uni.navigateTo({ url: '/pages/user-center/my-points' });
-      },
-    },
-    watch: {
-      showsCreditsPopup(n, o) {
-        if (n) {
-          setTimeout(() => {
-            this.showsCreditsPopup = false;
-            this.$emit('success_flag', 1);
-          }, 2000);
-        }
-      },
-    },
-  };
+export default {
+  data() {
+    return {
+      showsCreditsPopup: false
+    }
+  },
+  props: {
+    imgUrl: {
+      type: String,
+      default: 'http://192.168.1.187:10088/static/real-name/real-name-success.png'
+    }
+  },
+  methods: {
+    detailPoint() {
+      uni.navigateTo({ url: '/pages/user-center/my-points' })
+    }
+  },
+  watch: {
+    showsCreditsPopup(n, o) {
+      if (n) {
+        setTimeout(() => {
+          this.showsCreditsPopup = false
+          this.$emit('success_flag', 1)
+        }, 2000)
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

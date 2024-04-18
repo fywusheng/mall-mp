@@ -37,35 +37,33 @@
 
 <script>
 export default {
-  data(){
-    return{
-      info:{
-        abstractA:'',
-        postScript:'',
-        endAccountDate:'',
-        otherAccountName:'',
-        grantAmount:'',
+  data() {
+    return {
+      info: {
+        abstractA: '',
+        postScript: '',
+        endAccountDate: '',
+        otherAccountName: '',
+        grantAmount: ''
       }
     }
   },
   onLoad(option) {
-   
-    this.setTitle('养老金明细');
+    this.setTitle('养老金明细')
     // console.log("option:",JSON.parse(option.item))
     this.info = JSON.parse(option.item)
-
   },
   methods: {
     /**
      * 设置导航栏标题
      */
     setTitle(e) {
-      this.type = e.type;
-      const titles = { annuity: "养老金明细", allowance: "高龄津贴明细" };
-      this.$uni.setTitle(titles[this.type]);
-    },
-  },
-};
+      this.type = e.type
+      const titles = { annuity: '养老金明细', allowance: '高龄津贴明细' }
+      this.$uni.setTitle(titles[this.type])
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

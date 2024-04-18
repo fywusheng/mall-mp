@@ -272,96 +272,96 @@
 </template>
 
 <script>
-  export default {
-    name: 'SEARCH-FILTER',
-    props: {
-      attrList: {
-        type: Array,
-        default: [],
-      },
-      brandList: {
-        type: Array,
-        default: [],
-      },
-      categoryList: {
-        type: Array,
-        default: [],
-      },
-      priceList: {
-        type: Array,
-        default: [],
-      },
+export default {
+  name: 'SEARCH-FILTER',
+  props: {
+    attrList: {
+      type: Array,
+      default: []
     },
-    data() {
-      return {
-        city: '',
-        showPopup: false,
-        params: {
-          brandId: '',
-        },
-        // 适用人群
-        targetAudienceList: [
-          { name: '高血压', value: '高血压', check: false },
-          { name: '高血脂', value: '高血脂', check: false },
-          { name: '高血糖', value: '高血糖', check: false },
-          { name: '高尿酸', value: '高尿酸', check: false },
-          { name: '脂肪肝', value: '脂肪肝', check: false },
-          { name: '肾囊肿', value: '肾囊肿', check: false },
-        ],
-        dataList: [],
-        showMoreBrand: false,
-        showMoreCate: false,
-        showMorePrice: false,
-      };
+    brandList: {
+      type: Array,
+      default: []
     },
-    components: {},
-    filters: {},
-    methods: {
-      changePrice(price) {
-        this.$emit('changePrice', price);
+    categoryList: {
+      type: Array,
+      default: []
+    },
+    priceList: {
+      type: Array,
+      default: []
+    }
+  },
+  data() {
+    return {
+      city: '',
+      showPopup: false,
+      params: {
+        brandId: ''
       },
-      reset() {
-        this.targetAudienceList.forEach((data) => {
-          data.check = false;
-        });
-        this.$emit('reset');
-        this.showPopup = false;
-      },
-      search() {
-        this.$emit('search');
-        this.showPopup = false;
-      },
+      // 适用人群
+      targetAudienceList: [
+        { name: '高血压', value: '高血压', check: false },
+        { name: '高血脂', value: '高血脂', check: false },
+        { name: '高血糖', value: '高血糖', check: false },
+        { name: '高尿酸', value: '高尿酸', check: false },
+        { name: '脂肪肝', value: '脂肪肝', check: false },
+        { name: '肾囊肿', value: '肾囊肿', check: false }
+      ],
+      dataList: [],
+      showMoreBrand: false,
+      showMoreCate: false,
+      showMorePrice: false
+    }
+  },
+  components: {},
+  filters: {},
+  methods: {
+    changePrice(price) {
+      this.$emit('changePrice', price)
+    },
+    reset() {
+      this.targetAudienceList.forEach((data) => {
+        data.check = false
+      })
+      this.$emit('reset')
+      this.showPopup = false
+    },
+    search() {
+      this.$emit('search')
+      this.showPopup = false
+    },
 
-      changeTargetAudience(target) {
-        target.check = !target.check;
-        // 适用人群
-        const index = this.targetAudienceList.findIndex((item) => {
-          return item.name == target.name;
-        });
-        this.$set(this.targetAudienceList, index, target);
-        this.$emit(
-          'changeTargetAudience',
-          this.targetAudienceList.filter((item) => item.check),
-        );
-      },
-      changeCate(cate) {
-        //类别
-        this.$emit('changeCate', cate);
-      },
-      changeBrand(brand) {
-        //品牌
-        this.$emit('changeBrand', brand);
-      },
-      changeCheck(conditionList, condition) {
-        condition.check = !condition.check;
-      },
-      show(flag) {
-        this.showPopup = flag;
-      },
+    changeTargetAudience(target) {
+      target.check = !target.check
+      // 适用人群
+      const index = this.targetAudienceList.findIndex((item) => {
+        return item.name == target.name
+      })
+      this.$set(this.targetAudienceList, index, target)
+      this.$emit(
+        'changeTargetAudience',
+        this.targetAudienceList.filter((item) => item.check)
+      )
     },
-    async mounted() {
-      const location = uni.getStorageSync('city');
-      this.city = location.name;
+    changeCate(cate) {
+      // 类别
+      this.$emit('changeCate', cate)
     },
-  };
+    changeBrand(brand) {
+      // 品牌
+      this.$emit('changeBrand', brand)
+    },
+    changeCheck(conditionList, condition) {
+      condition.check = !condition.check
+    },
+    show(flag) {
+      this.showPopup = flag
+    }
+  },
+  async mounted() {
+    const location = uni.getStorageSync('city')
+    this.city = location.name
+  }
+}
 </script>

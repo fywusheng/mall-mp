@@ -17,7 +17,7 @@ export function request({
   if (showsLoading) showLoading('加载中')
   const headers = {
     // 'channel': uni.getSystemInfoSync().host.env,
-    'Accept': 'application/json',
+    'Accept': 'application/json'
     // 'accessToken': uni.getStorageSync('token'),
     // 'tsf-metadata': ''
   }
@@ -42,7 +42,7 @@ export function request({
   }
 
   const baseURL = ENV.NEW_API
-  console.log('baseURL: ', baseURL);
+  console.log('baseURL: ', baseURL)
   const request = {
     url: url.indexOf('http') === -1 ? baseURL + url : url,
     method: method,

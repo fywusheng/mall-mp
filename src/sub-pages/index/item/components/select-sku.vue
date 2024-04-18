@@ -318,143 +318,143 @@
 </template>
 
 <script>
-  import Number from './number';
+import Number from './number'
 
-  export default {
-    name: 'SELECT_SKU',
-    props: {
-      product: {
-        type: Object,
-        default: () => {},
-      },
-      member: {
-        type: Boolean,
-        default: false,
-      },
-      productImgList: {
-        type: Array,
-        default: () => [],
-      },
-      colorList: {
-        type: Array,
-        default: () => [],
-      },
-      sizeList: {
-        type: Array,
-        default: () => [],
-      },
-      selectColor: {
-        type: Object,
-        default: () => {},
-      },
-      selectSize: {
-        type: Object,
-        default: () => {},
-      },
+export default {
+  name: 'SELECT_SKU',
+  props: {
+    product: {
+      type: Object,
+      default: () => {}
     },
-    data() {
-      return {
-        isIphoneHair: App.isIphoneHair,
-        operateType: 1,
-        showPopup: false,
-        number: 1,
-        imgUrl: '',
-        sceneType: '',
-      };
+    member: {
+      type: Boolean,
+      default: false
     },
+    productImgList: {
+      type: Array,
+      default: () => []
+    },
+    colorList: {
+      type: Array,
+      default: () => []
+    },
+    sizeList: {
+      type: Array,
+      default: () => []
+    },
+    selectColor: {
+      type: Object,
+      default: () => {}
+    },
+    selectSize: {
+      type: Object,
+      default: () => {}
+    }
+  },
+  data() {
+    return {
+      isIphoneHair: App.isIphoneHair,
+      operateType: 1,
+      showPopup: false,
+      number: 1,
+      imgUrl: '',
+      sceneType: ''
+    }
+  },
 
-    watch: {
-      selectColor() {
+  watch: {
+    selectColor() {
+      if (this.selectColor.imgUrlList && this.selectColor.imgUrlList.length) {
+        this.imgUrl = this.selectColor.imgUrlList[0]
+      } else {
+        this.imgUrl = this.product.mainImgUrl
+      }
+    }
+  },
+  components: {
+    Number
+  },
+  methods: {
+    changeNum(number) {
+      console.log('==dianji--', this.selectSize.availableStock)
+      console.log('sku id: ', this.product)
+      this.number = number
+    },
+    async submit() {
+      const params = {
+        productIds: [this.product.id],
+        sceneType: this.sceneType,
+        clickType: this.operateType === 1 ? 0 : 1
+      }
+
+      const result = await Axios.post('/cart/checkAdd', JSON.stringify(params))
+      if (result.code != 200) {
+        this.$uni.showToast(result.msg || result.data)
+        return
+      }
+
+      switch (this.operateType) {
+        case 1:
+          this.addCart()
+          break
+        case 2:
+          this.checkout()
+          break
+      }
+    },
+    async addCart() {
+      if (!this.selectSize.availableStock) {
+        this.$uni.showToast('库存不足')
+        return false
+      }
+      uni.showLoading('正在添加...')
+      const result = await Axios.post('/cart/add', {
+        num: this.number,
+        skuId: this.selectSize.id,
+        sceneType: this.sceneType
+      })
+      uni.hideLoading()
+      if (result.code == 200) {
+        // App.updateCartNum()
+        this.$uni.showToast('添加成功')
+        this.show(false)
+        this.$parent.updateCart()
+        this.show(false)
+      } else {
+        this.$uni.showToast(result.msg || '添加失败')
+      }
+    },
+    checkout() {
+      if (!this.selectSize.availableStock || this.selectSize.availableStock < this.number) {
+        this.$uni.showToast('库存不足')
+        return false
+      }
+      // this.show(false)
+      uni.navigateTo({
+        url: `/sub-pages/index/checkout/main?type=2&num=${this.number}&skuId=${this.selectSize.id}&sceneType=${this.sceneType}`
+      })
+    },
+    changeColor(color) {
+      this.$parent.changeSku('selectColor', color)
+    },
+    changeSize(size) {
+      this.$parent.changeSku('selectSize', size)
+    },
+    show(flag, type, sceneType) {
+      console.log('sceneType: ', sceneType)
+      this.showPopup = flag
+      this.sceneType = sceneType
+      if (flag) {
+        this.operateType = type
         if (this.selectColor.imgUrlList && this.selectColor.imgUrlList.length) {
-          this.imgUrl = this.selectColor.imgUrlList[0];
+          this.imgUrl = this.selectColor.imgUrlList[0]
         } else {
-          this.imgUrl = this.product.mainImgUrl;
+          this.imgUrl = this.product.mainImgUrl
         }
-      },
-    },
-    components: {
-      Number,
-    },
-    methods: {
-      changeNum(number) {
-        console.log('==dianji--', this.selectSize.availableStock);
-        console.log('sku id: ', this.product);
-        this.number = number;
-      },
-      async submit() {
-        const params = {
-          productIds: [this.product.id],
-          sceneType: this.sceneType,
-          clickType: this.operateType === 1 ? 0 : 1,
-        };
-
-        const result = await Axios.post('/cart/checkAdd', JSON.stringify(params));
-        if (result.code != 200) {
-          this.$uni.showToast(result.msg || result.data);
-          return;
-        }
-
-        switch (this.operateType) {
-          case 1:
-            this.addCart();
-            break;
-          case 2:
-            this.checkout();
-            break;
-        }
-      },
-      async addCart() {
-        if (!this.selectSize.availableStock) {
-          this.$uni.showToast('库存不足');
-          return false;
-        }
-        uni.showLoading('正在添加...');
-        const result = await Axios.post('/cart/add', {
-          num: this.number,
-          skuId: this.selectSize.id,
-          sceneType: this.sceneType,
-        });
-        uni.hideLoading();
-        if (result.code == 200) {
-          // App.updateCartNum()
-          this.$uni.showToast('添加成功');
-          this.show(false);
-          this.$parent.updateCart();
-          this.show(false);
-        } else {
-          this.$uni.showToast(result.msg || '添加失败');
-        }
-      },
-      checkout() {
-        if (!this.selectSize.availableStock || this.selectSize.availableStock < this.number) {
-          this.$uni.showToast('库存不足');
-          return false;
-        }
-        // this.show(false)
-        uni.navigateTo({
-          url: `/sub-pages/index/checkout/main?type=2&num=${this.number}&skuId=${this.selectSize.id}&sceneType=${this.sceneType}`,
-        });
-      },
-      changeColor(color) {
-        this.$parent.changeSku('selectColor', color);
-      },
-      changeSize(size) {
-        this.$parent.changeSku('selectSize', size);
-      },
-      show(flag, type, sceneType) {
-        console.log('sceneType: ', sceneType);
-        this.showPopup = flag;
-        this.sceneType = sceneType;
-        if (flag) {
-          this.operateType = type;
-          if (this.selectColor.imgUrlList && this.selectColor.imgUrlList.length) {
-            this.imgUrl = this.selectColor.imgUrlList[0];
-          } else {
-            this.imgUrl = this.product.mainImgUrl;
-          }
-        }
-      },
-    },
-    async mounted() {},
-  };
+      }
+    }
+  },
+  async mounted() {}
+}
 </script>

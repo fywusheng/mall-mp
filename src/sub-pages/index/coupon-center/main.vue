@@ -30,60 +30,60 @@
 </template>
 
 <script>
-  import wx from 'utils/wx';
+import wx from 'utils/wx'
 
-  export default {
-    data() {
-      return {
-        couponList: [],
-      };
+export default {
+  data() {
+    return {
+      couponList: []
+    }
+  },
+  components: {},
+  methods: {
+    changeDesc(data) {
+      data.showDesc = !data.showDesc
     },
-    components: {},
-    methods: {
-      changeDesc(data) {
-        data.showDesc = !data.showDesc;
-      },
-      async toCoupon(coupon) {
-        wx.showLoading({
-          title: '正在领取...',
-        });
-        const result = await Axios.post('/coupon/receive', {
-          couponId: coupon.id,
-        });
-        wx.hideLoading();
-        if (result.code == 200) {
-          wx.showToast({
-            icon: 'none',
-            title: result.msg,
-          });
-          await this.loadData();
-        } else {
-          wx.showToast(result.msg);
-        }
-      },
-      async loadData() {
-        wx.showLoading();
-        const result = await Axios.post('/coupon/list', {
-          pageNum: 1,
-          pageSize: 100,
-          queryObject: { sessionId: Store.state.user.sessionId },
-        });
-        wx.hideLoading();
-        if (result.code == 200) {
-          this.couponList = result.data.map((data) => {
-            data.showDesc = false;
-            return data;
-          });
-        }
-      },
-    },
-    async onLoad() {
-      if (!Store.getters.isLogin) {
-        await Store.dispatch('login');
+    async toCoupon(coupon) {
+      wx.showLoading({
+        title: '正在领取...'
+      })
+      const result = await Axios.post('/coupon/receive', {
+        couponId: coupon.id
+      })
+      wx.hideLoading()
+      if (result.code == 200) {
+        wx.showToast({
+          icon: 'none',
+          title: result.msg
+        })
+        await this.loadData()
+      } else {
+        wx.showToast(result.msg)
       }
-      await this.loadData();
     },
-  };
+    async loadData() {
+      wx.showLoading()
+      const result = await Axios.post('/coupon/list', {
+        pageNum: 1,
+        pageSize: 100,
+        queryObject: { sessionId: Store.state.user.sessionId }
+      })
+      wx.hideLoading()
+      if (result.code == 200) {
+        this.couponList = result.data.map((data) => {
+          data.showDesc = false
+          return data
+        })
+      }
+    }
+  },
+  async onLoad() {
+    if (!Store.getters.isLogin) {
+      await Store.dispatch('login')
+    }
+    await this.loadData()
+  }
+}
 </script>
 
 <style lang="scss">

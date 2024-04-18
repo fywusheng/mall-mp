@@ -197,332 +197,332 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
-  import dayjs from 'dayjs';
-  import Modal from '@/components/common/modal.vue';
-  export default {
-    components: { Modal },
-    data() {
-      return {
-        //  订单详情
-        info: null,
-        orderId: null,
-        dialogContent: '',
-        interval_time: '',
-        expirationTime: ['', ''],
-        isCancel: '', // ‘1’-可以取消 ‘2’-不可以取消
-      };
-    },
-    created(e) {},
-    onShareAppMessage() {
-      return {
-        title: '',
-        path: '/pages/index/index?index=0',
-      };
-      // return {
-      //         title:'酒店',
-      //         path:"/pages/life/hotelHome",
-      //      };
-    },
-    onLoad(e) {
-      this.orderId = e.orderId;
-      this.getOrderInfo();
-      // 监听页面打开事件
-      uni.$on('openOrderInfoPage', (data) => {
-        this.getOrderInfo();
-      });
-    },
-    filters: {
-      /**
+import api from '@/apis/index.js'
+import dayjs from 'dayjs'
+import Modal from '@/components/common/modal.vue'
+export default {
+  components: { Modal },
+  data() {
+    return {
+      //  订单详情
+      info: null,
+      orderId: null,
+      dialogContent: '',
+      interval_time: '',
+      expirationTime: ['', ''],
+      isCancel: '' // ‘1’-可以取消 ‘2’-不可以取消
+    }
+  },
+  created(e) {},
+  onShareAppMessage() {
+    return {
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
+    // return {
+    //         title:'酒店',
+    //         path:"/pages/life/hotelHome",
+    //      };
+  },
+  onLoad(e) {
+    this.orderId = e.orderId
+    this.getOrderInfo()
+    // 监听页面打开事件
+    uni.$on('openOrderInfoPage', (data) => {
+      this.getOrderInfo()
+    })
+  },
+  filters: {
+    /**
        * 订单状态
        * （1:待付款、2:已付款(待使用，已预订)、3:交易完成、4:关单、5:部分退款、6:已退款、7:退款中、8：已过期）
        */
-      formateOrderStatus(v) {
-        const mapObj = {
-          1: '待付款',
-          2: '待使用',
-          3: '已完成',
-          4: '已关闭',
-          5: '部分退款',
-          6: '已退款',
-          7: '退款中',
-          8: '已过期',
-        };
-        return mapObj[v] || '';
-      },
-      /**
+    formateOrderStatus(v) {
+      const mapObj = {
+        1: '待付款',
+        2: '待使用',
+        3: '已完成',
+        4: '已关闭',
+        5: '部分退款',
+        6: '已退款',
+        7: '退款中',
+        8: '已过期'
+      }
+      return mapObj[v] || ''
+    },
+    /**
        * 提示文本
        * （1:待付款、2:已付款、3:交易完成、4:关单、5:部分退款、6:已退款、7:退款中、8：已过期）
        */
-      formateOrderStatusText(v) {
-        const mapObj = {
-          1: '剩29分28秒 订单自动取消',
-          2: '还有365天过期 请尽快使用',
-          3: '您的订单已完成 欢迎下次光临',
-          4: '超时支付 订单已自动关闭',
-          5: ' ',
-          6: '退款完成 欢迎下次光临',
-          7: '订单退款中 请耐心等待',
-          8: '商品已过有效期 欢迎下次光临',
-        };
-        return mapObj[v] || '';
-      },
-      // 金钱格式化
-      formaterMoney(v) {
-        if (!v) return '';
-        return (v / 100).toFixed(2);
-      },
-      // 日期过滤器, 用于格式化日期
-      dateFilter(value) {
-        if (!value) return '';
-        return dayjs(value).format('YYYY-MM-DD HH:mm');
-      },
-      // 日期过滤器, 用于格式化日期
-      formatTime(value) {
-        if (!value) return '';
-        return dayjs(value).format('YYYY-MM-DD HH:mm:ss');
-      },
-      formatDateTime(value) {
-        if (!value) return '';
-        return dayjs(value).format('YYYY年MM月DD日');
-      },
-    },
-    computed: {
-      qrClass() {
-        if (!this.info) return '';
-        const mapObj = {
-          2: 'green', // 待使用
-          3: 'grey', // 已使用
-          6: 'bron', // 已失效
-          7: 'bron', // 退款中
-          8: 'bron', // 已过期
-        };
-        return mapObj[this.info.orderStatus] || '';
-      },
-    },
-    onUnload() {
-      if (this.timer) {
-        clearTimeout(this.timer);
-        this.timer = null;
+    formateOrderStatusText(v) {
+      const mapObj = {
+        1: '剩29分28秒 订单自动取消',
+        2: '还有365天过期 请尽快使用',
+        3: '您的订单已完成 欢迎下次光临',
+        4: '超时支付 订单已自动关闭',
+        5: ' ',
+        6: '退款完成 欢迎下次光临',
+        7: '订单退款中 请耐心等待',
+        8: '商品已过有效期 欢迎下次光临'
       }
+      return mapObj[v] || ''
     },
-    methods: {
-      // 申请开票
-      handleApplyClick() {
-        api.getOrderInfo({
-          data: {
-            orderId: this.orderId,
-          },
-          success: (data) => {
-            switch (data.orderStatus) {
-              case '3':
-              case '5':
-                if (data.invoiceStatus !== '2') {
-                  uni.navigateTo({
-                    url: '/pages/supermarket/apply-invoice?info=' + JSON.stringify(data),
-                  });
-                } else {
-                  this.$uni.showToast('该笔订单无法申请开票，请联系客服400-0610-100');
-                }
-                break;
-              case '6':
-                if (data.invoiceStatus === '1') {
-                  uni.navigateTo({
-                    url: '/pages/supermarket/apply-invoice?info=' + JSON.stringify(data),
-                  });
-                } else {
-                  this.$uni.showToast('该笔订单已退款，无法申请开票');
-                }
-                break;
-              case '7':
-                if (data.invoiceStatus === '1') {
-                  uni.navigateTo({
-                    url: '/pages/supermarket/apply-invoice?info=' + JSON.stringify(data),
-                  });
-                } else {
-                  this.$uni.showToast('当前正在退款中，无法申请开票');
-                }
-                break;
-            }
-          },
-        });
-      },
-      // 查看开票
-      handleInvoiceClick() {
-        uni.navigateTo({
-          url: '/pages/supermarket/invoice-info?invoiceId=' + this.info.invoiceId,
-        });
-      },
-      // 申请退款
-      handleReturn() {
-        const orderId = this.info.orderId;
-        uni.navigateTo({
-          url: `/pages/life/applyRefund?orderId=${orderId}`,
-        });
-      },
-      // 套餐详情
-      goHotelDetail() {
-        const { hotelName, hotelId, hotelDiscountId } = this.info.hotel;
-        const change = 1;
-        api.queryByDiscountId({
-          data: { hotelDiscountId, isTransaction: change },
-          success: (res) => {
-            if (res) {
-              uni.navigateTo({
-                url:
+    // 金钱格式化
+    formaterMoney(v) {
+      if (!v) return ''
+      return (v / 100).toFixed(2)
+    },
+    // 日期过滤器, 用于格式化日期
+    dateFilter(value) {
+      if (!value) return ''
+      return dayjs(value).format('YYYY-MM-DD HH:mm')
+    },
+    // 日期过滤器, 用于格式化日期
+    formatTime(value) {
+      if (!value) return ''
+      return dayjs(value).format('YYYY-MM-DD HH:mm:ss')
+    },
+    formatDateTime(value) {
+      if (!value) return ''
+      return dayjs(value).format('YYYY年MM月DD日')
+    }
+  },
+  computed: {
+    qrClass() {
+      if (!this.info) return ''
+      const mapObj = {
+        2: 'green', // 待使用
+        3: 'grey', // 已使用
+        6: 'bron', // 已失效
+        7: 'bron', // 退款中
+        8: 'bron' // 已过期
+      }
+      return mapObj[this.info.orderStatus] || ''
+    }
+  },
+  onUnload() {
+    if (this.timer) {
+      clearTimeout(this.timer)
+      this.timer = null
+    }
+  },
+  methods: {
+    // 申请开票
+    handleApplyClick() {
+      api.getOrderInfo({
+        data: {
+          orderId: this.orderId
+        },
+        success: (data) => {
+          switch (data.orderStatus) {
+            case '3':
+            case '5':
+              if (data.invoiceStatus !== '2') {
+                uni.navigateTo({
+                  url: '/pages/supermarket/apply-invoice?info=' + JSON.stringify(data)
+                })
+              } else {
+                this.$uni.showToast('该笔订单无法申请开票，请联系客服400-0610-100')
+              }
+              break
+            case '6':
+              if (data.invoiceStatus === '1') {
+                uni.navigateTo({
+                  url: '/pages/supermarket/apply-invoice?info=' + JSON.stringify(data)
+                })
+              } else {
+                this.$uni.showToast('该笔订单已退款，无法申请开票')
+              }
+              break
+            case '7':
+              if (data.invoiceStatus === '1') {
+                uni.navigateTo({
+                  url: '/pages/supermarket/apply-invoice?info=' + JSON.stringify(data)
+                })
+              } else {
+                this.$uni.showToast('当前正在退款中，无法申请开票')
+              }
+              break
+          }
+        }
+      })
+    },
+    // 查看开票
+    handleInvoiceClick() {
+      uni.navigateTo({
+        url: '/pages/supermarket/invoice-info?invoiceId=' + this.info.invoiceId
+      })
+    },
+    // 申请退款
+    handleReturn() {
+      const orderId = this.info.orderId
+      uni.navigateTo({
+        url: `/pages/life/applyRefund?orderId=${orderId}`
+      })
+    },
+    // 套餐详情
+    goHotelDetail() {
+      const { hotelName, hotelId, hotelDiscountId } = this.info.hotel
+      const change = 1
+      api.queryByDiscountId({
+        data: { hotelDiscountId, isTransaction: change },
+        success: (res) => {
+          if (res) {
+            uni.navigateTo({
+              url:
                   '/pages/life/hotelDetail?hotelDiscountId=' +
                   hotelDiscountId +
                   '&change=1' +
                   '&hotelName=' +
                   hotelName +
                   '&hotelId=' +
-                  hotelId,
-              });
-            } else {
-              uni.showToast('商品过期不存在！');
-            }
-          },
-          fail: (res) => {},
-        });
-      },
-      // 地图
-      goMap() {
-        const { address, hotelName, hotelId, hotelPhoto, lat, lon } = this.info.hotel;
-        const { latitude, longitude } = uni.getStorageSync('location');
-        api.getInfoByHotelId({
-          data: { lat: latitude, lon: longitude, hotelId },
-          success: (res) => {
-            const params = {
-              name: hotelName,
-              longitude: lon - 0,
-              latitude: lat - 0,
-              distance: res.distance,
-              address,
-              hotelPhoto,
-            };
-            uni.navigateTo({
-              url: '/pages/life/mapShow?params=' + `${encodeURIComponent(JSON.stringify(params))}`,
-            });
-          },
-        });
-      },
-      // 支付
-      handlePay(info) {
-        const url = `https://api.hpgjzlinfo.com/#/checkstand?cashId=${info.orderId}`;
-        // #ifdef MP-ALIPAY
-        uni.reLaunch({
-          url: `/pages/common/webpage?url=${url}`,
-        });
-        // #endif
-
-        // #ifdef MP-WEIXIN
-        uni.reLaunch({
-          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-        });
-        // #endif
-      },
-      // 预定
-      handlePre(isPre) {
-        if (isPre) {
-          this.dialogContent = '您需要拨打电话预定酒店服务，是否立即拨打';
-        } else {
-          this.dialogContent = '您已预定酒店服务，是否拨打电话取消预定';
-        }
-
-        this.$refs.callPhonePop.open();
-      },
-      // 拨打电话
-      marketPopConfirm() {
-        this.$refs.callPhonePop.close();
-        uni.makePhoneCall({
-          phoneNumber: this.info.customerService,
-        });
-      },
-      // 取消
-      marketPopCancel() {
-        this.$refs.callPhonePop.close();
-      },
-      //  订单详情
-      getOrderInfo(noTime) {
-        api.getOrderInfo({
-          data: {
-            orderId: this.orderId,
-          },
-          success: (data) => {
-            this.info = data;
-            const usageTime = new Date(this.info.usageTime).getTime();
-            const now = new Date().getTime();
-            const toalTime = usageTime - now;
-            const chaValue = Math.floor(toalTime / 3600000); // 小时
-            // TODO 按照逻辑来说待使用超过预定时间，订单应该变更为已完成。但目前待使用状态变更为已完成需要客乐芙返回。
-            if (chaValue > 0 && chaValue <= 24) {
-              this.isCancel = '2'; // 不可以取消
-            } else if (chaValue > 24) {
-              this.isCancel = '1'; // 可以取消
-            }
-            if (!noTime) {
-              this.getExpTime();
-            }
-          },
-        });
-      },
-      // 计算剩余过期时间
-      getExpTime() {
-        const totalSecond = dayjs(this.info.expirationTime).diff(dayjs(), 'second');
-        const munite = Math.floor(totalSecond / 60);
-        const second = totalSecond - munite * 60;
-        this.expirationTime = [munite, second];
-
-        this.timer = setTimeout(() => {
-          this.getExpTime();
-          // 处理待使用倒计时
-          this.handlerTime(totalSecond);
-          if (totalSecond == 0) {
-            clearTimeout(this.timer);
-            this.getOrderInfo(1);
+                  hotelId
+            })
+          } else {
+            uni.showToast('商品过期不存在！')
           }
-        }, 1000);
-      },
-      handlerTime(allt) {
-        var day = Math.floor(allt / (60 * 60 * 24));
-        var hours = Math.floor((allt - day * 60 * 60 * 24) / (60 * 60));
-        var minutes = Math.floor((allt - day * 60 * 60 * 24 - hours * 60 * 60) / 60);
-        var seconds = allt - day * 60 * 60 * 24 - hours * 60 * 60 - minutes * 60;
-        var resutTime = '';
-        if (day > 0) {
-          resutTime = day + '天';
-        }
-        if (hours < 10) {
-          hours = '0' + hours;
-        }
-        if (minutes < 10) {
-          minutes = '0' + minutes;
-        }
-        if (seconds < 10) {
-          seconds = '0' + seconds;
-        }
-        // console.log(day + '天' + hours + '时' + minutes + '分')
-        this.interval_time = day + '天' + hours + '时' + minutes + '分';
-      },
-      // 获取状态图片
-      getIconByStatus(orderStatus) {
-        const mapObj = {
-          1: 'http://192.168.1.187:10088/static/life/icon-daifukuan.png',
-          2: 'http://192.168.1.187:10088/static/life/icon-daishiyong.png',
-          3: 'http://192.168.1.187:10088/static/life/icon-yiwancheng.png',
-          4: 'http://192.168.1.187:10088/static/life/icon-yiguanbi.png',
-          5: '',
-          6: 'http://192.168.1.187:10088/static/life/icon-tuikuanwancheng1.png',
-          7: 'http://192.168.1.187:10088/static/life/icon-tuikuanzhong.png',
-          8: 'http://192.168.1.187:10088/static/life/icon-yiguoqi.png',
-        };
-        return mapObj[orderStatus] || '';
-      },
-      clickItem(type) {
-        this.type = type;
-      },
+        },
+        fail: (res) => {}
+      })
     },
-  };
+    // 地图
+    goMap() {
+      const { address, hotelName, hotelId, hotelPhoto, lat, lon } = this.info.hotel
+      const { latitude, longitude } = uni.getStorageSync('location')
+      api.getInfoByHotelId({
+        data: { lat: latitude, lon: longitude, hotelId },
+        success: (res) => {
+          const params = {
+            name: hotelName,
+            longitude: lon - 0,
+            latitude: lat - 0,
+            distance: res.distance,
+            address,
+            hotelPhoto
+          }
+          uni.navigateTo({
+            url: '/pages/life/mapShow?params=' + `${encodeURIComponent(JSON.stringify(params))}`
+          })
+        }
+      })
+    },
+    // 支付
+    handlePay(info) {
+      const url = `https://api.hpgjzlinfo.com/#/checkstand?cashId=${info.orderId}`
+      // #ifdef MP-ALIPAY
+      uni.reLaunch({
+        url: `/pages/common/webpage?url=${url}`
+      })
+      // #endif
+
+      // #ifdef MP-WEIXIN
+      uni.reLaunch({
+        url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
+      })
+      // #endif
+    },
+    // 预定
+    handlePre(isPre) {
+      if (isPre) {
+        this.dialogContent = '您需要拨打电话预定酒店服务，是否立即拨打'
+      } else {
+        this.dialogContent = '您已预定酒店服务，是否拨打电话取消预定'
+      }
+
+      this.$refs.callPhonePop.open()
+    },
+    // 拨打电话
+    marketPopConfirm() {
+      this.$refs.callPhonePop.close()
+      uni.makePhoneCall({
+        phoneNumber: this.info.customerService
+      })
+    },
+    // 取消
+    marketPopCancel() {
+      this.$refs.callPhonePop.close()
+    },
+    //  订单详情
+    getOrderInfo(noTime) {
+      api.getOrderInfo({
+        data: {
+          orderId: this.orderId
+        },
+        success: (data) => {
+          this.info = data
+          const usageTime = new Date(this.info.usageTime).getTime()
+          const now = new Date().getTime()
+          const toalTime = usageTime - now
+          const chaValue = Math.floor(toalTime / 3600000) // 小时
+          // TODO 按照逻辑来说待使用超过预定时间，订单应该变更为已完成。但目前待使用状态变更为已完成需要客乐芙返回。
+          if (chaValue > 0 && chaValue <= 24) {
+            this.isCancel = '2' // 不可以取消
+          } else if (chaValue > 24) {
+            this.isCancel = '1' // 可以取消
+          }
+          if (!noTime) {
+            this.getExpTime()
+          }
+        }
+      })
+    },
+    // 计算剩余过期时间
+    getExpTime() {
+      const totalSecond = dayjs(this.info.expirationTime).diff(dayjs(), 'second')
+      const munite = Math.floor(totalSecond / 60)
+      const second = totalSecond - munite * 60
+      this.expirationTime = [munite, second]
+
+      this.timer = setTimeout(() => {
+        this.getExpTime()
+        // 处理待使用倒计时
+        this.handlerTime(totalSecond)
+        if (totalSecond == 0) {
+          clearTimeout(this.timer)
+          this.getOrderInfo(1)
+        }
+      }, 1000)
+    },
+    handlerTime(allt) {
+      var day = Math.floor(allt / (60 * 60 * 24))
+      var hours = Math.floor((allt - day * 60 * 60 * 24) / (60 * 60))
+      var minutes = Math.floor((allt - day * 60 * 60 * 24 - hours * 60 * 60) / 60)
+      var seconds = allt - day * 60 * 60 * 24 - hours * 60 * 60 - minutes * 60
+      var resutTime = ''
+      if (day > 0) {
+        resutTime = day + '天'
+      }
+      if (hours < 10) {
+        hours = '0' + hours
+      }
+      if (minutes < 10) {
+        minutes = '0' + minutes
+      }
+      if (seconds < 10) {
+        seconds = '0' + seconds
+      }
+      // console.log(day + '天' + hours + '时' + minutes + '分')
+      this.interval_time = day + '天' + hours + '时' + minutes + '分'
+    },
+    // 获取状态图片
+    getIconByStatus(orderStatus) {
+      const mapObj = {
+        1: 'http://192.168.1.187:10088/static/life/icon-daifukuan.png',
+        2: 'http://192.168.1.187:10088/static/life/icon-daishiyong.png',
+        3: 'http://192.168.1.187:10088/static/life/icon-yiwancheng.png',
+        4: 'http://192.168.1.187:10088/static/life/icon-yiguanbi.png',
+        5: '',
+        6: 'http://192.168.1.187:10088/static/life/icon-tuikuanwancheng1.png',
+        7: 'http://192.168.1.187:10088/static/life/icon-tuikuanzhong.png',
+        8: 'http://192.168.1.187:10088/static/life/icon-yiguoqi.png'
+      }
+      return mapObj[orderStatus] || ''
+    },
+    clickItem(type) {
+      this.type = type
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .red {

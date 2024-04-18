@@ -56,143 +56,143 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
-  export default {
-    data() {
-      return {
-        key: '',
-        city: '',
-        jobList: [],
-        workArea: '',
-        postType: '',
-        pageNum: 1,
-        pageSize: 20,
-        tradeName: '',
-        loading: 1,
-      };
+import api from '@/apis/index.js'
+export default {
+  data() {
+    return {
+      key: '',
+      city: '',
+      jobList: [],
+      workArea: '',
+      postType: '',
+      pageNum: 1,
+      pageSize: 20,
+      tradeName: '',
+      loading: 1
+    }
+  },
+  created() {
+    // this.getLocation()
+  },
+  mounted() {
+    this.city = uni.getStorageSync('city')
+  },
+  onHide() {
+    uni.removeStorageSync('s_key')
+    // uni.removeStorageSync('seletName')
+    // uni.removeStorageSync('childChoice')
+  },
+  destroyed() {
+    uni.removeStorageSync('s_key')
+    uni.removeStorageSync('seletName')
+    uni.removeStorageSync('childChoice')
+  },
+  onShow() {
+    // this.getLocation()
+    this.city = uni.getStorageSync('city')
+    this.workArea = this.city.realCode || this.city.code || ''
+    this.postType = uni.getStorageSync('childChoice')
+    this.tradeName = uni.getStorageSync('seletName')
+    this.pageNum = 1
+    this.loading = 1
+    this.jobList = []
+    this.getJobList()
+  },
+  onShareAppMessage() {
+    return {
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
+  },
+  onReachBottom() {
+    this.getJobList()
+  },
+  methods: {
+    getJobList() {
+      api.getJobList({
+        data: {
+          postName: '',
+          workArea: this.workArea,
+          postType: this.postType,
+          pageNum: this.pageNum,
+          pageSize: this.pageSize
+        },
+        success: (data) => {
+          const list = data.list || []
+          this.loading = 1
+          if (list.length > 0) {
+            this.jobList = this.jobList.concat(list)
+            this.pageNum++
+          } else {
+            this.loading = 2
+          }
+        },
+        fail: (erro) => {
+          this.loading = 2
+        }
+      })
     },
-    created() {
-      // this.getLocation()
+    jobType() {
+      uni.navigateTo({ url: '/pages/job/trade' })
     },
-    mounted() {
-      this.city = uni.getStorageSync('city');
+    focusInput() {
+      uni.navigateTo({ url: '/pages/job/jobSearch' })
     },
-    onHide() {
-      uni.removeStorageSync('s_key');
-      // uni.removeStorageSync('seletName')
-      // uni.removeStorageSync('childChoice')
+    goDetailJob(id) {
+      uni.navigateTo({ url: '/pages/job/jobDetail?id=' + id })
     },
-    destroyed() {
-      uni.removeStorageSync('s_key');
-      uni.removeStorageSync('seletName');
-      uni.removeStorageSync('childChoice');
+    handleCityClick() {
+      uni.navigateTo({
+        url: '/pages/common/city-picker'
+      })
     },
-    onShow() {
-      // this.getLocation()
-      this.city = uni.getStorageSync('city');
-      this.workArea = this.city.realCode || this.city.code || '';
-      this.postType = uni.getStorageSync('childChoice');
-      this.tradeName = uni.getStorageSync('seletName');
-      this.pageNum = 1;
-      this.loading = 1;
-      this.jobList = [];
-      this.getJobList();
-    },
-    onShareAppMessage() {
-      return {
-        title: '',
-        path: '/pages/index/index?index=0',
-      };
-    },
-    onReachBottom() {
-      this.getJobList();
-    },
-    methods: {
-      getJobList() {
-        api.getJobList({
-          data: {
-            postName: '',
-            workArea: this.workArea,
-            postType: this.postType,
-            pageNum: this.pageNum,
-            pageSize: this.pageSize,
-          },
-          success: (data) => {
-            const list = data.list || [];
-            this.loading = 1;
-            if (list.length > 0) {
-              this.jobList = this.jobList.concat(list);
-              this.pageNum++;
-            } else {
-              this.loading = 2;
-            }
-          },
-          fail: (erro) => {
-            this.loading = 2;
-          },
-        });
-      },
-      jobType() {
-        uni.navigateTo({ url: '/pages/job/trade' });
-      },
-      focusInput() {
-        uni.navigateTo({ url: '/pages/job/jobSearch' });
-      },
-      goDetailJob(id) {
-        uni.navigateTo({ url: '/pages/job/jobDetail?id=' + id });
-      },
-      handleCityClick() {
-        uni.navigateTo({
-          url: '/pages/common/city-picker',
-        });
-      },
-      getLocation() {
-        uni.getLocation({
-          type: 'gcj02',
-          success: (res) => {
-            uni.setStorageSync('location', res);
-            // 调用高德地图 API 逆地理编码, 通过经纬度获取当前位置城市信息
-            api.regeoMap(
-              {
-                location: res.longitude + ',' + res.latitude,
-              },
-              {
-                success: (res) => {
-                  console.log('===当前定位--', res);
-                  this.areaCode = res.regeocode.addressComponent.adcode;
-                  // TODO this.getLocalProdList()// 本地惠
-                  let city = {};
-                  // 当城市是省直辖县时返回为空，以及城市为北京、上海、天津、重庆四个直辖市时，该字段返回为[],否则为城市名称（字符串）
-                  if (res.regeocode.addressComponent.city.length === 0) {
-                    city = {
-                      code: res.regeocode.addressComponent.adcode.substr(0, 2) + '0100',
-                      name: res.regeocode.addressComponent.province,
-                      realCode: res.regeocode.addressComponent.adcode.substr(0, 2) + '0000',
-                    };
-                  } else {
-                    city = {
-                      code: res.regeocode.addressComponent.adcode.substr(0, 4) + '00',
-                      name: res.regeocode.addressComponent.city,
-                    };
+    getLocation() {
+      uni.getLocation({
+        type: 'gcj02',
+        success: (res) => {
+          uni.setStorageSync('location', res)
+          // 调用高德地图 API 逆地理编码, 通过经纬度获取当前位置城市信息
+          api.regeoMap(
+            {
+              location: res.longitude + ',' + res.latitude
+            },
+            {
+              success: (res) => {
+                console.log('===当前定位--', res)
+                this.areaCode = res.regeocode.addressComponent.adcode
+                // TODO this.getLocalProdList()// 本地惠
+                let city = {}
+                // 当城市是省直辖县时返回为空，以及城市为北京、上海、天津、重庆四个直辖市时，该字段返回为[],否则为城市名称（字符串）
+                if (res.regeocode.addressComponent.city.length === 0) {
+                  city = {
+                    code: res.regeocode.addressComponent.adcode.substr(0, 2) + '0100',
+                    name: res.regeocode.addressComponent.province,
+                    realCode: res.regeocode.addressComponent.adcode.substr(0, 2) + '0000'
                   }
-                  this.handleSelectCity(city);
-                },
-              },
-            );
-          },
-          fail: () => {
-            // 定位失败默认北京市
-            const city = { code: 110100, name: '北京市', realCode: '110000' };
-            this.handleSelectCity(city);
-          },
-        });
-      },
-      handleSelectCity(city) {
-        this.city = city;
-        uni.setStorageSync('city', city);
-      },
+                } else {
+                  city = {
+                    code: res.regeocode.addressComponent.adcode.substr(0, 4) + '00',
+                    name: res.regeocode.addressComponent.city
+                  }
+                }
+                this.handleSelectCity(city)
+              }
+            }
+          )
+        },
+        fail: () => {
+          // 定位失败默认北京市
+          const city = { code: 110100, name: '北京市', realCode: '110000' }
+          this.handleSelectCity(city)
+        }
+      })
     },
-  };
+    handleSelectCity(city) {
+      this.city = city
+      uni.setStorageSync('city', city)
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   @import '~@/styles/base';

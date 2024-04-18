@@ -8,48 +8,48 @@
       <view class="tb" @click="showNotice">立即投保</view>
     </view>
  </view>
-</template> 
+</template>
 <script>
 import uniPopup from '@/components/uni-popup/uni-popup.vue'
-import modalKnow from "@/pages/life/components/modal-know.vue"
+import modalKnow from '@/pages/life/components/modal-know.vue'
 import api from '@/apis/index.js'
 import parse from 'mini-html-parser2'
 export default {
-  components: { modalKnow ,uniPopup},
-  data(){
-        return {
-          insuranDetal:'',
-          prices:''
-        }
+  components: { modalKnow, uniPopup },
+  data() {
+    return {
+      insuranDetal: '',
+      prices: ''
+    }
   },
-    filters: {
-   
- }, 
+  filters: {
+
+  },
   onShareAppMessage() {
     return {
-                title:'',
-                path:"/pages/index/index?index=0",
-          };
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
     // return {
     //   title:'保险详情',
     //   path:
     //     "/pages/life/insuranceDetail?price="+`${this.prices.productPrice}`,
     // };
   },
-  onLoad(e){
+  onLoad(e) {
     const detail = uni.getStorageSync('insuranDetal') || ''
-    this.insuranDetal = detail.replace('<body style="margin:0; padding:0">', "").replace('</body>',"")
-    parse(this.insuranDetal, (err, nodesList) => {this.insuranDetal = nodesList})
-    if(e.price){
+    this.insuranDetal = detail.replace('<body style="margin:0; padding:0">', '').replace('</body>', '')
+    parse(this.insuranDetal, (err, nodesList) => { this.insuranDetal = nodesList })
+    if (e.price) {
       this.prices = e.price
     }
   },
-  methods:{
-    showNotice(){
+  methods: {
+    showNotice() {
       this.$refs.notice.open()
     }
   }
-}  
+}
 </script>
 <style lang="scss" scoped>
 .bottom{

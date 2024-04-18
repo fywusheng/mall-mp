@@ -16,22 +16,22 @@
 export default {
   data() {
     return {
-      images: [],
-    };
+      images: []
+    }
   },
   onLoad(e) {
-    //#ifdef MP-ALIPAY
-    if(e.imgs){
+    // #ifdef MP-ALIPAY
+    if (e.imgs) {
       this.images = JSON.parse(decodeURIComponent(e.imgs))
       this.$uni.setTitle(`图片(${this.images.length})`)
     }
-    //#endif
-    
-    const eventChannel = this.getOpenerEventChannel();
-    eventChannel.on("openPhotoDetail", (data) => {
+    // #endif
+
+    const eventChannel = this.getOpenerEventChannel()
+    eventChannel.on('openPhotoDetail', (data) => {
       this.images = data.item
       this.$uni.setTitle(`图片(${this.images.length})`)
-    });
+    })
   },
   methods: {
     /**
@@ -40,11 +40,11 @@ export default {
     handleImageClick(index) {
       uni.previewImage({
         urls: this.images,
-        current: this.images[index],
-      });
-    },
-  },
-};
+        current: this.images[index]
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

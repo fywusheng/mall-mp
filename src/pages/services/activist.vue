@@ -51,120 +51,120 @@
 </template>
 
 <script>
-  import PopModal from '@/components/common/modal.vue';
-  import KnowModal from './components/modal-know.vue';
-  import api from '@/apis/index.js';
+import PopModal from '@/components/common/modal.vue'
+import KnowModal from './components/modal-know.vue'
+import api from '@/apis/index.js'
 
-  export default {
-    data() {
-      return {
-        iconBg: 'http://192.168.1.187:10088/static/services/icon-activist-bg.png',
-        rightList: [
-          {
-            url: 'http://192.168.1.187:10088/static/services/icon-right-1.png',
-            type: 0,
-            txt: '赡养抚养',
-          },
-          {
-            url: 'http://192.168.1.187:10088/static/services/icon-right-2.png',
-            type: 1,
-            txt: '住房维权',
-          },
-          {
-            url: 'http://192.168.1.187:10088/static/services/icon-right-3.png',
-            type: 7,
-            txt: '债权债务',
-          },
-          {
-            url: 'http://192.168.1.187:10088/static/services/icon-right-4.png',
-            type: 8,
-            txt: '劳动仲裁',
-          },
-          {
-            url: 'http://192.168.1.187:10088/static/services/icon-right-5.png',
-            type: 2,
-            txt: '婚姻自由',
-          },
-          {
-            url: 'http://192.168.1.187:10088/static/services/icon-right-6.png',
-            type: 3,
-            txt: '消费权益',
-          },
-          {
-            url: 'http://192.168.1.187:10088/static/services/icon-right-7.png',
-            type: 4,
-            txt: '土地承包',
-          },
-          {
-            url: 'http://192.168.1.187:10088/static/services/icon-right-8.png',
-            type: 5,
-            txt: '集资诈骗',
-          },
-          {
-            url: 'http://192.168.1.187:10088/static/services/icon-right-9.png',
-            type: 6,
-            txt: '医疗纠纷',
-          },
-          {
-            url: 'http://192.168.1.187:10088/static/services/icon-right-10.png',
-            type: 9,
-            txt: '其他',
-          },
-        ],
-        // 累计服务用户数
-        upholdRightsUserNum: 0,
-        // 累计有效维权数
-        upholdRightsClickNum: 0,
-      };
-    },
-    components: { PopModal, KnowModal },
-    mounted() {
-      this.getUploadNum();
-    },
-    methods: {
-      handleCancel() {
-        this.$refs.confirmPop.close();
-      },
-      handlConfirmPop() {
-        this.$refs.confirmPop.close();
-        if (this.phoneNum) {
-          uni.makePhoneCall({
-            phoneNumber: this.phoneNum,
-          });
-        } else {
-          this.$refs.knowPop.open();
+export default {
+  data() {
+    return {
+      iconBg: 'http://192.168.1.187:10088/static/services/icon-activist-bg.png',
+      rightList: [
+        {
+          url: 'http://192.168.1.187:10088/static/services/icon-right-1.png',
+          type: 0,
+          txt: '赡养抚养'
+        },
+        {
+          url: 'http://192.168.1.187:10088/static/services/icon-right-2.png',
+          type: 1,
+          txt: '住房维权'
+        },
+        {
+          url: 'http://192.168.1.187:10088/static/services/icon-right-3.png',
+          type: 7,
+          txt: '债权债务'
+        },
+        {
+          url: 'http://192.168.1.187:10088/static/services/icon-right-4.png',
+          type: 8,
+          txt: '劳动仲裁'
+        },
+        {
+          url: 'http://192.168.1.187:10088/static/services/icon-right-5.png',
+          type: 2,
+          txt: '婚姻自由'
+        },
+        {
+          url: 'http://192.168.1.187:10088/static/services/icon-right-6.png',
+          type: 3,
+          txt: '消费权益'
+        },
+        {
+          url: 'http://192.168.1.187:10088/static/services/icon-right-7.png',
+          type: 4,
+          txt: '土地承包'
+        },
+        {
+          url: 'http://192.168.1.187:10088/static/services/icon-right-8.png',
+          type: 5,
+          txt: '集资诈骗'
+        },
+        {
+          url: 'http://192.168.1.187:10088/static/services/icon-right-9.png',
+          type: 6,
+          txt: '医疗纠纷'
+        },
+        {
+          url: 'http://192.168.1.187:10088/static/services/icon-right-10.png',
+          type: 9,
+          txt: '其他'
         }
-        this.getUploadNum(2);
-      },
-      getPhoneNum(type) {
-        const token = uni.getStorageSync('token');
-        if (!token) {
-          uni.navigateTo({ url: '/pages/user-center/login' });
-          return;
-        }
-        api.getPhoneNumByType({
-          data: { upholdRightsTypeCode: type },
-          success: (data) => {
-            this.phoneNum = data;
-            this.$refs.confirmPop.open();
-          },
-          fail: (error) => {
-            this.phoneNum = '';
-            console.log(error);
-          },
-        });
-      },
-      getUploadNum(queryType = 1) {
-        api.findCountForRights({
-          data: { queryType },
-          success: (data) => {
-            this.upholdRightsUserNum = data.upholdRightsUserNum;
-            this.upholdRightsClickNum = data.upholdRightsClickNum;
-          },
-        });
-      },
+      ],
+      // 累计服务用户数
+      upholdRightsUserNum: 0,
+      // 累计有效维权数
+      upholdRightsClickNum: 0
+    }
+  },
+  components: { PopModal, KnowModal },
+  mounted() {
+    this.getUploadNum()
+  },
+  methods: {
+    handleCancel() {
+      this.$refs.confirmPop.close()
     },
-  };
+    handlConfirmPop() {
+      this.$refs.confirmPop.close()
+      if (this.phoneNum) {
+        uni.makePhoneCall({
+          phoneNumber: this.phoneNum
+        })
+      } else {
+        this.$refs.knowPop.open()
+      }
+      this.getUploadNum(2)
+    },
+    getPhoneNum(type) {
+      const token = uni.getStorageSync('token')
+      if (!token) {
+        uni.navigateTo({ url: '/pages/user-center/login' })
+        return
+      }
+      api.getPhoneNumByType({
+        data: { upholdRightsTypeCode: type },
+        success: (data) => {
+          this.phoneNum = data
+          this.$refs.confirmPop.open()
+        },
+        fail: (error) => {
+          this.phoneNum = ''
+          console.log(error)
+        }
+      })
+    },
+    getUploadNum(queryType = 1) {
+      api.findCountForRights({
+        data: { queryType },
+        success: (data) => {
+          this.upholdRightsUserNum = data.upholdRightsUserNum
+          this.upholdRightsClickNum = data.upholdRightsClickNum
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -233,130 +233,130 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
-  import dayjs from 'dayjs';
-  export default {
-    props: {
-      list: {
-        type: Array,
-        default: () => [],
-      },
+import api from '@/apis/index.js'
+import dayjs from 'dayjs'
+export default {
+  props: {
+    list: {
+      type: Array,
+      default: () => []
+    }
+  },
+  data() {
+    return {
+      article_id: '',
+      icons: {
+        0: 'http://192.168.1.187:10088/static/user-center/topicon.png',
+        1: 'http://192.168.1.187:10088/static/user-center/cancel.png'
+      }
+    }
+  },
+  filters: {
+    dateFilter: function (time) {
+      if (!time) return ''
+      return dayjs().format('YYYY-MM-DD')
+    }
+  },
+  onLoad() {},
+  methods: {
+    close() {
+      this.$refs.confirmpop.close()
     },
-    data() {
-      return {
-        article_id: '',
-        icons: {
-          0: 'http://192.168.1.187:10088/static/user-center/topicon.png',
-          1: 'http://192.168.1.187:10088/static/user-center/cancel.png',
-        },
-      };
+    // 点击播放
+    saveplay(name) {
+      console.log('点击播放视频：', name)
+      // if (this.current && name != this.current) {
+      //   // console.log('被暂停了')
+      //   this.videoContext = uni.createVideoContext(this.current,this)
+      //    console.log('被暂停了',this.videoContext)
+      //   this.videoContext.pause()
+      // }
     },
-    filters: {
-      dateFilter: function (time) {
-        if (!time) return '';
-        return dayjs().format('YYYY-MM-DD');
-      },
+    // 关闭分享
+    handleCloseClick() {
+      this.$refs.popup.close()
     },
-    onLoad() {},
-    methods: {
-      close() {
-        this.$refs.confirmpop.close();
-      },
-      // 点击播放
-      saveplay(name) {
-        console.log('点击播放视频：', name);
-        // if (this.current && name != this.current) {
-        //   // console.log('被暂停了')
-        //   this.videoContext = uni.createVideoContext(this.current,this)
-        //    console.log('被暂停了',this.videoContext)
-        //   this.videoContext.pause()
-        // }
-      },
-      // 关闭分享
-      handleCloseClick() {
-        this.$refs.popup.close();
-      },
-      // 点击复制链接
-      handleCopyClick() {
-        uni.setClipboardData({
-          data: `/#/discovery/app-detail/` + this.article_id,
-          success: (res) => {
-            console.log(res);
-            uni.getClipboardData({
-              success: (resp) => {
-                this.$refs.popup.close();
-                console.log('resp:', resp);
-                uni.showToast({
-                  title: '已复制到剪贴板',
-                });
-              },
-            });
-          },
-        });
-      },
-      /**
+    // 点击复制链接
+    handleCopyClick() {
+      uni.setClipboardData({
+        data: `/#/discovery/app-detail/` + this.article_id,
+        success: (res) => {
+          console.log(res)
+          uni.getClipboardData({
+            success: (resp) => {
+              this.$refs.popup.close()
+              console.log('resp:', resp)
+              uni.showToast({
+                title: '已复制到剪贴板'
+              })
+            }
+          })
+        }
+      })
+    },
+    /**
        * 文章详情
        */
-      goDetail(item) {
-        const imgs = JSON.stringify(item.imgs);
-        uni.navigateTo({
-          url: `/pages/find/article-detail?contId=` + item.colId + '&imgs=' + imgs,
-        });
-      },
-      /**
+    goDetail(item) {
+      const imgs = JSON.stringify(item.imgs)
+      uni.navigateTo({
+        url: `/pages/find/article-detail?contId=` + item.colId + '&imgs=' + imgs
+      })
+    },
+    /**
        * 视频详情
        */
-      goVedio(item) {
-        this.$refs.confirmpop.open();
-        // uni.navigateTo({ url: `/pages/find/video-list?contId=` + item.colId })
-      },
-      optionClick(type, item, i_id) {
-        this.article_id = item['contId'];
-        if (type == 0) {
-          const id = item.contId || '';
-          const topFlag = item.topFlag;
-          const flag = { 0: '1', 1: '0' };
-          this.updateByid(id, flag[topFlag], '0', i_id, item, type);
-        } else if (type == 1) {
-          //  取消收藏
-          const id = item['colId'] || '';
-          this.updateByid(id, '0', '1', i_id, item, type);
-        } else {
-          // fengxiang
-          if (!uni.getStorageSync('token')) {
-            uni.navigateTo({
-              url: '/pages/user-center/login',
-            });
-            return;
-          }
-          this.$refs.popup.open();
-        }
-      },
-      updateByid(colId, topFlag, delFlag, index, item, type) {
-        const params = {
-          colId: colId,
-          topFlag: topFlag, // 置顶 1 ,0
-          delFlag: delFlag, // 取消 1  0
-        };
-        const param = {
-          requestColSingleDTOList: [params],
-        };
-        api.updateCollect({
-          data: param,
-          success: (res) => {
-            console.log('====更新情况--', res);
-            if (res) {
-              this.$emit('fresh', { index: index, item: item, type: type });
-              this.$uni.showToast('操作成功');
-            }
-          },
-          fail: (erro) => {
-            this.$uni.showToast(erro.message);
-          },
-        });
-      },
+    goVedio(item) {
+      this.$refs.confirmpop.open()
+      // uni.navigateTo({ url: `/pages/find/video-list?contId=` + item.colId })
     },
-  };
+    optionClick(type, item, i_id) {
+      this.article_id = item['contId']
+      if (type == 0) {
+        const id = item.contId || ''
+        const topFlag = item.topFlag
+        const flag = { 0: '1', 1: '0' }
+        this.updateByid(id, flag[topFlag], '0', i_id, item, type)
+      } else if (type == 1) {
+        //  取消收藏
+        const id = item['colId'] || ''
+        this.updateByid(id, '0', '1', i_id, item, type)
+      } else {
+        // fengxiang
+        if (!uni.getStorageSync('token')) {
+          uni.navigateTo({
+            url: '/pages/user-center/login'
+          })
+          return
+        }
+        this.$refs.popup.open()
+      }
+    },
+    updateByid(colId, topFlag, delFlag, index, item, type) {
+      const params = {
+        colId: colId,
+        topFlag: topFlag, // 置顶 1 ,0
+        delFlag: delFlag // 取消 1  0
+      }
+      const param = {
+        requestColSingleDTOList: [params]
+      }
+      api.updateCollect({
+        data: param,
+        success: (res) => {
+          console.log('====更新情况--', res)
+          if (res) {
+            this.$emit('fresh', { index: index, item: item, type: type })
+            this.$uni.showToast('操作成功')
+          }
+        },
+        fail: (erro) => {
+          this.$uni.showToast(erro.message)
+        }
+      })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .content {

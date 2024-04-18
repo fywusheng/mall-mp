@@ -19,65 +19,65 @@
 </template>
 
 <script>
-  export default {
-    props: ['instance_id', 'common', 'content'],
-    data(){
-      return {
-        style: {
-          area: []
-        }
+export default {
+  props: ['instance_id', 'common', 'content'],
+  data() {
+    return {
+      style: {
+        area: []
       }
-    },
-    computed: {
-      height(){
-        return this.content.bg.total_height / this.bgSize.w * 100 + '%'
-      },
-      bgSize(){
-        return {
-          w: this.content.bg.total_width,
-          h: this.content.bg.total_height,
-          c: this.content.bg.cell_height
-        }
-      },
-      bgCellsCount(){
-        return Math.ceil(this.bgSize.h / this.bgSize.c)
-      },
-      bgStyle(){
-        return XIU.o2s({
-          backgroundImage: this.content.bg.image ? `url(${XIU.getImgFormat(this.content.bg.image, '/interlace,1/resize,w_750/quality,q_1')})` : ''
-        })
-      },
-      bgCellImage(){
-        return _.map(new Array(this.bgCellsCount), (n, i) => {
-          return XIU.getImgFormat(this.content.bg.image, '/resize,w_750/indexcrop,y_' + Math.ceil(this.content.bg.cell_height) + ',i_' + i)
-        })
-      },
-      cellHeight(){
-        return `height:${this.bgSize.c / this.bgSize.w * 750}rpx`
-      },
-      lastCellHeight(){
-        return `height:${((this.bgSize.h % this.bgSize.c) || this.bgSize.c) / this.bgSize.w * 750}rpx`
-      }
-    },
-    methods: {
-      initAreaStyle(){
-        this.style.area = _.map(this.content.area, n => {
-          return XIU.o2s({
-            left  : n.rect.x * 100 + '%',
-            top   : n.rect.y * 100 + '%',
-            width : n.rect.w * 100 + '%',
-            height: n.rect.h * 100 + '%'
-          })
-        })
-      },
-      onAreaClick(area){
-        XIU.genLink(area.link)
-      }
-    },
-    mounted(){
-      this.initAreaStyle()
     }
+  },
+  computed: {
+    height() {
+      return this.content.bg.total_height / this.bgSize.w * 100 + '%'
+    },
+    bgSize() {
+      return {
+        w: this.content.bg.total_width,
+        h: this.content.bg.total_height,
+        c: this.content.bg.cell_height
+      }
+    },
+    bgCellsCount() {
+      return Math.ceil(this.bgSize.h / this.bgSize.c)
+    },
+    bgStyle() {
+      return XIU.o2s({
+        backgroundImage: this.content.bg.image ? `url(${XIU.getImgFormat(this.content.bg.image, '/interlace,1/resize,w_750/quality,q_1')})` : ''
+      })
+    },
+    bgCellImage() {
+      return _.map(new Array(this.bgCellsCount), (n, i) => {
+        return XIU.getImgFormat(this.content.bg.image, '/resize,w_750/indexcrop,y_' + Math.ceil(this.content.bg.cell_height) + ',i_' + i)
+      })
+    },
+    cellHeight() {
+      return `height:${this.bgSize.c / this.bgSize.w * 750}rpx`
+    },
+    lastCellHeight() {
+      return `height:${((this.bgSize.h % this.bgSize.c) || this.bgSize.c) / this.bgSize.w * 750}rpx`
+    }
+  },
+  methods: {
+    initAreaStyle() {
+      this.style.area = _.map(this.content.area, n => {
+        return XIU.o2s({
+          left: n.rect.x * 100 + '%',
+          top: n.rect.y * 100 + '%',
+          width: n.rect.w * 100 + '%',
+          height: n.rect.h * 100 + '%'
+        })
+      })
+    },
+    onAreaClick(area) {
+      XIU.genLink(area.link)
+    }
+  },
+  mounted() {
+    this.initAreaStyle()
   }
+}
 </script>
 
 <style lang="scss" scoped>

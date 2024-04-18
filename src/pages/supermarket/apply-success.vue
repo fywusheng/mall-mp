@@ -17,63 +17,63 @@
 </template>
 
 <script>
-  import NavigationBar from '../../components/common/navigation-bar.vue';
-  import api from '@/apis/index.js';
-  export default {
-    components: { NavigationBar },
-    data() {
-      return {
-        orderId: '',
-        invoiceId: '',
-        info: null,
-      };
-    },
-    onLoad(e) {
-      this.orderId = e.orderId;
-      this.invoiceId = e.invoiceId;
-      this.getOrderInfo();
-    },
-    methods: {
-      //  订单详情
-      getOrderInfo() {
-        api.getOrderInfo({
-          data: {
-            orderId: this.orderId,
-          },
-          success: (data) => {
-            this.info = data;
-          },
-        });
-      },
-      // 查看订单
-      handleOrderDetail() {
-        // orderSource 0-附近优惠、1-买菜、2-看病、3-保险，4酒店
-        if (this.info.orderSource == 4) {
-          uni.navigateTo({
-            url: '/pages/life/orderInfo?orderId=' + this.orderId,
-          });
-        } else {
-          uni.navigateTo({
-            url: '/pages/supermarket/order-info?orderId=' + this.orderId,
-          });
+import NavigationBar from '../../components/common/navigation-bar.vue'
+import api from '@/apis/index.js'
+export default {
+  components: { NavigationBar },
+  data() {
+    return {
+      orderId: '',
+      invoiceId: '',
+      info: null
+    }
+  },
+  onLoad(e) {
+    this.orderId = e.orderId
+    this.invoiceId = e.invoiceId
+    this.getOrderInfo()
+  },
+  methods: {
+    //  订单详情
+    getOrderInfo() {
+      api.getOrderInfo({
+        data: {
+          orderId: this.orderId
+        },
+        success: (data) => {
+          this.info = data
         }
-      },
-      // 查看发票
-      handleInvoiceDetail() {
+      })
+    },
+    // 查看订单
+    handleOrderDetail() {
+      // orderSource 0-附近优惠、1-买菜、2-看病、3-保险，4酒店
+      if (this.info.orderSource == 4) {
         uni.navigateTo({
-          url: '/pages/supermarket/myInvoice',
-        });
-      },
-      /**
+          url: '/pages/life/orderInfo?orderId=' + this.orderId
+        })
+      } else {
+        uni.navigateTo({
+          url: '/pages/supermarket/order-info?orderId=' + this.orderId
+        })
+      }
+    },
+    // 查看发票
+    handleInvoiceDetail() {
+      uni.navigateTo({
+        url: '/pages/supermarket/myInvoice'
+      })
+    },
+    /**
        * 返回首页点击事件
        */
-      handleBackToHomeClick() {
-        uni.reLaunch({
-          url: '/pages/index/index?index=0',
-        });
-      },
-    },
-  };
+    handleBackToHomeClick() {
+      uni.reLaunch({
+        url: '/pages/index/index?index=0'
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -52,142 +52,142 @@
 </template>
 
 <script>
-  import SectionHeader from '../../components/common/section-header.vue';
-  import api from '@/apis/index.js';
-  export default {
-    components: { SectionHeader },
-    data() {
-      return {
-        // 输入的文字
-        content: '',
-        // 选中的图片
-        images: [],
-        // 上传后的文件地址
-        imageURLs: '',
-        // 联系方式
-        contact: '',
-      };
-    },
-    onLoad() {
-      const userInfo = uni.getStorageSync('userInfo');
-      if (userInfo) this.contact = userInfo.phone;
-    },
-    methods: {
-      /**
+import SectionHeader from '../../components/common/section-header.vue'
+import api from '@/apis/index.js'
+export default {
+  components: { SectionHeader },
+  data() {
+    return {
+      // 输入的文字
+      content: '',
+      // 选中的图片
+      images: [],
+      // 上传后的文件地址
+      imageURLs: '',
+      // 联系方式
+      contact: ''
+    }
+  },
+  onLoad() {
+    const userInfo = uni.getStorageSync('userInfo')
+    if (userInfo) this.contact = userInfo.phone
+  },
+  methods: {
+    /**
        * 选取照片点击事件
        */
-      handlePhotoPickerClick() {
-        uni.chooseImage({
-          count: 9 - this.images.length,
-          success: (res) => {
-            res.tempFilePaths.forEach((item) => {
-              // 名称
-              const imageName = item.split('/').pop();
-              const arr = imageName.split('.');
-              // 后缀
-              const imageExt = arr[arr.length - 1];
+    handlePhotoPickerClick() {
+      uni.chooseImage({
+        count: 9 - this.images.length,
+        success: (res) => {
+          res.tempFilePaths.forEach((item) => {
+            // 名称
+            const imageName = item.split('/').pop()
+            const arr = imageName.split('.')
+            // 后缀
+            const imageExt = arr[arr.length - 1]
 
-              uni.getFileSystemManager().readFile({
-                filePath: item,
-                encoding: 'base64',
-                success: (rs) => {
-                  const data = 'data:image/jpeg;base64,' + rs.data;
+            uni.getFileSystemManager().readFile({
+              filePath: item,
+              encoding: 'base64',
+              success: (rs) => {
+                const data = 'data:image/jpeg;base64,' + rs.data
 
-                  // 线上环境
-                  uni.request({
-                    url: 'https://api.hpgjzlinfo.com/nepsp-api/cms/iep/web/cms/imgUpload',
-                    data: {
-                      base64String: rs.data,
-                      imageName,
-                      imageExt,
-                    },
-                    method: 'POST',
-                    success: (imgres) => {
-                      const fileData = imgres.data.data;
-                      this.images.push(fileData.absoluteUrl);
-                    },
-                  });
+                // 线上环境
+                uni.request({
+                  url: 'https://api.hpgjzlinfo.com/nepsp-api/cms/iep/web/cms/imgUpload',
+                  data: {
+                    base64String: rs.data,
+                    imageName,
+                    imageExt
+                  },
+                  method: 'POST',
+                  success: (imgres) => {
+                    const fileData = imgres.data.data
+                    this.images.push(fileData.absoluteUrl)
+                  }
+                })
 
-                  // this.images.push(data);
-                },
-              });
-            });
-          },
-        });
-      },
-      /**
+                // this.images.push(data);
+              }
+            })
+          })
+        }
+      })
+    },
+    /**
        * 删除照片点击事件
        */
-      handleDeletePhotoClick(index) {
-        this.images.splice(index, 1);
-      },
-      /**
+    handleDeletePhotoClick(index) {
+      this.images.splice(index, 1)
+    },
+    /**
        * 提交点击事件
        */
-      handleSubmitClick() {
-        // uni.navigateBack();
-        // this.images.length > 0 ? this.upload() :
-        this.submit();
-      },
-      /**
+    handleSubmitClick() {
+      // uni.navigateBack();
+      // this.images.length > 0 ? this.upload() :
+      this.submit()
+    },
+    /**
        * 上传文件
        */
-      upload() {
-        // 线上环境
-        uni.request({
-          url: 'https://api.hpgjzlinfo.com/nepsp-api/common/app/imgRpc/batchUpload',
-          data: {
-            base64Strings: this.images,
-            fileExt: 'png',
-          },
-          method: 'POST',
-          success: (imgres) => {
-            const fileData = imgres.data.data;
+    upload() {
+      // 线上环境
+      uni.request({
+        url: 'https://api.hpgjzlinfo.com/nepsp-api/common/app/imgRpc/batchUpload',
+        data: {
+          base64Strings: this.images,
+          fileExt: 'png'
+        },
+        method: 'POST',
+        success: (imgres) => {
+          const fileData = imgres.data.data
 
-            this.imageURLs = fileData.absoluteUrl;
-            this.submit();
-          },
-        });
-        return;
-        api.uploadImages({
-          data: {
-            base64Strings: this.images,
-            fileExt: 'png',
-          },
-          success: (data) => {
-            this.imageURLs = data.absoluteUrl;
-            this.submit();
-          },
-        });
-      },
-      /**
+          this.imageURLs = fileData.absoluteUrl
+          this.submit()
+        }
+      })
+      return
+      api.uploadImages({
+        data: {
+          base64Strings: this.images,
+          fileExt: 'png'
+        },
+        success: (data) => {
+          this.imageURLs = data.absoluteUrl
+          this.submit()
+        }
+      })
+    },
+    /**
        * 提交
        */
-      submit() {
-        if (!this.content) {
-          this.$uni.showToast('请输入反馈内容');
-          return;
+    submit() {
+      if (!this.content) {
+        this.$uni.showToast('请输入反馈内容')
+        return
+      }
+      if (!this.contact) {
+        this.$uni.showToast('请输入联系方式')
+        return
+      }
+      api.feedback({
+        data: {
+          prbDscr: this.content,
+          img: this.images.join(','),
+          crterMob: this.contact
+        },
+        success: (data) => {
+          this.$uni.showToast('提交成功')
+          setTimeout(() => {
+            uni.navigateBack()
+          }, 1500)
         }
-        if (!this.contact) {
-          this.$uni.showToast('请输入联系方式');
-          return;
-        }
-        api.feedback({
-          data: {
-            prbDscr: this.content,
-            img: this.images.join(','),
-            crterMob: this.contact,
-          },
-          success: (data) => {
-            this.$uni.showToast('提交成功');
-            setTimeout(() => {
-              uni.navigateBack();
-            }, 1500);
-          },
-        });
-      },
-    },
-  };
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

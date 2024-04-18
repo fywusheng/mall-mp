@@ -1,5 +1,5 @@
 import request from '@/api/request'
-import {http} from '@/api/http'
+import { http } from '@/api/http'
 
 // 用户信息新增or保存
 export function saveMemberInfo(query) {
@@ -16,11 +16,9 @@ export function sendSms(query) {
     url: '/api/sms/sendLoginSms',
     method: 'post',
     header: {
-      'channel':'msg'
+      'channel': 'msg'
     },
     data: query
   })
 }
-
-
 

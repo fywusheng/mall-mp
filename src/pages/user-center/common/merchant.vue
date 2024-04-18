@@ -111,161 +111,161 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
-  import { showToast } from '@/utils/uni';
-  export default {
-    props: {
-      list: {
-        type: Array,
-        default: () => [],
+import api from '@/apis/index.js'
+import { showToast } from '@/utils/uni'
+export default {
+  props: {
+    list: {
+      type: Array,
+      default: () => []
+    }
+  },
+  data() {
+    return {
+      orgOfficeId: '',
+      orgOfficeType: '',
+      icons: {
+        0: 'http://192.168.1.187:10088/static/user-center/topicon.png',
+        1: 'http://192.168.1.187:10088/static/user-center/cancel.png'
       },
-    },
-    data() {
-      return {
-        orgOfficeId: '',
-        orgOfficeType: '',
-        icons: {
-          0: 'http://192.168.1.187:10088/static/user-center/topicon.png',
-          1: 'http://192.168.1.187:10088/static/user-center/cancel.png',
+      list2: [
+        {
+          orgOfficeId: '9f0b0552d0dc40febdc42b099d3e89ed',
+          topFlag: '0',
+          orgOfficeName: '高吉湖小龙·The Long House',
+          orgOfficeType: '美食',
+          orgOfficeAddr: '甜水园街北里16号楼京客隆商厦超市1层',
+          price: '',
+          distance: 0.528340786677242,
+          level: '',
+          photos:
+              'https://imgs.699pic.com/01/500/628/783/500628783.jpg!list2x.v1,http://120.42.37.88:10088/nepsp-file/group1/M00/03/89/wKgupGFDOdiAPIRZAAAryBQH0Sw784.jpg'
         },
-        list2: [
-          {
-            orgOfficeId: '9f0b0552d0dc40febdc42b099d3e89ed',
-            topFlag: '0',
-            orgOfficeName: '高吉湖小龙·The Long House',
-            orgOfficeType: '美食',
-            orgOfficeAddr: '甜水园街北里16号楼京客隆商厦超市1层',
-            price: '',
-            distance: 0.528340786677242,
-            level: '',
-            photos:
-              'https://imgs.699pic.com/01/500/628/783/500628783.jpg!list2x.v1,http://120.42.37.88:10088/nepsp-file/group1/M00/03/89/wKgupGFDOdiAPIRZAAAryBQH0Sw784.jpg',
-          },
-          {
-            orgOfficeId: '57a372a4ed2c495f8b85aecd42f1ec12',
-            topFlag: '0',
-            orgOfficeName: '服务中心托老所',
-            orgOfficeType: '养老院',
-            orgOfficeAddr: '甜水园街北里16号楼京客隆商厦超市2层',
-            price: '',
-            distance: 0.4591509063670338,
-            level: '',
-            photos:
-              'http://120.42.37.88:10088/nepsp-file/group1/M00/03/89/wKgupGFDOdiAPIRZAAAryBQH0Sw784.jpg,https://imgs.699pic.com/01/500/628/783/500628783.jpg!list2x.v1',
-          },
-        ],
-      };
+        {
+          orgOfficeId: '57a372a4ed2c495f8b85aecd42f1ec12',
+          topFlag: '0',
+          orgOfficeName: '服务中心托老所',
+          orgOfficeType: '养老院',
+          orgOfficeAddr: '甜水园街北里16号楼京客隆商厦超市2层',
+          price: '',
+          distance: 0.4591509063670338,
+          level: '',
+          photos:
+              'http://120.42.37.88:10088/nepsp-file/group1/M00/03/89/wKgupGFDOdiAPIRZAAAryBQH0Sw784.jpg,https://imgs.699pic.com/01/500/628/783/500628783.jpg!list2x.v1'
+        }
+      ]
+    }
+  },
+  created() {},
+  filters: {
+    setDistance(s) {
+      const distant = s
+      s = Number(s * 1000)
+      if (s.toFixed() < 1000) {
+        return s.toFixed() + '米'
+      } else {
+        return distant.toFixed(2) + '公里'
+      }
+    }
+  },
+  methods: {
+    geturl(urls) {
+      return urls.split(',')[0]
     },
-    created() {},
-    filters: {
-      setDistance(s) {
-        const distant = s;
-        s = Number(s * 1000);
-        if (s.toFixed() < 1000) {
-          return s.toFixed() + '米';
-        } else {
-          return distant.toFixed(2) + '公里';
-        }
-      },
+    detail(item) {
+      // 经确认可以收藏回来的列表都有详情
+      uni.navigateTo({
+        url: '/pages/map/address-detail?orgOfficeId=' + item.orgOfficeId
+      })
     },
-    methods: {
-      geturl(urls) {
-        return urls.split(',')[0];
-      },
-      detail(item) {
-        // 经确认可以收藏回来的列表都有详情
-        uni.navigateTo({
-          url: '/pages/map/address-detail?orgOfficeId=' + item.orgOfficeId,
-        });
-      },
-      // 点击复制链接
-      handleCopyClick() {
-        // 没有详情--助餐点，"日间照料":"look-after-details"
-        const mapUrl = {
-          美食: 'delicious-food-details',
-          政务服务: 'government-details',
-          养老院: 'nursing-home-details',
-          药店: 'pharmacy-details',
-          商超: 'store-details',
-          景点: 'scenic-details',
-          酒店: 'hotel-details',
-          医院: 'hospital-details',
-        };
-        const s_url = mapUrl[this.orgOfficeType];
-        if (!s_url) return;
-        let url = '';
-        url = `${ENV.H5}/#/map/${s_url}/${this.orgOfficeId}?isShare=1`;
-        uni.setClipboardData({
-          data: url,
-          success: (res) => {
-            uni.getClipboardData({
-              success: (resp) => {
-                this.$refs.popup.close();
-                console.log('resp:', resp);
-                uni.showToast({
-                  title: '已复制到剪贴板',
-                });
-              },
-            });
-          },
-        });
-      },
-      // 点击分享
-      handleShareClick() {
-        if (!uni.getStorageSync('token')) {
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
-        }
-        this.$refs.popup.open();
-      },
-      // 关闭分享
-      handleCloseClick() {
-        this.$refs.popup.close();
-      },
-      optionClick(type, item, i_id) {
-        this.orgOfficeId = item['orgOfficeId'];
-        this.orgOfficeType = item['orgOfficeType'];
-        if (type == 0) {
-          // 取消置顶
-          const flag = { 0: '1', 1: '0' };
-          const topV = flag[item['topFlag']];
-          const id = item['orgOfficeId'] || '';
-          this.updateByid(id, topV, '0', item, i_id, type);
-        } else if (type == 1) {
-          // 取消收藏
-          const id = item['orgOfficeId'] || '';
-          this.updateByid(id, '0', '1', item, i_id, type);
-        } else {
-          // 分享
-          this.handleShareClick();
-        }
-      },
-      updateByid(colId, topFlag, delFlag, item, i_id, type) {
-        const params = {
-          colId: colId,
-          topFlag: topFlag, // 置顶 1 ,0
-          delFlag: delFlag, // 取消 1  0
-        };
-        const param = {
-          requestColSingleDTOList: [params],
-        };
-        api.updateCollect({
-          data: param,
-          success: (res) => {
-            if (res) {
-              this.$emit('fresh', { item: item, index: i_id, type: type });
-              this.$uni.showToast('操作成功');
+    // 点击复制链接
+    handleCopyClick() {
+      // 没有详情--助餐点，"日间照料":"look-after-details"
+      const mapUrl = {
+        美食: 'delicious-food-details',
+        政务服务: 'government-details',
+        养老院: 'nursing-home-details',
+        药店: 'pharmacy-details',
+        商超: 'store-details',
+        景点: 'scenic-details',
+        酒店: 'hotel-details',
+        医院: 'hospital-details'
+      }
+      const s_url = mapUrl[this.orgOfficeType]
+      if (!s_url) return
+      let url = ''
+      url = `${ENV.H5}/#/map/${s_url}/${this.orgOfficeId}?isShare=1`
+      uni.setClipboardData({
+        data: url,
+        success: (res) => {
+          uni.getClipboardData({
+            success: (resp) => {
+              this.$refs.popup.close()
+              console.log('resp:', resp)
+              uni.showToast({
+                title: '已复制到剪贴板'
+              })
             }
-          },
-          fail: (erro) => {
-            this.$uni.showToast(erro.message);
-          },
-        });
-      },
+          })
+        }
+      })
     },
-  };
+    // 点击分享
+    handleShareClick() {
+      if (!uni.getStorageSync('token')) {
+        uni.navigateTo({
+          url: '/pages/user-center/login'
+        })
+        return
+      }
+      this.$refs.popup.open()
+    },
+    // 关闭分享
+    handleCloseClick() {
+      this.$refs.popup.close()
+    },
+    optionClick(type, item, i_id) {
+      this.orgOfficeId = item['orgOfficeId']
+      this.orgOfficeType = item['orgOfficeType']
+      if (type == 0) {
+        // 取消置顶
+        const flag = { 0: '1', 1: '0' }
+        const topV = flag[item['topFlag']]
+        const id = item['orgOfficeId'] || ''
+        this.updateByid(id, topV, '0', item, i_id, type)
+      } else if (type == 1) {
+        // 取消收藏
+        const id = item['orgOfficeId'] || ''
+        this.updateByid(id, '0', '1', item, i_id, type)
+      } else {
+        // 分享
+        this.handleShareClick()
+      }
+    },
+    updateByid(colId, topFlag, delFlag, item, i_id, type) {
+      const params = {
+        colId: colId,
+        topFlag: topFlag, // 置顶 1 ,0
+        delFlag: delFlag // 取消 1  0
+      }
+      const param = {
+        requestColSingleDTOList: [params]
+      }
+      api.updateCollect({
+        data: param,
+        success: (res) => {
+          if (res) {
+            this.$emit('fresh', { item: item, index: i_id, type: type })
+            this.$uni.showToast('操作成功')
+          }
+        },
+        fail: (erro) => {
+          this.$uni.showToast(erro.message)
+        }
+      })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .bussins {

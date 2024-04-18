@@ -15,27 +15,27 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-        showsCreditsPopup: false,
-      };
-    },
-    methods: {
-      detailPoint() {
-        uni.navigateTo({ url: '/pages/user-center/my-points' });
-      },
-    },
-    watch: {
-      showsCreditsPopup(n, o) {
-        if (n) {
-          setTimeout(() => {
-            this.showsCreditsPopup = false;
-          }, 2000);
-        }
-      },
-    },
-  };
+export default {
+  data() {
+    return {
+      showsCreditsPopup: false
+    }
+  },
+  methods: {
+    detailPoint() {
+      uni.navigateTo({ url: '/pages/user-center/my-points' })
+    }
+  },
+  watch: {
+    showsCreditsPopup(n, o) {
+      if (n) {
+        setTimeout(() => {
+          this.showsCreditsPopup = false
+        }, 2000)
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

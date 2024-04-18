@@ -109,117 +109,117 @@
 </template>
 
 <script>
-  import ScanOrInputPopup from './common/scan-or-input-popup.vue';
-  import { putHotelOrder } from '@/api/life.js';
-  import { mapState } from 'vuex';
-  export default {
-    components: { ScanOrInputPopup },
-    data() {
-      return {
-        cardType: 0, // 卡类型 0 年卡，1 半年卡
-        invoice: null, // 发票信息
-        checked: false,
-        icon: {
-          checked: 'http://192.168.1.187:10088/static/pay/icon-radio-checked.png',
-          noChecked: 'http://192.168.1.187:10088/static/pay/icon-radio-default.png',
-        },
-      };
+import ScanOrInputPopup from './common/scan-or-input-popup.vue'
+import { putHotelOrder } from '@/api/life.js'
+import { mapState } from 'vuex'
+export default {
+  components: { ScanOrInputPopup },
+  data() {
+    return {
+      cardType: 0, // 卡类型 0 年卡，1 半年卡
+      invoice: null, // 发票信息
+      checked: false,
+      icon: {
+        checked: 'http://192.168.1.187:10088/static/pay/icon-radio-checked.png',
+        noChecked: 'http://192.168.1.187:10088/static/pay/icon-radio-default.png'
+      }
+    }
+  },
+  onLoad() {
+    uni.$on('didSelectHeader', this.handleSelectInvoce)
+  },
+  onUnload() {
+    uni.$off('didSelectHeader', this.handleSelectInvoce)
+  },
+  computed: {
+    ...mapState({
+      userInfo: (state) => state.user.userInfo
+    }),
+    paymentAmount() {
+      return this.cardType === 0 ? 0.01 : 0.02
     },
-    onLoad() {
-      uni.$on('didSelectHeader', this.handleSelectInvoce);
+    remark() {
+      return this.cardType === 0 ? '年卡' : '半年卡'
+    }
+  },
+  methods: {
+    // 选中发票
+    handleSelectInvoce(data) {
+      this.invoice = data
     },
-    onUnload() {
-      uni.$off('didSelectHeader', this.handleSelectInvoce);
+    // 添加发票
+    handleAddClick() {
+      uni.navigateTo({ url: '/pages/supermarket/company-list' })
+      // uni.navigateTo({
+      //   url: '/pages/supermarket/company-update-or-add',
+      // });
     },
-    computed: {
-      ...mapState({
-        userInfo: (state) => state.user.userInfo,
-      }),
-      paymentAmount() {
-        return this.cardType === 0 ? 0.01 : 0.02;
-      },
-      remark() {
-        return this.cardType === 0 ? '年卡' : '半年卡';
-      },
+    handleCheckXieyi() {
+      this.checked = !this.checked
     },
-    methods: {
-      // 选中发票
-      handleSelectInvoce(data) {
-        this.invoice = data;
-      },
-      // 添加发票
-      handleAddClick() {
-        uni.navigateTo({ url: '/pages/supermarket/company-list' });
-        // uni.navigateTo({
-        //   url: '/pages/supermarket/company-update-or-add',
-        // });
-      },
-      handleCheckXieyi() {
-        this.checked = !this.checked;
-      },
-      /**
+    /**
        * 用户协议点击事件
        */
-      handleUserAgreementClick() {
-        const url = `${ENV.H5}/#/agreement?type=0`;
-        uni.navigateTo({
-          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-        });
-      },
-      /**
+    handleUserAgreementClick() {
+      const url = `${ENV.H5}/#/agreement?type=0`
+      uni.navigateTo({
+        url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
+      })
+    },
+    /**
        * 立即开通
        */
-      async handleApplyClick() {
-        if (!this.checked) {
-          this.$uni.showToast('请阅读并勾选页面协议哦');
-          return false;
-        }
-        const price = this.paymentAmount * 100;
-        const result = await putHotelOrder({
-          invoiceId: this.invoice ? this.invoice.invoiceHeaderId : '', // 发票抬头id
-          productId: this.cardType === 0 ? 'VIP001' : 'VIP002',
-          supermarketName: '商城会员卡', // 标题
-          orderAmount: price, // 原总金额
-          discountAmount: 0, //优惠金额
-          paymentAmount: price, //应付金额
-          orderSource: 6, //订单类型
-          productPrice: price, //单价
-          payNumber: 1, //数量
-          uactId: this.userInfo.memberId, // 用户memberId
-          usageTime: '', // 出发日期
-          expirationTime: '', //返程日期
-          crterName: this.userInfo.name, //联系人
-          updterName: this.userInfo.phone, //联系电话
-          scopeOfApplication: this.remark, //备注
-        });
-        const url = `${ENV.H5}/#/checkstand?cashId=${result}`;
-        // #ifdef MP-ALIPAY
-        uni.navigateTo({
-          url: `/pages/common/webpage?url=${url}`,
-        });
-        // #endif
+    async handleApplyClick() {
+      if (!this.checked) {
+        this.$uni.showToast('请阅读并勾选页面协议哦')
+        return false
+      }
+      const price = this.paymentAmount * 100
+      const result = await putHotelOrder({
+        invoiceId: this.invoice ? this.invoice.invoiceHeaderId : '', // 发票抬头id
+        productId: this.cardType === 0 ? 'VIP001' : 'VIP002',
+        supermarketName: '商城会员卡', // 标题
+        orderAmount: price, // 原总金额
+        discountAmount: 0, // 优惠金额
+        paymentAmount: price, // 应付金额
+        orderSource: 6, // 订单类型
+        productPrice: price, // 单价
+        payNumber: 1, // 数量
+        uactId: this.userInfo.memberId, // 用户memberId
+        usageTime: '', // 出发日期
+        expirationTime: '', // 返程日期
+        crterName: this.userInfo.name, // 联系人
+        updterName: this.userInfo.phone, // 联系电话
+        scopeOfApplication: this.remark // 备注
+      })
+      const url = `${ENV.H5}/#/checkstand?cashId=${result}`
+      // #ifdef MP-ALIPAY
+      uni.navigateTo({
+        url: `/pages/common/webpage?url=${url}`
+      })
+      // #endif
 
-        // #ifdef MP-WEIXIN
-        uni.navigateTo({
-          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
-        });
-        // #endif
-      },
-      // 设置卡类型
-      setCardType(cardType) {
-        this.cardType = cardType;
-      },
-      /**
+      // #ifdef MP-WEIXIN
+      uni.navigateTo({
+        url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
+      })
+      // #endif
+    },
+    // 设置卡类型
+    setCardType(cardType) {
+      this.cardType = cardType
+    },
+    /**
        * 暂不领取点击事件
        */
-      handleBackToHomeClick() {
-        uni.navigateBack({ delta: 9 });
-      },
-    },
-    mounted() {
-      //  this.$refs.popup.open()
-    },
-  };
+    handleBackToHomeClick() {
+      uni.navigateBack({ delta: 9 })
+    }
+  },
+  mounted() {
+    //  this.$refs.popup.open()
+  }
+}
 </script>
 
 <style lang="scss" scoped>

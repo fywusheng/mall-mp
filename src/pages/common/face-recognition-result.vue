@@ -5,10 +5,10 @@
 <script>
 export default {
   onLoad(e) {
-    uni.$emit("faceRecognitionFinished", e);
-    uni.navigateBack();
-  },
-};
+    uni.$emit('faceRecognitionFinished', e)
+    uni.navigateBack()
+  }
+}
 </script>
 
 <style></style>

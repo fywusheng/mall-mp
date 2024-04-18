@@ -117,298 +117,298 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  export default {
-    name: 'small-video',
-    props: {
-      shareIcon: {
-        type: String,
-        default: 'http://192.168.1.187:10088/static/find/fenxiang.png',
-      },
-    },
-    data() {
-      return {
-        loading: 1,
-        current: 0,
-        indicatorDots: true,
-        autoplay: true,
-        interval: 2000,
-        duration: 500,
-        list: [[]],
-        pageNum: 1,
-        pageSize: 5,
-        categoryName: '',
-        logoUrl: '',
-        playState: {},
-      };
-    },
-    created() {
-      console.log('===created--');
-      uni.onNetworkStatusChange((res) => {
-        if (res.isConnected) {
-          console.log('===链接状态---', res.isConnected);
-          this.loading = 2;
-          const params = {
-            contId: this.list[0][this.current].contId,
-            pageNum: this.pageNum,
-            pageSize: this.pageSize,
-          };
-          this.videoList(params);
-        } else {
-          this.$uni.showToast('没有网络');
-          this.loading = 33;
+import api from '@/apis/index.js'
+export default {
+  name: 'small-video',
+  props: {
+    shareIcon: {
+      type: String,
+      default: 'http://192.168.1.187:10088/static/find/fenxiang.png'
+    }
+  },
+  data() {
+    return {
+      loading: 1,
+      current: 0,
+      indicatorDots: true,
+      autoplay: true,
+      interval: 2000,
+      duration: 500,
+      list: [[]],
+      pageNum: 1,
+      pageSize: 5,
+      categoryName: '',
+      logoUrl: '',
+      playState: {}
+    }
+  },
+  created() {
+    console.log('===created--')
+    uni.onNetworkStatusChange((res) => {
+      if (res.isConnected) {
+        console.log('===链接状态---', res.isConnected)
+        this.loading = 2
+        const params = {
+          contId: this.list[0][this.current].contId,
+          pageNum: this.pageNum,
+          pageSize: this.pageSize
         }
-      });
+        this.videoList(params)
+      } else {
+        this.$uni.showToast('没有网络')
+        this.loading = 33
+      }
+    })
+    uni.getNetworkType({
+      success: (res) => {
+        if (res.networkType != 'none') {
+          console.log()
+        } else {
+          this.loading = 3
+          this.$uni.showToast('没有网络')
+        }
+      }
+    })
+    this.playVideo()
+  },
+  onLoad(e) {
+    console.log('--onload---transInfor--', JSON.parse(decodeURIComponent(e.transInfor)))
+    if (e.transInfor) {
+      const videoItem = JSON.parse(decodeURIComponent(e.transInfor))
+      videoItem['isStart'] = true
+      this.categoryName = videoItem['categoryName']
+      this.logoUrl = videoItem['logoUrl']
+      this.list[0].push(videoItem)
+      const params = {
+        contId: videoItem.contId,
+        pageNum: this.pageNum,
+        pageSize: this.pageSize
+      }
+      console.log('===去请求')
+      this.videoList(params)
+    }
+  },
+  // 分享好友
+  onShareAppMessage(res) {
+    return {
+      title: this.list[0][this.current].ttl,
+      path:
+          '/pages/find/video-swiper?transInfor=' +
+          encodeURIComponent(JSON.stringify(this.list[0][this.current])),
+      imageUrl: 'http://192.168.1.187:10088/static/common/bg-share.png',
+      success(res) {
+        this.$uni.showToast({
+          title: '分享成功'
+        })
+      },
+      fail(res) {
+        this.$uni.showToast({
+          title: '分享失败',
+          icon: 'none'
+        })
+      }
+    }
+  },
+  // 分享到朋友圈
+  onShareTimeline() {
+    return {
+      title: this.list[0].ttl,
+      path: '/pages/find/video-swiper',
+      query: 'transInfor=' + encodeURIComponent(JSON.stringify(this.list[0][this.current])),
+      imageUrl: 'http://192.168.1.187:10088/static/common/bg-share.png',
+      success(res) {
+        uni.showToast({
+          title: '分享成功'
+        })
+      },
+      fail(res) {
+        uni.showToast({
+          title: '分享失败',
+          icon: 'none'
+        })
+      }
+    }
+  },
+  methods: {
+    collectIcon(status) {
+      const icons = {
+        1: 'http://192.168.1.187:10088/static/map/icon-map-collected.png',
+        0: 'http://192.168.1.187:10088/static/map/mr_sc.png'
+      }
+      return icons[status]
+    },
+    retry() {
       uni.getNetworkType({
         success: (res) => {
           if (res.networkType != 'none') {
-            console.log();
+            console.log()
           } else {
-            this.loading = 3;
-            this.$uni.showToast('没有网络');
+            this.loading = 3
+            this.$uni.showToast('没有网络')
           }
-        },
-      });
-      this.playVideo();
+        }
+      })
     },
-    onLoad(e) {
-      console.log('--onload---transInfor--', JSON.parse(decodeURIComponent(e.transInfor)));
-      if (e.transInfor) {
-        const videoItem = JSON.parse(decodeURIComponent(e.transInfor));
-        videoItem['isStart'] = true;
-        this.categoryName = videoItem['categoryName'];
-        this.logoUrl = videoItem['logoUrl'];
-        this.list[0].push(videoItem);
-        const params = {
-          contId: videoItem.contId,
-          pageNum: this.pageNum,
-          pageSize: this.pageSize,
-        };
-        console.log('===去请求');
-        this.videoList(params);
+    waiting() {
+      console.log('---视频在加载waiting----')
+    },
+    stop(id) {
+      this.playState[id] = false
+    },
+    start(id) {
+      this.playState[id] = true
+    },
+    saveplay(id) {
+      const state = this.playState[id]
+      if (state) {
+        uni.createVideoContext(id, this).pause()
+      } else {
+        uni.createVideoContext(id, this).play()
       }
     },
-    // 分享好友
-    onShareAppMessage(res) {
-      return {
-        title: this.list[0][this.current].ttl,
-        path:
-          '/pages/find/video-swiper?transInfor=' +
-          encodeURIComponent(JSON.stringify(this.list[0][this.current])),
-        imageUrl: 'http://192.168.1.187:10088/static/common/bg-share.png',
-        success(res) {
-          this.$uni.showToast({
-            title: '分享成功',
-          });
-        },
-        fail(res) {
-          this.$uni.showToast({
-            title: '分享失败',
-            icon: 'none',
-          });
-        },
-      };
-    },
-    // 分享到朋友圈
-    onShareTimeline() {
-      return {
-        title: this.list[0].ttl,
-        path: '/pages/find/video-swiper',
-        query: 'transInfor=' + encodeURIComponent(JSON.stringify(this.list[0][this.current])),
-        imageUrl: 'http://192.168.1.187:10088/static/common/bg-share.png',
-        success(res) {
-          uni.showToast({
-            title: '分享成功',
-          });
-        },
-        fail(res) {
-          uni.showToast({
-            title: '分享失败',
-            icon: 'none',
-          });
-        },
-      };
-    },
-    methods: {
-      collectIcon(status) {
-        const icons = {
-          1: 'http://192.168.1.187:10088/static/map/icon-map-collected.png',
-          0: 'http://192.168.1.187:10088/static/map/mr_sc.png',
-        };
-        return icons[status];
-      },
-      retry() {
-        uni.getNetworkType({
-          success: (res) => {
-            if (res.networkType != 'none') {
-              console.log();
-            } else {
-              this.loading = 3;
-              this.$uni.showToast('没有网络');
-            }
-          },
-        });
-      },
-      waiting() {
-        console.log('---视频在加载waiting----');
-      },
-      stop(id) {
-        this.playState[id] = false;
-      },
-      start(id) {
-        this.playState[id] = true;
-      },
-      saveplay(id) {
-        const state = this.playState[id];
-        if (state) {
-          uni.createVideoContext(id, this).pause();
-        } else {
-          uni.createVideoContext(id, this).play();
-        }
-      },
-      goType(item) {
-        uni.redirectTo({
-          url:
+    goType(item) {
+      uni.redirectTo({
+        url:
             '/pages/find/small-video-class?contId=' +
             item.contId +
             '&categoryName=' +
             this.categoryName +
             '&logoUrl=' +
-            this.logoUrl,
-        });
-      },
-      playVideo() {
-        const _this = this;
-        const currentId = 'video' + this.current;
-        this.videoContent = uni.createVideoContext(currentId, _this).play();
-        const trailer = this.list[0];
-        trailer.forEach((item, index) => {
-          if (item.mediaUrl != null && item.mediaUrl != '') {
-            const temp = 'video' + index;
-            if (temp != currentId) {
-              uni.createVideoContext(temp, _this).pause();
-            }
-          }
-        });
-      },
-      // 分享
-      share() {
-        this.$refs.popup.open();
-      },
-      // 关闭分享
-      handleCloseClick() {
-        this.$refs.popup.close();
-      },
-
-      // 点击复制链接
-      handleCopyClick() {
-        // 复制链接 需要h5支持 TODO
-        return;
-        uni.setClipboardData({
-          data: `${ENV.H5}/#/discovery/app-detail/` + this.list[this.shareIndex].contId,
-          success: (res) => {
-            uni.getClipboardData({
-              success: (resp) => {
-                this.$refs.popup.close();
-                uni.showToast({ title: '已复制到剪贴板' });
-              },
-            });
-          },
-        });
-      },
-      // 收藏
-      collect(item, index) {
-        if (!uni.getStorageSync('token')) {
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
-          return;
-        }
-        if (item.colFlag === '0') {
-          api.saveCollect({
-            data: {
-              colId: item.contId,
-              colType: '5',
-            },
-            success: (data) => {
-              this.list[0][index].colFlag = '1';
-              this.$uni.showToast('收藏成功');
-            },
-          });
-        } else {
-          api.updateCollect({
-            data: {
-              requestColSingleDTOList: [
-                {
-                  delFlag: '1',
-                  colId: item.contId,
-                },
-              ],
-            },
-            success: (data) => {
-              this.list[0][index].colFlag = '0';
-              this.$uni.showToast('取消收藏');
-            },
-          });
-        }
-      },
-      // 视频错误信息回调
-      videoErrorCallback(e) {
-        console.log('===视频错误信息回调---');
-      },
-      animationfinish(e) {
-        console.log('===化东--', e);
-        this.current = e.detail.current;
-        this.playVideo();
-        const start = this.list[0][e.detail.current]['isStart'];
-        const end = this.list[0][e.detail.current]['isLoad'];
-        if (start) {
-          uni.navigateBack();
-        }
-        if (end) {
-          const params = {
-            contId: this.list[0][e.detail.current].contId,
-            pageNum: this.pageNum,
-            pageSize: this.pageSize,
-          };
-          this.videoList(params);
-        }
-      },
-      videoList(params) {
-        const userInfo = uni.getStorageSync('userInfo') || {};
-        uni.getNetworkType({
-          success: (res) => {
-            if (res.networkType != 'none') {
-              console.log();
-            } else {
-              this.$uni.showToast('没有网络');
-            }
-          },
-        });
-        api.getRandomVideo({
-          data: {
-            userId: userInfo.memberId ? userInfo.memberId : '',
-            contId: params.contId,
-            pageNum: params.pageNum,
-            pageSize: params.pageSize,
-          },
-          success: (res) => {
-            this.loading = 2;
-            const list = res.list || [];
-            list[list.length - 1]['isLoad'] = true;
-            if (list.length > 0) {
-              this.$set(this.list, 0, this.list[0].concat(list));
-              this.pageNum++;
-            }
-          },
-          fail: (error) => {
-            console.log(error);
-            this.$uni.showToast('服务器异常,稍后再试');
-          },
-        });
-      },
+            this.logoUrl
+      })
     },
-  };
+    playVideo() {
+      const _this = this
+      const currentId = 'video' + this.current
+      this.videoContent = uni.createVideoContext(currentId, _this).play()
+      const trailer = this.list[0]
+      trailer.forEach((item, index) => {
+        if (item.mediaUrl != null && item.mediaUrl != '') {
+          const temp = 'video' + index
+          if (temp != currentId) {
+            uni.createVideoContext(temp, _this).pause()
+          }
+        }
+      })
+    },
+    // 分享
+    share() {
+      this.$refs.popup.open()
+    },
+    // 关闭分享
+    handleCloseClick() {
+      this.$refs.popup.close()
+    },
+
+    // 点击复制链接
+    handleCopyClick() {
+      // 复制链接 需要h5支持 TODO
+      return
+      uni.setClipboardData({
+        data: `${ENV.H5}/#/discovery/app-detail/` + this.list[this.shareIndex].contId,
+        success: (res) => {
+          uni.getClipboardData({
+            success: (resp) => {
+              this.$refs.popup.close()
+              uni.showToast({ title: '已复制到剪贴板' })
+            }
+          })
+        }
+      })
+    },
+    // 收藏
+    collect(item, index) {
+      if (!uni.getStorageSync('token')) {
+        uni.navigateTo({
+          url: '/pages/user-center/login'
+        })
+        return
+      }
+      if (item.colFlag === '0') {
+        api.saveCollect({
+          data: {
+            colId: item.contId,
+            colType: '5'
+          },
+          success: (data) => {
+            this.list[0][index].colFlag = '1'
+            this.$uni.showToast('收藏成功')
+          }
+        })
+      } else {
+        api.updateCollect({
+          data: {
+            requestColSingleDTOList: [
+              {
+                delFlag: '1',
+                colId: item.contId
+              }
+            ]
+          },
+          success: (data) => {
+            this.list[0][index].colFlag = '0'
+            this.$uni.showToast('取消收藏')
+          }
+        })
+      }
+    },
+    // 视频错误信息回调
+    videoErrorCallback(e) {
+      console.log('===视频错误信息回调---')
+    },
+    animationfinish(e) {
+      console.log('===化东--', e)
+      this.current = e.detail.current
+      this.playVideo()
+      const start = this.list[0][e.detail.current]['isStart']
+      const end = this.list[0][e.detail.current]['isLoad']
+      if (start) {
+        uni.navigateBack()
+      }
+      if (end) {
+        const params = {
+          contId: this.list[0][e.detail.current].contId,
+          pageNum: this.pageNum,
+          pageSize: this.pageSize
+        }
+        this.videoList(params)
+      }
+    },
+    videoList(params) {
+      const userInfo = uni.getStorageSync('userInfo') || {}
+      uni.getNetworkType({
+        success: (res) => {
+          if (res.networkType != 'none') {
+            console.log()
+          } else {
+            this.$uni.showToast('没有网络')
+          }
+        }
+      })
+      api.getRandomVideo({
+        data: {
+          userId: userInfo.memberId ? userInfo.memberId : '',
+          contId: params.contId,
+          pageNum: params.pageNum,
+          pageSize: params.pageSize
+        },
+        success: (res) => {
+          this.loading = 2
+          const list = res.list || []
+          list[list.length - 1]['isLoad'] = true
+          if (list.length > 0) {
+            this.$set(this.list, 0, this.list[0].concat(list))
+            this.pageNum++
+          }
+        },
+        fail: (error) => {
+          console.log(error)
+          this.$uni.showToast('服务器异常,稍后再试')
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss">

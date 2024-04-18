@@ -121,115 +121,115 @@
 </template>
 
 <script>
-  import NavigationBar from '../../components/common/navigation-bar.vue';
-  import api from '@/apis/index.js';
-  import { desensitizeName, desensitizeInfo } from '@/utils/desensitization.js';
-  export default {
-    components: { NavigationBar },
-    data() {
-      return {
-        // 导航栏高度
-        //#ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        //#endif
-        //#ifdef MP-ALIPAY
-        navigationBarHeight:
+import NavigationBar from '../../components/common/navigation-bar.vue'
+import api from '@/apis/index.js'
+import { desensitizeName, desensitizeInfo } from '@/utils/desensitization.js'
+export default {
+  components: { NavigationBar },
+  data() {
+    return {
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        //#endif
-        userInfo: uni.getStorageSync('userInfo'),
-      };
+      // #endif
+      userInfo: uni.getStorageSync('userInfo')
+    }
+  },
+  filters: {
+    // 姓名过滤器, 用于姓名脱敏
+    nameFilter(value) {
+      return desensitizeName(value)
     },
-    filters: {
-      // 姓名过滤器, 用于姓名脱敏
-      nameFilter(value) {
-        return desensitizeName(value);
-      },
-      // 身份证号过滤器, 用于身份证号脱敏
-      idCardNumberFilter(value) {
-        return desensitizeInfo(value);
-      },
-      // 手机号过滤器, 用于手机号脱敏
-      phoneNumberFilter(value) {
-        return desensitizeInfo(value);
-      },
+    // 身份证号过滤器, 用于身份证号脱敏
+    idCardNumberFilter(value) {
+      return desensitizeInfo(value)
     },
-    onShow() {
-      this.userInfo = uni.getStorageSync('userInfo');
-    },
-    methods: {
-      /**
+    // 手机号过滤器, 用于手机号脱敏
+    phoneNumberFilter(value) {
+      return desensitizeInfo(value)
+    }
+  },
+  onShow() {
+    this.userInfo = uni.getStorageSync('userInfo')
+  },
+  methods: {
+    /**
        * 实名认证点击事件
        */
-      handleRealNameAuthenticationClick() {
-        if (this.userInfo.crtfStas !== 0) {
-          this.$uni.showToast('您已完成实名认证，无需重复认证');
-          return;
-        }
-        uni.navigateTo({
-          url: '/pages/user-center/real-name-authentication',
-        });
-      },
-      /**
+    handleRealNameAuthenticationClick() {
+      if (this.userInfo.crtfStas !== 0) {
+        this.$uni.showToast('您已完成实名认证，无需重复认证')
+        return
+      }
+      uni.navigateTo({
+        url: '/pages/user-center/real-name-authentication'
+      })
+    },
+    /**
        * 修改手机号点击事件
        */
-      handleModifyPhoneNumberClick() {
-        uni.navigateTo({
-          url: '/pages/user-center/modify-phone-number',
-        });
-      },
-      /**
+    handleModifyPhoneNumberClick() {
+      uni.navigateTo({
+        url: '/pages/user-center/modify-phone-number'
+      })
+    },
+    /**
        * 修改密码点击事件
        */
-      handleModifyPasswordClick() {
-        uni.navigateTo({
-          url: '/pages/user-center/modify-password',
-        });
-      },
-      /**
+    handleModifyPasswordClick() {
+      uni.navigateTo({
+        url: '/pages/user-center/modify-password'
+      })
+    },
+    /**
        * 消息中心点击事件
        */
-      handleMessageCenterClick() {
-        uni.navigateTo({
-          url: '/pages/user-center/message-center',
-        });
-      },
-      /**
+    handleMessageCenterClick() {
+      uni.navigateTo({
+        url: '/pages/user-center/message-center'
+      })
+    },
+    /**
        * 意见反馈点击事件
        */
-      handleFeedbackClick() {
-        uni.navigateTo({
-          url: '/pages/user-center/feedback',
-        });
-      },
-      /**
+    handleFeedbackClick() {
+      uni.navigateTo({
+        url: '/pages/user-center/feedback'
+      })
+    },
+    /**
        * 退出登录点击事件
        */
-      handleLogoutClick() {
-        this.$uni.showConfirm({
-          content: '是否退出登录',
-          confirm: () => {
-            api.logout({
-              success: () => {
-                ['token', 'userInfo'].forEach((key) => {
-                  uni.removeStorageSync(key);
-                });
-                uni.$emit('didLogout');
-                uni.navigateBack();
-              },
-            });
-          },
-        });
-      },
-      /**
+    handleLogoutClick() {
+      this.$uni.showConfirm({
+        content: '是否退出登录',
+        confirm: () => {
+          api.logout({
+            success: () => {
+              ['token', 'userInfo'].forEach((key) => {
+                uni.removeStorageSync(key)
+              })
+              uni.$emit('didLogout')
+              uni.navigateBack()
+            }
+          })
+        }
+      })
+    },
+    /**
        * 赡养抚养
        */
-      support() {
-        uni.navigateTo({
-          url: '/pages/support/index',
-        });
-      },
-    },
-  };
+    support() {
+      uni.navigateTo({
+        url: '/pages/support/index'
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

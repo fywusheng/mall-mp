@@ -23,78 +23,78 @@
 </template>
 
 <script>
-  import NavigationBar from '../../components/common/navigation-bar.vue';
-  export default {
-    components: { NavigationBar },
-    data() {
-      return {
-        backUrl: '',
-        // 导航栏高度
-        // #ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        // #endif
-        // #ifdef MP-ALIPAY
-        navigationBarHeight:
+import NavigationBar from '../../components/common/navigation-bar.vue'
+export default {
+  components: { NavigationBar },
+  data() {
+    return {
+      backUrl: '',
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        // #endif
-        // 是否为自己申领
-        isForSelf: false,
-        // 是否显示积分弹窗
-        showsCreditsPopup: false,
-      };
-    },
-    onLoad(option) {
-      if (option.index && option.back) {
-        this.backUrl = option.back + '?index=' + option.index;
-      } else if (option.info && option.back) {
-        this.backUrl = option.back + '?info=' + option.info;
+      // #endif
+      // 是否为自己申领
+      isForSelf: false,
+      // 是否显示积分弹窗
+      showsCreditsPopup: false
+    }
+  },
+  onLoad(option) {
+    if (option.index && option.back) {
+      this.backUrl = option.back + '?index=' + option.index
+    } else if (option.info && option.back) {
+      this.backUrl = option.back + '?info=' + option.info
+    } else {
+      this.backUrl = option.back
+    }
+    // const url = JSON.parse(option.back)
+    console.log('===返回的制止---', this.backUrl)
+  },
+  methods: {
+    goback() {
+      const back = getCurrentPages()
+      var currpage = back[back.length - 1]
+      var prepage = back[back.length - 2]
+      console.log('===返回---', back)
+      console.log('----currpage---', currpage.$page.fullPath)
+      console.log('----prepage---', prepage.$page.fullPath)
+      if (back && back.length > 1) {
+        uni.redirectTo({
+          url: this.backUrl
+        })
       } else {
-        this.backUrl = option.back;
+        history.back()
       }
-      // const url = JSON.parse(option.back)
-      console.log('===返回的制止---', this.backUrl);
     },
-    methods: {
-      goback() {
-        const back = getCurrentPages();
-        var currpage = back[back.length - 1];
-        var prepage = back[back.length - 2];
-        console.log('===返回---', back);
-        console.log('----currpage---', currpage.$page.fullPath);
-        console.log('----prepage---', prepage.$page.fullPath);
-        if (back && back.length > 1) {
-          uni.redirectTo({
-            url: this.backUrl,
-          });
-        } else {
-          history.back();
-        }
-      },
-      /**
+    /**
        * 导航栏返回键的点击事件
        */
-      handleNavigationBack() {
-        console.log('处理导航栏返回键点击事件');
-        this.goback();
-        //   uni.reLaunch({
-        //     url: "/pages/index/index?index=2",
-        //   });
-      },
-      /**
+    handleNavigationBack() {
+      console.log('处理导航栏返回键点击事件')
+      this.goback()
+      //   uni.reLaunch({
+      //     url: "/pages/index/index?index=2",
+      //   });
+    },
+    /**
        * 返回首页点击事件
        */
-      handleBackToHomeClick() {
-        console.log('===fanh');
-        //  uni.navigateBack({
-        //          delta: 1
-        //       });
-        this.goback();
-        //   uni.reLaunch({
-        //     url: "/pages/index/index?index=2",
-        //   });
-      },
-    },
-  };
+    handleBackToHomeClick() {
+      console.log('===fanh')
+      //  uni.navigateBack({
+      //          delta: 1
+      //       });
+      this.goback()
+      //   uni.reLaunch({
+      //     url: "/pages/index/index?index=2",
+      //   });
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

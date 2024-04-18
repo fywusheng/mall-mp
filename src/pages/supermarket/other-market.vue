@@ -35,111 +35,111 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
+import api from '@/apis/index.js'
 
-  export default {
-    components: {},
-    data() {
-      return {
-        // 商店列表
-        list: [],
+export default {
+  components: {},
+  data() {
+    return {
+      // 商店列表
+      list: [],
 
-        info: {},
-        //当前页
-        pageNum: 1,
-        showEmpty: false,
-        //每页size
-        pageSize: '10',
-        // 城市信息
-        city: {},
-      };
-    },
-    onLoad(e) {
-      let info = JSON.parse(decodeURIComponent(e.info));
-      console.log('info:', info);
-      this.info = info;
-      this.city = uni.getStorageSync('supermarketCity');
-      this.getOtherMarket();
-    },
-    // 下拉刷新
-    onPullDownRefresh() {
-      // this.getOtherMarket()
-      this.pageNum = 1;
-      this.list = [];
-      this.getOtherMarket();
-    },
-    // 上拉加载
-    onReachBottom() {
-      console.log('上拉加载');
-      this.getOtherMarket();
-      // this.getOfficeByTypeWithPage(this.currentIndex)
-    },
-    methods: {
-      //  商超列表
-      getOtherMarket() {
-        console.log('city', this.city);
-        api.getOtherMarket({
-          showsLoading: true,
-          data: {
-            supermarketId: this.info.supermarketId,
-            supermarketStoreId: this.info.supermarketStoreId,
-            lat: this.city.latitude,
-            lon: this.city.longitude,
-            cityCode: uni.getStorageSync('city').code,
-            pageNum: this.pageNum + '',
-            pageSize: this.pageSize,
-          },
-          success: (data) => {
-            console.log('使用说明:', data.list);
-            uni.stopPullDownRefresh();
-            if (data.list.length > 0) {
-              data.list.map((item, index) => {
-                this.list.push(item);
-              });
-              this.pageNum = this.pageNum + 1;
-            }
-            if (this.list.length === 0) {
-              this.showEmpty = true;
-            }
-          },
-        });
-      },
-      // 导航事件
-      handleLineClick(item) {
-        let info = item;
-        const data = {
-          name: this.info.supermarketName + info.supermarketStoreName,
-          longitude: info.lon,
-          latitude: info.lat,
-          distance: info.distance,
-          address: info.address,
-        };
-        uni.navigateTo({
-          url: '/pages/map/direction?data=' + encodeURIComponent(JSON.stringify(data)),
-          success: (res) => {
-            res.eventChannel.emit('didOpenPageFinish', data);
-          },
-        });
-      },
-      //缓存商超信息
-      handleMarketInfo(item) {
-        uni.setStorageSync('marketInfo', item);
-        uni.navigateBack({
-          delta: 1,
-        });
-      },
-    },
-    filters: {
-      setDistance(item) {
-        let s = Number(item) / 1000;
-        if (s.toFixed(3) < 1) {
-          return parseInt(s * 1000) + 'm';
-        } else {
-          return s.toFixed(1) + 'km';
+      info: {},
+      // 当前页
+      pageNum: 1,
+      showEmpty: false,
+      // 每页size
+      pageSize: '10',
+      // 城市信息
+      city: {}
+    }
+  },
+  onLoad(e) {
+    const info = JSON.parse(decodeURIComponent(e.info))
+    console.log('info:', info)
+    this.info = info
+    this.city = uni.getStorageSync('supermarketCity')
+    this.getOtherMarket()
+  },
+  // 下拉刷新
+  onPullDownRefresh() {
+    // this.getOtherMarket()
+    this.pageNum = 1
+    this.list = []
+    this.getOtherMarket()
+  },
+  // 上拉加载
+  onReachBottom() {
+    console.log('上拉加载')
+    this.getOtherMarket()
+    // this.getOfficeByTypeWithPage(this.currentIndex)
+  },
+  methods: {
+    //  商超列表
+    getOtherMarket() {
+      console.log('city', this.city)
+      api.getOtherMarket({
+        showsLoading: true,
+        data: {
+          supermarketId: this.info.supermarketId,
+          supermarketStoreId: this.info.supermarketStoreId,
+          lat: this.city.latitude,
+          lon: this.city.longitude,
+          cityCode: uni.getStorageSync('city').code,
+          pageNum: this.pageNum + '',
+          pageSize: this.pageSize
+        },
+        success: (data) => {
+          console.log('使用说明:', data.list)
+          uni.stopPullDownRefresh()
+          if (data.list.length > 0) {
+            data.list.map((item, index) => {
+              this.list.push(item)
+            })
+            this.pageNum = this.pageNum + 1
+          }
+          if (this.list.length === 0) {
+            this.showEmpty = true
+          }
         }
-      },
+      })
     },
-  };
+    // 导航事件
+    handleLineClick(item) {
+      const info = item
+      const data = {
+        name: this.info.supermarketName + info.supermarketStoreName,
+        longitude: info.lon,
+        latitude: info.lat,
+        distance: info.distance,
+        address: info.address
+      }
+      uni.navigateTo({
+        url: '/pages/map/direction?data=' + encodeURIComponent(JSON.stringify(data)),
+        success: (res) => {
+          res.eventChannel.emit('didOpenPageFinish', data)
+        }
+      })
+    },
+    // 缓存商超信息
+    handleMarketInfo(item) {
+      uni.setStorageSync('marketInfo', item)
+      uni.navigateBack({
+        delta: 1
+      })
+    }
+  },
+  filters: {
+    setDistance(item) {
+      const s = Number(item) / 1000
+      if (s.toFixed(3) < 1) {
+        return parseInt(s * 1000) + 'm'
+      } else {
+        return s.toFixed(1) + 'km'
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

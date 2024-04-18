@@ -243,259 +243,259 @@
 </template>
 
 <script>
-  import { mapState } from 'vuex';
-  export default {
-    name: 'CHECKOUT',
-    data() {
-      return {
-        isIphoneHair: App.isIphoneHair,
-        sceneType: '', // 场景
-        loading: true,
-        isInvoice: false,
-        userPoint: false,
-        // userInfo: null,
-        // canuseList: [],
-        // notuseList: [],
-        usePoint: false,
-        // type: null,
-      };
-    },
+import { mapState } from 'vuex'
+export default {
+  name: 'CHECKOUT',
+  data() {
+    return {
+      isIphoneHair: App.isIphoneHair,
+      sceneType: '', // 场景
+      loading: true,
+      isInvoice: false,
+      userPoint: false,
+      // userInfo: null,
+      // canuseList: [],
+      // notuseList: [],
+      usePoint: false
+      // type: null,
+    }
+  },
 
-    computed: {
-      ...mapState({
-        userInfo: (state) => state.user.userInfo,
-      }),
-      // 是否会员
-      member() {
-        return this.userInfo && this.userInfo.memberStatus === '1';
-      },
-      addressInfo() {
-        const settlement = this.settlement;
-        return (
-          (settlement.receiveProvinceName || '') +
+  computed: {
+    ...mapState({
+      userInfo: (state) => state.user.userInfo
+    }),
+    // 是否会员
+    member() {
+      return this.userInfo && this.userInfo.memberStatus === '1'
+    },
+    addressInfo() {
+      const settlement = this.settlement
+      return (
+        (settlement.receiveProvinceName || '') +
           (settlement.receiveCityName || '') +
           (settlement.receiveAreaName || '') +
           (settlement.receiveDistrictName || '') +
           settlement.receiveAddress
-        );
-      },
-      notuseList() {
-        if (Store.state.checkout.couponData) {
-          return Store.state.checkout.couponData.cannotUsedList || [];
-        }
-        return [];
-      },
-      canuseList() {
-        if (Store.state.checkout.couponData) {
-          return Store.state.checkout.couponData.canUsedList || [];
-        }
-        return [];
-      },
-      isDefault() {
-        return Store.state.checkout.isDefault;
-      },
-      showUnBuyProductList() {
-        const settlement = Store.state.checkout.settlement;
-        if (!settlement) return false;
-        const unSaleProductListForStock = settlement.unSaleProductListForStock;
-        const unSaleProductListForArea = settlement.unSaleProductListForArea;
-        const unSaleProductListForNum = settlement.unSaleProductListForNum;
-        const unSaleProductListForLowerShelf = settlement.unSaleProductListForLowerShelf;
-        if (
-          unSaleProductListForStock.length > 0 ||
+      )
+    },
+    notuseList() {
+      if (Store.state.checkout.couponData) {
+        return Store.state.checkout.couponData.cannotUsedList || []
+      }
+      return []
+    },
+    canuseList() {
+      if (Store.state.checkout.couponData) {
+        return Store.state.checkout.couponData.canUsedList || []
+      }
+      return []
+    },
+    isDefault() {
+      return Store.state.checkout.isDefault
+    },
+    showUnBuyProductList() {
+      const settlement = Store.state.checkout.settlement
+      if (!settlement) return false
+      const unSaleProductListForStock = settlement.unSaleProductListForStock
+      const unSaleProductListForArea = settlement.unSaleProductListForArea
+      const unSaleProductListForNum = settlement.unSaleProductListForNum
+      const unSaleProductListForLowerShelf = settlement.unSaleProductListForLowerShelf
+      if (
+        unSaleProductListForStock.length > 0 ||
           unSaleProductListForArea.length > 0 ||
           unSaleProductListForNum.length > 0 ||
           unSaleProductListForLowerShelf.length > 0
-        ) {
-          return true;
-        } else {
-          return false;
-        }
-      },
-      unSaleProductListForArea() {
-        if (Store.state.checkout.settlement) {
-          return Store.state.checkout.settlement.unSaleProductListForArea;
-        }
-        return [];
-      },
-      unSaleProductListForStock() {
-        if (Store.state.checkout.settlement) {
-          return Store.state.checkout.settlement.unSaleProductListForStock;
-        }
-        return [];
-      },
-      unSaleProductListForNum() {
-        if (Store.state.checkout.settlement) {
-          return Store.state.checkout.settlement.unSaleProductListForNum;
-        }
-        return [];
-      },
-      unSaleProductListForLowerShelf() {
-        if (Store.state.checkout.settlement) {
-          return Store.state.checkout.settlement.unSaleProductListForLowerShelf;
-        }
-        return [];
-      },
-      coupon() {
-        return Store.state.checkout.coupon;
-      },
-      type() {
-        return Store.state.checkout.type;
-      },
-      invoice() {
-        return Store.state.checkout.invoice;
-      },
-      settlement() {
-        return Store.state.checkout.settlement || {};
-      },
-      storeList() {
-        if (Store.state.checkout.settlement) {
-          return Store.state.checkout.settlement.settleStoreList;
-        }
-        return [];
-      },
+      ) {
+        return true
+      } else {
+        return false
+      }
     },
-    components: {},
-    methods: {
-      formateNum(num) {
-        return num ? num.toFixed(2) : '0.00';
-      },
-      // 使用积分
-      async switchChange(e, index, subIndex) {
+    unSaleProductListForArea() {
+      if (Store.state.checkout.settlement) {
+        return Store.state.checkout.settlement.unSaleProductListForArea
+      }
+      return []
+    },
+    unSaleProductListForStock() {
+      if (Store.state.checkout.settlement) {
+        return Store.state.checkout.settlement.unSaleProductListForStock
+      }
+      return []
+    },
+    unSaleProductListForNum() {
+      if (Store.state.checkout.settlement) {
+        return Store.state.checkout.settlement.unSaleProductListForNum
+      }
+      return []
+    },
+    unSaleProductListForLowerShelf() {
+      if (Store.state.checkout.settlement) {
+        return Store.state.checkout.settlement.unSaleProductListForLowerShelf
+      }
+      return []
+    },
+    coupon() {
+      return Store.state.checkout.coupon
+    },
+    type() {
+      return Store.state.checkout.type
+    },
+    invoice() {
+      return Store.state.checkout.invoice
+    },
+    settlement() {
+      return Store.state.checkout.settlement || {}
+    },
+    storeList() {
+      if (Store.state.checkout.settlement) {
+        return Store.state.checkout.settlement.settleStoreList
+      }
+      return []
+    }
+  },
+  components: {},
+  methods: {
+    formateNum(num) {
+      return num ? num.toFixed(2) : '0.00'
+    },
+    // 使用积分
+    async switchChange(e, index, subIndex) {
+      // 设置是否使用积分
+      Store.commit('CHECKOUT_SET_USEPOINT', {
+        usePoint: e.detail.value,
+        index,
+        subIndex
+      })
+      // 设置sku集合列表
+      const checkScoreSkuIds = []
+      this.storeList.forEach((element) => {
+        element.settlementItems.forEach((item) => {
+          if (item.usePoint) {
+            checkScoreSkuIds.push(item.skuId)
+          }
+        })
+      })
+      Store.commit('CHECKOUT_SET_SCORESKUIDS', checkScoreSkuIds)
+      Store.commit('CHECKOUT_RESET_COUPON')
+      // 重新结算
+      const result = await Store.dispatch('getCheckoutData', false)
+      console.log(result)
+      if (result.code !== '200') {
+        this.$uni.showToast(result.data)
         // 设置是否使用积分
         Store.commit('CHECKOUT_SET_USEPOINT', {
-          usePoint: e.detail.value,
+          usePoint: !e.detail.value,
           index,
-          subIndex,
-        });
+          subIndex
+        })
         // 设置sku集合列表
-        const checkScoreSkuIds = [];
+        const checkScoreSkuIds = []
         this.storeList.forEach((element) => {
           element.settlementItems.forEach((item) => {
             if (item.usePoint) {
-              checkScoreSkuIds.push(item.skuId);
+              checkScoreSkuIds.push(item.skuId)
             }
-          });
-        });
-        Store.commit('CHECKOUT_SET_SCORESKUIDS', checkScoreSkuIds);
-        Store.commit('CHECKOUT_RESET_COUPON');
-        // 重新结算
-        const result = await Store.dispatch('getCheckoutData', false);
-        console.log(result);
-        if (result.code !== '200') {
-          this.$uni.showToast(result.data);
-          // 设置是否使用积分
-          Store.commit('CHECKOUT_SET_USEPOINT', {
-            usePoint: !e.detail.value,
-            index,
-            subIndex,
-          });
-          // 设置sku集合列表
-          const checkScoreSkuIds = [];
-          this.storeList.forEach((element) => {
-            element.settlementItems.forEach((item) => {
-              if (item.usePoint) {
-                checkScoreSkuIds.push(item.skuId);
-              }
-            });
-          });
-          Store.commit('CHECKOUT_SET_SCORESKUIDS', checkScoreSkuIds);
+          })
+        })
+        Store.commit('CHECKOUT_SET_SCORESKUIDS', checkScoreSkuIds)
+      }
+    },
+    // async useBalanceSettlement(e) {
+    //   this.isUseBalanceState = e.target.value
+    //   Store.commit(VUEX.CHECKOUT.SET_BALANCE, e.target.value)
+    // },
+    setCoupon(data) {
+      Store.commit(VUEX.CHECKOUT.SET_COUPON, data)
+    },
+    // changeBalance(){
+    //   if(!this.useBalance && this.balance > 0){
+    //     this.useBalance = true;
+    //   }else{
+    //     this.useBalance = false;
+    //   }
+    // },
+    toCoupon() {
+      if (this.canuseList.length === 0) return
+      uni.navigateTo({
+        url: '/sub-pages/index/checkout-coupon/main'
+      })
+    },
+    toInvoice() {
+      uni.navigateTo({ url: '/pages/supermarket/company-list' })
+    },
+    toAddAddress() {
+      uni.navigateTo({
+        url: '/sub-pages/me/address-add/main?type=1'
+      })
+    },
+    selectAddress() {
+      uni.navigateTo({
+        url: '/sub-pages/me/address-list/main?type=1'
+      })
+    },
+    changeRemark(e, index, store) {
+      Store.commit(VUEX.CHECKOUT.CHANGE_REMARK, {
+        index,
+        remarks: {
+          remarks: e.mp.detail.value,
+          storeId: store.storeId
         }
-      },
-      // async useBalanceSettlement(e) {
-      //   this.isUseBalanceState = e.target.value
-      //   Store.commit(VUEX.CHECKOUT.SET_BALANCE, e.target.value)
-      // },
-      setCoupon(data) {
-        Store.commit(VUEX.CHECKOUT.SET_COUPON, data);
-      },
-      // changeBalance(){
-      //   if(!this.useBalance && this.balance > 0){
-      //     this.useBalance = true;
-      //   }else{
-      //     this.useBalance = false;
-      //   }
-      // },
-      toCoupon() {
-        if (this.canuseList.length === 0) return;
-        uni.navigateTo({
-          url: '/sub-pages/index/checkout-coupon/main',
-        });
-      },
-      toInvoice() {
-        uni.navigateTo({ url: '/pages/supermarket/company-list' });
-      },
-      toAddAddress() {
-        uni.navigateTo({
-          url: '/sub-pages/me/address-add/main?type=1',
-        });
-      },
-      selectAddress() {
-        uni.navigateTo({
-          url: '/sub-pages/me/address-list/main?type=1',
-        });
-      },
-      changeRemark(e, index, store) {
-        Store.commit(VUEX.CHECKOUT.CHANGE_REMARK, {
-          index,
-          remarks: {
-            remarks: e.mp.detail.value,
-            storeId: store.storeId,
-          },
-        });
-      },
-      account() {
-        Store.dispatch('toPay');
-      },
+      })
     },
-    onUnload() {
-      Store.commit(VUEX.CHECKOUT.RESET_STATE);
-    },
-    async onShow() {
-      setTimeout(async () => {
-        if (this.hasInit) return;
-        this.loading = true;
-        await Store.dispatch('getCheckoutData', true);
-        this.loading = false;
-      }, 500);
-    },
-    async mounted() {
-      this.hasInit = true;
-      if (!Store.getters.isLogin) {
-        Store.dispatch('logout');
-        uni.navigateTo({ url: '/pages/user-center/login' });
-        // await Store.dispatch('login')
-      }
-      const type = this.$scope.options.type;
-      this.sceneType = this.$scope.options.sceneType;
-      Store.commit(VUEX.CHECKOUT.SET_TYPE, type - 0);
-      Store.commit(VUEX.CHECKOUT.SET_SCENETYPE, this.sceneType);
-      if (Store.state.checkout.type === 2) {
-        Store.commit(VUEX.CHECKOUT.SET_DIRECT_DATA, {
-          num: this.$scope.options.num,
-          skuId: this.$scope.options.skuId,
-        });
-      }
-      if (Store.state.checkout.coupon) {
-        Store.state.checkout.coupon = {};
-      }
-      this.loading = true;
-      await Store.dispatch('getCheckoutData', true);
-      this.loading = false;
-      if (!Store.state.checkout.addressId) {
-        uni.showModal({
-          content: '您没有设置收货地址，请选择...',
-          success: (res) => {
-            if (res.confirm) {
-              uni.navigateTo({
-                url: '/sub-pages/me/address-list/main?type=1',
-              });
-            }
-          },
-        });
-      }
-    },
-  };
+    account() {
+      Store.dispatch('toPay')
+    }
+  },
+  onUnload() {
+    Store.commit(VUEX.CHECKOUT.RESET_STATE)
+  },
+  async onShow() {
+    setTimeout(async () => {
+      if (this.hasInit) return
+      this.loading = true
+      await Store.dispatch('getCheckoutData', true)
+      this.loading = false
+    }, 500)
+  },
+  async mounted() {
+    this.hasInit = true
+    if (!Store.getters.isLogin) {
+      Store.dispatch('logout')
+      uni.navigateTo({ url: '/pages/user-center/login' })
+      // await Store.dispatch('login')
+    }
+    const type = this.$scope.options.type
+    this.sceneType = this.$scope.options.sceneType
+    Store.commit(VUEX.CHECKOUT.SET_TYPE, type - 0)
+    Store.commit(VUEX.CHECKOUT.SET_SCENETYPE, this.sceneType)
+    if (Store.state.checkout.type === 2) {
+      Store.commit(VUEX.CHECKOUT.SET_DIRECT_DATA, {
+        num: this.$scope.options.num,
+        skuId: this.$scope.options.skuId
+      })
+    }
+    if (Store.state.checkout.coupon) {
+      Store.state.checkout.coupon = {}
+    }
+    this.loading = true
+    await Store.dispatch('getCheckoutData', true)
+    this.loading = false
+    if (!Store.state.checkout.addressId) {
+      uni.showModal({
+        content: '您没有设置收货地址，请选择...',
+        success: (res) => {
+          if (res.confirm) {
+            uni.navigateTo({
+              url: '/sub-pages/me/address-list/main?type=1'
+            })
+          }
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss">

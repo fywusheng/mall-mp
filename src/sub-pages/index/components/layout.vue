@@ -16,84 +16,84 @@
   </div>
 </template>
 <script>
-  import banner from './banner'
-  import tImage from './image'
-  import tImageList from './image-list'
-  import pingou from './pingou'
-  import itemListH from './item-list-h'
-  import itemList from './item-list/index'
-  import tTitle from './title'
-  import space from './space'
-  import cmsRichText from './rict-text'
-  import brandList from "./brand-list";
-  import storeList from "./store-list";
+import banner from './banner'
+import tImage from './image'
+import tImageList from './image-list'
+import pingou from './pingou'
+import itemListH from './item-list-h'
+import itemList from './item-list/index'
+import tTitle from './title'
+import space from './space'
+import cmsRichText from './rict-text'
+import brandList from './brand-list'
+import storeList from './store-list'
 
-  export default {
-    props: {
-      pageId: {
-        type: String,
-        default: ''
-      }
-    },
-    components: {
-      tImage,
-      banner,
-      pingou,
-      itemListH,
-      tTitle,
-      space,
-      itemList,
-      cmsRichText,
-      tImageList,
-      brandList,
-      storeList,
-    },
-    data() {
-      return {
-        layoutList: [],
-      }
-    },
-    watch: {
-      pageId() {
-        this.loadData();
-      }
-    },
-    methods: {
-      changeView(data) {
-        this.$emit('changeView', data)
-      },
-      async refresh() {
-        await this.loadData();
-      },
-      reset() {
-        this.layoutList = [];
-      },
-      async loadData() {
-        console.log(this.pageId, 'id----')
-        if (!this.pageId) {
-          return;
-        }
-        //wx.showLoading({ title: '正在获取数据...', mask: true });
-        const result = await Axios.get(`${ENV.CMS}/topic/getLayout`, {
-          params: {id: this.pageId}
-        })
-        //wx.hideLoading()
-        console.info(result)
-        if (result.code === 200) {
-          this.layoutList = result.data.layout;
-          this.$emit('change', result.data)
-        } else {
-          wx.showToast({
-            title: result.msg,
-            icon: 'none'
-          })
-        }
-      }
-    },
-    async mounted() {
-      this.loadData();
+export default {
+  props: {
+    pageId: {
+      type: String,
+      default: ''
     }
+  },
+  components: {
+    tImage,
+    banner,
+    pingou,
+    itemListH,
+    tTitle,
+    space,
+    itemList,
+    cmsRichText,
+    tImageList,
+    brandList,
+    storeList
+  },
+  data() {
+    return {
+      layoutList: []
+    }
+  },
+  watch: {
+    pageId() {
+      this.loadData()
+    }
+  },
+  methods: {
+    changeView(data) {
+      this.$emit('changeView', data)
+    },
+    async refresh() {
+      await this.loadData()
+    },
+    reset() {
+      this.layoutList = []
+    },
+    async loadData() {
+      console.log(this.pageId, 'id----')
+      if (!this.pageId) {
+        return
+      }
+      // wx.showLoading({ title: '正在获取数据...', mask: true });
+      const result = await Axios.get(`${ENV.CMS}/topic/getLayout`, {
+        params: { id: this.pageId }
+      })
+      // wx.hideLoading()
+      console.info(result)
+      if (result.code === 200) {
+        this.layoutList = result.data.layout
+        this.$emit('change', result.data)
+      } else {
+        wx.showToast({
+          title: result.msg,
+          icon: 'none'
+        })
+      }
+    }
+  },
+  async mounted() {
+    this.loadData()
   }
+}
 </script>
 
 <style lang="scss">

@@ -56,322 +56,322 @@
 </template>
 
 <script>
-  import ActionSheet from '@/components/common/action-sheet';
-  export default {
-    components: { ActionSheet },
-    props: {
-      dataDetail: {
-        type: Object,
-        default: () => {
-          return {};
-        },
-      },
-    },
-    data() {
-      return {
-        // 控制服务全文显示行数
-        heightClass: 'static-height',
-        // 是否显示景点介绍全文
-        textShow1: false,
-        // 是否显示服务设施全文
-        textShow2: false,
-        // 电话列表
-        phoneList: [],
-        // 评分
-        rateList: [],
-        // 服务描述
-        nodes: [],
-        // 拨打电话弹窗选项
-        actionSheetItems: [],
-      };
-    },
+import ActionSheet from '@/components/common/action-sheet'
+export default {
+  components: { ActionSheet },
+  props: {
+    dataDetail: {
+      type: Object,
+      default: () => {
+        return {}
+      }
+    }
+  },
+  data() {
+    return {
+      // 控制服务全文显示行数
+      heightClass: 'static-height',
+      // 是否显示景点介绍全文
+      textShow1: false,
+      // 是否显示服务设施全文
+      textShow2: false,
+      // 电话列表
+      phoneList: [],
+      // 评分
+      rateList: [],
+      // 服务描述
+      nodes: [],
+      // 拨打电话弹窗选项
+      actionSheetItems: []
+    }
+  },
 
-    created() {
-      // this.isRate(this.dataDetail.infoDetail.scenic_service_score)
-    },
-    methods: {
-      /**
+  created() {
+    // this.isRate(this.dataDetail.infoDetail.scenic_service_score)
+  },
+  methods: {
+    /**
        * 图片点击事件
        */
-      handleImageClick(item) {
-        uni.navigateTo({
-          url: '/pages/map/image-gallery',
-          success: (res) => {
-            res.eventChannel.emit('openPhotoDetail', {
-              item: item,
-            });
-          },
-        });
-      },
-      /**
+    handleImageClick(item) {
+      uni.navigateTo({
+        url: '/pages/map/image-gallery',
+        success: (res) => {
+          res.eventChannel.emit('openPhotoDetail', {
+            item: item
+          })
+        }
+      })
+    },
+    /**
        * 点击全文
        */
-      handleText(index) {
-        switch (index) {
-          case 1:
-            this.textShow1 = !this.textShow1;
-            break;
-          case 2:
-            this.textShow2 = !this.textShow2;
-            break;
-          default:
-            break;
-        }
-      },
-      /**
+    handleText(index) {
+      switch (index) {
+        case 1:
+          this.textShow1 = !this.textShow1
+          break
+        case 2:
+          this.textShow2 = !this.textShow2
+          break
+        default:
+          break
+      }
+    },
+    /**
        * 点击位置
        */
-      handleMap() {
-        uni.navigateBack();
-      },
-      /**
+    handleMap() {
+      uni.navigateBack()
+    },
+    /**
        * 电话按钮事件
        */
-      handlePhone() {
-        this.phoneList = [];
-        if (this.dataDetail.scenic_service_tel) {
-          const phoneNumber = this.dataDetail.scenic_service_tel.replace(/\//g, ',');
-          phoneNumber.split(',').forEach((item) => {
-            this.phoneList.push(item);
-          });
-        } else {
-          return;
-        }
-        this.actionSheetItems = this.phoneList;
-        this.$refs.actionSheet.open();
-      },
-      /**
+    handlePhone() {
+      this.phoneList = []
+      if (this.dataDetail.scenic_service_tel) {
+        const phoneNumber = this.dataDetail.scenic_service_tel.replace(/\//g, ',')
+        phoneNumber.split(',').forEach((item) => {
+          this.phoneList.push(item)
+        })
+      } else {
+        return
+      }
+      this.actionSheetItems = this.phoneList
+      this.$refs.actionSheet.open()
+    },
+    /**
        * action sheet 弹窗点击回调
        */
-      handleActionSheetItemClick(index) {
-        uni.makePhoneCall({
-          phoneNumber: this.phoneList[index],
-        });
-      },
-      /**
+    handleActionSheetItemClick(index) {
+      uni.makePhoneCall({
+        phoneNumber: this.phoneList[index]
+      })
+    },
+    /**
        * 判断星级
        */
-      isRate(rate) {
-        const arr = rate.toString().split('.');
-        if (arr.length == 1) {
-          switch (arr[0]) {
-            case '0':
-              this.rateList = [];
-              break;
-            case '1':
-              this.rateList = [
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/rate1_0.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/rate1_0.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/rate1_0.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/rate1_0.png',
-                },
-              ];
-              break;
-            case '2':
-              this.rateList = [
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/rate1_0.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/rate1_0.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/rate1_0.png',
-                },
-              ];
-              break;
-            case '3':
-              this.rateList = [
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/rate1_0.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/rate1_0.png',
-                },
-              ];
-              break;
-            case '4':
-              this.rateList = [
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/rate1_0.png',
-                },
-              ];
-              break;
-            case '5':
-              this.rateList = [
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-              ];
-              break;
-            default:
-              break;
-          }
-        } else {
-          switch (arr[0]) {
-            case '0':
-              this.rateList = [];
-              break;
-            case '1':
-              this.rateList = [
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-map-star-half.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/rate1_0.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/rate1_0.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/rate1_0.png',
-                },
-              ];
-              break;
-            case '2':
-              this.rateList = [
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-map-star-half.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/rate1_0.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/rate1_0.png',
-                },
-              ];
-              break;
-            case '3':
-              this.rateList = [
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-map-star-half.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/rate1_0.png',
-                },
-              ];
-              break;
-            case '4':
-              this.rateList = [
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-map-star-half.png',
-                },
-              ];
-              break;
-            case '5':
-              this.rateList = [
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-                {
-                  url: 'http://192.168.1.187:10088/static/map/icon-star-full.png',
-                },
-              ];
-              break;
-            default:
-              break;
-          }
+    isRate(rate) {
+      const arr = rate.toString().split('.')
+      if (arr.length == 1) {
+        switch (arr[0]) {
+          case '0':
+            this.rateList = []
+            break
+          case '1':
+            this.rateList = [
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/rate1_0.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/rate1_0.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/rate1_0.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/rate1_0.png'
+              }
+            ]
+            break
+          case '2':
+            this.rateList = [
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/rate1_0.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/rate1_0.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/rate1_0.png'
+              }
+            ]
+            break
+          case '3':
+            this.rateList = [
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/rate1_0.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/rate1_0.png'
+              }
+            ]
+            break
+          case '4':
+            this.rateList = [
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/rate1_0.png'
+              }
+            ]
+            break
+          case '5':
+            this.rateList = [
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              }
+            ]
+            break
+          default:
+            break
         }
-      },
-      /**
+      } else {
+        switch (arr[0]) {
+          case '0':
+            this.rateList = []
+            break
+          case '1':
+            this.rateList = [
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-map-star-half.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/rate1_0.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/rate1_0.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/rate1_0.png'
+              }
+            ]
+            break
+          case '2':
+            this.rateList = [
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-map-star-half.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/rate1_0.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/rate1_0.png'
+              }
+            ]
+            break
+          case '3':
+            this.rateList = [
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-map-star-half.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/rate1_0.png'
+              }
+            ]
+            break
+          case '4':
+            this.rateList = [
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-map-star-half.png'
+              }
+            ]
+            break
+          case '5':
+            this.rateList = [
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              },
+              {
+                url: 'http://192.168.1.187:10088/static/map/icon-star-full.png'
+              }
+            ]
+            break
+          default:
+            break
+        }
+      }
+    },
+    /**
        * 截取字符串
        */
-      getString(string) {
-        return string.substring(0, 100) + '...';
-      },
-    },
-    watch: {
-      dataDetail(n, o) {},
-    },
-  };
+    getString(string) {
+      return string.substring(0, 100) + '...'
+    }
+  },
+  watch: {
+    dataDetail(n, o) {}
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -68,55 +68,55 @@
 </template>
 
 <script>
-  import uniPopup from '@/components/uni-popup/uni-popup.vue';
-  export default {
-    components: { uniPopup },
-    props: {
-      modImg: {
-        type: String,
-        default: '0', // ''0':领证；'2':赡养抚养'1':亲情 ；'4'：不展示图片
-      },
-      cancelText: {
-        type: String,
-        default: '放弃添加',
-      },
-      confirmText: {
-        type: String,
-        default: '立刻添加',
-      },
+import uniPopup from '@/components/uni-popup/uni-popup.vue'
+export default {
+  components: { uniPopup },
+  props: {
+    modImg: {
+      type: String,
+      default: '0' // ''0':领证；'2':赡养抚养'1':亲情 ；'4'：不展示图片
     },
-    data() {
-      return {};
+    cancelText: {
+      type: String,
+      default: '放弃添加'
     },
-    computed: {},
-    methods: {
-      confirm() {
-        // this.showValue = false
-        const msg = { from: 'confirm', confirm: true };
-        this.$emit('confirm', msg);
-        // this.$emit('event', msg)
-      },
-      cancel(type) {
-        this.$refs.popup.close();
-        // if (this.prevent && type === 2) {
-        //   return
-        // }
-        // this.showValue = false
-        // let msg = { from: type === 1 ? 'cancel' : 'mask' }
-        // type === 1 ? (msg.cancel = true) : (msg.mask = true)
-        // this.$emit('cancel', msg)
-        // this.$emit('event', msg)
-      },
-      // 关闭弹框
-      close() {
-        this.$refs.popup.close();
-      },
-      // 打开弹框
-      open() {
-        this.$refs.popup.open();
-      },
+    confirmText: {
+      type: String,
+      default: '立刻添加'
+    }
+  },
+  data() {
+    return {}
+  },
+  computed: {},
+  methods: {
+    confirm() {
+      // this.showValue = false
+      const msg = { from: 'confirm', confirm: true }
+      this.$emit('confirm', msg)
+      // this.$emit('event', msg)
     },
-  };
+    cancel(type) {
+      this.$refs.popup.close()
+      // if (this.prevent && type === 2) {
+      //   return
+      // }
+      // this.showValue = false
+      // let msg = { from: type === 1 ? 'cancel' : 'mask' }
+      // type === 1 ? (msg.cancel = true) : (msg.mask = true)
+      // this.$emit('cancel', msg)
+      // this.$emit('event', msg)
+    },
+    // 关闭弹框
+    close() {
+      this.$refs.popup.close()
+    },
+    // 打开弹框
+    open() {
+      this.$refs.popup.open()
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

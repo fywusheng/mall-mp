@@ -50,101 +50,101 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import { startFacialRecognitionVerify } from '@/utils/utils.js';
-  import { showPoints } from './components/showPoints.vue';
-  export default {
-    components: { showPoints },
-    data() {
-      return {
-        name: '',
-        idCard: '',
-        userInfo: {},
-      };
-    },
-    onLoad(e) {
-      api.getUserInfo({
-        showsLoading: true,
-        data: {
-          accessToken: uni.getStorageSync('token'),
-        },
-        success: (data) => {
-          this.userInfo = data;
-          uni.setStorageSync('userInfo', data);
-          this.idCard = this.userInfo.idCard;
-          this.name = this.userInfo.psnName;
-        },
-      });
-    },
-    methods: {
-      success_flag(successFlag) {
-        // this.$emit("success_flag",successFlag)
+import api from '@/apis/index.js'
+import { startFacialRecognitionVerify } from '@/utils/utils.js'
+import { showPoints } from './components/showPoints.vue'
+export default {
+  components: { showPoints },
+  data() {
+    return {
+      name: '',
+      idCard: '',
+      userInfo: {}
+    }
+  },
+  onLoad(e) {
+    api.getUserInfo({
+      showsLoading: true,
+      data: {
+        accessToken: uni.getStorageSync('token')
       },
-      handleAgreeClick() {
-        const params = {
-          name: this.name,
-          idCard: this.idCard,
-        };
-        console.log('提交的参数params:', params);
-        params.success = async () => {
-          // 其他渠道授權接口
-          api.executeActivation({
-            data: {
-              idNo: this.idCard,
-              userName: this.name,
-            },
-            showsLoading: true,
-            success: (res) => {
-              api.findPopoverList({
-                data: {
-                  userId: this.userInfo.memberId,
-                },
-                success: (res) => {
-                  let msgId = '';
-                  const popStatus = res.some((popItem, popIndex) => {
-                    if (popItem.popoverType === '0') {
-                      msgId = popItem.msgId;
-                      return true;
-                    }
-                  });
-                  if (popStatus) {
-                    //弹出弹框
-                    this.$refs.showPoints.showsCreditsPopup = true;
-                    api.markPopover({
-                      data: {
-                        msgId: msgId,
-                        channel: 'miniprogram',
-                      },
-                      success: (res) => {
-                        console.log('500积分弹出成功');
-                        setTimeout(() => {
-                          uni.reLaunch({
-                            url: '/pages/index/index',
-                          });
-                        }, 2500);
-                      },
-                    });
-                  } else {
-                    setTimeout(() => {
-                      uni.reLaunch({
-                        url: '/pages/index/index',
-                      });
-                    }, 20);
+      success: (data) => {
+        this.userInfo = data
+        uni.setStorageSync('userInfo', data)
+        this.idCard = this.userInfo.idCard
+        this.name = this.userInfo.psnName
+      }
+    })
+  },
+  methods: {
+    success_flag(successFlag) {
+      // this.$emit("success_flag",successFlag)
+    },
+    handleAgreeClick() {
+      const params = {
+        name: this.name,
+        idCard: this.idCard
+      }
+      console.log('提交的参数params:', params)
+      params.success = async () => {
+        // 其他渠道授權接口
+        api.executeActivation({
+          data: {
+            idNo: this.idCard,
+            userName: this.name
+          },
+          showsLoading: true,
+          success: (res) => {
+            api.findPopoverList({
+              data: {
+                userId: this.userInfo.memberId
+              },
+              success: (res) => {
+                let msgId = ''
+                const popStatus = res.some((popItem, popIndex) => {
+                  if (popItem.popoverType === '0') {
+                    msgId = popItem.msgId
+                    return true
                   }
-                },
-              });
-            },
-          });
+                })
+                if (popStatus) {
+                  // 弹出弹框
+                  this.$refs.showPoints.showsCreditsPopup = true
+                  api.markPopover({
+                    data: {
+                      msgId: msgId,
+                      channel: 'miniprogram'
+                    },
+                    success: (res) => {
+                      console.log('500积分弹出成功')
+                      setTimeout(() => {
+                        uni.reLaunch({
+                          url: '/pages/index/index'
+                        })
+                      }, 2500)
+                    }
+                  })
+                } else {
+                  setTimeout(() => {
+                    uni.reLaunch({
+                      url: '/pages/index/index'
+                    })
+                  }, 20)
+                }
+              }
+            })
+          }
+        })
 
-          //进行实名认证 身份信息+头像
-        };
-        //this.demo();
-        // 开启人脸识别
-        startFacialRecognitionVerify(params);
-      },
-    },
-    mounted() {},
-  };
+        // 进行实名认证 身份信息+头像
+      }
+      // this.demo();
+      // 开启人脸识别
+      startFacialRecognitionVerify(params)
+    }
+  },
+  mounted() {}
+}
 </script>
 
 <style lang="scss" scoped>

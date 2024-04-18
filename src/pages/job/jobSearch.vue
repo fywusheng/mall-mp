@@ -50,238 +50,238 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
-  import ListJob from './components/list-job.vue';
-  export default {
-    components: { ListJob },
-    data() {
-      return {
-        city: '',
-        jobList: [],
-        postName: '',
-        workArea: '',
-        postType: '',
-        pageNum: 1,
-        pageSize: 20,
-        empt: 1,
-        showIcon: false,
-        key: '',
-        // 正在说话
-        isSpeaking: false,
-        searchHistory: [],
-        manager: null,
-      };
-    },
-    computed: {
-      tips() {
-        return this.isSpeaking ? '松开发送' : '按住说话';
-      },
-    },
-    created() {
-      this.searchHistory = uni.getStorageSync('s_history_key');
-    },
-    mounted() {
-      // console.log('==focus--', this.$refs.search)
-      // this.$refs.search.focus()
-    },
-    onReady() {
-      // #ifdef MP-ALIPAY
-      this.initAlipay();
-      // #endif
+import api from '@/apis/index.js'
+import ListJob from './components/list-job.vue'
+export default {
+  components: { ListJob },
+  data() {
+    return {
+      city: '',
+      jobList: [],
+      postName: '',
+      workArea: '',
+      postType: '',
+      pageNum: 1,
+      pageSize: 20,
+      empt: 1,
+      showIcon: false,
+      key: '',
+      // 正在说话
+      isSpeaking: false,
+      searchHistory: [],
+      manager: null
+    }
+  },
+  computed: {
+    tips() {
+      return this.isSpeaking ? '松开发送' : '按住说话'
+    }
+  },
+  created() {
+    this.searchHistory = uni.getStorageSync('s_history_key')
+  },
+  mounted() {
+    // console.log('==focus--', this.$refs.search)
+    // this.$refs.search.focus()
+  },
+  onReady() {
+    // #ifdef MP-ALIPAY
+    this.initAlipay()
+    // #endif
 
-      // #ifdef MP-WEIXIN
-      this.initRecordRecognitionManager();
-      // #endif
-    },
-    // 分享处理
-    onShareAppMessage() {
-      return {
-        title: '',
-        path: '/pages/index/index?index=0',
-      };
-    },
-    onReachBottom() {
-      this.getJobList();
-    },
-    methods: {
-      getJobList() {
-        api.getJobList({
-          data: {
-            postName: this.key, // this.postName,
-            workArea: '',
-            postType: '',
-            pageNum: this.pageNum,
-            pageSize: this.pageSize,
-          },
-          success: (data) => {
-            const list = data.list || [];
-            if (list.length > 0) {
-              this.jobList = this.jobList.concat(list);
-              this.pageNum++;
-            }
-          },
-        });
-      },
-      goSearch(v) {
-        uni.setStorageSync('s_key', v);
-        this.key = v;
-        this.empt = 2;
-        this.pageNum = 1;
-        this.jobList = [];
-        this.getJobList();
-      },
-      /**
-       * 语音输入点击开始回调
-       */
-      handleTouchStart() {
-        uni.showLoading();
-        this.isSpeaking = true;
-        this.manager.start({ format: 'mp3', sampleRate: '16000', encodeBitRate: '96000' });
-      },
-      /**
-       * 语音输入点击结束回调
-       */
-      handleTouchEnd() {
-        uni.hideLoading();
-        this.isSpeaking = false;
-        this.manager.stop();
-      },
-      /**
-       * 初始化微信语音转文字插件
-       */
-      initRecordRecognitionManager() {
-        // eslint-disable-next-line no-undef
-        const plugin = requirePlugin('WechatSI');
-        const manager = plugin.getRecordRecognitionManager();
-        const self = this;
-        manager.onStart = function (res) {
-          console.log('语音输入开始');
-          self.reply = '';
-        };
-        manager.onRecognize = function (res) {
-          self.content = res.result;
-        };
-        manager.onStop = (res) => {
-          console.log('语音输入结束', res);
-          self.content = res.result;
-          this.key = res.result;
-        };
-        manager.onError = function (res) {
-          console.error('语音输入报错: ', res.msg);
-        };
-        this.manager = manager;
-      },
-      // 初始化支付宝语音
-      initAlipay() {
-        const recorderManager = my.getRecorderManager();
-        const innerAudioContext = my.createInnerAudioContext();
-        const fs = my.getFileSystemManager();
-
-        // 监听录音开始事件
-        recorderManager.onStart(() => {
-          console.log('recorder start');
-        });
-        // 监听录音暂停事件
-        recorderManager.onPause(() => {
-          console.log('recorder pause');
-        });
-        // 监听录音继续事件
-        recorderManager.onResume(() => {
-          console.log('recorder resume');
-        });
-
-        // 监听录音停止事件
-        recorderManager.onStop((res) => {
-          fs.saveFile({
-            tempFilePath: res['tempFilePath'],
-            filePath: `${my.env.USER_DATA_PATH}/temb1.mp3`,
-            success: (res1) => {
-              console.log(res1.savedFilePath);
-              // my.alert({ content: res1.savedFilePath })
-
-              fs.readFile({
-                filePath: res1.savedFilePath,
-                encoding: 'base64',
-                success: (rs) => {
-                  this.getVoiceContent(rs.data);
-                  //  my.alert({ content: 'recorder onStop' + JSON.stringify(rs.data)});
-                },
-                fail: (r) => {
-                  my.alert({ content: 'recorder error' + JSON.stringify(r) });
-                },
-              });
-              setTimeout(() => {
-                innerAudioContext.src = res1.savedFilePath;
-                innerAudioContext.play();
-              }, 1000);
-            },
-          });
-        });
-        // 监听录音错误事件
-        recorderManager.onError((res) => {
-          console.log('recorder error', res);
-        });
-        this.manager = recorderManager;
-      },
-      // 语音识别
-      getVoiceContent(base64) {
-        api.getVoiceResult({
-          data: {
-            audioBase64: base64,
-            videoType: 'mp3',
-          },
-          success: (data) => {
-            this.content = data.text;
-            console.log(this.content, '语音识别结果支付宝：');
-            this.key = data.text;
-          },
-        });
-      },
-      focusInput() {
-        this.showIcon = true;
-      },
-      blurInput() {
-        if (this.key) {
-          this.showIcon = true;
-        } else {
-          this.showIcon = false;
-        }
-      },
-      clear() {
-        this.key = '';
-        this.showIcon = false;
-        this.empt = 1;
-        this.jobList = [];
-      },
-      searchBykey() {
-        if (!this.key) {
-          this.$uni.showToast('请输入您要搜索的词');
-          return;
-        }
-        uni.setStorageSync('s_key', this.key);
-        const storageHistory = uni.getStorageSync('s_history_key');
-        if (!storageHistory) {
-          uni.setStorageSync('s_history_key', [this.key]);
-        } else {
-          if (!storageHistory.includes(this.key)) {
-            storageHistory.push(this.key);
-            const rever = storageHistory.reverse();
-            const data = rever.splice(0, 20);
-            this.searchHistory = data;
-            uni.setStorageSync('s_history_key', data);
+    // #ifdef MP-WEIXIN
+    this.initRecordRecognitionManager()
+    // #endif
+  },
+  // 分享处理
+  onShareAppMessage() {
+    return {
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
+  },
+  onReachBottom() {
+    this.getJobList()
+  },
+  methods: {
+    getJobList() {
+      api.getJobList({
+        data: {
+          postName: this.key, // this.postName,
+          workArea: '',
+          postType: '',
+          pageNum: this.pageNum,
+          pageSize: this.pageSize
+        },
+        success: (data) => {
+          const list = data.list || []
+          if (list.length > 0) {
+            this.jobList = this.jobList.concat(list)
+            this.pageNum++
           }
         }
-        this.empt = 2;
-        this.pageNum = 1;
-        this.jobList = [];
-        this.getJobList();
-      },
-      clearData() {
-        uni.removeStorageSync('s_history_key');
-        this.searchHistory = [];
-      },
+      })
     },
-  };
+    goSearch(v) {
+      uni.setStorageSync('s_key', v)
+      this.key = v
+      this.empt = 2
+      this.pageNum = 1
+      this.jobList = []
+      this.getJobList()
+    },
+    /**
+       * 语音输入点击开始回调
+       */
+    handleTouchStart() {
+      uni.showLoading()
+      this.isSpeaking = true
+      this.manager.start({ format: 'mp3', sampleRate: '16000', encodeBitRate: '96000' })
+    },
+    /**
+       * 语音输入点击结束回调
+       */
+    handleTouchEnd() {
+      uni.hideLoading()
+      this.isSpeaking = false
+      this.manager.stop()
+    },
+    /**
+       * 初始化微信语音转文字插件
+       */
+    initRecordRecognitionManager() {
+      // eslint-disable-next-line no-undef
+      const plugin = requirePlugin('WechatSI')
+      const manager = plugin.getRecordRecognitionManager()
+      const self = this
+      manager.onStart = function (res) {
+        console.log('语音输入开始')
+        self.reply = ''
+      }
+      manager.onRecognize = function (res) {
+        self.content = res.result
+      }
+      manager.onStop = (res) => {
+        console.log('语音输入结束', res)
+        self.content = res.result
+        this.key = res.result
+      }
+      manager.onError = function (res) {
+        console.error('语音输入报错: ', res.msg)
+      }
+      this.manager = manager
+    },
+    // 初始化支付宝语音
+    initAlipay() {
+      const recorderManager = my.getRecorderManager()
+      const innerAudioContext = my.createInnerAudioContext()
+      const fs = my.getFileSystemManager()
+
+      // 监听录音开始事件
+      recorderManager.onStart(() => {
+        console.log('recorder start')
+      })
+      // 监听录音暂停事件
+      recorderManager.onPause(() => {
+        console.log('recorder pause')
+      })
+      // 监听录音继续事件
+      recorderManager.onResume(() => {
+        console.log('recorder resume')
+      })
+
+      // 监听录音停止事件
+      recorderManager.onStop((res) => {
+        fs.saveFile({
+          tempFilePath: res['tempFilePath'],
+          filePath: `${my.env.USER_DATA_PATH}/temb1.mp3`,
+          success: (res1) => {
+            console.log(res1.savedFilePath)
+            // my.alert({ content: res1.savedFilePath })
+
+            fs.readFile({
+              filePath: res1.savedFilePath,
+              encoding: 'base64',
+              success: (rs) => {
+                this.getVoiceContent(rs.data)
+                //  my.alert({ content: 'recorder onStop' + JSON.stringify(rs.data)});
+              },
+              fail: (r) => {
+                my.alert({ content: 'recorder error' + JSON.stringify(r) })
+              }
+            })
+            setTimeout(() => {
+              innerAudioContext.src = res1.savedFilePath
+              innerAudioContext.play()
+            }, 1000)
+          }
+        })
+      })
+      // 监听录音错误事件
+      recorderManager.onError((res) => {
+        console.log('recorder error', res)
+      })
+      this.manager = recorderManager
+    },
+    // 语音识别
+    getVoiceContent(base64) {
+      api.getVoiceResult({
+        data: {
+          audioBase64: base64,
+          videoType: 'mp3'
+        },
+        success: (data) => {
+          this.content = data.text
+          console.log(this.content, '语音识别结果支付宝：')
+          this.key = data.text
+        }
+      })
+    },
+    focusInput() {
+      this.showIcon = true
+    },
+    blurInput() {
+      if (this.key) {
+        this.showIcon = true
+      } else {
+        this.showIcon = false
+      }
+    },
+    clear() {
+      this.key = ''
+      this.showIcon = false
+      this.empt = 1
+      this.jobList = []
+    },
+    searchBykey() {
+      if (!this.key) {
+        this.$uni.showToast('请输入您要搜索的词')
+        return
+      }
+      uni.setStorageSync('s_key', this.key)
+      const storageHistory = uni.getStorageSync('s_history_key')
+      if (!storageHistory) {
+        uni.setStorageSync('s_history_key', [this.key])
+      } else {
+        if (!storageHistory.includes(this.key)) {
+          storageHistory.push(this.key)
+          const rever = storageHistory.reverse()
+          const data = rever.splice(0, 20)
+          this.searchHistory = data
+          uni.setStorageSync('s_history_key', data)
+        }
+      }
+      this.empt = 2
+      this.pageNum = 1
+      this.jobList = []
+      this.getJobList()
+    },
+    clearData() {
+      uni.removeStorageSync('s_history_key')
+      this.searchHistory = []
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   @import '~@/styles/base';

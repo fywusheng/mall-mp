@@ -7,51 +7,51 @@
 </template>
 
 <script>
-	export default {
-		props:['modelData','initIndex'],
-		data() {
-			return {
-				defaultInfo:{
-					data:[
-						{label:"测试",},
-						{label:"测试"},
-						{label:"测试"},
-					],
-				},
-				activeIndex:0,//默认索引
-			}
-		},
-		watch: {
-			initIndex(newVal,oldVal) {
-				this.activeIndex = newVal
-			}
-		},
-		computed:{
-			getModelData(){
-				return this.modelData||this.defaultInfo.data
-			},
-			formatBe(){
-				return this.modelData
-						?this.modelData.length>4?true:false
-						:false
-			}
-		},
-		methods: {
-			tap(index){
-				if(index!==this.activeIndex)this.$emit("change",index);
-				this.activeIndex=index;
-			},
-			/**
+export default {
+  props: ['modelData', 'initIndex'],
+  data() {
+    return {
+      defaultInfo: {
+        data: [
+          { label: '测试' },
+          { label: '测试' },
+          { label: '测试' }
+        ]
+      },
+      activeIndex: 0 // 默认索引
+    }
+  },
+  watch: {
+    initIndex(newVal, oldVal) {
+      this.activeIndex = newVal
+    }
+  },
+  computed: {
+    getModelData() {
+      return this.modelData || this.defaultInfo.data
+    },
+    formatBe() {
+      return this.modelData
+        ? this.modelData.length > 4
+        : false
+    }
+  },
+  methods: {
+    tap(index) {
+      if (index !== this.activeIndex) this.$emit('change', index)
+      this.activeIndex = index
+    },
+    /**
 			 * @name 初始化activeIndex
 			 */
-			initActive(){
-				this.activeIndex=this.initIndex||this.activeIndex
-			}
-		},
-		created() {
-			this.initActive()
-		},
-	}
+    initActive() {
+      this.activeIndex = this.initIndex || this.activeIndex
+    }
+  },
+  created() {
+    this.initActive()
+  }
+}
 </script>
 <style lang='scss'>
 	.my-tabs {

@@ -53,17 +53,17 @@
 </template>
 
 <script>
-  export default {
-    name: 'ATTRIBUTE_LIST',
-    data() {
-      return {
-        dataList: [],
-      };
-    },
+export default {
+  name: 'ATTRIBUTE_LIST',
+  data() {
+    return {
+      dataList: []
+    }
+  },
 
-    methods: {},
-    async mounted() {
-      this.dataList = wx.getStorageSync('attribute');
-    },
-  };
+  methods: {},
+  async mounted() {
+    this.dataList = wx.getStorageSync('attribute')
+  }
+}
 </script>

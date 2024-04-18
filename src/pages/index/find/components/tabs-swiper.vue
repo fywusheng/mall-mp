@@ -282,283 +282,283 @@
 </template>
 
 <script>
-  import hrPullLoad from '@/components/hr-pull-load/hr-pull-load.vue';
-  import list from '@/pages/index/find/rumours/list.vue';
-  export default {
-    components: { list, hrPullLoad },
-    props: {
-      list: {
-        type: Array,
-        default: () => [],
-      },
-      stopPlay: {
-        type: Boolean,
-        default: true,
-      },
+import hrPullLoad from '@/components/hr-pull-load/hr-pull-load.vue'
+import list from '@/pages/index/find/rumours/list.vue'
+export default {
+  components: { list, hrPullLoad },
+  props: {
+    list: {
+      type: Array,
+      default: () => []
     },
-    data() {
-      return {
-        clickTab_id: '',
-        isRumorFlag: '', // 标识是否是辟谣警示 1是
-        swiperIndex: 0, // 当前的swiperindex
-        navItemWidth: '', // 选中下划线的宽度
-        navItemLeft: 0, // 选中下划线的显示位置
-        scrollToLeft: 0, // scrollview需要滚动的距离
-        navInfos: [], // 所有navitem的节点信息
-        parentLeft: 0, // nav盒子的节点信息
-        componentWidth: 0, // nav盒子的宽度
-        refreStatus: false, // 状态
-        bottomTips: '', // 加载文字
-        newLoading: false, // 是否加长页面
-        currentPage: 1, // 当前页码
-        currentIndex: 1, // 加载更多标识
-      };
+    stopPlay: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data() {
+    return {
+      clickTab_id: '',
+      isRumorFlag: '', // 标识是否是辟谣警示 1是
+      swiperIndex: 0, // 当前的swiperindex
+      navItemWidth: '', // 选中下划线的宽度
+      navItemLeft: 0, // 选中下划线的显示位置
+      scrollToLeft: 0, // scrollview需要滚动的距离
+      navInfos: [], // 所有navitem的节点信息
+      parentLeft: 0, // nav盒子的节点信息
+      componentWidth: 0, // nav盒子的宽度
+      refreStatus: false, // 状态
+      bottomTips: '', // 加载文字
+      newLoading: false, // 是否加长页面
+      currentPage: 1, // 当前页码
+      currentIndex: 1 // 加载更多标识
+    }
+  },
+  computed: {
+    style() {
+      return `width:${this.navItemWidth}px; left:${this.navItemLeft}px`
+    }
+  },
+  mounted() {
+    // console.log("mounted执行初始化：",this.list)
+    // this.init();
+  },
+  updated() {
+    // console.log("updated执行：",this.list)
+    // #ifdef MP-ALIPAY
+    // this.init();
+    // #endif
+  },
+  onLoad() {
+    // this.getExampleData();
+  },
+  methods: {
+    // 图片加载失败
+    handleArticleImageLoadFail(tab, index, imgIndex, type) {
+      this.$emit('handleArticleImageLoadFail', tab, index, imgIndex, type)
     },
-    computed: {
-      style() {
-        return `width:${this.navItemWidth}px; left:${this.navItemLeft}px`;
-      },
+    // 获取数据
+    getExampleData(type) {
+      this.$emit('refreshData')
     },
-    mounted() {
-      // console.log("mounted执行初始化：",this.list)
-      // this.init();
+    // 自定义上拉加载更多
+    loadMore() {
+      this.bottomTips = 'loading'
+      this.$emit('loadMore')
     },
-    updated() {
-      // console.log("updated执行：",this.list)
-      // #ifdef MP-ALIPAY
-      // this.init();
-      // #endif
+    loadMorePY() {
+      this.currentIndex++
     },
-    onLoad() {
-      // this.getExampleData();
+    // 自定义下拉刷新
+    refresh() {
+      this.getExampleData(1)
     },
-    methods: {
-      // 图片加载失败
-      handleArticleImageLoadFail(tab, index, imgIndex, type) {
-        this.$emit('handleArticleImageLoadFail', tab, index, imgIndex, type);
-      },
-      // 获取数据
-      getExampleData(type) {
-        this.$emit('refreshData');
-      },
-      // 自定义上拉加载更多
-      loadMore() {
-        this.bottomTips = 'loading';
-        this.$emit('loadMore');
-      },
-      loadMorePY() {
-        this.currentIndex++;
-      },
-      // 自定义下拉刷新
-      refresh() {
-        this.getExampleData(1);
-      },
-      // 获取dom信息
-      init() {
-        const query = uni.createSelectorQuery().in(this);
-        console.log('query.select', query.select('.uni-nav'));
-        query.select('.uni-nav').fields({ rect: true, size: true }, (res) => {
-          this.parentLeft = res.left;
-          this.componentWidth = res.width;
-          console.log('res==>', res);
-        });
-        console.log('query.selectAll', query.selectAll('.nav-item'));
-        query.selectAll('.nav-item').fields({ rect: true, size: true }, (data) => {
-          console.log('domdata:', data);
-          data.forEach((item, index) => {
-            if (index == 0) {
-              this.navItemWidth = item.width;
-              this.navItemLeft = item.left;
-            }
-            this.navInfos.push({ width: item.width, left: item.left });
-          });
-        });
-        query.exec();
-        console.log('this.navInfos:', this.navInfos);
-        // setTimeout(() => {
-        //   this.taggleNav(1)
-        // }, 100)
-      },
-      // 点击导航切换swiper
-      taggleNav(val, item) {
-        console.log('====切换---', item);
-        this.clickTab_id = item.colId || '';
-        this.swiperIndex = val;
-        // this.$emit('currentIndex', this.swiperIndex)
-        this.bottomTips = '';
-        if (this.list[this.swiperIndex].nomore && this.list[this.swiperIndex].content.length > 4) {
-          this.bottomTips = 'nomore';
-        }
-        this.scrollDom();
-      },
-      // 滚动tabs以及移动下划线
-      scrollDom() {
-        const info = this.navInfos[this.swiperIndex];
-        console.log('获取元素：', info);
-        const offsetLeft = info.left - this.parentLeft;
-        const scrollLeft = offsetLeft - (this.componentWidth - info.width) / 2;
-        this.scrollToLeft = scrollLeft < 0 ? 0 : scrollLeft;
-        this.navItemLeft = this.navInfos[this.swiperIndex].left;
-        setTimeout(() => {
-          this.navItemWidth = info.width;
-        }, 50);
-      },
-      // swiper的index变动
-      swiperChange(e) {
-        this.swiperIndex = e.detail.current;
-        // this.$emit('currentIndex', this.swiperIndex)
-        if (this.list[this.swiperIndex].nomore && this.list[this.swiperIndex].content.length > 4) {
-          this.bottomTips = 'nomore';
-        } else {
-          this.bottomTips = '';
-        }
-        this.scrollDom();
-      },
-      // tabs-scrollview触底
-      handleScroll(e) {
-        this.scrollDom();
-      },
-      // 滚动到底部
-      bindscrolltolower(e) {
-        console.log(e);
-      },
-      // swiper-ScrollLower触底
-      swiperScrollLower() {
-        uni.showToast({
-          icon: 'none',
-          title: `此时为${this.list[this.swiperIndex].title}触底`,
-        });
-        setTimeout(() => {
-          // this.getData();
-        }, 500);
-      },
-      // 生成列表数据
-      getData() {
-        uni.showLoading({
-          title: '加载中',
-        });
-        setTimeout(() => {
-          for (let index = 0; index < 10; index++) {
-            const arr = this.list[this.swiperIndex].content;
-            this.$set(
-              arr,
-              arr.length,
-              Math.random() + '-' + index + this.list[this.swiperIndex].title,
-            );
+    // 获取dom信息
+    init() {
+      const query = uni.createSelectorQuery().in(this)
+      console.log('query.select', query.select('.uni-nav'))
+      query.select('.uni-nav').fields({ rect: true, size: true }, (res) => {
+        this.parentLeft = res.left
+        this.componentWidth = res.width
+        console.log('res==>', res)
+      })
+      console.log('query.selectAll', query.selectAll('.nav-item'))
+      query.selectAll('.nav-item').fields({ rect: true, size: true }, (data) => {
+        console.log('domdata:', data)
+        data.forEach((item, index) => {
+          if (index == 0) {
+            this.navItemWidth = item.width
+            this.navItemLeft = item.left
           }
-          uni.hideLoading();
-        }, 1000);
-        console.log(this.list[this.swiperIndex]);
-      },
-      // 下拉事件
-      handleRefre() {
-        this.refreStatus = true;
-        uni.showLoading({
-          title: '下拉加载中',
-        });
-        setTimeout(() => {
-          this.list[this.swiperIndex].content = [];
-          for (var i = 0; i < 5; i++) {
-            this.list[this.swiperIndex].content.push([
-              this.list[this.swiperIndex].title + '下拉-' + i,
-            ]);
-          }
-          uni.hideLoading();
-        }, 1000);
-        setTimeout(() => {
-          this.refreStatus = false;
-        }, 1000);
-      },
-      /*
+          this.navInfos.push({ width: item.width, left: item.left })
+        })
+      })
+      query.exec()
+      console.log('this.navInfos:', this.navInfos)
+      // setTimeout(() => {
+      //   this.taggleNav(1)
+      // }, 100)
+    },
+    // 点击导航切换swiper
+    taggleNav(val, item) {
+      console.log('====切换---', item)
+      this.clickTab_id = item.colId || ''
+      this.swiperIndex = val
+      // this.$emit('currentIndex', this.swiperIndex)
+      this.bottomTips = ''
+      if (this.list[this.swiperIndex].nomore && this.list[this.swiperIndex].content.length > 4) {
+        this.bottomTips = 'nomore'
+      }
+      this.scrollDom()
+    },
+    // 滚动tabs以及移动下划线
+    scrollDom() {
+      const info = this.navInfos[this.swiperIndex]
+      console.log('获取元素：', info)
+      const offsetLeft = info.left - this.parentLeft
+      const scrollLeft = offsetLeft - (this.componentWidth - info.width) / 2
+      this.scrollToLeft = scrollLeft < 0 ? 0 : scrollLeft
+      this.navItemLeft = this.navInfos[this.swiperIndex].left
+      setTimeout(() => {
+        this.navItemWidth = info.width
+      }, 50)
+    },
+    // swiper的index变动
+    swiperChange(e) {
+      this.swiperIndex = e.detail.current
+      // this.$emit('currentIndex', this.swiperIndex)
+      if (this.list[this.swiperIndex].nomore && this.list[this.swiperIndex].content.length > 4) {
+        this.bottomTips = 'nomore'
+      } else {
+        this.bottomTips = ''
+      }
+      this.scrollDom()
+    },
+    // tabs-scrollview触底
+    handleScroll(e) {
+      this.scrollDom()
+    },
+    // 滚动到底部
+    bindscrolltolower(e) {
+      console.log(e)
+    },
+    // swiper-ScrollLower触底
+    swiperScrollLower() {
+      uni.showToast({
+        icon: 'none',
+        title: `此时为${this.list[this.swiperIndex].title}触底`
+      })
+      setTimeout(() => {
+        // this.getData();
+      }, 500)
+    },
+    // 生成列表数据
+    getData() {
+      uni.showLoading({
+        title: '加载中'
+      })
+      setTimeout(() => {
+        for (let index = 0; index < 10; index++) {
+          const arr = this.list[this.swiperIndex].content
+          this.$set(
+            arr,
+            arr.length,
+            Math.random() + '-' + index + this.list[this.swiperIndex].title
+          )
+        }
+        uni.hideLoading()
+      }, 1000)
+      console.log(this.list[this.swiperIndex])
+    },
+    // 下拉事件
+    handleRefre() {
+      this.refreStatus = true
+      uni.showLoading({
+        title: '下拉加载中'
+      })
+      setTimeout(() => {
+        this.list[this.swiperIndex].content = []
+        for (var i = 0; i < 5; i++) {
+          this.list[this.swiperIndex].content.push([
+            this.list[this.swiperIndex].title + '下拉-' + i
+          ])
+        }
+        uni.hideLoading()
+      }, 1000)
+      setTimeout(() => {
+        this.refreStatus = false
+      }, 1000)
+    },
+    /*
        * 点击听文章事件
        */
-      handleNoimg(index, tab, type) {
-        console.log('点击播放音频type：', uni.getStorageSync('network'));
-        if (uni.getStorageSync('network')) {
-          // 已授权
-          if (type == 2) {
-            this.$emit('handleNoimg', index, tab);
-          } else {
-            // 切换播放和暂停
-            this.$emit('handleSwitchPlay');
-          }
+    handleNoimg(index, tab, type) {
+      console.log('点击播放音频type：', uni.getStorageSync('network'))
+      if (uni.getStorageSync('network')) {
+        // 已授权
+        if (type == 2) {
+          this.$emit('handleNoimg', index, tab)
         } else {
-          // 点击播放
-          uni.getNetworkType({
-            success: (res) => {
-              if (res.networkType != 'wifi') {
-                uni.showModal({
-                  title: '',
-                  content: '当前为非wif环境，是否使用流量播放',
-                  cancelText: '暂停播放',
-                  confirmText: '继续播放',
-                  success: (res) => {
-                    if (res.confirm) {
-                      if (type == 2) {
-                        uni.setStorageSync('network', true);
-                        this.$emit('handleNoimg', index, tab);
-                      } else {
-                        // 切换播放和暂停
-                        this.$emit('handleSwitchPlay');
-                      }
-                    } else if (res.cancel) {
-                    }
-                  },
-                });
-              } else {
-                if (type == 2) {
-                  this.$emit('handleNoimg', index, tab);
-                } else {
-                  // 切换播放和暂停
-                  this.$emit('handleSwitchPlay');
-                }
-              }
-
-              console.log(res.networkType);
-            },
-          });
+          // 切换播放和暂停
+          this.$emit('handleSwitchPlay')
         }
-      },
-      // 置顶详情
-      topDetail(e) {
-        uni.navigateTo({
-          url: `/pages/find/article-detail?contId=` + e.currentTarget.dataset.id,
-        });
-      },
-      // 点击文章详情
-      goDetail(e, tab, index) {
-        this.$emit('goDetail', e, tab, index);
-      },
-      // 点击小视视频详情
-      goSmallVedio(e, tab, index) {
-        this.$emit('goSmallVedio', e, tab, index);
-      },
-      // 点击视频详情
-      goVedio(e, tab, index) {
-        this.$emit('goVedio', e, tab, index);
-      },
-    },
-    watch: {
-      list: {
-        // immediate:true,
-        handler(n, o) {
-          if (n.length > o.length) {
-            this.init();
+      } else {
+        // 点击播放
+        uni.getNetworkType({
+          success: (res) => {
+            if (res.networkType != 'wifi') {
+              uni.showModal({
+                title: '',
+                content: '当前为非wif环境，是否使用流量播放',
+                cancelText: '暂停播放',
+                confirmText: '继续播放',
+                success: (res) => {
+                  if (res.confirm) {
+                    if (type == 2) {
+                      uni.setStorageSync('network', true)
+                      this.$emit('handleNoimg', index, tab)
+                    } else {
+                      // 切换播放和暂停
+                      this.$emit('handleSwitchPlay')
+                    }
+                  } else if (res.cancel) {
+                  }
+                }
+              })
+            } else {
+              if (type == 2) {
+                this.$emit('handleNoimg', index, tab)
+              } else {
+                // 切换播放和暂停
+                this.$emit('handleSwitchPlay')
+              }
+            }
+
+            console.log(res.networkType)
           }
-          // console.log(n)
-          console.log('新数据的长度：', n.length);
-          console.log('旧数据的长度：', o.length);
-        },
-        deep: true,
-      },
-      swiperIndex: {
-        handler(n, o) {
-          this.isRumorFlag = this.list[n].isRumorFlag;
-          this.$emit('currentIndex', n);
-        },
-      },
+        })
+      }
     },
-  };
+    // 置顶详情
+    topDetail(e) {
+      uni.navigateTo({
+        url: `/pages/find/article-detail?contId=` + e.currentTarget.dataset.id
+      })
+    },
+    // 点击文章详情
+    goDetail(e, tab, index) {
+      this.$emit('goDetail', e, tab, index)
+    },
+    // 点击小视视频详情
+    goSmallVedio(e, tab, index) {
+      this.$emit('goSmallVedio', e, tab, index)
+    },
+    // 点击视频详情
+    goVedio(e, tab, index) {
+      this.$emit('goVedio', e, tab, index)
+    }
+  },
+  watch: {
+    list: {
+      // immediate:true,
+      handler(n, o) {
+        if (n.length > o.length) {
+          this.init()
+        }
+        // console.log(n)
+        console.log('新数据的长度：', n.length)
+        console.log('旧数据的长度：', o.length)
+      },
+      deep: true
+    },
+    swiperIndex: {
+      handler(n, o) {
+        this.isRumorFlag = this.list[n].isRumorFlag
+        this.$emit('currentIndex', n)
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

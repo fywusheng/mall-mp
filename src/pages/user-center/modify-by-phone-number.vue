@@ -31,96 +31,96 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import { sendSMSCode } from '@/api/modules/sms.js';
-  import { desensitizeInfo } from '@/utils/desensitization.js';
-  import { validatePhoneNumber } from '@/utils/validation.js';
-  export default {
-    data() {
-      return {
-        // 发送验证码倒计时
-        seconds: 0,
-        // 表单数据
-        params: {
-          phoneNumber: '',
-          smsCode: '',
-        },
-        //2为修改手机号，4为修改密码
-        type: '2',
-      };
-    },
-    filters: {
-      // 手机号过滤器, 用于手机号脱敏
-      phoneNumberFilter(value) {
-        return desensitizeInfo(value);
+import api from '@/apis/index.js'
+import { sendSMSCode } from '@/api/modules/sms.js'
+import { desensitizeInfo } from '@/utils/desensitization.js'
+import { validatePhoneNumber } from '@/utils/validation.js'
+export default {
+  data() {
+    return {
+      // 发送验证码倒计时
+      seconds: 0,
+      // 表单数据
+      params: {
+        phoneNumber: '',
+        smsCode: ''
       },
-    },
-    onLoad(options) {
-      this.type = options.type;
-      const userInfo = uni.getStorageSync('userInfo');
-      this.params.phoneNumber = userInfo.phone;
-    },
-    methods: {
-      /**
+      // 2为修改手机号，4为修改密码
+      type: '2'
+    }
+  },
+  filters: {
+    // 手机号过滤器, 用于手机号脱敏
+    phoneNumberFilter(value) {
+      return desensitizeInfo(value)
+    }
+  },
+  onLoad(options) {
+    this.type = options.type
+    const userInfo = uni.getStorageSync('userInfo')
+    this.params.phoneNumber = userInfo.phone
+  },
+  methods: {
+    /**
        * 发送验证码点击事件
        */
-      handleSencSMSCodeClick() {
-        if (!this.params.phoneNumber) {
-          this.$uni.showToast('请输入手机号');
-          return;
+    handleSencSMSCodeClick() {
+      if (!this.params.phoneNumber) {
+        this.$uni.showToast('请输入手机号')
+        return
+      }
+      if (!validatePhoneNumber(this.params.phoneNumber)) {
+        this.$uni.showToast('手机号格式错误，请重新输入')
+        return
+      }
+      sendSMSCode({
+        data: {
+          mobile: this.params.phoneNumber,
+          sceneFlag: this.type,
+          source: '',
+          tmplId: ''
+        },
+        success: () => {
+          this.$uni.showToast('发送成功')
+          this.seconds = 60
+          this.timer = setInterval(() => {
+            this.seconds -= 1
+            if (this.seconds < 0) clearInterval(this.timer)
+          }, 1000)
         }
-        if (!validatePhoneNumber(this.params.phoneNumber)) {
-          this.$uni.showToast('手机号格式错误，请重新输入');
-          return;
-        }
-        sendSMSCode({
-          data: {
-            mobile: this.params.phoneNumber,
-            sceneFlag: this.type,
-            source: '',
-            tmplId: '',
-          },
-          success: () => {
-            this.$uni.showToast('发送成功');
-            this.seconds = 60;
-            this.timer = setInterval(() => {
-              this.seconds -= 1;
-              if (this.seconds < 0) clearInterval(this.timer);
-            }, 1000);
-          },
-        });
-      },
-      /**
+      })
+    },
+    /**
        * 下一步点击事件
        */
-      handleNextStepClick() {
-        if (this.params.smsCode.length !== 6) {
-          this.$uni.showToast('请输入正确的验证码');
-          return;
+    handleNextStepClick() {
+      if (this.params.smsCode.length !== 6) {
+        this.$uni.showToast('请输入正确的验证码')
+        return
+      }
+      api.checkSMSCode({
+        data: {
+          mobile: this.params.phoneNumber,
+          code: this.params.smsCode,
+          sceneFlag: this.type
+        },
+        success: () => {
+          if (this.type === '2') {
+            // 修改手机号
+            uni.navigateTo({
+              url: `/pages/user-center/set-phone-number?phoneNumber=${this.params.phoneNumber}&type=${this.type}`
+            })
+          } else if (this.type === '4') {
+            // 修改密码
+            uni.navigateTo({
+              url: `/pages/user-center/reset-password?phoneNumber=${this.params.phoneNumber}`
+            })
+          }
         }
-        api.checkSMSCode({
-          data: {
-            mobile: this.params.phoneNumber,
-            code: this.params.smsCode,
-            sceneFlag: this.type,
-          },
-          success: () => {
-            if (this.type === '2') {
-              // 修改手机号
-              uni.navigateTo({
-                url: `/pages/user-center/set-phone-number?phoneNumber=${this.params.phoneNumber}&type=${this.type}`,
-              });
-            } else if (this.type === '4') {
-              // 修改密码
-              uni.navigateTo({
-                url: `/pages/user-center/reset-password?phoneNumber=${this.params.phoneNumber}`,
-              });
-            }
-          },
-        });
-      },
-    },
-  };
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

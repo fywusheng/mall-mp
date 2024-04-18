@@ -368,109 +368,109 @@
 </template>
 
 <script>
-  export default {
-    name: 'USER_CENTER',
-    data() {
-      return {
-        userInfo: {},
-        points: 0,
-        balance: 0,
-        orderResult: {},
-        cardStatus: {
-          expired: 0,
-          unUse: 0,
-          used: 0,
-        },
-      };
+export default {
+  name: 'USER_CENTER',
+  data() {
+    return {
+      userInfo: {},
+      points: 0,
+      balance: 0,
+      orderResult: {},
+      cardStatus: {
+        expired: 0,
+        unUse: 0,
+        used: 0
+      }
+    }
+  },
+  computed: {
+    isLogin() {
+      return Store.getters.isLogin
+    }
+  },
+  components: {},
+  methods: {
+    toMyCoupop(status) {
+      uni.navigateTo({
+        url: `/sub-pages/me/my-coupon/main?status=${status}`
+      })
     },
-    computed: {
-      isLogin() {
-        return Store.getters.isLogin;
-      },
+    toAddress() {
+      wx.navigateTo({
+        url: '/sub-pages/me/address-list/main?type=2'
+      })
     },
-    components: {},
-    methods: {
-      toMyCoupop(status) {
-        uni.navigateTo({
-          url: `/sub-pages/me/my-coupon/main?status=${status}`,
-        });
-      },
-      toAddress() {
+    toHome() {
+      XIU.bridge.goHome()
+    },
+    toTopic(id) {
+      XIU.bridge.goTopic(id)
+    },
+    login() {
+      wx.navigateTo({
+        // url: '/sub-pages/index/login/main''
+      })
+    },
+    toOrder(status) {
+      if (status === 999) {
         wx.navigateTo({
-          url: '/sub-pages/me/address-list/main?type=2',
-        });
-      },
-      toHome() {
-        XIU.bridge.goHome();
-      },
-      toTopic(id) {
-        XIU.bridge.goTopic(id);
-      },
-      login() {
+          url: '/sub-pages/me/refund-list/main'
+        })
+      } else {
+        wx.navigateTo({
+          url: '/sub-pages/me/order-list/main?status=' + status || 0
+        })
+      }
+    },
+    toMenu(name) {
+      if (!Store.getters.isLogin) {
         wx.navigateTo({
           // url: '/sub-pages/index/login/main''
-        });
-      },
-      toOrder(status) {
-        if (status === 999) {
-          wx.navigateTo({
-            url: '/sub-pages/me/refund-list/main',
-          });
-        } else {
-          wx.navigateTo({
-            url: '/sub-pages/me/order-list/main?status=' + status || 0,
-          });
+        })
+        return false
+      }
+      wx.navigateTo({
+        url: `/sub-pages/me/${name}/main`
+      })
+    }
+  },
+  async created() {
+    if (!Store.getters.isLogin) {
+      await Store.dispatch('login')
+    }
+    const orderResult = await Axios.post('/order/get.count')
+    if (orderResult.code == 200) {
+      this.orderResult = orderResult.data
+    }
+    const result = await Axios.post(
+      '/member/get.userinfo',
+      {},
+      {
+        headers: {
+          'content-type': 'application/json;charset=utf-8'
         }
-      },
-      toMenu(name) {
-        if (!Store.getters.isLogin) {
-          wx.navigateTo({
-            // url: '/sub-pages/index/login/main''
-          });
-          return false;
-        }
-        wx.navigateTo({
-          url: `/sub-pages/me/${name}/main`,
-        });
-      },
-    },
-    async created() {
-      if (!Store.getters.isLogin) {
-        await Store.dispatch('login');
       }
-      const orderResult = await Axios.post('/order/get.count');
-      if (orderResult.code == 200) {
-        this.orderResult = orderResult.data;
+    )
+    if (result.code == 200) {
+      this.userInfo = result.data
+    }
+    const pointResult = await Axios.post('/member/points.accumulation')
+    if (pointResult.code == 200) {
+      this.points = pointResult.data.points
+    }
+    const cardStatusResult = await Axios.post('/coupon/count', {
+      pageNum: 1,
+      pageSize: 100,
+      queryObject: {
+        sessionId: uni.getStorageSync('sessionId')
       }
-      const result = await Axios.post(
-        '/member/get.userinfo',
-        {},
-        {
-          headers: {
-            'content-type': 'application/json;charset=utf-8',
-          },
-        },
-      );
-      if (result.code == 200) {
-        this.userInfo = result.data;
-      }
-      const pointResult = await Axios.post('/member/points.accumulation');
-      if (pointResult.code == 200) {
-        this.points = pointResult.data.points;
-      }
-      const cardStatusResult = await Axios.post('/coupon/count', {
-        pageNum: 1,
-        pageSize: 100,
-        queryObject: {
-          sessionId: uni.getStorageSync('sessionId'),
-        },
-      });
-      this.cardStatus = cardStatusResult.data;
+    })
+    this.cardStatus = cardStatusResult.data
 
-      // const walletAccount = await Axios.post('/member/wallet/getTotalBalance')
-      // if (walletAccount.code == 200) {
-      //   this.balance = walletAccount.data.balance;
-      // }
-    },
-  };
+    // const walletAccount = await Axios.post('/member/wallet/getTotalBalance')
+    // if (walletAccount.code == 200) {
+    //   this.balance = walletAccount.data.balance;
+    // }
+  }
+}
 </script>

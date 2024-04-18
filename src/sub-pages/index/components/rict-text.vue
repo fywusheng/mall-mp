@@ -5,29 +5,29 @@
 </template>
 
 <script>
-  export default {
-    props: {
-      content: {
-        type: Object,
-        default: {},
-      }
-    },
-    data() {
-      return {
-        list: [],
-      }
-    },
-    methods: {
-      goItem(data) {
-        wx.navigateTo({
-          url: '/pages/item/main?id=' + data.productSid
-        })
-      }
-    },
-    async mounted() {
-      this.content.text = this.content.text.replace(/<img/ig, '<img class="img"')
+export default {
+  props: {
+    content: {
+      type: Object,
+      default: {}
     }
+  },
+  data() {
+    return {
+      list: []
+    }
+  },
+  methods: {
+    goItem(data) {
+      wx.navigateTo({
+        url: '/pages/item/main?id=' + data.productSid
+      })
+    }
+  },
+  async mounted() {
+    this.content.text = this.content.text.replace(/<img/ig, '<img class="img"')
   }
+}
 </script>
 
 <style lang="scss">

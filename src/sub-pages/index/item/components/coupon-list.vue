@@ -274,61 +274,61 @@
 </template>
 
 <script>
-  import wx from 'utils/wx';
+import wx from 'utils/wx'
 
-  export default {
-    name: 'COUPON_LIST',
-    props: {
-      couponList: {
-        type: Array,
-        default: [],
-      },
+export default {
+  name: 'COUPON_LIST',
+  props: {
+    couponList: {
+      type: Array,
+      default: []
+    }
+  },
+  data() {
+    return {
+      showPopup: false,
+      rulerContent: '',
+      showRulerV: false
+    }
+  },
+  filters: {
+    replaceDate(val) {
+      return val.replace(/-/g, '.')
+    }
+  },
+  methods: {
+    showRuler(val) {
+      this.rulerContent = val.description || '暂无'
+      this.$refs.notice.open()
+      this.showRulerV = true
     },
-    data() {
-      return {
-        showPopup: false,
-        rulerContent: '',
-        showRulerV: false,
-      };
+    closed() {
+      this.$refs.notice.close()
+      this.showRulerV = false
     },
-    filters: {
-      replaceDate(val) {
-        return val.replace(/-/g, '.');
-      },
+    async toCoupon(coupon) {
+      if (coupon.receivedState === 1) {
+        return
+      }
+      if (coupon.isReceived === 1) {
+        return false
+      }
+      wx.showLoading()
+      const result = await Axios.post('/coupon/receive', {
+        couponId: coupon.id
+      })
+      wx.hideLoading()
+      if (result.code == '200') {
+        wx.showToast(result.msg)
+        this.$emit('loadCoupon')
+      } else {
+        wx.showToast(result.msg)
+      }
     },
-    methods: {
-      showRuler(val) {
-        this.rulerContent = val.description || '暂无';
-        this.$refs.notice.open();
-        this.showRulerV = true;
-      },
-      closed() {
-        this.$refs.notice.close();
-        this.showRulerV = false;
-      },
-      async toCoupon(coupon) {
-        if (coupon.receivedState === 1) {
-          return;
-        }
-        if (coupon.isReceived === 1) {
-          return false;
-        }
-        wx.showLoading();
-        const result = await Axios.post('/coupon/receive', {
-          couponId: coupon.id,
-        });
-        wx.hideLoading();
-        if (result.code == '200') {
-          wx.showToast(result.msg);
-          this.$emit('loadCoupon');
-        } else {
-          wx.showToast(result.msg);
-        }
-      },
-      show(flag) {
-        this.showPopup = flag;
-      },
-    },
-    async mounted() {},
-  };
+    show(flag) {
+      this.showPopup = flag
+    }
+  },
+  async mounted() {}
+}
 </script>

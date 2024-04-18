@@ -81,59 +81,59 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
-  export default {
-    data() {
-      return {
-        loading: 1,
-        id: '',
-        jobContent: null,
-      };
-    },
-    onLoad(e) {
-      console.log('===接受到参数=--', e.id);
-      this.id = e.id;
-      this.jobDetail();
-    },
-    created() {},
-    mounted() {},
+import api from '@/apis/index.js'
+export default {
+  data() {
+    return {
+      loading: 1,
+      id: '',
+      jobContent: null
+    }
+  },
+  onLoad(e) {
+    console.log('===接受到参数=--', e.id)
+    this.id = e.id
+    this.jobDetail()
+  },
+  created() {},
+  mounted() {},
 
-    // 分享处理
-    onShareAppMessage() {
-      return {
-        title: '',
-        path: '/pages/index/index?index=0',
-      };
-    },
-    methods: {
-      jobDetail() {
-        api.jobDetail({
-          data: { id: this.id },
-          success: (data) => {
-            this.jobContent = data || {};
-            if (!this.jobContent.postName) {
-              this.loading = 2;
-            }
-          },
-          fail: (erro) => {
-            this.loading = 2;
-          },
-        });
-      },
-      tel(telNum) {
-        const token = uni.getStorageSync('token');
-        if (token) {
-          uni.makePhoneCall({
-            phoneNumber: telNum,
-          });
-        } else {
-          uni.navigateTo({
-            url: '/pages/user-center/login',
-          });
+  // 分享处理
+  onShareAppMessage() {
+    return {
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
+  },
+  methods: {
+    jobDetail() {
+      api.jobDetail({
+        data: { id: this.id },
+        success: (data) => {
+          this.jobContent = data || {}
+          if (!this.jobContent.postName) {
+            this.loading = 2
+          }
+        },
+        fail: (erro) => {
+          this.loading = 2
         }
-      },
+      })
     },
-  };
+    tel(telNum) {
+      const token = uni.getStorageSync('token')
+      if (token) {
+        uni.makePhoneCall({
+          phoneNumber: telNum
+        })
+      } else {
+        uni.navigateTo({
+          url: '/pages/user-center/login'
+        })
+      }
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .detal {

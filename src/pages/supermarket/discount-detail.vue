@@ -34,7 +34,7 @@ export default {
     return {}
   },
   onLoad() {},
-  methods: {},
+  methods: {}
 }
 </script>
 

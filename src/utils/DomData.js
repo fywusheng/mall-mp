@@ -1,4 +1,4 @@
- 
+
 /**
  *
  *
@@ -8,7 +8,7 @@
  * @param {*} qrCodeUrl 小程序codeURL图片
  */
 /**
-下边的内容可以自己定义，这样就可以定制属于自己的海报了 
+下边的内容可以自己定义，这样就可以定制属于自己的海报了
 */
 // const wxml = (name, pic, c1, c2) =>`
 // <view class="container">
@@ -23,7 +23,7 @@
 // </view>
 // `
 
-const wxml = (name, age, code, c2) =>`
+const wxml = (name, age, code, c2) => `
 
 <view class="container">
   <image
@@ -31,11 +31,11 @@ const wxml = (name, age, code, c2) =>`
   src="http://192.168.1.187:10088/static/home/member-card-bg.png"
   mode="scaleToFill"
   />
-  <text class="info">持卡人：`+ name +`     年龄：`+ age +`</text>
-  <text class="footer">NO.`+ code +`  </text>
+  <text class="info">持卡人：` + name + `     年龄：` + age + `</text>
+  <text class="footer">NO.` + code + `  </text>
 </view>
 `
- 
+
 /**
  *
  *
@@ -43,66 +43,66 @@ const wxml = (name, age, code, c2) =>`
  * @param {*} canvasWidth  画布宽度
  * @param {*} canvasHeight  画布高度
  * @param {*} numberWidth  数字宽度，动态设置
- * @return {*} 
+ * @return {*}
  */
 const style = (screenWidth, canvasWidth, canvasHeight) => {
   return {
-    "container": {
+    'container': {
       width: canvasWidth,
       height: canvasHeight,
       position: 'relative',
-      overflow: 'hidden',
-			// backgroundColor: '#ffffff',
+      overflow: 'hidden'
+      // backgroundColor: '#ffffff',
     },
-    "info":{
+    'info': {
       fontSize: 14,
       color: '#62291b',
       marginTop: canvasHeight * 0.55,
-			textAlign: 'center',
+      textAlign: 'center'
     },
-    "footer": {
-			fontSize: 14,
-			color: '#A63117',
+    'footer': {
+      fontSize: 14,
+      color: '#A63117',
       textAlign: 'right',
       paddingRight: canvasWidth * 0.08,
-			marginLeft: canvasWidth * 0.18,
-      marginTop: canvasHeight * 0.25,
+      marginLeft: canvasWidth * 0.18,
+      marginTop: canvasHeight * 0.25
     },
-    "pic": {
+    'pic': {
       width: canvasWidth,
       height: canvasHeight,
       position: 'absolute',
       top: 0,
       left: '0',
-			overflow: 'hidden',
+      overflow: 'hidden'
     },
-    "bottom":{
+    'bottom': {
       width: canvasWidth,
       height: screenWidth * 0.2,
       flexDirection: 'row',
       justifyContent: 'self-start',
       alignItems: 'center',
-			backgroundColor: '#fafafa',
+      backgroundColor: '#fafafa',
       position: 'absolute',
       bottom: 0,
-      left: 0,
+      left: 0
     },
-		"qr": {
+    'qr': {
 		  width: canvasWidth * 0.14,
 		  height: screenWidth * 0.14,
 		  marginLeft: canvasWidth * 0.04,
-			marginRight: canvasWidth * 0.04,
-		},
-    "msg": {
+      marginRight: canvasWidth * 0.04
+    },
+    'msg': {
       fontSize: 14,
       color: '#a1a1a1',
       width: canvasWidth * 0.74,
-			height: 14,
-			textAlign: 'left'
-    },
+      height: 14,
+      textAlign: 'left'
+    }
   }
 }
- 
+
 module.exports = {
   wxml,
   style

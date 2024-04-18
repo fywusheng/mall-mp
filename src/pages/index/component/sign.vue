@@ -46,30 +46,30 @@
 </template>
 
 <script>
-  import { UniPopup } from '@dcloudio/uni-ui';
-  export default {
-    name: 'sign',
-    components: { UniPopup },
-    props: {
-      signDay: {
-        type: Number,
-        default: 0,
-      },
+import { UniPopup } from '@dcloudio/uni-ui'
+export default {
+  name: 'sign',
+  components: { UniPopup },
+  props: {
+    signDay: {
+      type: Number,
+      default: 0
+    }
+  },
+  data() {
+    return {
+      signTotalDay: 7
+    }
+  },
+  methods: {
+    open() {
+      this.$refs.popup.open('center')
     },
-    data() {
-      return {
-        signTotalDay: 7,
-      };
-    },
-    methods: {
-      open() {
-        this.$refs.popup.open('center');
-      },
-      close() {
-        this.$refs.popup.close();
-      },
-    },
-  };
+    close() {
+      this.$refs.popup.close()
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

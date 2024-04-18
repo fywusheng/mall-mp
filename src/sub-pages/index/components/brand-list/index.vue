@@ -6,22 +6,22 @@
 
 <script>
 
-    export default {
-        props: [ 'mode', 'instance_id', 'common', 'content' ],
-        data() {
-            return {
-                timer: null,
-                itemList: [],
-            }
-        },
-        methods: {
-            onClick() {
-                XIU.genLink(this.content.link)
-            },
-        },
-        mounted() {
-        }
+export default {
+  props: ['mode', 'instance_id', 'common', 'content'],
+  data() {
+    return {
+      timer: null,
+      itemList: []
     }
+  },
+  methods: {
+    onClick() {
+      XIU.genLink(this.content.link)
+    }
+  },
+  mounted() {
+  }
+}
 </script>
 
 <style lang="scss">

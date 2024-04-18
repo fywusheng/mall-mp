@@ -27,25 +27,25 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {};
-    },
-    components: {},
-    methods: {
-      toRefund(type) {
-        const url = `../refund-apply/main?type=${type}&itemId=${this.$mp.query.itemId}&num=${this.$mp.query.num}&orderId=${this.$mp.query.orderId}&skuId=${this.$mp.query.skuId}&productId=${this.$mp.query.productId}`;
-        wx.redirectTo({
-          url: url,
-        });
-      },
-    },
-    async mounted() {
-      wx.setNavigationBarTitle({
-        title: '选择服务类型',
-      });
-    },
-  };
+export default {
+  data() {
+    return {}
+  },
+  components: {},
+  methods: {
+    toRefund(type) {
+      const url = `../refund-apply/main?type=${type}&itemId=${this.$mp.query.itemId}&num=${this.$mp.query.num}&orderId=${this.$mp.query.orderId}&skuId=${this.$mp.query.skuId}&productId=${this.$mp.query.productId}`
+      wx.redirectTo({
+        url: url
+      })
+    }
+  },
+  async mounted() {
+    wx.setNavigationBarTitle({
+      title: '选择服务类型'
+    })
+  }
+}
 </script>
 
 <style lang="scss">

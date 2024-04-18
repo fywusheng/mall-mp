@@ -14,6 +14,6 @@ Vue.config.productionTip = false
 
 const app = new Vue({
   ...App,
-  store,
+  store
 })
 app.$mount()

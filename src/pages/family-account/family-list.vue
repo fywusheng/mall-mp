@@ -25,144 +25,144 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import { startFacialRecognitionVerify } from '@/utils/utils.js';
+import api from '@/apis/index.js'
+import { startFacialRecognitionVerify } from '@/utils/utils.js'
 
-  export default {
-    components: {},
-    data() {
-      return {
-        // 亲情账号列表
-        list: [],
-      };
-    },
-    watch: {},
-    onLoad(option) {},
-    onShow() {
-      console.log('执行onshow');
-      this.findFamilyMemberList();
-    },
-    onReachBottom() {},
-    methods: {
-      /**
+export default {
+  components: {},
+  data() {
+    return {
+      // 亲情账号列表
+      list: []
+    }
+  },
+  watch: {},
+  onLoad(option) {},
+  onShow() {
+    console.log('执行onshow')
+    this.findFamilyMemberList()
+  },
+  onReachBottom() {},
+  methods: {
+    /**
        * 点击解除绑定按钮
        */
-      handleDeleteClick(index) {
-        uni.showModal({
-          title: '',
-          content: `是否解除与${this.list[index].userName}的关系`,
-          cancelText: '取消',
-          confirmText: '确定',
-          success: (res) => {
-            if (res.confirm) {
-              const userInfo = uni.getStorageSync('userInfo');
+    handleDeleteClick(index) {
+      uni.showModal({
+        title: '',
+        content: `是否解除与${this.list[index].userName}的关系`,
+        cancelText: '取消',
+        confirmText: '确定',
+        success: (res) => {
+          if (res.confirm) {
+            const userInfo = uni.getStorageSync('userInfo')
 
-              const params = {
-                name: userInfo.psnName,
-                idCard: userInfo.idCard,
-                returnUrl: '',
-              };
-              // 人脸识别成功
-              params.success = () => {
-                console.log('人脸识别成功：');
-                // uni.getFileSystemManager().readFile({
-                //   filePath: require('./static/微信图片_20210727154757.jpg'),
-                //   encoding: 'base64',
-                //   success: (res) => {
-                //     api.removeFamily({
-                //       data:{
-                //         familyId:this.list[index].familyId,//关系id
-                //         userName:userInfo.psnName,//姓名
-                //         idCard:userInfo.idCard,//身份证号码
-                //         faceImg:res. staticData.faceImg,//图片人脸
-                //       },
-                //       showLoading:true,
-                //       success:(rsp)=>{
-                //         this.$uni.showToast("解绑成功")
-                //          this.findFamilyMemberList()
-                //       }
-                //     })
-                //   },
-                // })
-                api.removeFamily({
-                  data: {
-                    familyId: this.list[index].familyId, // 关系id
-                    userName: userInfo.psnName, // 姓名
-                    idCard: userInfo.idCard, // 身份证号码
-                    // faceImg: staticData.faceImg,//图片人脸
-                  },
-                  showLoading: true,
-                  success: (rsp) => {
-                    this.$uni.showToast('解绑成功');
-                    this.findFamilyMemberList();
-                  },
-                });
-              };
-
-              // 开启人脸识别
-              console.log('开启人脸');
-              startFacialRecognitionVerify(params);
-            } else if (res.cancel) {
-              console.log('用户点击取消');
+            const params = {
+              name: userInfo.psnName,
+              idCard: userInfo.idCard,
+              returnUrl: ''
             }
-          },
-        });
-      },
-      /**
+            // 人脸识别成功
+            params.success = () => {
+              console.log('人脸识别成功：')
+              // uni.getFileSystemManager().readFile({
+              //   filePath: require('./static/微信图片_20210727154757.jpg'),
+              //   encoding: 'base64',
+              //   success: (res) => {
+              //     api.removeFamily({
+              //       data:{
+              //         familyId:this.list[index].familyId,//关系id
+              //         userName:userInfo.psnName,//姓名
+              //         idCard:userInfo.idCard,//身份证号码
+              //         faceImg:res. staticData.faceImg,//图片人脸
+              //       },
+              //       showLoading:true,
+              //       success:(rsp)=>{
+              //         this.$uni.showToast("解绑成功")
+              //          this.findFamilyMemberList()
+              //       }
+              //     })
+              //   },
+              // })
+              api.removeFamily({
+                data: {
+                  familyId: this.list[index].familyId, // 关系id
+                  userName: userInfo.psnName, // 姓名
+                  idCard: userInfo.idCard // 身份证号码
+                  // faceImg: staticData.faceImg,//图片人脸
+                },
+                showLoading: true,
+                success: (rsp) => {
+                  this.$uni.showToast('解绑成功')
+                  this.findFamilyMemberList()
+                }
+              })
+            }
+
+            // 开启人脸识别
+            console.log('开启人脸')
+            startFacialRecognitionVerify(params)
+          } else if (res.cancel) {
+            console.log('用户点击取消')
+          }
+        }
+      })
+    },
+    /**
        * 解除绑定操作
        */
-      removeFamily() {
-        api.removeFamily({
-          data: {},
-          success: (res) => {},
-        });
-      },
-      /**
+    removeFamily() {
+      api.removeFamily({
+        data: {},
+        success: (res) => {}
+      })
+    },
+    /**
        * 添加亲友
        */
-      handleAddButtonClick() {
-        uni.navigateTo({
-          url: '/pages/family-account/select-type?family=1',
-        });
-      },
-      /**
+    handleAddButtonClick() {
+      uni.navigateTo({
+        url: '/pages/family-account/select-type?family=1'
+      })
+    },
+    /**
        * 获取亲情账号列表
        */
-      findFamilyMemberList() {
-        const data = {
-          uactId: this.uactId,
-          pageNum: 1,
-          pageSize: 5,
-        };
+    findFamilyMemberList() {
+      const data = {
+        uactId: this.uactId,
+        pageNum: 1,
+        pageSize: 5
+      }
 
-        api.findFamilyMemberList({
-          data,
-          showsLoading: true,
-          success: (res) => {
-            console.log('接口所得res：', res);
-            uni.hideLoading();
-            if (res.list) {
-              this.list = res.list;
-            } else {
-              this.list = [];
-            }
+      api.findFamilyMemberList({
+        data,
+        showsLoading: true,
+        success: (res) => {
+          console.log('接口所得res：', res)
+          uni.hideLoading()
+          if (res.list) {
+            this.list = res.list
+          } else {
+            this.list = []
+          }
 
-            //
-          },
-          fail: (err) => {
-            console.log('错误err：', err);
-            uni.hideLoading();
-            uni.showToast(err.message);
-          },
-        });
-      },
-    },
-    // 下拉刷新
-    onPullDownRefresh() {
-      console.log('触发refresh');
-      this.findFamilyMemberList();
-    },
-  };
+          //
+        },
+        fail: (err) => {
+          console.log('错误err：', err)
+          uni.hideLoading()
+          uni.showToast(err.message)
+        }
+      })
+    }
+  },
+  // 下拉刷新
+  onPullDownRefresh() {
+    console.log('触发refresh')
+    this.findFamilyMemberList()
+  }
+}
 </script>
 
 <style lang="scss" scoped>

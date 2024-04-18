@@ -168,287 +168,287 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import parse from 'mini-html-parser2';
-  import NavigationBar from '../../components/common/navigation-bar.vue';
-  import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
-  export default {
-    components: { NavigationBar, RealNamePop },
-    data() {
-      return {
-        loading: 1,
-        // 商店信息
-        info: {},
-        // 附近门店
-        storeList: [],
-        // 选中tab
-        tabIndex: '0',
+import api from '@/apis/index.js'
+import parse from 'mini-html-parser2'
+import NavigationBar from '../../components/common/navigation-bar.vue'
+import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue'
+export default {
+  components: { NavigationBar, RealNamePop },
+  data() {
+    return {
+      loading: 1,
+      // 商店信息
+      info: {},
+      // 附近门店
+      storeList: [],
+      // 选中tab
+      tabIndex: '0',
 
-        // 标题
-        title: '',
+      // 标题
+      title: '',
 
-        // 富文本
-        nodes: '',
-        city: {},
-        tabNodes: [],
-        // 导航栏高度
-        //#ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        //#endif
-        //#ifdef MP-ALIPAY
-        navigationBarHeight:
+      // 富文本
+      nodes: '',
+      city: {},
+      tabNodes: [],
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        //#endif
-        // 状态栏高度
-        statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-        otherMarketNum: 0,
-      };
-    },
-    onLoad(e) {
-      let info = JSON.parse(decodeURIComponent(e.info));
-      uni.setStorageSync('supermarketInfo', JSON.stringify(info));
-      this.title = info.supermarketName;
-      console.log('info:', info);
-      this.info = info;
-      this.getUseInfo();
-      this.getLocation();
+      // #endif
+      // 状态栏高度
+      statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
+      otherMarketNum: 0
+    }
+  },
+  onLoad(e) {
+    const info = JSON.parse(decodeURIComponent(e.info))
+    uni.setStorageSync('supermarketInfo', JSON.stringify(info))
+    this.title = info.supermarketName
+    console.log('info:', info)
+    this.info = info
+    this.getUseInfo()
+    this.getLocation()
 
-      // this.getOtherList()
-      if (uni.getStorageSync('marketInfo')) {
-        uni.removeStorageSync('marketInfo');
+    // this.getOtherList()
+    if (uni.getStorageSync('marketInfo')) {
+      uni.removeStorageSync('marketInfo')
+    }
+  },
+  onShow() {
+    if (uni.getStorageSync('marketInfo')) {
+      const marketInfo = uni.getStorageSync('marketInfo')
+      this.info.distance = marketInfo.distance
+      this.info.lat = marketInfo.lat
+      this.info.lon = marketInfo.lon
+      this.info.address = marketInfo.address
+      this.info.supermarketId = marketInfo.supermarketId
+      this.info.supermarketStoreId = marketInfo.supermarketStoreId
+    }
+  },
+  onShareAppMessage() {
+    return {
+      title: '',
+      path: '/pages/index/index?index=0'
+    }
+  },
+  methods: {
+    // 返回上一页
+    handleNavBack() {
+      uni.navigateBack()
+    },
+    // 返回首页
+    handleHomeBack() {
+      uni.reLaunch({
+        url: '/pages/index/index'
+      })
+    },
+    // 导航事件
+    handleDirectionClick() {
+      const data = {
+        name: this.info.supermarketName,
+        longitude: this.storeList[0].lon - 0,
+        latitude: this.storeList[0].lat - 0,
+        distance: this.storeList[0].distance,
+        address: this.storeList[0].address
       }
-    },
-    onShow() {
-      if (uni.getStorageSync('marketInfo')) {
-        let marketInfo = uni.getStorageSync('marketInfo');
-        this.info.distance = marketInfo.distance;
-        this.info.lat = marketInfo.lat;
-        this.info.lon = marketInfo.lon;
-        this.info.address = marketInfo.address;
-        this.info.supermarketId = marketInfo.supermarketId;
-        this.info.supermarketStoreId = marketInfo.supermarketStoreId;
-      }
-    },
-    onShareAppMessage() {
-      return {
-        title: '',
-        path: '/pages/index/index?index=0',
-      };
-    },
-    methods: {
-      // 返回上一页
-      handleNavBack() {
-        uni.navigateBack();
-      },
-      // 返回首页
-      handleHomeBack() {
-        uni.reLaunch({
-          url: '/pages/index/index',
-        });
-      },
-      // 导航事件
-      handleDirectionClick() {
-        const data = {
-          name: this.info.supermarketName,
-          longitude: this.storeList[0].lon - 0,
-          latitude: this.storeList[0].lat - 0,
-          distance: this.storeList[0].distance,
-          address: this.storeList[0].address,
-        };
-        uni.navigateTo({
-          url: '/pages/map/direction?data=' + encodeURIComponent(JSON.stringify(data)),
-          success: (res) => {
-            res.eventChannel.emit('didOpenPageFinish', data);
-          },
-        });
-      },
-      // 切换tab
-      handleTabClick(index) {
-        this.nodes = [];
-        if (index === '0' && this.tabIndex != index) {
-          this.tabIndex = index;
-          this.getUseInfo();
-        } else if (index === '1' && this.tabIndex != index) {
-          this.tabIndex = index;
-          this.getAttention();
+      uni.navigateTo({
+        url: '/pages/map/direction?data=' + encodeURIComponent(JSON.stringify(data)),
+        success: (res) => {
+          res.eventChannel.emit('didOpenPageFinish', data)
         }
-      },
+      })
+    },
+    // 切换tab
+    handleTabClick(index) {
+      this.nodes = []
+      if (index === '0' && this.tabIndex != index) {
+        this.tabIndex = index
+        this.getUseInfo()
+      } else if (index === '1' && this.tabIndex != index) {
+        this.tabIndex = index
+        this.getAttention()
+      }
+    },
 
-      /**
+    /**
        * 获取当前定位
        */
-      getLocation() {
-        uni.getLocation({
-          type: 'gcj02',
-          success: (res) => {
-            uni.setStorageSync('location', res);
-            // 调用高德地图 API 逆地理编码, 通过经纬度获取当前位置城市信息
-            api.regeoMap(
-              {
-                location: res.longitude + ',' + res.latitude,
-              },
-              {
-                success: (amap) => {
-                  let city = {
-                    code: amap.regeocode.addressComponent.adcode.substr(0, 4) + '00',
-                    longitude: res.longitude,
-                    latitude: res.latitude,
-                  };
-                  // 当城市是省直辖县时返回为空，以及城市为北京、上海、天津、重庆四个直辖市时，该字段返回为[],否则为城市名称（字符串）
-                  if (amap.regeocode.addressComponent.city.length === 0) {
-                    city.name = amap.regeocode.addressComponent.province;
-                  } else {
-                    city.name = amap.regeocode.addressComponent.city;
-                  }
-                  uni.setStorageSync('supermarketCity', city);
-                  this.city = city;
-                  const citycode = uni.getStorageSync('current_city');
-                  if (citycode['code']) {
-                    this.city['code'] = citycode['code'].substr(0, 4) + '00';
-                  }
-                  this.getOtherList();
-                },
-              },
-            );
-          },
-          fail: () => {
-            // // 定位失败默认北京市
-            // const city = { code: 110100, name: '北京市' }
-            // this.handleSelectCity(city)
-          },
-        });
-      },
-      //  获取附近门店
-      getOtherList() {
-        api.getNearStoreList({
-          data: {
-            supermarketId: this.info.supermarketId,
-            lat: this.city.latitude,
-            lon: this.city.longitude,
-            cityCode: this.city.code,
-          },
-          success: (data) => {
-            this.storeList = data.result;
-            this.otherMarketNum = data.storeNums;
-            if (this.storeList.length > 0) {
-              this.loading = 2;
-            } else {
-              this.loading = 3;
+    getLocation() {
+      uni.getLocation({
+        type: 'gcj02',
+        success: (res) => {
+          uni.setStorageSync('location', res)
+          // 调用高德地图 API 逆地理编码, 通过经纬度获取当前位置城市信息
+          api.regeoMap(
+            {
+              location: res.longitude + ',' + res.latitude
+            },
+            {
+              success: (amap) => {
+                const city = {
+                  code: amap.regeocode.addressComponent.adcode.substr(0, 4) + '00',
+                  longitude: res.longitude,
+                  latitude: res.latitude
+                }
+                // 当城市是省直辖县时返回为空，以及城市为北京、上海、天津、重庆四个直辖市时，该字段返回为[],否则为城市名称（字符串）
+                if (amap.regeocode.addressComponent.city.length === 0) {
+                  city.name = amap.regeocode.addressComponent.province
+                } else {
+                  city.name = amap.regeocode.addressComponent.city
+                }
+                uni.setStorageSync('supermarketCity', city)
+                this.city = city
+                const citycode = uni.getStorageSync('current_city')
+                if (citycode['code']) {
+                  this.city['code'] = citycode['code'].substr(0, 4) + '00'
+                }
+                this.getOtherList()
+              }
             }
-          },
-          fail: (error) => {
-            this.loading = 3;
-          },
-        });
-      },
-      //  商超详情中的使用说明
-      getUseInfo() {
-        api.getUseInfo({
-          data: {
-            instructions: this.info.instructions,
-          },
-          success: (data) => {
-            console.log('使用说明:', data.result);
-            parse(data.result, (err, nodesList) => {
-              this.nodes = nodesList;
-            });
-          },
-        });
-      },
-      // 商超详情中的注意事项
-      getAttention() {
-        api.getAttention({
-          data: {
-            note: this.info.note,
-          },
-          success: (data) => {
-            console.log('注意事项:', data.data);
-            parse(data.data, (err, nodesList) => {
-              this.tabNodes = nodesList;
-            });
-          },
-        });
-      },
-      //点击查看其他门店
-      handleOtherMarket() {
-        if (!this.storeList.length) return false;
-        this.info.supermarketStoreId = this.storeList[0].supermarketStoreId;
+          )
+        },
+        fail: () => {
+          // // 定位失败默认北京市
+          // const city = { code: 110100, name: '北京市' }
+          // this.handleSelectCity(city)
+        }
+      })
+    },
+    //  获取附近门店
+    getOtherList() {
+      api.getNearStoreList({
+        data: {
+          supermarketId: this.info.supermarketId,
+          lat: this.city.latitude,
+          lon: this.city.longitude,
+          cityCode: this.city.code
+        },
+        success: (data) => {
+          this.storeList = data.result
+          this.otherMarketNum = data.storeNums
+          if (this.storeList.length > 0) {
+            this.loading = 2
+          } else {
+            this.loading = 3
+          }
+        },
+        fail: (error) => {
+          this.loading = 3
+        }
+      })
+    },
+    //  商超详情中的使用说明
+    getUseInfo() {
+      api.getUseInfo({
+        data: {
+          instructions: this.info.instructions
+        },
+        success: (data) => {
+          console.log('使用说明:', data.result)
+          parse(data.result, (err, nodesList) => {
+            this.nodes = nodesList
+          })
+        }
+      })
+    },
+    // 商超详情中的注意事项
+    getAttention() {
+      api.getAttention({
+        data: {
+          note: this.info.note
+        },
+        success: (data) => {
+          console.log('注意事项:', data.data)
+          parse(data.data, (err, nodesList) => {
+            this.tabNodes = nodesList
+          })
+        }
+      })
+    },
+    // 点击查看其他门店
+    handleOtherMarket() {
+      if (!this.storeList.length) return false
+      this.info.supermarketStoreId = this.storeList[0].supermarketStoreId
+      uni.navigateTo({
+        url:
+            '/pages/supermarket/other-market?info=' + encodeURIComponent(JSON.stringify(this.info))
+      })
+    },
+    // 去付款事件
+    handleAgreeClick() {
+      // const appStartInfo = uni.getStorageSync('app_start_info')
+      const userInfo = uni.getStorageSync('userInfo')
+      // 未实名
+      if (userInfo.crtfStas === '0') {
+        this.$refs.realpop.open()
+        return false
+      }
+      this.handleShowPayCodePage()
+    },
+    // 实名认证成功
+    async succFlag(flag) {
+      if (flag == 1) {
+        const userInfo = await this.getUserInfo()
+        uni.setStorageSync('userInfo', userInfo)
+
+        this.$refs.realpop.close()
         uni.navigateTo({
-          url:
-            '/pages/supermarket/other-market?info=' + encodeURIComponent(JSON.stringify(this.info)),
-        });
-      },
-      // 去付款事件
-      handleAgreeClick() {
-        // const appStartInfo = uni.getStorageSync('app_start_info')
-        const userInfo = uni.getStorageSync('userInfo');
-        // 未实名
-        if (userInfo.crtfStas === '0') {
-          this.$refs.realpop.open();
-          return false;
-        }
-        this.handleShowPayCodePage();
-      },
-      // 实名认证成功
-      async succFlag(flag) {
-        if (flag == 1) {
-          const userInfo = await this.getUserInfo();
-          uni.setStorageSync('userInfo', userInfo);
+          url: `/pages/user-center/real-name-result2?back=${'/pages/supermarket/market'}&info=${encodeURIComponent(
+            JSON.stringify(this.info)
+          )}`
+        })
 
-          this.$refs.realpop.close();
-          uni.navigateTo({
-            url: `/pages/user-center/real-name-result2?back=${'/pages/supermarket/market'}&info=${encodeURIComponent(
-              JSON.stringify(this.info),
-            )}`,
-          });
-
-          // this.handleShowPayCodePage()
-        }
-      },
-      /**
+        // this.handleShowPayCodePage()
+      }
+    },
+    /**
        * 获取用户信息 getUserAccount
        */
-      getUserInfo() {
-        return new Promise((resolve, reject) => {
-          api.getUserInfo({
-            data: {
-              accessToken: uni.getStorageSync('token'),
-            },
-            success: (data) => {
-              resolve(data);
-            },
-            fail: (error) => {
-              reject(error);
-            },
-          });
-        });
-      },
-      // 获取支付码页面url
-      handleShowPayCodePage() {
-        api.getPayCodePage({
-          data: { supermarketId: this.info.supermarketId },
-          success: (data) => {
-            uni.navigateTo({
-              url: '/pages/pay/show-pay-code?url=' + encodeURIComponent(data.result),
-            });
+    getUserInfo() {
+      return new Promise((resolve, reject) => {
+        api.getUserInfo({
+          data: {
+            accessToken: uni.getStorageSync('token')
           },
-        });
-      },
+          success: (data) => {
+            resolve(data)
+          },
+          fail: (error) => {
+            reject(error)
+          }
+        })
+      })
     },
-    filters: {
-      setDistance(item) {
-        let s = Number(item) / 1000;
-        if (s.toFixed(3) < 1) {
-          return parseInt(s * 1000) + 'm';
-        } else {
-          return s.toFixed(1) + 'km';
+    // 获取支付码页面url
+    handleShowPayCodePage() {
+      api.getPayCodePage({
+        data: { supermarketId: this.info.supermarketId },
+        success: (data) => {
+          uni.navigateTo({
+            url: '/pages/pay/show-pay-code?url=' + encodeURIComponent(data.result)
+          })
         }
-      },
-      markrtDiscount(num) {
-        return (Number(num) * 10).toFixed(2);
-      },
+      })
+    }
+  },
+  filters: {
+    setDistance(item) {
+      const s = Number(item) / 1000
+      if (s.toFixed(3) < 1) {
+        return parseInt(s * 1000) + 'm'
+      } else {
+        return s.toFixed(1) + 'km'
+      }
     },
-  };
+    markrtDiscount(num) {
+      return (Number(num) * 10).toFixed(2)
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

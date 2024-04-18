@@ -212,227 +212,227 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  import dayjs from 'dayjs';
-  import { UniDataPicker } from '@dcloudio/uni-ui';
-  import { validatePhoneNumber } from '@/utils/validation.js';
-  export default {
-    components: { UniDataPicker },
-    data() {
-      return {
-        // 血型选择器数据
-        bloodTypes: ['A型', 'B型', 'AB型', 'O型', '不清楚'],
-        // 城市选择器数据
-        cities: [],
-        // 办证机构选择器数据
-        institutions: ['中国老龄协会'],
-        // 是否需要上传材料
-        needsMaterial: false,
-        // 材料类型选择器数据
-        materialTypes: ['残疾证'],
-        // 上一个页面传过来的数据
-        info: {},
-        // 表单数据
-        params: {
-          bloodType: '',
-          city: '',
-          address: '',
-          institution: '',
-          name: '',
-          phoneNumber: '',
-          materials: [{ type: '', url: '' }],
-        },
-      };
-    },
-    onLoad(e) {
-      this.info = JSON.parse(e.info);
+import api from '@/apis/index.js'
+import dayjs from 'dayjs'
+import { UniDataPicker } from '@dcloudio/uni-ui'
+import { validatePhoneNumber } from '@/utils/validation.js'
+export default {
+  components: { UniDataPicker },
+  data() {
+    return {
+      // 血型选择器数据
+      bloodTypes: ['A型', 'B型', 'AB型', 'O型', '不清楚'],
+      // 城市选择器数据
+      cities: [],
+      // 办证机构选择器数据
+      institutions: ['中国老龄协会'],
+      // 是否需要上传材料
+      needsMaterial: false,
+      // 材料类型选择器数据
+      materialTypes: ['残疾证'],
+      // 上一个页面传过来的数据
+      info: {},
+      // 表单数据
+      params: {
+        bloodType: '',
+        city: '',
+        address: '',
+        institution: '',
+        name: '',
+        phoneNumber: '',
+        materials: [{ type: '', url: '' }]
+      }
+    }
+  },
+  onLoad(e) {
+    this.info = JSON.parse(e.info)
 
-      this.requestData();
-    },
-    methods: {
-      /**
+    this.requestData()
+  },
+  methods: {
+    /**
        * 血型选择器改变回调
        */
-      handleBloodTypeChange(e) {
-        this.params.bloodType = this.bloodTypes[e.detail.value];
-      },
-      /**
+    handleBloodTypeChange(e) {
+      this.params.bloodType = this.bloodTypes[e.detail.value]
+    },
+    /**
        * 城市选择器改变回调
        */
-      handleCityChange(e) {
-        this.params.city = e.detail.value.map((item) => item.text).join('');
-        this.needsMaterial = this.params.city.indexOf('北京') !== -1;
-      },
-      /**
+    handleCityChange(e) {
+      this.params.city = e.detail.value.map((item) => item.text).join('')
+      this.needsMaterial = this.params.city.indexOf('北京') !== -1
+    },
+    /**
        * 办证机构改变回调
        */
-      handleInstitutionChange(e) {
-        this.params.institution = this.institutions[e.detail.value];
-      },
-      /**
+    handleInstitutionChange(e) {
+      this.params.institution = this.institutions[e.detail.value]
+    },
+    /**
        * 材料类型改变回调
        */
-      handleMaterialTypeChange(e) {
-        const type = this.materialTypes[e.detail.value];
-        const selectedTypes = this.params.materials.map((item) => item.type);
-        if (selectedTypes.indexOf(type) !== -1) {
-          this.$uni.showToast(`不可重复选择${type}`);
-          return;
-        }
-        this.params.materials[e.target.id].type = type;
-      },
-      /**
+    handleMaterialTypeChange(e) {
+      const type = this.materialTypes[e.detail.value]
+      const selectedTypes = this.params.materials.map((item) => item.type)
+      if (selectedTypes.indexOf(type) !== -1) {
+        this.$uni.showToast(`不可重复选择${type}`)
+        return
+      }
+      this.params.materials[e.target.id].type = type
+    },
+    /**
        * 查看示例点击事件
        */
-      handleSeeExampleClick(index) {
-        uni.previewImage({
-          urls: ['https://xueyinonline.com/images/portal/certificate/myzs01.png'],
-        });
-      },
-      /**
+    handleSeeExampleClick(index) {
+      uni.previewImage({
+        urls: ['https://xueyinonline.com/images/portal/certificate/myzs01.png']
+      })
+    },
+    /**
        * 选择图片点击事件
        */
-      handlePhotoPickerClick(index) {
-        uni.chooseImage({
-          success: (res) => {
-            this.params.materials[index].url = res.tempFilePaths[0];
-          },
-        });
-      },
-      /**
+    handlePhotoPickerClick(index) {
+      uni.chooseImage({
+        success: (res) => {
+          this.params.materials[index].url = res.tempFilePaths[0]
+        }
+      })
+    },
+    /**
        * 删除材料点击事件
        */
-      handleDeleteMaterialClick(index) {
-        this.params.materials.splice(index, 1);
-      },
-      /**
+    handleDeleteMaterialClick(index) {
+      this.params.materials.splice(index, 1)
+    },
+    /**
        * 添加更多证明材料点击事件
        */
-      handleAddMaterialClick() {
-        if (this.params.materials.length === this.materialTypes.length) return;
-        this.params.materials.push({ type: '', url: '' });
-      },
-      /**
+    handleAddMaterialClick() {
+      if (this.params.materials.length === this.materialTypes.length) return
+      this.params.materials.push({ type: '', url: '' })
+    },
+    /**
        * 上一步点击事件
        */
-      handlePreviousStepClick() {
-        uni.navigateBack();
-      },
-      /**
+    handlePreviousStepClick() {
+      uni.navigateBack()
+    },
+    /**
        * 提交审核点击事件
        */
-      handleSubmitClick() {
-        if (!this.checkInput()) return;
+    handleSubmitClick() {
+      if (!this.checkInput()) return
 
-        const userInfo = uni.getStorageSync('userInfo');
-        const data = {
-          appId: '53928a083adb4a7dad2eecf05564873f',
-          idNo: this.info.idCardNumber,
-          idType: '身份证',
+      const userInfo = uni.getStorageSync('userInfo')
+      const data = {
+        appId: '53928a083adb4a7dad2eecf05564873f',
+        idNo: this.info.idCardNumber,
+        idType: '身份证',
+        name: this.info.name,
+        ecCertPhoto: this.info.faceImg,
+        ecCertExtendDTO: {
+          birthday: this.info.birthday,
+          psnNo: this.info.idCardNumber,
           name: this.info.name,
-          ecCertPhoto: this.info.faceImg,
-          ecCertExtendDTO: {
-            birthday: this.info.birthday,
-            psnNo: this.info.idCardNumber,
-            name: this.info.name,
-            sex: this.info.gender === 1 ? '男' : '女',
-            nation: this.info.nation,
-            blood: this.params.bloodType,
-            residentialAddress: this.params.city + this.params.address,
-            emergencyContact: this.params.name,
-            emergencyPhone: this.params.phoneNumber,
-            memo: '',
-            licenceAuthority: this.params.institution,
-            licenceDate: dayjs().format('YYYY-MM-DD'),
-            permanentAddress: this.info.city + this.info.address,
-          },
-          ecCertAttachDTOS: [
-            {
-              psnNo: userInfo.psnId,
-              attachFileName: '军官证',
-              attachFilePath: '证件图片地址',
-            },
-          ],
-        };
-        api.applyCertificate({
-          data: data,
-          success: () => {
-            uni.reLaunch({
-              url: '/pages/certificate/submit-result',
-            });
-          },
-        });
-      },
-      /**
+          sex: this.info.gender === 1 ? '男' : '女',
+          nation: this.info.nation,
+          blood: this.params.bloodType,
+          residentialAddress: this.params.city + this.params.address,
+          emergencyContact: this.params.name,
+          emergencyPhone: this.params.phoneNumber,
+          memo: '',
+          licenceAuthority: this.params.institution,
+          licenceDate: dayjs().format('YYYY-MM-DD'),
+          permanentAddress: this.info.city + this.info.address
+        },
+        ecCertAttachDTOS: [
+          {
+            psnNo: userInfo.psnId,
+            attachFileName: '军官证',
+            attachFilePath: '证件图片地址'
+          }
+        ]
+      }
+      api.applyCertificate({
+        data: data,
+        success: () => {
+          uni.reLaunch({
+            url: '/pages/certificate/submit-result'
+          })
+        }
+      })
+    },
+    /**
        * 请求数据
        */
-      requestData() {
-        api.getRegions({
-          success: (data) => {
-            function map(array) {
-              return array.map((item) => {
-                return {
-                  text: item.regnName,
-                  value: item.regnCode,
-                  children: map(item.children),
-                };
-              });
-            }
-            this.cities = map(data);
-          },
-        });
-      },
-      /**
+    requestData() {
+      api.getRegions({
+        success: (data) => {
+          function map(array) {
+            return array.map((item) => {
+              return {
+                text: item.regnName,
+                value: item.regnCode,
+                children: map(item.children)
+              }
+            })
+          }
+          this.cities = map(data)
+        }
+      })
+    },
+    /**
        * 输入信息校验
        */
-      checkInput() {
-        if (!this.params.bloodType) {
-          this.$uni.showToast('请选择血型');
-          return false;
-        }
-        if (!this.params.city) {
-          this.$uni.showToast('请选择现居住地址所在地区');
-          return false;
-        }
-        if (!this.params.address) {
-          this.$uni.showToast('请输入现居住地址详细地址');
-          return false;
-        }
-        if (!this.params.institution) {
-          this.$uni.showToast('请选择办证机构');
-          return false;
-        }
-        const userInfo = { ...uni.getStorageSync('userInfo'), ...this.info };
-        if (!this.params.name) {
-          this.$uni.showToast('请输入紧急联系人姓名');
-          return false;
-        }
-        if (this.params.name === userInfo.name) {
-          this.$uni.showToast({
-            title: '不能添加本人为紧急联系人，请重新输入',
-            duration: 3000,
-          });
-          return false;
-        }
-        if (!this.params.phoneNumber) {
-          this.$uni.showToast('请输入紧急联系人联系电话');
-          return false;
-        }
-        if (!validatePhoneNumber(this.params.phoneNumber)) {
-          this.$uni.showToast('紧急联系人联系电话格式错误，请重新输入');
-          return false;
-        }
-        if (this.params.phoneNumber === userInfo.phoneNumber) {
-          this.$uni.showToast({
-            title: '不能使用本人电话作为紧急联系人电话，请重新输入',
-            duration: 3000,
-          });
-          return false;
-        }
-        return true;
-      },
-    },
-  };
+    checkInput() {
+      if (!this.params.bloodType) {
+        this.$uni.showToast('请选择血型')
+        return false
+      }
+      if (!this.params.city) {
+        this.$uni.showToast('请选择现居住地址所在地区')
+        return false
+      }
+      if (!this.params.address) {
+        this.$uni.showToast('请输入现居住地址详细地址')
+        return false
+      }
+      if (!this.params.institution) {
+        this.$uni.showToast('请选择办证机构')
+        return false
+      }
+      const userInfo = { ...uni.getStorageSync('userInfo'), ...this.info }
+      if (!this.params.name) {
+        this.$uni.showToast('请输入紧急联系人姓名')
+        return false
+      }
+      if (this.params.name === userInfo.name) {
+        this.$uni.showToast({
+          title: '不能添加本人为紧急联系人，请重新输入',
+          duration: 3000
+        })
+        return false
+      }
+      if (!this.params.phoneNumber) {
+        this.$uni.showToast('请输入紧急联系人联系电话')
+        return false
+      }
+      if (!validatePhoneNumber(this.params.phoneNumber)) {
+        this.$uni.showToast('紧急联系人联系电话格式错误，请重新输入')
+        return false
+      }
+      if (this.params.phoneNumber === userInfo.phoneNumber) {
+        this.$uni.showToast({
+          title: '不能使用本人电话作为紧急联系人电话，请重新输入',
+          duration: 3000
+        })
+        return false
+      }
+      return true
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

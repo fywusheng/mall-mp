@@ -73,130 +73,130 @@
 </template>
 
 <script>
-  import StepProgressBar from './components/step-progress-bar.vue';
-  import { validatePhoneNumber } from '@/utils/validation.js';
-  import NavigationBar from '../../components/common/navigation-bar.vue';
-  import api from '@/apis/index.js';
-  export default {
-    components: { StepProgressBar, NavigationBar },
-    data() {
-      return {
-        // 导航栏高度
-        //#ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        //#endif
-        //#ifdef MP-ALIPAY
-        navigationBarHeight:
+import StepProgressBar from './components/step-progress-bar.vue'
+import { validatePhoneNumber } from '@/utils/validation.js'
+import NavigationBar from '../../components/common/navigation-bar.vue'
+import api from '@/apis/index.js'
+export default {
+  components: { StepProgressBar, NavigationBar },
+  data() {
+    return {
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        //#endif
-        params: {
-          contactList: [{ name: '', phoneNumber: '' }],
-        },
-      };
-    },
-    onLoad() {
-      this.setData();
+      // #endif
+      params: {
+        contactList: [{ name: '', phoneNumber: '' }]
+      }
+    }
+  },
+  onLoad() {
+    this.setData()
 
-      uni.$on('didFilloutStepBack', this.handleFilloutStepBack);
+    uni.$on('didFilloutStepBack', this.handleFilloutStepBack)
+  },
+  methods: {
+    // 返回上一页
+    handleNavigationBack() {
+      this.$uni.showConfirm({
+        content: '您确定要中断申领电子老年人证吗?',
+        confirmText: '继续申领',
+        cancelText: '放弃申领',
+        title: '',
+        cancel: () => {
+          uni.navigateBack({
+            delta: 1
+          })
+        }
+      })
     },
-    methods: {
-      //返回上一页
-      handleNavigationBack() {
-        this.$uni.showConfirm({
-          content: '您确定要中断申领电子老年人证吗?',
-          confirmText: '继续申领',
-          cancelText: '放弃申领',
-          title: '',
-          cancel: () => {
-            uni.navigateBack({
-              delta: 1,
-            });
-          },
-        });
-      },
-      handleFilloutStepBack(params) {
-        this.params = params;
-        console.log('获取的参数2params：', params);
-      },
-      /**
+    handleFilloutStepBack(params) {
+      this.params = params
+      console.log('获取的参数2params：', params)
+    },
+    /**
        * 删除点击事件
        */
-      handleDeleteClick(index) {
-        this.params.contactList.splice(index, 1);
-      },
-      /**
+    handleDeleteClick(index) {
+      this.params.contactList.splice(index, 1)
+    },
+    /**
        * 添加点击事件
        */
-      handleAddClick() {
-        this.params.contactList.push({ name: '', phoneNumber: '' });
-      },
-      /**
+    handleAddClick() {
+      this.params.contactList.push({ name: '', phoneNumber: '' })
+    },
+    /**
        * 上一步点击事件
        */
-      handlePreviousStepClick() {
-        uni.$emit('didFilloutStepBack', this.params);
-        uni.navigateBack();
-      },
-      /**
+    handlePreviousStepClick() {
+      uni.$emit('didFilloutStepBack', this.params)
+      uni.navigateBack()
+    },
+    /**
        * 下一步点击事件  先直接处理申领动作  改动点 //TODO
        */
-      handleNextStepClick() {
-        console.log('====this.checkInput()---', this.checkInput());
-        if (!this.checkInput()) return;
-        console.log('====打印所有的参数---', this.params);
-        uni.navigateTo({
-          url: '/pages/certificate/other-fillout-step-3',
-          success: (res) => {
-            console.log('成功res:', res);
-            res.eventChannel.emit('didOpenPageFinish', this.params);
-          },
-          complete: (com) => {
-            console.log('完成com:', com);
-          },
-          fail: (err) => {
-            console.log('出错err:', err);
-          },
-        });
-      },
+    handleNextStepClick() {
+      console.log('====this.checkInput()---', this.checkInput())
+      if (!this.checkInput()) return
+      console.log('====打印所有的参数---', this.params)
+      uni.navigateTo({
+        url: '/pages/certificate/other-fillout-step-3',
+        success: (res) => {
+          console.log('成功res:', res)
+          res.eventChannel.emit('didOpenPageFinish', this.params)
+        },
+        complete: (com) => {
+          console.log('完成com:', com)
+        },
+        fail: (err) => {
+          console.log('出错err:', err)
+        }
+      })
+    },
 
-      /**
+    /**
        * 设置数据 TODO 查看初始上一步的值
        */
-      setData() {
-        const eventChannel = this.getOpenerEventChannel();
-        if (!eventChannel.on) return;
-        eventChannel.on('didOpenPageFinish', (data) => {
-          console.log('==拿到前一步的数据--', data);
-          this.params = { ...this.params, ...data };
-          console.log('==拿到前一步的数据3333--', this.params);
-        });
-      },
-      /**
+    setData() {
+      const eventChannel = this.getOpenerEventChannel()
+      if (!eventChannel.on) return
+      eventChannel.on('didOpenPageFinish', (data) => {
+        console.log('==拿到前一步的数据--', data)
+        this.params = { ...this.params, ...data }
+        console.log('==拿到前一步的数据3333--', this.params)
+      })
+    },
+    /**
        * 输入信息校验
        */
-      checkInput() {
-        return this.params.contactList.every((item, index) => {
-          if (!item.name) {
-            this.$uni.showToast('请输入联系人姓名');
-            return false;
-          } else if (index > 0 && item.name === this.params.contactList[0].name) {
-            this.$uni.showToast('不能添加相同的紧急联系人');
-            return false;
-          } else if (!item.phoneNumber) {
-            this.$uni.showToast('请输入联系电话');
-            return false;
-          } else if (!validatePhoneNumber(item.phoneNumber)) {
-            this.$uni.showToast('联系电话格式不正确');
-            return false;
-          } else if (index > 0 && item.phoneNumber === this.params.contactList[0].phoneNumber) {
-            this.$uni.showToast('不能添加相同的联系电话');
-            return false;
-          }
-          return true;
-        });
-      },
-    },
-  };
+    checkInput() {
+      return this.params.contactList.every((item, index) => {
+        if (!item.name) {
+          this.$uni.showToast('请输入联系人姓名')
+          return false
+        } else if (index > 0 && item.name === this.params.contactList[0].name) {
+          this.$uni.showToast('不能添加相同的紧急联系人')
+          return false
+        } else if (!item.phoneNumber) {
+          this.$uni.showToast('请输入联系电话')
+          return false
+        } else if (!validatePhoneNumber(item.phoneNumber)) {
+          this.$uni.showToast('联系电话格式不正确')
+          return false
+        } else if (index > 0 && item.phoneNumber === this.params.contactList[0].phoneNumber) {
+          this.$uni.showToast('不能添加相同的联系电话')
+          return false
+        }
+        return true
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -75,55 +75,55 @@
 </template>
 
 <script>
-  import api from '@/apis/index.js';
-  export default {
-    data() {
-      return {
-        // 最新消息
-        info: {},
-      };
-    },
-    onShow() {
-      this.requestData();
+import api from '@/apis/index.js'
+export default {
+  data() {
+    return {
+      // 最新消息
+      info: {}
+    }
+  },
+  onShow() {
+    this.requestData()
 
-      uni.$on('didMessageStateChanged', this.requestData);
+    uni.$on('didMessageStateChanged', this.requestData)
+  },
+  onUnload() {
+    uni.$off('didMessageStateChanged')
+  },
+  methods: {
+    handleItemClick(index) {
+      // if (index === 0 && !this.info.systemNotice.latestMsgTime) return;
+      // if (index === 1 && !this.info.serviceMessage.latestMsgTime) return;
+      // if (index === 2 && !this.info.systemMessage.latestMsgTime) return;
+      const titles = [
+        this.info.systemNotice.msgTypeName,
+        this.info.serviceMessage.msgTypeName,
+        this.info.systemMessage.msgTypeName
+      ]
+      const types = [3, 1, 2]
+      uni.navigateTo({
+        url: '/pages/user-center/message-list',
+        success: (res) => {
+          res.eventChannel.emit('didOpenPageFinish', {
+            title: titles[index],
+            type: types[index]
+          })
+        }
+      })
     },
-    onUnload() {
-      uni.$off('didMessageStateChanged');
-    },
-    methods: {
-      handleItemClick(index) {
-        // if (index === 0 && !this.info.systemNotice.latestMsgTime) return;
-        // if (index === 1 && !this.info.serviceMessage.latestMsgTime) return;
-        // if (index === 2 && !this.info.systemMessage.latestMsgTime) return;
-        const titles = [
-          this.info.systemNotice.msgTypeName,
-          this.info.serviceMessage.msgTypeName,
-          this.info.systemMessage.msgTypeName,
-        ];
-        const types = [3, 1, 2];
-        uni.navigateTo({
-          url: '/pages/user-center/message-list',
-          success: (res) => {
-            res.eventChannel.emit('didOpenPageFinish', {
-              title: titles[index],
-              type: types[index],
-            });
-          },
-        });
-      },
-      /**
+    /**
        * 请求数据
        */
-      requestData() {
-        api.getMessageInfo({
-          success: (data) => {
-            this.info = data || {};
-          },
-        });
-      },
-    },
-  };
+    requestData() {
+      api.getMessageInfo({
+        success: (data) => {
+          this.info = data || {}
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

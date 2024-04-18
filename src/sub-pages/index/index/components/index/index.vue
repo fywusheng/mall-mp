@@ -162,354 +162,354 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
+import api from '@/apis/index.js'
 
-  export default {
-    data() {
-      return {
-        parts: [
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '家具用品',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '家具用品',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '家具用品',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '家具用品',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '家具用品',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '家具用品',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '家具用品',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '家具用品',
-          },
-        ],
-        lifeList: [{ iconUrl: '' }],
-        buyList: [
-          'http://192.168.1.187:10088/static/home/chao_zhi1.png',
-          'http://192.168.1.187:10088/static/home/chao_zhi2.png',
-          'http://192.168.1.187:10088/static/home/chao_zhi3.png',
-        ],
-        brandList: [
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '苹果',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '华为',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '索尼',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '苹果2',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '华为2',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '索尼2',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '苹果2',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '华为2',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '索尼2',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '苹果2',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '华为2',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '索尼2',
-          },
-        ],
-        localList: [
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            price: '123.2',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            price: '123.2',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            price: '123.2',
-          },
-        ],
-        aroundList: [
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '叮当家政',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '环保',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '测试',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '测试',
-          },
-          {
-            icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
-            name: '测试',
-          },
-        ],
-        city: null,
-        storeList: [],
-        pageSize: 20,
+export default {
+  data() {
+    return {
+      parts: [
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '家具用品'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '家具用品'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '家具用品'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '家具用品'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '家具用品'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '家具用品'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '家具用品'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '家具用品'
+        }
+      ],
+      lifeList: [{ iconUrl: '' }],
+      buyList: [
+        'http://192.168.1.187:10088/static/home/chao_zhi1.png',
+        'http://192.168.1.187:10088/static/home/chao_zhi2.png',
+        'http://192.168.1.187:10088/static/home/chao_zhi3.png'
+      ],
+      brandList: [
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '苹果'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '华为'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '索尼'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '苹果2'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '华为2'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '索尼2'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '苹果2'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '华为2'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '索尼2'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '苹果2'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '华为2'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '索尼2'
+        }
+      ],
+      localList: [
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          price: '123.2'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          price: '123.2'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          price: '123.2'
+        }
+      ],
+      aroundList: [
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '叮当家政'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '环保'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '测试'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '测试'
+        },
+        {
+          icon: 'https://api.hpgjzlinfo.com/nepsp-file/group1/M00/49/AC/wKgupGHehVmAHLU4AANnPfVjZ2o826.png',
+          name: '测试'
+        }
+      ],
+      city: null,
+      storeList: [],
+      pageSize: 20,
+      pageNum: 1,
+      prodList: []
+    }
+  },
+  created() {
+    this.getLocation()
+    this.getbrandList('4') // 品牌
+    this.getbrandList('5') // 轮播
+    this.getbrandList('8') // 分类
+    this.getStoreList()
+    this.getProdList()
+  },
+  mounted() {
+    this.city = uni.getStorageSync('city')
+  },
+  methods: {
+    goItemClick(v) {
+      uni.navigateTo({
+        url: `/sub-pages/index/item/main?id=${v.id}&sceneType=适老用品`
+      })
+    },
+    goClick(item) {
+      if (!item.targetUrl) return
+      wx.navigateTo({
+        url: item.targetUrl
+      })
+    },
+    async getProdList() {
+      const params = {
+        pageSize: this.pageSize,
+        pageNum: this.pageNum,
+        isCreditPoints: 0 // 适老推荐
+      }
+      const res = await Axios.post('/product/getProductSearchList', params)
+      if (res.code == '200') {
+        const data = res.data || {}
+        const esProducts = data.esProducts || []
+        if (esProducts.length > 0) {
+          this.pageNum = this.pageNum + 1
+          this.prodList = this.prodList.concat(esProducts)
+        }
+      }
+    },
+    // 本地惠列表
+    async getLocalProdList() {
+      const city = uni.getStorageSync('city')
+      const params = {
+        pageSize: 3,
+        pageNum: 1
+      }
+      let add_param = {}
+      // 后端要求，区没有传市  this.areaCode  110114
+      if (!this.areaCode) {
+        add_param = { cityCode: city.code }
+      } else {
+        add_param = { areaCode: this.areaCode }
+      }
+      Object.assign(params, add_param)
+      const res = await Axios.post('/product/getProductSearchList', params)
+      if (res.code == '200') {
+        const data = res.data || {}
+        const esProducts = data.esProducts || []
+        this.localList = esProducts
+      }
+    },
+    localPath() {
+      wx.navigateTo({
+        url: '/sub-pages/index/local-benefit/index'
+      })
+    },
+    handlerClick(item) {
+      wx.navigateTo({
+        url: '/sub-pages/index/item-list/main?key=' + item.name
+      })
+    },
+    superType(index) {
+      wx.navigateTo({
+        url: '/sub-pages/index/super-purchase/index?tabClickIndex=' + index
+      })
+    },
+    typeList(item) {
+      if (!item.moduleTargetUrl) return
+      wx.navigateTo({
+        url: item.moduleTargetUrl
+      })
+    },
+    // 精选品牌4 轮播图5 分类-金刚区8
+    async getbrandList(productType) {
+      const params = { productType: productType }
+      const list = await Axios.post('/product/getProductListByType', params)
+      if (list.code == '200') {
+        const data = list.data || []
+        if (productType == '4') {
+          this.brandList = this.splitArrayByNum(data, 9)
+        }
+        if (productType == '5') {
+          this.lifeList = data
+        }
+        if (productType == '8') {
+          this.parts = data
+        }
+      } else {
+        uni.showToast(list.msg)
+      }
+    },
+    // 数据分割
+    splitArrayByNum(list = [], num = 3) {
+      if (list.length == 0) return
+      let line = list.length / num
+      const yushu = list.length % num
+      if (yushu !== 0) {
+        line = line + 1
+      }
+      const newArray = []
+      for (var i = 0; i <= line; i++) {
+        const block = list.slice(i * num, num * (i + 1))
+        if (block.length > 0) {
+          newArray.push(block)
+        }
+      }
+      return newArray
+    },
+    // 周边门店
+    async getStoreList() {
+      const location = uni.getStorageSync('location')
+      const city = uni.getStorageSync('city')
+      const params = {
         pageNum: 1,
-        prodList: [],
-      };
+        pageSize: 20,
+        queryObject: {
+          storesAddress: city.name,
+          cusLt: location.longitude,
+          cusLat: location.latitude
+        }
+      }
+      const result = await Axios.post('/srm/stores/listByPageNo', params)
+      if ((result.code = '200')) {
+        const data = result.data
+        this.aroundList = data.list || []
+      }
     },
-    created() {
-      this.getLocation();
-      this.getbrandList('4'); // 品牌
-      this.getbrandList('5'); // 轮播
-      this.getbrandList('8'); // 分类
-      this.getStoreList();
-      this.getProdList();
+    storePage() {
+      uni.navigateTo({
+        url: '/sub-pages/index/shop/main?scene=' + 1
+      })
     },
-    mounted() {
-      this.city = uni.getStorageSync('city');
+    handleVoiceSearchClick() {
+      uni.navigateTo({
+        url: '/sub-pages/index/search/main'
+      })
     },
-    methods: {
-      goItemClick(v) {
-        uni.navigateTo({
-          url: `/sub-pages/index/item/main?id=${v.id}&sceneType=适老用品`,
-        });
-      },
-      goClick(item) {
-        if (!item.targetUrl) return;
-        wx.navigateTo({
-          url: item.targetUrl,
-        });
-      },
-      async getProdList() {
-        const params = {
-          pageSize: this.pageSize,
-          pageNum: this.pageNum,
-          isCreditPoints: 0, // 适老推荐
-        };
-        const res = await Axios.post('/product/getProductSearchList', params);
-        if (res.code == '200') {
-          const data = res.data || {};
-          const esProducts = data.esProducts || [];
-          if (esProducts.length > 0) {
-            this.pageNum = this.pageNum + 1;
-            this.prodList = this.prodList.concat(esProducts);
-          }
-        }
-      },
-      // 本地惠列表
-      async getLocalProdList() {
-        const city = uni.getStorageSync('city');
-        const params = {
-          pageSize: 3,
-          pageNum: 1,
-        };
-        let add_param = {};
-        // 后端要求，区没有传市  this.areaCode  110114
-        if (!this.areaCode) {
-          add_param = { cityCode: city.code };
-        } else {
-          add_param = { areaCode: this.areaCode };
-        }
-        Object.assign(params, add_param);
-        const res = await Axios.post('/product/getProductSearchList', params);
-        if (res.code == '200') {
-          const data = res.data || {};
-          const esProducts = data.esProducts || [];
-          this.localList = esProducts;
-        }
-      },
-      localPath() {
-        wx.navigateTo({
-          url: '/sub-pages/index/local-benefit/index',
-        });
-      },
-      handlerClick(item) {
-        wx.navigateTo({
-          url: '/sub-pages/index/item-list/main?key=' + item.name,
-        });
-      },
-      superType(index) {
-        wx.navigateTo({
-          url: '/sub-pages/index/super-purchase/index?tabClickIndex=' + index,
-        });
-      },
-      typeList(item) {
-        if (!item.moduleTargetUrl) return;
-        wx.navigateTo({
-          url: item.moduleTargetUrl,
-        });
-      },
-      // 精选品牌4 轮播图5 分类-金刚区8
-      async getbrandList(productType) {
-        const params = { productType: productType };
-        const list = await Axios.post('/product/getProductListByType', params);
-        if (list.code == '200') {
-          const data = list.data || [];
-          if (productType == '4') {
-            this.brandList = this.splitArrayByNum(data, 9);
-          }
-          if (productType == '5') {
-            this.lifeList = data;
-          }
-          if (productType == '8') {
-            this.parts = data;
-          }
-        } else {
-          uni.showToast(list.msg);
-        }
-      },
-      // 数据分割
-      splitArrayByNum(list = [], num = 3) {
-        if (list.length == 0) return;
-        let line = list.length / num;
-        const yushu = list.length % num;
-        if (yushu !== 0) {
-          line = line + 1;
-        }
-        const newArray = [];
-        for (var i = 0; i <= line; i++) {
-          const block = list.slice(i * num, num * (i + 1));
-          if (block.length > 0) {
-            newArray.push(block);
-          }
-        }
-        return newArray;
-      },
-      // 周边门店
-      async getStoreList() {
-        const location = uni.getStorageSync('location');
-        const city = uni.getStorageSync('city');
-        const params = {
-          pageNum: 1,
-          pageSize: 20,
-          queryObject: {
-            storesAddress: city.name,
-            cusLt: location.longitude,
-            cusLat: location.latitude,
-          },
-        };
-        const result = await Axios.post('/srm/stores/listByPageNo', params);
-        if ((result.code = '200')) {
-          const data = result.data;
-          this.aroundList = data.list || [];
-        }
-      },
-      storePage() {
-        uni.navigateTo({
-          url: '/sub-pages/index/shop/main?scene=' + 1,
-        });
-      },
-      handleVoiceSearchClick() {
-        uni.navigateTo({
-          url: '/sub-pages/index/search/main',
-        });
-      },
-      // TODO  下拉刷新添加  分享添加
-      goPath(flag) {
-        const urls = [
-          `/pages/pay/my-bank-card?back=${'/sub-pages/index/index/main'}`,
-          '/pages/user-center/message-center',
-        ];
-        wx.navigateTo({ url: urls[flag] });
-      },
-      /**
+    // TODO  下拉刷新添加  分享添加
+    goPath(flag) {
+      const urls = [
+        `/pages/pay/my-bank-card?back=${'/sub-pages/index/index/main'}`,
+        '/pages/user-center/message-center'
+      ]
+      wx.navigateTo({ url: urls[flag] })
+    },
+    /**
        * 获取当前定位
        */
-      getLocation() {
-        uni.getLocation({
-          type: 'gcj02',
-          success: (res) => {
-            uni.setStorageSync('location', res);
-            // 调用高德地图 API 逆地理编码, 通过经纬度获取当前位置城市信息
-            api.regeoMap(
-              {
-                location: res.longitude + ',' + res.latitude,
-              },
-              {
-                success: (res) => {
-                  this.areaCode = res.regeocode.addressComponent.adcode;
-                  this.getLocalProdList(); // 本地惠
-                  let city = {};
-                  // 当城市是省直辖县时返回为空，以及城市为北京、上海、天津、重庆四个直辖市时，该字段返回为[],否则为城市名称（字符串）
-                  if (res.regeocode.addressComponent.city.length === 0) {
-                    city = {
-                      code: res.regeocode.addressComponent.adcode.substr(0, 2) + '0100',
-                      name: res.regeocode.addressComponent.province,
-                      realCode: res.regeocode.addressComponent.adcode.substr(0, 2) + '0000',
-                    };
-                  } else {
-                    city = {
-                      code: res.regeocode.addressComponent.adcode.substr(0, 4) + '00',
-                      name: res.regeocode.addressComponent.city,
-                    };
+    getLocation() {
+      uni.getLocation({
+        type: 'gcj02',
+        success: (res) => {
+          uni.setStorageSync('location', res)
+          // 调用高德地图 API 逆地理编码, 通过经纬度获取当前位置城市信息
+          api.regeoMap(
+            {
+              location: res.longitude + ',' + res.latitude
+            },
+            {
+              success: (res) => {
+                this.areaCode = res.regeocode.addressComponent.adcode
+                this.getLocalProdList() // 本地惠
+                let city = {}
+                // 当城市是省直辖县时返回为空，以及城市为北京、上海、天津、重庆四个直辖市时，该字段返回为[],否则为城市名称（字符串）
+                if (res.regeocode.addressComponent.city.length === 0) {
+                  city = {
+                    code: res.regeocode.addressComponent.adcode.substr(0, 2) + '0100',
+                    name: res.regeocode.addressComponent.province,
+                    realCode: res.regeocode.addressComponent.adcode.substr(0, 2) + '0000'
                   }
-                  // this.handleSelectCity(city)
-                },
-              },
-            );
-          },
-          fail: () => {
-            // 定位失败默认北京市
-            const city = { code: 110100, name: '北京市' };
-            this.handleSelectCity(city);
-          },
-        });
-      },
-      handleSelectCity(city) {
-        this.city = city;
-        uni.setStorageSync('city', city);
-        console.log('===222执行刺死');
-      },
-      handleCityClick() {
-        uni.navigateTo({
-          url: '/pages/common/city-picker',
-        });
-      },
+                } else {
+                  city = {
+                    code: res.regeocode.addressComponent.adcode.substr(0, 4) + '00',
+                    name: res.regeocode.addressComponent.city
+                  }
+                }
+                // this.handleSelectCity(city)
+              }
+            }
+          )
+        },
+        fail: () => {
+          // 定位失败默认北京市
+          const city = { code: 110100, name: '北京市' }
+          this.handleSelectCity(city)
+        }
+      })
     },
-  };
+    handleSelectCity(city) {
+      this.city = city
+      uni.setStorageSync('city', city)
+      console.log('===222执行刺死')
+    },
+    handleCityClick() {
+      uni.navigateTo({
+        url: '/pages/common/city-picker'
+      })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .pro_bg {

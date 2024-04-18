@@ -11,41 +11,41 @@
   </view>
 </template>
 <script>
-  import api from '@/apis/index.js';
+import api from '@/apis/index.js'
 
-  export default {
-    components: {},
-    data() {
-      return {
-        colId: '',
-        imgPathList: [],
-      };
-    },
-    mounted() {
-      this.initData();
-    },
-    methods: {
-      initData() {
-        api.selectSeniorRights({
-          success: (data) => {
-            this.colId = data.colId;
-            this.imgPathList = data.imgPathList || [];
-          },
-        });
-      },
-      watchDetail() {
-        const token = uni.getStorageSync('token');
-        if (!token) {
-          uni.navigateTo({ url: '/pages/user-center/login' });
-          return;
+export default {
+  components: {},
+  data() {
+    return {
+      colId: '',
+      imgPathList: []
+    }
+  },
+  mounted() {
+    this.initData()
+  },
+  methods: {
+    initData() {
+      api.selectSeniorRights({
+        success: (data) => {
+          this.colId = data.colId
+          this.imgPathList = data.imgPathList || []
         }
-        // 查看保障细则  文章id
-        uni.navigateTo({
-          url: `/pages/find/article-detail?contId=` + this.colId,
-        });
-      },
+      })
     },
-  };
+    watchDetail() {
+      const token = uni.getStorageSync('token')
+      if (!token) {
+        uni.navigateTo({ url: '/pages/user-center/login' })
+        return
+      }
+      // 查看保障细则  文章id
+      uni.navigateTo({
+        url: `/pages/find/article-detail?contId=` + this.colId
+      })
+    }
+  }
+}
 </script>
 <style lang="scss" scoped>
   .qy {

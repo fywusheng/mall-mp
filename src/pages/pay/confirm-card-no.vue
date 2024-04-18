@@ -75,162 +75,162 @@
 </template>
 
 <script>
-  import NavigationBar from '@/components/common/navigation-bar.vue';
-  import api from '@/apis/index.js';
-  import { getLessLimitSizeImage, debounce } from '@/utils/utils.js';
-  export default {
-    components: { NavigationBar },
-    data() {
-      return {
-        // 识别结果
-        scanInfo: {
-          img: '',
-          vertifyFlag: '',
-          bankCardNum: '',
-        },
-        preCardNo: '',
-        imgHeight: '',
-        imgWidth: '',
-        focus: false,
-        // iconPath
-        icon: {
-          delete: 'http://192.168.1.187:10088/static/pay/icon-input-delete.png',
-        },
-        // 导航栏高度
-        // #ifdef MP-WEIXIN
-        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-        // #endif
-        // #ifdef MP-ALIPAY
-        navigationBarHeight:
+import NavigationBar from '@/components/common/navigation-bar.vue'
+import api from '@/apis/index.js'
+import { getLessLimitSizeImage, debounce } from '@/utils/utils.js'
+export default {
+  components: { NavigationBar },
+  data() {
+    return {
+      // 识别结果
+      scanInfo: {
+        img: '',
+        vertifyFlag: '',
+        bankCardNum: ''
+      },
+      preCardNo: '',
+      imgHeight: '',
+      imgWidth: '',
+      focus: false,
+      // iconPath
+      icon: {
+        delete: 'http://192.168.1.187:10088/static/pay/icon-input-delete.png'
+      },
+      // 导航栏高度
+      // #ifdef MP-WEIXIN
+      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+      // #endif
+      // #ifdef MP-ALIPAY
+      navigationBarHeight:
           uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-        // #endif
-        // 状态栏高度
-        statusBarHeight: uni.getSystemInfoSync().statusBarHeight,
-      };
-    },
-    computed: {
-      enabledNext() {
-        return this.scanInfo.bankCardNum.length > 12;
-      },
-    },
-    onLoad(e) {
-      this.scanInfo = JSON.parse(decodeURIComponent(e.cardInfo));
-      this.preCardNo = this.scanInfo.bankCardNum
+      // #endif
+      // 状态栏高度
+      statusBarHeight: uni.getSystemInfoSync().statusBarHeight
+    }
+  },
+  computed: {
+    enabledNext() {
+      return this.scanInfo.bankCardNum.length > 12
+    }
+  },
+  onLoad(e) {
+    this.scanInfo = JSON.parse(decodeURIComponent(e.cardInfo))
+    this.preCardNo = this.scanInfo.bankCardNum
+      .replace(/\s/g, '')
+      .replace(/(\d{4})(?=\d)/g, '$1 ')
+    this.scanInfo.img = uni.getStorageSync('add_card_base64_img')
+  },
+  methods: {
+    handleChange: debounce(function (e) {
+      this.preCardNo = e.target.value
+        .replace(/[^\d]/g, '')
         .replace(/\s/g, '')
-        .replace(/(\d{4})(?=\d)/g, '$1 ');
-      this.scanInfo.img = uni.getStorageSync('add_card_base64_img');
+        .replace(/(\d{4})(?=\d)/g, '$1 ')
+      this.scanInfo.bankCardNum = this.preCardNo.replace(/\s*/g, '')
+    }, 200),
+    // 返回上一页
+    handleNavBack() {
+      uni.navigateBack()
     },
-    methods: {
-      handleChange: debounce(function (e) {
-        this.preCardNo = e.target.value
-          .replace(/[^\d]/g, '')
-          .replace(/\s/g, '')
-          .replace(/(\d{4})(?=\d)/g, '$1 ');
-        this.scanInfo.bankCardNum = this.preCardNo.replace(/\s*/g, '');
-      }, 200),
-      // 返回上一页
-      handleNavBack() {
-        uni.navigateBack();
-      },
-      // 返回首页
-      handleHomeBack() {
-        uni.reLaunch({
-          url: '/pages/index/index',
-        });
-      },
-      // 清空卡号
-      handleDel() {
-        this.preCardNo = '';
-        this.scanInfo.bankCardNum = '';
-        this.focus = true;
-      },
-      // 重新拍照
-      handleRePhone() {
-        uni.chooseImage({
-          sourceType: ['camera', 'album'],
-          success: (res) => {
-            const file = res.tempFilePaths[0];
-            getLessLimitSizeImage(
-              'press-canvas',
-              file,
-              0.1,
-              750,
-              (imagePath) => {
-                console.log(imagePath);
-                uni.getFileSystemManager().readFile({
-                  filePath: imagePath,
-                  encoding: 'base64',
-                  success: (rs) => {
-                    this.getBankInfoByImg(rs.data);
-                    console.log('---图片---', rs.data);
-                  },
-                  fail: (erro) => {
-                    console.log('---异常拿到---', erro);
-                  },
-                });
-              },
-              this,
-            );
-          },
-        });
-      },
-      getBankInfoByImg(image64) {
-        uni.showLoading({ title: '识别中' });
-        api.getBankCardInfoByImage({
-          data: { image64: image64 },
-          success: (resinfo) => {
-            uni.hideLoading();
-            if (!resinfo.vertifyFlag) {
-              this.$uni.showToast('识别失败，请重新拍照');
-              return;
-            }
-            this.scanInfo.img = image64;
-            this.scanInfo.vertifyFlag = resinfo.vertifyFlag;
-            this.scanInfo.bankCardNum = resinfo.bankCardNum;
-            this.preCardNo = resinfo.bankCardNum
-              .replace(/[^\d]/g, '')
-              .replace(/\s/g, '')
-              .replace(/(\d{4})(?=\d)/g, '$1 ');
-          },
-          fail: (res) => {
-            uni.hideLoading();
-            console.log(res);
-          },
-        });
-      },
-      // 确认卡号
-      confirmCard() {
-        const no = this.scanInfo.bankCardNum;
-        if (no.length === 13) {
-          this.$uni.showToast('银行卡号格式错误!');
-          return false;
-        }
-        if (no.length > 13) {
-          // 校验业务
-          api.getBankByCardByNo({
-            data: { bankCardNum: this.scanInfo.bankCardNum },
-            showsLoading: true,
-            success: (res) => {
-              if (!res) {
-                this.$uni.showToast('【该银行卡不支持本业务请换银行卡试试!】');
-                return false;
-              }
-              res.realBankCardNum = this.scanInfo.bankCardNum;
-              console.log('进入跳转！！！');
-              uni.navigateTo({
-                url: `/pages/pay/open-online-pay?cardInfo=${encodeURIComponent(
-                  JSON.stringify(res),
-                )}`,
-                fail: function (error) {
-                  console.log('无法跳转-----', error);
+    // 返回首页
+    handleHomeBack() {
+      uni.reLaunch({
+        url: '/pages/index/index'
+      })
+    },
+    // 清空卡号
+    handleDel() {
+      this.preCardNo = ''
+      this.scanInfo.bankCardNum = ''
+      this.focus = true
+    },
+    // 重新拍照
+    handleRePhone() {
+      uni.chooseImage({
+        sourceType: ['camera', 'album'],
+        success: (res) => {
+          const file = res.tempFilePaths[0]
+          getLessLimitSizeImage(
+            'press-canvas',
+            file,
+            0.1,
+            750,
+            (imagePath) => {
+              console.log(imagePath)
+              uni.getFileSystemManager().readFile({
+                filePath: imagePath,
+                encoding: 'base64',
+                success: (rs) => {
+                  this.getBankInfoByImg(rs.data)
+                  console.log('---图片---', rs.data)
                 },
-              });
+                fail: (erro) => {
+                  console.log('---异常拿到---', erro)
+                }
+              })
             },
-          });
+            this
+          )
         }
-      },
+      })
     },
-  };
+    getBankInfoByImg(image64) {
+      uni.showLoading({ title: '识别中' })
+      api.getBankCardInfoByImage({
+        data: { image64: image64 },
+        success: (resinfo) => {
+          uni.hideLoading()
+          if (!resinfo.vertifyFlag) {
+            this.$uni.showToast('识别失败，请重新拍照')
+            return
+          }
+          this.scanInfo.img = image64
+          this.scanInfo.vertifyFlag = resinfo.vertifyFlag
+          this.scanInfo.bankCardNum = resinfo.bankCardNum
+          this.preCardNo = resinfo.bankCardNum
+            .replace(/[^\d]/g, '')
+            .replace(/\s/g, '')
+            .replace(/(\d{4})(?=\d)/g, '$1 ')
+        },
+        fail: (res) => {
+          uni.hideLoading()
+          console.log(res)
+        }
+      })
+    },
+    // 确认卡号
+    confirmCard() {
+      const no = this.scanInfo.bankCardNum
+      if (no.length === 13) {
+        this.$uni.showToast('银行卡号格式错误!')
+        return false
+      }
+      if (no.length > 13) {
+        // 校验业务
+        api.getBankByCardByNo({
+          data: { bankCardNum: this.scanInfo.bankCardNum },
+          showsLoading: true,
+          success: (res) => {
+            if (!res) {
+              this.$uni.showToast('【该银行卡不支持本业务请换银行卡试试!】')
+              return false
+            }
+            res.realBankCardNum = this.scanInfo.bankCardNum
+            console.log('进入跳转！！！')
+            uni.navigateTo({
+              url: `/pages/pay/open-online-pay?cardInfo=${encodeURIComponent(
+                JSON.stringify(res)
+              )}`,
+              fail: function (error) {
+                console.log('无法跳转-----', error)
+              }
+            })
+          }
+        })
+      }
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

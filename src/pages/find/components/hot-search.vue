@@ -17,24 +17,24 @@
 <script>
 
 export default {
-  props:{
+  props: {
     	list: {
-				default: [],
-				type: Array
-			},
+      default: [],
+      type: Array
+    }
   },
 
   data() {
     return {
-   
+
     }
   },
   methods: {
     // 获取数据
-   handleBulletinClick(index){
-     this.$emit("keyWord",this.list[index].ttl)
-   }
-  },
+    handleBulletinClick(index) {
+      this.$emit('keyWord', this.list[index].ttl)
+    }
+  }
 }
 </script>
 <style lang='scss' scoped>

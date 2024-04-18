@@ -178,43 +178,43 @@
 </template>
 
 <script>
-  export default {
-    name: 'SEARCH',
-    data() {
-      return {
-        key: '搜索你想找的商品',
-        historyList: uni.getStorageSync('SEARCH_HISTORY_LIST') || [],
-        resultList: [],
-        hotList: ['洗衣液', '奶粉', '拖鞋', '睡衣'],
-      };
+export default {
+  name: 'SEARCH',
+  data() {
+    return {
+      key: '搜索你想找的商品',
+      historyList: uni.getStorageSync('SEARCH_HISTORY_LIST') || [],
+      resultList: [],
+      hotList: ['洗衣液', '奶粉', '拖鞋', '睡衣']
+    }
+  },
+  loadDefaultData: true,
+  computed: {
+    showHistory() {
+      return this.historyList && this.historyList.length
+    }
+  },
+  methods: {
+    cancel() {
+      uni.navigateBack()
     },
-    loadDefaultData: true,
-    computed: {
-      showHistory() {
-        return this.historyList && this.historyList.length;
-      },
+    clearHistory() {
+      uni.removeStorageSync('SEARCH_HISTORY_LIST')
+      this.historyList = []
     },
-    methods: {
-      cancel() {
-        uni.navigateBack();
-      },
-      clearHistory() {
-        uni.removeStorageSync('SEARCH_HISTORY_LIST');
-        this.historyList = [];
-      },
-      async search(hot) {
-        if (hot) {
-          this.key = hot;
-        }
-        this.key && this.historyList.indexOf(this.key) === -1 && this.historyList.push(this.key);
-        uni.setStorageSync('SEARCH_HISTORY_LIST', this.historyList);
-        uni.navigateTo({
-          url: '/sub-pages/index/item-list/main?key=' + this.key,
-        });
-      },
-    },
-    async onShow() {
-      this.key = '';
-    },
-  };
+    async search(hot) {
+      if (hot) {
+        this.key = hot
+      }
+      this.key && this.historyList.indexOf(this.key) === -1 && this.historyList.push(this.key)
+      uni.setStorageSync('SEARCH_HISTORY_LIST', this.historyList)
+      uni.navigateTo({
+        url: '/sub-pages/index/item-list/main?key=' + this.key
+      })
+    }
+  },
+  async onShow() {
+    this.key = ''
+  }
+}
 </script>

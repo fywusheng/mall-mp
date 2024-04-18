@@ -101,213 +101,213 @@
 </template>
 
 <script>
-  import StepProgressBar from './components/step-progress-bar.vue';
-  import dayjs from 'dayjs';
-  import api from '@/apis/index.js';
-  export default {
-    components: { StepProgressBar },
-    data() {
-      return {
-        // 材料类型选择器数据
-        materialTypes: ['学历证', '居住证', '军官证', '医保证'],
-        // 表单数据
-        params: {
-          materials: [{ type: '', url: '' }],
-        },
-      };
-    },
-    onLoad() {
-      this.setData();
-    },
-    methods: {
-      /**
+import StepProgressBar from './components/step-progress-bar.vue'
+import dayjs from 'dayjs'
+import api from '@/apis/index.js'
+export default {
+  components: { StepProgressBar },
+  data() {
+    return {
+      // 材料类型选择器数据
+      materialTypes: ['学历证', '居住证', '军官证', '医保证'],
+      // 表单数据
+      params: {
+        materials: [{ type: '', url: '' }]
+      }
+    }
+  },
+  onLoad() {
+    this.setData()
+  },
+  methods: {
+    /**
        * 材料类型改变回调
        */
-      handleMaterialTypeChange(e) {
-        const type = this.materialTypes[e.detail.value];
-        const selectedTypes = this.params.materials
-          .filter((item, index) => {
-            return Number(index) !== Number(e.target.id);
-          })
-          .map((item) => item.type);
-        if (selectedTypes.indexOf(type) !== -1) {
-          this.$uni.showToast(`不可重复选择${type}`);
-          return;
-        }
-        this.params.materials[e.target.id].type = type;
-      },
-      /**
+    handleMaterialTypeChange(e) {
+      const type = this.materialTypes[e.detail.value]
+      const selectedTypes = this.params.materials
+        .filter((item, index) => {
+          return Number(index) !== Number(e.target.id)
+        })
+        .map((item) => item.type)
+      if (selectedTypes.indexOf(type) !== -1) {
+        this.$uni.showToast(`不可重复选择${type}`)
+        return
+      }
+      this.params.materials[e.target.id].type = type
+    },
+    /**
        * 查看示例点击事件
        */
-      handleSeeExampleClick(index) {
-        uni.previewImage({
-          urls: ['https://xueyinonline.com/images/portal/certificate/myzs01.png'],
-        });
-      },
-      /**
+    handleSeeExampleClick(index) {
+      uni.previewImage({
+        urls: ['https://xueyinonline.com/images/portal/certificate/myzs01.png']
+      })
+    },
+    /**
        * 选择图片点击事件
        */
-      handlePhotoPickerClick(index) {
-        uni.chooseImage({
-          success: (res) => {
-            this.params.materials[index].url = res.tempFilePaths[0];
-          },
-        });
-      },
-      /**
+    handlePhotoPickerClick(index) {
+      uni.chooseImage({
+        success: (res) => {
+          this.params.materials[index].url = res.tempFilePaths[0]
+        }
+      })
+    },
+    /**
        * 删除材料点击事件
        */
-      handleDeleteMaterialClick(index) {
-        this.params.materials.splice(index, 1);
-      },
-      /**
+    handleDeleteMaterialClick(index) {
+      this.params.materials.splice(index, 1)
+    },
+    /**
        * 添加更多证明材料点击事件
        */
-      handleAddMaterialClick() {
-        this.params.materials.push({ type: '', url: '' });
-      },
-      /**
+    handleAddMaterialClick() {
+      this.params.materials.push({ type: '', url: '' })
+    },
+    /**
        * 上一步点击事件
        */
-      handlePreviousStepClick() {
-        uni.$emit('didFilloutStepBack', this.params);
-        uni.navigateBack();
-      },
-      /**
+    handlePreviousStepClick() {
+      uni.$emit('didFilloutStepBack', this.params)
+      uni.navigateBack()
+    },
+    /**
        * 提交审核点击事件
        */
-      handleSubmitClick() {
-        const params = this.params;
-        const userInfo = uni.getStorageSync('userInfo');
-        const domicileCity = params.city || params.domicileCity;
-        const domicileAddress = params.address || params.domicileAddress;
-        const residentialCity = params.residentialCity;
-        const residentialAddress = params.residentialAddress;
-        const submitData = {
-          appId: '53928a083adb4a7dad2eecf05564873f',
-          idNo: params.idCardNumber,
-          idType: '身份证',
+    handleSubmitClick() {
+      const params = this.params
+      const userInfo = uni.getStorageSync('userInfo')
+      const domicileCity = params.city || params.domicileCity
+      const domicileAddress = params.address || params.domicileAddress
+      const residentialCity = params.residentialCity
+      const residentialAddress = params.residentialAddress
+      const submitData = {
+        appId: '53928a083adb4a7dad2eecf05564873f',
+        idNo: params.idCardNumber,
+        idType: '身份证',
+        name: params.name,
+        ecCertPhoto: params.faceImg,
+        dataOr: '0',
+        nwaFlag: '1',
+        ecCertExtendDTO: {
+          birthday: params.birthday,
+          psnNo: params.idCardNumber,
           name: params.name,
-          ecCertPhoto: params.faceImg,
-          dataOr: '0',
-          nwaFlag: '1',
-          ecCertExtendDTO: {
-            birthday: params.birthday,
-            psnNo: params.idCardNumber,
-            name: params.name,
-            sex: params.gender === 1 ? '男' : '女',
-            nation: params.nation,
-            blood: params.bloodType,
-            residentialAddress: residentialCity + residentialAddress,
-            emergencyContact: params.contactList[0].name,
-            emergencyPhone: params.contactList[0].phoneNumber,
-            memo: '',
-            licenceAuthority: params.institution,
-            licenceDate: dayjs().format('YYYY-MM-DD'),
-            permanentAddress: domicileCity + domicileAddress,
-          },
-          ecCertAttachDTOS: [
-            {
-              psnNo: userInfo.psnId,
-              attachFileName: '军官证',
-              attachFilePath: '证件图片地址',
-            },
-          ],
-        };
-        // 查询卡状态（如果别人已经先提交，则直接跳回证件页面
-        api.getCertificateState({
-          data: {
-            appId: '53928a083adb4a7dad2eecf05564873f',
-            idType: '身份证',
-            userName: params.name,
-            idNo: params.idCardNumber,
-          },
-          success: (data) => {
-            const authState = data.authState;
-            // 判断卡状态
-            if (authState === '3' || authState === '5') {
-              // 卡状态为 1, 无需操作返回
-              console.log('提交数据：', submitData);
-              api.saveCard({
-                showsLoading: true,
-                data: submitData,
-                success: () => {
-                  uni.reLaunch({
-                    url: '/pages/certificate/submit-result',
-                  });
-                  uni.removeStorageSync('typeChoice');
-                },
-                fail: (error) => {
-                  console.log('===申领异常---', error);
-                },
-              });
-            } else if (authState === '2') {
-              // 卡状态为 2, 请求获取授权码接口
+          sex: params.gender === 1 ? '男' : '女',
+          nation: params.nation,
+          blood: params.bloodType,
+          residentialAddress: residentialCity + residentialAddress,
+          emergencyContact: params.contactList[0].name,
+          emergencyPhone: params.contactList[0].phoneNumber,
+          memo: '',
+          licenceAuthority: params.institution,
+          licenceDate: dayjs().format('YYYY-MM-DD'),
+          permanentAddress: domicileCity + domicileAddress
+        },
+        ecCertAttachDTOS: [
+          {
+            psnNo: userInfo.psnId,
+            attachFileName: '军官证',
+            attachFilePath: '证件图片地址'
+          }
+        ]
+      }
+      // 查询卡状态（如果别人已经先提交，则直接跳回证件页面
+      api.getCertificateState({
+        data: {
+          appId: '53928a083adb4a7dad2eecf05564873f',
+          idType: '身份证',
+          userName: params.name,
+          idNo: params.idCardNumber
+        },
+        success: (data) => {
+          const authState = data.authState
+          // 判断卡状态
+          if (authState === '3' || authState === '5') {
+            // 卡状态为 1, 无需操作返回
+            console.log('提交数据：', submitData)
+            api.saveCard({
+              showsLoading: true,
+              data: submitData,
+              success: () => {
+                uni.reLaunch({
+                  url: '/pages/certificate/submit-result'
+                })
+                uni.removeStorageSync('typeChoice')
+              },
+              fail: (error) => {
+                console.log('===申领异常---', error)
+              }
+            })
+          } else if (authState === '2') {
+            // 卡状态为 2, 请求获取授权码接口
 
-              console.log('请求获取授权码接口data', {
+            console.log('请求获取授权码接口data', {
+              uactId: userInfo.memberId,
+              psnName: params.name,
+              certNo: params.idCardNumber,
+              appId: '53928a083adb4a7dad2eecf05564873f'
+            })
+            api.getAuthorizationCode({
+              data: {
                 uactId: userInfo.memberId,
                 psnName: params.name,
                 certNo: params.idCardNumber,
-                appId: '53928a083adb4a7dad2eecf05564873f',
-              });
-              api.getAuthorizationCode({
-                data: {
-                  uactId: userInfo.memberId,
-                  psnName: params.name,
-                  certNo: params.idCardNumber,
-                  appId: '53928a083adb4a7dad2eecf05564873f',
-                },
-                showsLoading: true,
-                success: (res) => {
-                  this.$uni.showToast('提交失败，该实名用户已在其他平台提交申请');
-                  setTimeout(() => {
-                    uni.reLaunch({
-                      url: '/pages/index/index',
-                    });
-                  }, 3000);
-                },
-              });
-            } else if (authState === '1' || authState === '4' || authState === '6') {
-              // 无需操作返回
-              this.$uni.showToast('提交失败，该实名用户已在其他平台提交申请');
-              setTimeout(() => {
-                uni.reLaunch({
-                  url: '/pages/index/index',
-                });
-              }, 3000);
-            }
-          },
-        });
+                appId: '53928a083adb4a7dad2eecf05564873f'
+              },
+              showsLoading: true,
+              success: (res) => {
+                this.$uni.showToast('提交失败，该实名用户已在其他平台提交申请')
+                setTimeout(() => {
+                  uni.reLaunch({
+                    url: '/pages/index/index'
+                  })
+                }, 3000)
+              }
+            })
+          } else if (authState === '1' || authState === '4' || authState === '6') {
+            // 无需操作返回
+            this.$uni.showToast('提交失败，该实名用户已在其他平台提交申请')
+            setTimeout(() => {
+              uni.reLaunch({
+                url: '/pages/index/index'
+              })
+            }, 3000)
+          }
+        }
+      })
 
-        // console.log('===提交审核---', data)
-        // 接口TODO
-      },
-      uploadFile(faceImg) {
-        api.imgUpload({
-          data: {
-            base64String: 'data:image/jpg;base64,' + faceImg,
-            imageName: '头像_' + new Date().getTime(),
-            imageExt: 'jpg',
-          },
-          success: (imgres) => {
-            this.params.faceImg = imgres.absoluteUrl;
-            console.log('上传成功', imgres);
-          },
-        });
-      },
-      /**
+      // console.log('===提交审核---', data)
+      // 接口TODO
+    },
+    uploadFile(faceImg) {
+      api.imgUpload({
+        data: {
+          base64String: 'data:image/jpg;base64,' + faceImg,
+          imageName: '头像_' + new Date().getTime(),
+          imageExt: 'jpg'
+        },
+        success: (imgres) => {
+          this.params.faceImg = imgres.absoluteUrl
+          console.log('上传成功', imgres)
+        }
+      })
+    },
+    /**
        * 设置数据
        */
-      setData() {
-        const eventChannel = this.getOpenerEventChannel();
-        if (!eventChannel.on) return;
-        eventChannel.on('didOpenPageFinish', (data) => {
-          this.params = { ...this.params, ...data };
-          this.uploadFile(this.params.faceImg);
-        });
-      },
-    },
-  };
+    setData() {
+      const eventChannel = this.getOpenerEventChannel()
+      if (!eventChannel.on) return
+      eventChannel.on('didOpenPageFinish', (data) => {
+        this.params = { ...this.params, ...data }
+        this.uploadFile(this.params.faceImg)
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>

@@ -35,55 +35,55 @@
 </template>
 
 <script>
-  import dayjs from 'dayjs';
-  import InsuranceOrderItem from './insurance-order-item.vue';
-  export default {
-    name: 'insurance-order',
-    components: { InsuranceOrderItem },
-    props: {
-      list: {
-        type: Array,
-        default: () => [],
-      },
+import dayjs from 'dayjs'
+import InsuranceOrderItem from './insurance-order-item.vue'
+export default {
+  name: 'insurance-order',
+  components: { InsuranceOrderItem },
+  props: {
+    list: {
+      type: Array,
+      default: () => []
+    }
+  },
+  data() {
+    return {
+      activeIndex: 0,
+      dialogContent: '',
+      icon: 'http://192.168.1.187:10088/static/life/warning-circle.png',
+      statusList: [
+        { id: null, label: '全部' },
+        { id: 5, label: '保障中' },
+        { id: 7, label: '已失效' }
+      ]
+    }
+  },
+  methods: {
+    // 客服电话
+    callPhone() {
+      uni.makePhoneCall({
+        phoneNumber: '4009686660'
+      })
     },
-    data() {
-      return {
-        activeIndex: 0,
-        dialogContent: '',
-        icon: 'http://192.168.1.187:10088/static/life/warning-circle.png',
-        statusList: [
-          { id: null, label: '全部' },
-          { id: 5, label: '保障中' },
-          { id: 7, label: '已失效' },
-        ],
-      };
+    toDetail(data) {
+      uni.navigateTo({
+        url: `/sub-pages/me/order-detail/main?id=${data.orderId}&popUpType=1`
+      })
     },
-    methods: {
-      // 客服电话
-      callPhone() {
-        uni.makePhoneCall({
-          phoneNumber: '4009686660',
-        });
-      },
-      toDetail(data) {
-        uni.navigateTo({
-          url: `/sub-pages/me/order-detail/main?id=${data.orderId}&popUpType=1`,
-        });
-      },
-      handleItemClick(index, i) {
-        this.activeIndex = index;
-        this.$emit('resetOptions', i.id);
-      },
+    handleItemClick(index, i) {
+      this.activeIndex = index
+      this.$emit('resetOptions', i.id)
+    }
+  },
+  filters: {
+    formaterMoney(v) {
+      return Number(v).toFixed(2)
     },
-    filters: {
-      formaterMoney(v) {
-        return Number(v).toFixed(2);
-      },
-      dateFilter(value) {
-        return dayjs(value).format('YYYY-MM-DD HH:mm');
-      },
-    },
-  };
+    dateFilter(value) {
+      return dayjs(value).format('YYYY-MM-DD HH:mm')
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
