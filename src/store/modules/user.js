@@ -77,9 +77,10 @@ export default {
     },
     // 获取用户信息
     async getUserInfo({ commit, state }) {
+      if(!state.token) return
       const params = {token: state.token}
       const result = await Axios.post('/member/sh/memberInformation/getMemberInfoById', params);
-      if (result.code == 200) {
+      if (result&&result.code == 200) {
         if(result.data.iconUrl===''){
           result.data.iconUrl = 'http://192.168.1.187:10088/static/user-center/icon-user-center-default-avatar.png'
         }

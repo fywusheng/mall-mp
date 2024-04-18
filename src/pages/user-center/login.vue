@@ -448,10 +448,8 @@
   }
   .icon-check,
   .icon-noCheck {
-    width: 35rpx;
-    height: 35rpx;
-    margin-right: 8rpx;
-    margin-top: 6rpx;
+    width: 40rpx;
+    height: 40rpx;
   }
   .c-code {
     color: #1890ff;
@@ -528,6 +526,14 @@
       flex-direction: row;
       padding: 0 32rpx 68rpx 32rpx;
       box-sizing: border-box;
+      .radio {
+        width: 50rpx;
+        height: 50rpx;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-right: 8rpx;
+      }
     }
   }
 </style>

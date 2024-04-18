@@ -367,7 +367,7 @@
         <!-- <button type="button" @click="toHome" class="btn-home">去挑选</button> -->
       </div>
     </template>
-    <div v-if="loading && !isLogin" class="empty-wrap">
+    <div v-else class="empty-wrap">
       <image
         class="l_empt"
         src="http://192.168.1.187:10088/static/life/emp.png"
@@ -422,8 +422,6 @@
         return Store.getters.isLogin;
       },
     },
-    // components: {},
-    filters: {},
     methods: {
       formatNumber(num) {
         if (Number.isNaN(parseInt(num))) {
@@ -701,18 +699,17 @@
       },
     },
     async onShow() {
-      // if (!Store.getters.isLogin) {
-      //   Store.dispatch('logout');
-      //   // await Store.dispatch('login')
-      // }
       const curPages = getCurrentPages()[0];
       if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
         curPages.getTabBar().setData({
           tabIndex: 4, // 表示当前菜单的索引，该值在不同的页面表示不同
         });
       }
-      // this.sceneType = this.$scope.options.sceneType || "积分兑换";
-      // console.log("sceneType: ", sceneType);
+      if (!Store.getters.isLogin) {
+        // Store.dispatch('logout');
+        // await Store.dispatch('login')
+        return false;
+      }
       this.loadData();
     },
   };

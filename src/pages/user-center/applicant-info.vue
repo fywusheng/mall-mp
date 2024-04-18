@@ -485,6 +485,9 @@
         width: 600rpx;
         height: 108rpx;
         margin: 0 auto;
+        color: #ffffff;
+        font-size: 44rpx;
+        font-weight: 500;
         background: linear-gradient(136deg, #ff8800 0%, #ff5500 100%);
         border-radius: 54rpx;
         display: flex;

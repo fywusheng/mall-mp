@@ -271,8 +271,8 @@
       };
     },
     async onLoad() {
-      await this.$store.dispatch('getUserInfo');
-      this.getTotalSaveMoney();
+      // await this.$store.dispatch('getUserInfo');
+      // this.getTotalSaveMoney();
     },
     async mounted() {
       // 监听登录回调
@@ -316,7 +316,7 @@
       },
       // 获取累计省钱详情
       async getTotalSaveMoney() {
-        if (this.userInfo.memberStatus === '0') {
+        if (!(this.userInfo && this.userInfo.memberStatus === '1')) {
           return;
         }
         const result = await Axios.post('/order/getMemberSaveMoney', {
@@ -798,13 +798,15 @@
         });
       },
     },
-    onShow() {
+    async onShow() {
       const curPages = getCurrentPages()[0];
       if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
         curPages.getTabBar().setData({
           tabIndex: 5, // 表示当前菜单的索引，该值在不同的页面表示不同
         });
       }
+      await this.$store.dispatch('getUserInfo');
+      this.getTotalSaveMoney();
     },
   };
 </script>

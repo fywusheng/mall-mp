@@ -19,7 +19,7 @@ Axios.interceptors.response.use(
       uni.navigateTo({
         url: '/pages/user-center/login'
       })
-      return
+      // return
     }
 
     return response.data
