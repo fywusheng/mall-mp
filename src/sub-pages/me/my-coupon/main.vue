@@ -70,8 +70,7 @@
           width: rpx(680);
           height: 100%;
           // min-height: rpx(200);
-          background: url(https://szyh-ecommerce-oss.oss-cn-zhangjiakou.aliyuncs.com/commerce/product/1624952173708.png)
-            left top no-repeat;
+          background: url(https://szyh-ecommerce-oss.oss-cn-zhangjiakou.aliyuncs.com/commerce/product/1624952173708.png) left top no-repeat;
           background-size: cover;
 
           &.disabled {
@@ -199,19 +198,13 @@
               <span v-if="coupon.type == 0">{{ coupon.denominationStr }}</span>
               <span v-else-if="coupon.type == 1">{{ coupon.denominationStr }}折</span>
               <div v-if="coupon.checkThreshold == 0" class="desc">无门槛</div>
-              <div v-else-if="coupon.checkThreshold == 1" class="desc">
-                满{{ coupon.thresholdValue }}元可用
-              </div>
+              <div v-else-if="coupon.checkThreshold == 1" class="desc">满{{ coupon.thresholdValue }}元可用</div>
             </div>
             <div class="coupon__name">{{ coupon.name }}</div>
             <div class="coupon__time">{{ coupon.beginTime }} 至 {{ coupon.endTime }}</div>
             <div class="coupon__description" @click="changeDesc(coupon)">
               使用规则
-              <image
-                class="icon-right"
-                mode="scaleToFill"
-                src="http://192.168.1.187:10088/static/images/checkout/right.png"
-              />
+              <image class="icon-right" mode="scaleToFill" src="http://192.168.1.187:10088/static/images/checkout/right.png" />
             </div>
           </div>
         </li>
@@ -231,19 +224,13 @@
               <span v-if="coupon.type == 0">{{ coupon.denominationStr }}</span>
               <span v-else-if="coupon.type == 1">{{ coupon.denominationStr }}折</span>
               <div v-if="coupon.checkThreshold == 0" class="desc">无门槛</div>
-              <div v-else-if="coupon.checkThreshold == 1" class="desc">
-                满{{ coupon.thresholdValue }}元可用
-              </div>
+              <div v-else-if="coupon.checkThreshold == 1" class="desc">满{{ coupon.thresholdValue }}元可用</div>
             </div>
             <div class="coupon__name">{{ coupon.name }}</div>
             <div class="coupon__time">{{ coupon.beginTime }} 至 {{ coupon.endTime }}</div>
             <div class="coupon__description" @click="changeDesc(coupon)">
               使用规则
-              <image
-                class="icon-right"
-                mode="scaleToFill"
-                src="http://192.168.1.187:10088/static/images/checkout/right.png"
-              />
+              <image class="icon-right" mode="scaleToFill" src="http://192.168.1.187:10088/static/images/checkout/right.png" />
             </div>
           </div>
         </li>
@@ -262,19 +249,13 @@
               <span v-if="coupon.type == 0">{{ coupon.denominationStr }}</span>
               <span v-else-if="coupon.type == 1">{{ coupon.denominationStr }}折</span>
               <div v-if="coupon.checkThreshold == 0" class="desc">无门槛</div>
-              <div v-else-if="coupon.checkThreshold == 1" class="desc">
-                满{{ coupon.thresholdValue }}元可用
-              </div>
+              <div v-else-if="coupon.checkThreshold == 1" class="desc">满{{ coupon.thresholdValue }}元可用</div>
             </div>
             <div class="coupon__name">{{ coupon.name }}</div>
             <div class="coupon__time">{{ coupon.beginTime }} 至 {{ coupon.endTime }}</div>
             <div class="coupon__description" @click="changeDesc(coupon)">
               使用规则
-              <image
-                class="icon-right"
-                mode="scaleToFill"
-                src="http://192.168.1.187:10088/static/images/checkout/right.png"
-              />
+              <image class="icon-right" mode="scaleToFill" src="http://192.168.1.187:10088/static/images/checkout/right.png" />
             </div>
           </div>
         </li>
@@ -289,71 +270,71 @@
 </template>
 
 <script>
-import wx from 'utils/wx'
-import RuleModel from './components/rule-model.vue'
+  import wx from 'utils/wx';
+  import RuleModel from './components/rule-model.vue';
 
-export default {
-  name: 'COUPON_LIST',
-  components: { RuleModel },
-  data() {
-    return {
-      status: 0,
-      couponList1: [],
-      couponList2: [],
-      couponList3: []
-    }
-  },
-  // computed: {
-  //   couponList1() {
-  //     return this.couponCouponList.filter((coupon) => {
-  //       return coupon.usedState === 0;
-  //     });
-  //   },
-  //   couponList2() {
-  //     return this.couponCouponList.filter((coupon) => {
-  //       return coupon.usedState === 1;
-  //     });
-  //   },
-  //   couponList3() {
-  //     return this.couponCouponList.filter((coupon) => {
-  //       return coupon.usedState === 2;
-  //     });
-  //   },
-  // },
-  onLoad(e) {
-    this.status = Number(e.status) || 0
-  },
-  methods: {
-    changeDesc(data) {
-      this.$refs.ruleModel.open(data.description)
+  export default {
+    name: 'COUPON_LIST',
+    components: { RuleModel },
+    data() {
+      return {
+        status: 0,
+        couponList1: [],
+        couponList2: [],
+        couponList3: [],
+      };
     },
-    changeStatus(index) {
-      this.status = index
+    // computed: {
+    //   couponList1() {
+    //     return this.couponCouponList.filter((coupon) => {
+    //       return coupon.usedState === 0;
+    //     });
+    //   },
+    //   couponList2() {
+    //     return this.couponCouponList.filter((coupon) => {
+    //       return coupon.usedState === 1;
+    //     });
+    //   },
+    //   couponList3() {
+    //     return this.couponCouponList.filter((coupon) => {
+    //       return coupon.usedState === 2;
+    //     });
+    //   },
+    // },
+    onLoad(e) {
+      this.status = Number(e.status) || 0;
     },
-    async loadData() {
-      wx.showLoading()
-      const couponResult = await Axios.post('/coupon/loading', {
-        pageNum: 1,
-        pageSize: 100,
-        queryObject: {
-          sessionId: Store.state.user.sessionId
+    methods: {
+      changeDesc(data) {
+        this.$refs.ruleModel.open(data.description);
+      },
+      changeStatus(index) {
+        this.status = index;
+      },
+      async loadData() {
+        wx.showLoading();
+        const couponResult = await Axios.post('/coupon/loading', {
+          pageNum: 1,
+          pageSize: 100,
+          queryObject: {
+            sessionId: Store.state.user.sessionId,
+          },
+        });
+        wx.hideLoading();
+        if (couponResult.code == 200) {
+          this.couponList1 = couponResult.data.canUsedList;
+          this.couponList2 = couponResult.data.usedList;
+          this.couponList3 = couponResult.data.cannotUsedList;
+        } else {
+          wx.showToast(couponResult.msg);
         }
-      })
-      wx.hideLoading()
-      if (couponResult.code == 200) {
-        this.couponList1 = couponResult.data.canUsedList
-        this.couponList2 = couponResult.data.usedList
-        this.couponList3 = couponResult.data.cannotUsedList
-      } else {
-        wx.showToast(couponResult.msg)
+      },
+    },
+    async mounted() {
+      if (!Store.getters.isLogin) {
+        await Store.dispatch('login');
       }
-    }
-  },
-  async mounted() {
-    if (!Store.getters.isLogin) {
-      await Store.dispatch('login')
-    }
-    this.loadData()
-  }
-}
+      this.loadData();
+    },
+  };
 </script>

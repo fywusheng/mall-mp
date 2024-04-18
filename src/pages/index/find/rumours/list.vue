@@ -5,12 +5,7 @@
     </view>
     <view class="blank"></view>
     <view class="list">
-      <view
-        class="item flex-h flex-c-b"
-        v-for="(item, index) in list"
-        :key="index"
-        @click="handleDetailClick(item)"
-      >
+      <view class="item flex-h flex-c-b" v-for="(item, index) in list" :key="index" @click="handleDetailClick(item)">
         <view class="left">{{ item.ttl }}</view>
         <view class="right">{{ item.crteTime | dateFilter }}</view>
       </view>
@@ -33,123 +28,123 @@
 </template>
 
 <script>
-import api from '@/apis/index.js'
-import dayjs from 'dayjs'
+  import api from '@/apis/index.js';
+  import dayjs from 'dayjs';
 
-export default {
-  components: {},
-  data() {
-    return {
-      list: [],
-      lowerThreshold: 30,
-      bottomTips: '',
-      isAllowPullDown: false, // 是否触发下拉刷新
-      isInterval: false, // 防止鼠标或者手指移动时多次执行逻辑判断
-      contId: undefined, // 类目id
-      pageNum: 1, // 当前页数
-      pageSize: 20 // 每页条数
-    }
-  },
-  props: {
-    currentIndex: {
-      type: Number,
-      default: 1
-    }
-  },
-  watch: {
-    currentIndex(changeIndex) {
-      this.getList()
-    }
-  },
-  created() {
-    this.getList()
-  },
-  onLoad(option) {
-    this.contId = option.contId
-    this.getList()
-  },
-  onReachBottom() {
-    // 页面上拉触底事件的处理函数
-    this.getList()
-  },
-  // onShareAppMessage() {
-  //   return {
-  //     title:'辟谣警示',
-  //     path:
-  //       "/pages/rumours/list",
-  //   };
-  // },
-  methods: {
-    // 获取辟谣列表
-    getList() {
-      const data = {
-        pageNum: this.pageNum,
-        pageSize: this.pageSize
-      }
-      uni.showLoading({
-        title: '加载中'
-      })
-      api.getRumorDetail({
-        data,
-        success: (res) => {
-          uni.hideLoading()
-          if (res.list) {
-            res.list.map((items, indexs) => {
-              this.list.push(items)
-            })
-            this.pageNum = this.pageNum + 1
-          } else {
-            if (this.pageNum > 0) {
-              this.bottomTips = 'nomore'
+  export default {
+    components: {},
+    data() {
+      return {
+        list: [],
+        lowerThreshold: 30,
+        bottomTips: '',
+        isAllowPullDown: false, // 是否触发下拉刷新
+        isInterval: false, // 防止鼠标或者手指移动时多次执行逻辑判断
+        contId: undefined, // 类目id
+        pageNum: 1, // 当前页数
+        pageSize: 20, // 每页条数
+      };
+    },
+    props: {
+      currentIndex: {
+        type: Number,
+        default: 1,
+      },
+    },
+    watch: {
+      currentIndex(changeIndex) {
+        this.getList();
+      },
+    },
+    created() {
+      this.getList();
+    },
+    onLoad(option) {
+      this.contId = option.contId;
+      this.getList();
+    },
+    onReachBottom() {
+      // 页面上拉触底事件的处理函数
+      this.getList();
+    },
+    // onShareAppMessage() {
+    //   return {
+    //     title:'辟谣警示',
+    //     path:
+    //       "/pages/rumours/list",
+    //   };
+    // },
+    methods: {
+      // 获取辟谣列表
+      getList() {
+        const data = {
+          pageNum: this.pageNum,
+          pageSize: this.pageSize,
+        };
+        uni.showLoading({
+          title: '加载中',
+        });
+        api.getRumorDetail({
+          data,
+          success: (res) => {
+            uni.hideLoading();
+            if (res.list) {
+              res.list.map((items, indexs) => {
+                this.list.push(items);
+              });
+              this.pageNum = this.pageNum + 1;
+            } else {
+              if (this.pageNum > 0) {
+                this.bottomTips = 'nomore';
+              }
             }
-          }
-        },
-        fail: (err) => {}
-      })
+          },
+          fail: (err) => {},
+        });
+      },
+      // 查看详情
+      handleDetailClick(item) {
+        // uni.navigateTo({
+        //   url: '/pages/rumours/detail?contId='+item.contId,
+        // })
+        uni.navigateTo({
+          url: '/pages/find/article-detail?contId=' + item.contId + '&isShare=false',
+        });
+      },
     },
-    // 查看详情
-    handleDetailClick(item) {
-      // uni.navigateTo({
-      //   url: '/pages/rumours/detail?contId='+item.contId,
+    // 下拉刷新
+    onPullDownRefresh() {
+      console.log('触发refresh');
+      this.pageNum = 1;
+      this.list = [];
+      this.getList();
+      // setTimeout(() => {
+      //   uni.stopPullDownRefresh()
       // })
-      uni.navigateTo({
-        url: '/pages/find/article-detail?contId=' + item.contId + '&isShare=false'
-      })
-    }
-  },
-  // 下拉刷新
-  onPullDownRefresh() {
-    console.log('触发refresh')
-    this.pageNum = 1
-    this.list = []
-    this.getList()
-    // setTimeout(() => {
-    //   uni.stopPullDownRefresh()
-    // })
-  },
-  filters: {
-    // 判断底部提示文字
-    judgeBottomTips(type) {
-      switch (type) {
-        case 'nomore':
-          return '没有更多数据了'
-          break
-        case 'loading':
-          return '正在努力加载中...'
-          break
-        case 'more':
-          return '上拉加载更多'
-          break
-        default:
-          break
-      }
     },
-    // 日期过滤器, 用于格式化日期
-    dateFilter(value) {
-      return dayjs(value).format('YYYY-MM-DD')
-    }
-  }
-}
+    filters: {
+      // 判断底部提示文字
+      judgeBottomTips(type) {
+        switch (type) {
+          case 'nomore':
+            return '没有更多数据了';
+            break;
+          case 'loading':
+            return '正在努力加载中...';
+            break;
+          case 'more':
+            return '上拉加载更多';
+            break;
+          default:
+            break;
+        }
+      },
+      // 日期过滤器, 用于格式化日期
+      dateFilter(value) {
+        return dayjs(value).format('YYYY-MM-DD');
+      },
+    },
+  };
 </script>
 
 <style lang="scss" scoped>

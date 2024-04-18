@@ -417,11 +417,7 @@
 <template>
   <div class="page-checkout" :class="{ isIphoneHair }">
     <div class="checkout-address" @click="selectAddress">
-      <img
-        class="icon-address"
-        v-if="settlement.addressId"
-        src="http://192.168.1.187:10088/static/images/checkout/icon-address.png"
-      />
+      <img class="icon-address" v-if="settlement.addressId" src="http://192.168.1.187:10088/static/images/checkout/icon-address.png" />
       <img class="icon-you" src="http://192.168.1.187:10088/static/images/checkout/right.png" />
       <view class="userInfo" v-if="settlement.addressId">
         <div class="user-info">
@@ -466,22 +462,11 @@
       </div>
       <div class="remark-wrap">
         <span>备注</span>
-        <input
-          type="text"
-          maxlength="32"
-          placeholder="选填，请与商家协商并确认"
-          @change="changeRemark($event, index)"
-        />
+        <input type="text" maxlength="32" placeholder="选填，请与商家协商并确认" @change="changeRemark($event, index)" />
       </div>
       <div class="remark-wrap">
         <span>积分</span>
-        <switch
-          class="right"
-          color="#FF5500"
-          :checked="usePoint"
-          @change="switchChange"
-          style="transform: scale(0.8)"
-        />
+        <switch class="right" color="#FF5500" :checked="usePoint" @change="switchChange" style="transform: scale(0.8)" />
         <!-- <span
           class="name point">可使用{{settlement.userPoint}}积分抵扣¥{{settlement.userPointPrice}}</span> -->
         <!-- <van-switch v-model="usePoint"></van-switch> -->
@@ -514,16 +499,8 @@
       <li class="info border-b" @click="toCoupon">
         <span class="name">卡券:</span>
         <span class="content" v-if="coupon">{{ coupon.name }}</span>
-        <img
-          class="icon-you"
-          src="http://192.168.1.187:10088/static/images/checkout/right-gray.png"
-        />
-        <coupon-list
-          @setCoupon="setCoupon"
-          :canuseList="canuseList"
-          :notuseList="notuseList"
-          ref="coupon"
-        ></coupon-list>
+        <img class="icon-you" src="http://192.168.1.187:10088/static/images/checkout/right-gray.png" />
+        <coupon-list @setCoupon="setCoupon" :canuseList="canuseList" :notuseList="notuseList" ref="coupon"></coupon-list>
       </li>
 
       <li class="info border-b" @click="toInvoice">
@@ -534,10 +511,7 @@
           </template>
           <template v-else>不开发票</template>
         </span>
-        <img
-          class="icon-you"
-          src="http://192.168.1.187:10088/static/images/checkout/right-gray.png"
-        />
+        <img class="icon-you" src="http://192.168.1.187:10088/static/images/checkout/right-gray.png" />
       </li>
     </ul>
     <ul class="price-list">
@@ -578,147 +552,147 @@
 </template>
 
 <script>
-export default {
-  name: 'CHECKOUT',
-  data() {
-    return {
-      isIphoneHair: App.isIphoneHair,
-      loading: true,
-      isInvoice: false,
-      userPoint: false,
-      // isUseBalanceState: false,
-      userInfo: null,
-      canuseList: [],
-      notuseList: [],
-      usePoint: false
-      // balance: 0
-    }
-  },
+  export default {
+    name: 'CHECKOUT',
+    data() {
+      return {
+        isIphoneHair: App.isIphoneHair,
+        loading: true,
+        isInvoice: false,
+        userPoint: false,
+        // isUseBalanceState: false,
+        userInfo: null,
+        canuseList: [],
+        notuseList: [],
+        usePoint: false,
+        // balance: 0
+      };
+    },
 
-  computed: {
-    coupon() {
-      return Store.state.checkoutPoint.coupon
+    computed: {
+      coupon() {
+        return Store.state.checkoutPoint.coupon;
+      },
+      type() {
+        return Store.state.checkoutPoint.type;
+      },
+      invoice() {
+        return Store.state.checkoutPoint.invoice;
+      },
+      settlement() {
+        return Store.state.checkoutPoint.settlement || {};
+      },
+      storeList() {
+        if (Store.state.checkoutPoint.settlement) {
+          return Store.state.checkoutPoint.settlement.settleStoreList;
+        }
+        return [];
+      },
     },
-    type() {
-      return Store.state.checkoutPoint.type
+    components: {},
+    filters: {
+      formateNum(num) {
+        return num ? num.toFixed(2) : '0.00';
+      },
     },
-    invoice() {
-      return Store.state.checkoutPoint.invoice
+    methods: {
+      // 使用积分
+      switchChange() {
+        uni.showModal({
+          title: '提示',
+          content: '您的可用积分不足，请重新选择积分抵扣商品',
+          cancelText: '否',
+          confirmText: '是',
+          success: (res) => {
+            if (res.confirm) {
+              console.log('用户点击确定');
+            } else if (res.cancel) {
+              console.log('用户点击取消');
+            }
+          },
+        });
+      },
+      // async useBalanceSettlement(e) {
+      //   this.isUseBalanceState = e.target.value
+      //   Store.commit( 'checkoutPoint' + VUEX.CHECKOUT_POINT.SET_BALANCE, e.target.value)
+      // },
+      setCoupon(data) {
+        Store.commit('checkoutPoint/' + VUEX.CHECKOUT_POINT.SET_COUPON, data);
+      },
+      // changeBalance(){
+      //   if(!this.useBalance && this.balance > 0){
+      //     this.useBalance = true;
+      //   }else{
+      //     this.useBalance = false;
+      //   }
+      // },
+      toCoupon() {
+        wx.navigateTo({
+          url: '/sub-pages/index/checkout-coupon/main',
+        });
+      },
+      toInvoice() {
+        wx.navigateTo({
+          url: '/sub-pages/index/checkout-invoice/main',
+        });
+      },
+      toAddAddress() {
+        wx.navigateTo({
+          url: '/sub-pages/me/address-add/main?type=1',
+        });
+      },
+      selectAddress() {
+        wx.navigateTo({
+          url: '/sub-pages/me/address-list/main?type=1',
+        });
+      },
+      changeRemark(e, index) {
+        Store.commit('checkoutPoint/' + VUEX.CHECKOUT_POINT.CHANGE_REMARK, {
+          index,
+          remark: e.mp.detail.value,
+        });
+      },
+      account() {
+        Store.dispatch('checkoutPoint/toPay');
+      },
     },
-    settlement() {
-      return Store.state.checkoutPoint.settlement || {}
+    onUnload() {
+      Store.commit('checkoutPoint/' + VUEX.CHECKOUT_POINT.RESET_STATE);
     },
-    storeList() {
-      if (Store.state.checkoutPoint.settlement) {
-        return Store.state.checkoutPoint.settlement.settleStoreList
+    async mounted() {
+      if (!Store.getters.isLogin) {
+        await Store.dispatch('login');
       }
-      return []
-    }
-  },
-  components: {},
-  filters: {
-    formateNum(num) {
-      return num ? num.toFixed(2) : '0.00'
-    }
-  },
-  methods: {
-    // 使用积分
-    switchChange() {
-      uni.showModal({
-        title: '提示',
-        content: '您的可用积分不足，请重新选择积分抵扣商品',
-        cancelText: '否',
-        confirmText: '是',
-        success: (res) => {
-          if (res.confirm) {
-            console.log('用户点击确定')
-          } else if (res.cancel) {
-            console.log('用户点击取消')
-          }
-        }
-      })
+      const type = this.$root.$mp.query.type;
+      Store.commit('checkoutPoint/' + VUEX.CHECKOUT_POINT.SET_TYPE, type - 0);
+      if (Store.state.checkoutPoint.type === 2) {
+        Store.commit('checkoutPoint/' + VUEX.CHECKOUT_POINT.SET_DIRECT_DATA, {
+          num: this.$root.$mp.query.num,
+          skuId: this.$root.$mp.query.skuId,
+        });
+      }
+      if (Store.state.checkoutPoint.coupon) {
+        Store.state.checkoutPoint.coupon = {};
+      }
+      // this.isUseBalanceState = false
+      // await Store.commit( 'checkoutPoint' + VUEX.CHECKOUT_POINT.SET_BALANCE, false)
+      await Store.dispatch('checkoutPoint/getCheckoutData');
+      // const walletAccount = await Axios.post('/member/wallet/getTotalBalance')
+      // if (walletAccount.code == 200) {
+      //   this.balance = walletAccount.data.balance
+      // }
+      if (!Store.state.checkoutPoint.addressId) {
+        wx.showModal({
+          content: '您没有设置收货地址，请选择...',
+          success: (res) => {
+            if (res.confirm) {
+              wx.navigateTo({
+                url: '/sub-pages/me/address-add/main?type=1',
+              });
+            }
+          },
+        });
+      }
     },
-    // async useBalanceSettlement(e) {
-    //   this.isUseBalanceState = e.target.value
-    //   Store.commit( 'checkoutPoint' + VUEX.CHECKOUT_POINT.SET_BALANCE, e.target.value)
-    // },
-    setCoupon(data) {
-      Store.commit('checkoutPoint/' + VUEX.CHECKOUT_POINT.SET_COUPON, data)
-    },
-    // changeBalance(){
-    //   if(!this.useBalance && this.balance > 0){
-    //     this.useBalance = true;
-    //   }else{
-    //     this.useBalance = false;
-    //   }
-    // },
-    toCoupon() {
-      wx.navigateTo({
-        url: '/sub-pages/index/checkout-coupon/main'
-      })
-    },
-    toInvoice() {
-      wx.navigateTo({
-        url: '/sub-pages/index/checkout-invoice/main'
-      })
-    },
-    toAddAddress() {
-      wx.navigateTo({
-        url: '/sub-pages/me/address-add/main?type=1'
-      })
-    },
-    selectAddress() {
-      wx.navigateTo({
-        url: '/sub-pages/me/address-list/main?type=1'
-      })
-    },
-    changeRemark(e, index) {
-      Store.commit('checkoutPoint/' + VUEX.CHECKOUT_POINT.CHANGE_REMARK, {
-        index,
-        remark: e.mp.detail.value
-      })
-    },
-    account() {
-      Store.dispatch('checkoutPoint/toPay')
-    }
-  },
-  onUnload() {
-    Store.commit('checkoutPoint/' + VUEX.CHECKOUT_POINT.RESET_STATE)
-  },
-  async mounted() {
-    if (!Store.getters.isLogin) {
-      await Store.dispatch('login')
-    }
-    const type = this.$root.$mp.query.type
-    Store.commit('checkoutPoint/' + VUEX.CHECKOUT_POINT.SET_TYPE, type - 0)
-    if (Store.state.checkoutPoint.type === 2) {
-      Store.commit('checkoutPoint/' + VUEX.CHECKOUT_POINT.SET_DIRECT_DATA, {
-        num: this.$root.$mp.query.num,
-        skuId: this.$root.$mp.query.skuId
-      })
-    }
-    if (Store.state.checkoutPoint.coupon) {
-      Store.state.checkoutPoint.coupon = {}
-    }
-    // this.isUseBalanceState = false
-    // await Store.commit( 'checkoutPoint' + VUEX.CHECKOUT_POINT.SET_BALANCE, false)
-    await Store.dispatch('checkoutPoint/getCheckoutData')
-    // const walletAccount = await Axios.post('/member/wallet/getTotalBalance')
-    // if (walletAccount.code == 200) {
-    //   this.balance = walletAccount.data.balance
-    // }
-    if (!Store.state.checkoutPoint.addressId) {
-      wx.showModal({
-        content: '您没有设置收货地址，请选择...',
-        success: (res) => {
-          if (res.confirm) {
-            wx.navigateTo({
-              url: '/sub-pages/me/address-add/main?type=1'
-            })
-          }
-        }
-      })
-    }
-  }
-}
+  };
 </script>

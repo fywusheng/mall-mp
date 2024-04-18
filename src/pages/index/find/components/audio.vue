@@ -1,33 +1,16 @@
 <template>
   <view class="audio">
     <view @click="triggle" class="process-wraper">
-      <cmd-progress
-        class="process"
-        type="circle"
-        :percent="process"
-        status="success"
-        :showInfo="false"
-      ></cmd-progress>
+      <cmd-progress class="process" type="circle" :percent="process" status="success" :showInfo="false"></cmd-progress>
     </view>
     <view class="circle" @click="triggle">
       <image class="audioBg" :src="videoBg" mode="scaleToFill" />
       <view class="black">
-        <image
-          v-if="stopPlay"
-          mode="scaleToFill"
-          src="http://192.168.1.187:10088/static/find/audio_gif.gif"
-        ></image>
-        <image
-          v-if="!stopPlay"
-          mode="scaleToFill"
-          src="http://192.168.1.187:10088/static/find/audio-stop2x.png"
-        ></image>
+        <image v-if="stopPlay" mode="scaleToFill" src="http://192.168.1.187:10088/static/find/audio_gif.gif"></image>
+        <image v-if="!stopPlay" mode="scaleToFill" src="http://192.168.1.187:10088/static/find/audio-stop2x.png"></image>
       </view>
     </view>
-    <view
-      class="box"
-      :style="{ width: closeAudio ? '0rpx' : '87vw', paddingLeft: closeAudio ? '0rpx' : '150rpx' }"
-    >
+    <view class="box" :style="{ width: closeAudio ? '0rpx' : '87vw', paddingLeft: closeAudio ? '0rpx' : '150rpx' }">
       <view class="box-title">{{ title }}</view>
       <view class="box-audio">
         <view class="control" @click="prePlay">
@@ -35,16 +18,8 @@
           <text>上一条</text>
         </view>
         <view class="control" @click="handleSwitchPlay">
-          <image
-            v-if="!stopPlay"
-            mode="scaleToFill"
-            src="http://192.168.1.187:10088/static/find/play.png"
-          ></image>
-          <image
-            v-if="stopPlay"
-            mode="scaleToFill"
-            src="http://192.168.1.187:10088/static/find/stop.png"
-          ></image>
+          <image v-if="!stopPlay" mode="scaleToFill" src="http://192.168.1.187:10088/static/find/play.png"></image>
+          <image v-if="stopPlay" mode="scaleToFill" src="http://192.168.1.187:10088/static/find/stop.png"></image>
           <text>播放</text>
         </view>
 
@@ -62,79 +37,79 @@
 </template>
 
 <script>
-import cmdProgress from './cmd-progress.vue'
-import { debounce } from '@/utils/utils.js'
-export default {
-  components: { cmdProgress },
-  props: {
-    title: {
-      type: String,
-      default: ''
+  import cmdProgress from './cmd-progress.vue';
+  import { debounce } from '@/utils/utils.js';
+  export default {
+    components: { cmdProgress },
+    props: {
+      title: {
+        type: String,
+        default: '',
+      },
+      stopPlay: {
+        type: Boolean,
+        default: true,
+      },
+      closeAudio: {
+        type: Boolean,
+        default: true,
+      },
+      videoBg: {
+        type: String,
+        default: 'http://192.168.1.187:10088/static/find/process_bg2x.png',
+      },
     },
-    stopPlay: {
-      type: Boolean,
-      default: true
+    data() {
+      return {
+        process: 0,
+      };
     },
-    closeAudio: {
-      type: Boolean,
-      default: true
+    mounted() {
+      uni.$emit('mounted');
+      // this.timer=setInterval(()=>{
+      //     this.process=this.process+2;
+      //     if(this.process>100){
+      //         this.process=0;
+      //     }
+      // },100);
     },
-    videoBg: {
-      type: String,
-      default: 'http://192.168.1.187:10088/static/find/process_bg2x.png'
-    }
-  },
-  data() {
-    return {
-      process: 0
-    }
-  },
-  mounted() {
-    uni.$emit('mounted')
-    // this.timer=setInterval(()=>{
-    //     this.process=this.process+2;
-    //     if(this.process>100){
-    //         this.process=0;
-    //     }
-    // },100);
-  },
-  methods: {
-    /*
+    methods: {
+      /*
        * 前一篇文章按钮点击事件
        */
-    // prePlay() {
-    //   this.$emit("prePlay")
-    // },
-    prePlay: debounce(function () {
-      this.$emit('prePlay')
-    }, 400),
-    /*
+      // prePlay() {
+      //   this.$emit("prePlay")
+      // },
+      prePlay: debounce(function () {
+        this.$emit('prePlay');
+      }, 400),
+      /*
        * 暂停文章按钮点击事件
        */
-    handleSwitchPlay() {
-      this.$emit('handleSwitchPlay')
-    },
-    /*
+      handleSwitchPlay() {
+        this.$emit('handleSwitchPlay');
+      },
+      /*
        * 后一篇文章按钮点击事件
        */
-    nextPlay: debounce(function () {
-      this.$emit('nextPlay')
-    }, 400),
-    /*
+      nextPlay: debounce(function () {
+        this.$emit('nextPlay');
+      }, 400),
+      /*
        * 关闭按钮事件
        */
-    handleClose() {
-      this.$emit('handleClose')
-    },
-    /*
+      handleClose() {
+        this.$emit('handleClose');
+      },
+      /*
        * 切换背景板隐藏展示
        */
-    triggle() {
-      console.log('切换背景板')
-      this.$emit('triggleBg', !this.closeAudio)
-    }
-  }
-}
+      triggle() {
+        console.log('切换背景板');
+        this.$emit('triggleBg', !this.closeAudio);
+      },
+    },
+  };
 </script>
 <style lang="scss" scoped>
   .process {

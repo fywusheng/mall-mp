@@ -2,12 +2,7 @@
   <div class="page-service-type">
     <ul class="info-list" v-if="dataForm.returnsItem">
       <li class="item">
-        <img
-          class="item-logo"
-          mode="aspectFit"
-          :lazy-load="true"
-          :src="dataForm.returnsItem.imgUrl"
-        />
+        <img class="item-logo" mode="aspectFit" :lazy-load="true" :src="dataForm.returnsItem.imgUrl" />
         <div class="title">{{ dataForm.returnsItem.productName }}</div>
         <div class="desc">{{ dataForm.returnsItem.skuName }}</div>
         <div class="price">¥{{ dataForm.returnsItem.sellingPrice }}</div>
@@ -44,12 +39,7 @@
       </li>
       <li class="info cont m-b-24">
         <div class="title">问题描述</div>
-        <textarea
-          class="new-remark"
-          v-model="dataForm.remark"
-          placeholder="请描述申请退款/推货退款的原因"
-          placeholder-class="placeholder1"
-        />
+        <textarea class="new-remark" v-model="dataForm.remark" placeholder="请描述申请退款/推货退款的原因" placeholder-class="placeholder1" />
       </li>
       <li class="info cont m-b-24" v-if="returnsType != 1">
         <div class="title">
@@ -57,18 +47,10 @@
           <text class="more">最多三张</text>
         </div>
         <div class="upload-wrap">
-          <img
-            class="btn-upload"
-            @click="chooseImage"
-            src="http://192.168.1.187:10088/static/images/common/icon-camera.png"
-          />
+          <img class="btn-upload" @click="chooseImage" src="http://192.168.1.187:10088/static/images/common/icon-camera.png" />
           <div class="img-wrap" v-for="(preview, index) in previewList" :key="index">
             <img class="img" mode="scaleToFill" :src="preview" />
-            <img
-              class="btn-delete"
-              @click="remove(index)"
-              src="http://192.168.1.187:10088/static/images/common/icon-delete.png"
-            />
+            <img class="btn-delete" @click="remove(index)" src="http://192.168.1.187:10088/static/images/common/icon-delete.png" />
           </div>
         </div>
       </li>
@@ -84,11 +66,7 @@
         <div class="address-desc">*寄回地址将在审核通过后获取</div>
       </li>
       <li class="tips m-b-24">
-        <image
-          class="icon"
-          src="http://192.168.1.187:10088/static/images/common/icon-warning.png"
-          mode=""
-        />
+        <image class="icon" src="http://192.168.1.187:10088/static/images/common/icon-warning.png" mode="" />
         <view class="txt">提交后将进行人工审核,请耐心等待</view>
       </li>
     </ul>
@@ -99,220 +77,220 @@
 </template>
 
 <script>
-import api from '@/apis/index.js'
-export default {
-  data() {
-    return {
-      returnsItem: '',
-      returnsType: 1,
-      returnsTypeLabel: '',
-      reasonTypeName: '',
-      reasonTypeList: [],
-      reasonList: [],
-      goodsStateName: '',
-      goodsStates: [
-        {
-          id: 1,
-          name: '未收到货'
+  import api from '@/apis/index.js';
+  export default {
+    data() {
+      return {
+        returnsItem: '',
+        returnsType: 1,
+        returnsTypeLabel: '',
+        reasonTypeName: '',
+        reasonTypeList: [],
+        reasonList: [],
+        goodsStateName: '',
+        goodsStates: [
+          {
+            id: 1,
+            name: '未收到货',
+          },
+          {
+            id: 2,
+            name: '已收到货',
+          },
+        ],
+        price: 0,
+        returnTransferPrice: 0,
+        dataForm: {
+          remark: '',
+          goodsState: 2,
         },
-        {
-          id: 2,
-          name: '已收到货'
+        imgList: [],
+        previewList: [],
+      };
+    },
+    components: {},
+    methods: {
+      async save() {
+        if (!this.dataForm.goodsState) {
+          wx.showToast({
+            title: '请选择货物状态！',
+            icon: 'none',
+          });
+          return false;
         }
-      ],
-      price: 0,
-      returnTransferPrice: 0,
-      dataForm: {
-        remark: '',
-        goodsState: 2
+        if (!this.dataForm.reasonType) {
+          wx.showToast({
+            title: '请选择退货原因',
+            icon: 'none',
+          });
+          return false;
+        }
+        this.imgList.forEach((img, index) => {
+          this.dataForm[`img${index + 1}`] = img;
+        });
+        wx.showLoading({ title: '正在提交数据...', mask: true });
+        const result = await Axios.post('/aftersale/returns/submit', this.dataForm);
+        wx.hideLoading();
+        if (result.code == 200) {
+          wx.showModal({
+            title: '提交成功',
+            content: '等待系统审核',
+            showCancel: false,
+            success: () => {
+              // wx.navigateBack();
+              wx.navigateTo({
+                url: `../refund-detail/main?productId=${this.$mp.query.productId}&skuId=${this.$mp.query.skuId}&orderId=${this.$mp.query.orderId}`,
+              });
+            },
+          });
+        } else {
+          wx.showToast({
+            title: result.msg,
+            icon: 'none',
+          });
+        }
       },
-      imgList: [],
-      previewList: []
-    }
-  },
-  components: {},
-  methods: {
-    async save() {
-      if (!this.dataForm.goodsState) {
-        wx.showToast({
-          title: '请选择货物状态！',
-          icon: 'none'
-        })
-        return false
-      }
-      if (!this.dataForm.reasonType) {
-        wx.showToast({
-          title: '请选择退货原因',
-          icon: 'none'
-        })
-        return false
-      }
-      this.imgList.forEach((img, index) => {
-        this.dataForm[`img${index + 1}`] = img
-      })
-      wx.showLoading({ title: '正在提交数据...', mask: true })
-      const result = await Axios.post('/aftersale/returns/submit', this.dataForm)
-      wx.hideLoading()
-      if (result.code == 200) {
-        wx.showModal({
-          title: '提交成功',
-          content: '等待系统审核',
-          showCancel: false,
-          success: () => {
-            // wx.navigateBack();
-            wx.navigateTo({
-              url: `../refund-detail/main?productId=${this.$mp.query.productId}&skuId=${this.$mp.query.skuId}&orderId=${this.$mp.query.orderId}`
-            })
-          }
-        })
-      } else {
-        wx.showToast({
-          title: result.msg,
-          icon: 'none'
-        })
-      }
-    },
-    changeType(e) {
-      const index = e.mp.detail.value
-      if (index === '0' && this.returnsTypeLabel === '退货退款') {
-        this.reasonTypeList = this.reasonList.filter((e) => e.name === '其他')
-      } else {
-        this.reasonTypeList = this.reasonList
-      }
-      this.goodsStateName = this.goodsStates[index].name
-      this.dataForm.goodsState = this.goodsStates[index].id
-    },
-    changeReason(e) {
-      const index = e.mp.detail.value
-      this.reasonTypeName = this.reasonTypeList[index].name
-      this.dataForm.reasonType = this.reasonTypeList[index].id
-    },
-    remove(index) {
-      this.imgList.splice(index, 1)
-      this.previewList.splice(index, 1)
-    },
-    async chooseImage() {
-      if (this.imgList.length == 3) {
-        wx.showToast({
-          title: '最多只能上传3张图片',
-          icon: 'none'
-        })
-        return false
-      }
-
-      uni.chooseImage({
-        sourceType: ['album', 'camera'],
-        count: 1,
-        success: (res) => {
-          // 名称
-          const imageName = res.tempFilePaths[0].split('/').pop()
-          const arr = imageName.split('.')
-          // 后缀
-          const imageExt = arr[arr.length - 1]
-
-          uni.getFileSystemManager().readFile({
-            filePath: res.tempFilePaths[0],
-            encoding: 'base64',
-            success: (rs) => {
-              // 线上环境
-              uni.request({
-                url: 'https://api.hpgjzlinfo.com/nepsp-api/cms/iep/web/cms/imgUpload',
-                data: {
-                  base64String: rs.data,
-                  imageName,
-                  imageExt
-                },
-                method: 'POST',
-                success: (imgres) => {
-                  const fileData = imgres.data.data
-                  this.previewList.push(fileData.absoluteUrl)
-                  this.imgList.push(fileData.absoluteUrl)
-                }
-              })
-              return
-              api.imgUpload({
-                data: {
-                  base64String: rs.data,
-                  imageName,
-                  imageExt
-                },
-                showsLoading: true,
-                success: (imgres) => {
-                  this.previewList.push(imgres.absoluteUrl)
-                  this.imgList.push(imgres.absoluteUrl)
-                }
-              })
-            }
-          })
+      changeType(e) {
+        const index = e.mp.detail.value;
+        if (index === '0' && this.returnsTypeLabel === '退货退款') {
+          this.reasonTypeList = this.reasonList.filter((e) => e.name === '其他');
+        } else {
+          this.reasonTypeList = this.reasonList;
         }
-      })
-    }
-  },
-  // onUnload() {
-  //   this.dataForm = {
-  //     remark: '',
-  //     goodsType: 2,
-  //   }
-  //   this.imgList = [];
-  //   this.previewList = [];
-  // },
-  async mounted() {
-    if (!Store.getters.isLogin) {
-      await Store.dispatch('login')
-    }
-    this.dataForm.orderItemId = this.$mp.query.itemId
-    this.dataForm.num = this.$mp.query.num
-    this.dataForm.returnsType = this.$mp.query.type
-    this.returnsType = parseInt(this.$mp.query.type)
-    this.dataForm.orderId = this.$mp.query.orderId
-    this.status = this.$mp.query.status
-    const title = '售后申请'
-    switch (this.returnsType) {
-      case 1:
-        this.returnsTypeLabel = '仅退款'
-        break
-      case 2:
-        this.returnsTypeLabel = '退货退款'
-        break
-      case 3:
-        this.returnsTypeLabel = '换货'
-        break
-    }
-    wx.setNavigationBarTitle({
-      title: title
-    })
-    const result = await Axios.get('/aftersale/returns/apply', {
-      params: {
-        orderItemId: this.dataForm.orderItemId,
-        orderId: this.dataForm.orderId,
-        num: this.dataForm.num,
-        returnsType: this.dataForm.returnsType
+        this.goodsStateName = this.goodsStates[index].name;
+        this.dataForm.goodsState = this.goodsStates[index].id;
+      },
+      changeReason(e) {
+        const index = e.mp.detail.value;
+        this.reasonTypeName = this.reasonTypeList[index].name;
+        this.dataForm.reasonType = this.reasonTypeList[index].id;
+      },
+      remove(index) {
+        this.imgList.splice(index, 1);
+        this.previewList.splice(index, 1);
+      },
+      async chooseImage() {
+        if (this.imgList.length == 3) {
+          wx.showToast({
+            title: '最多只能上传3张图片',
+            icon: 'none',
+          });
+          return false;
+        }
+
+        uni.chooseImage({
+          sourceType: ['album', 'camera'],
+          count: 1,
+          success: (res) => {
+            // 名称
+            const imageName = res.tempFilePaths[0].split('/').pop();
+            const arr = imageName.split('.');
+            // 后缀
+            const imageExt = arr[arr.length - 1];
+
+            uni.getFileSystemManager().readFile({
+              filePath: res.tempFilePaths[0],
+              encoding: 'base64',
+              success: (rs) => {
+                // 线上环境
+                uni.request({
+                  url: 'https://api.hpgjzlinfo.com/nepsp-api/cms/iep/web/cms/imgUpload',
+                  data: {
+                    base64String: rs.data,
+                    imageName,
+                    imageExt,
+                  },
+                  method: 'POST',
+                  success: (imgres) => {
+                    const fileData = imgres.data.data;
+                    this.previewList.push(fileData.absoluteUrl);
+                    this.imgList.push(fileData.absoluteUrl);
+                  },
+                });
+                return;
+                api.imgUpload({
+                  data: {
+                    base64String: rs.data,
+                    imageName,
+                    imageExt,
+                  },
+                  showsLoading: true,
+                  success: (imgres) => {
+                    this.previewList.push(imgres.absoluteUrl);
+                    this.imgList.push(imgres.absoluteUrl);
+                  },
+                });
+              },
+            });
+          },
+        });
+      },
+    },
+    // onUnload() {
+    //   this.dataForm = {
+    //     remark: '',
+    //     goodsType: 2,
+    //   }
+    //   this.imgList = [];
+    //   this.previewList = [];
+    // },
+    async mounted() {
+      if (!Store.getters.isLogin) {
+        await Store.dispatch('login');
       }
-    })
-    wx.hideLoading()
-    if (result.code == 200) {
-      Object.keys(result.data.reasonType).forEach((key) => {
-        this.reasonTypeList.push({
-          id: key,
-          name: result.data.reasonType[key]
-        })
-      })
-      this.reasonList = this.reasonTypeList
-      this.dataForm.orderItemId = result.data.orderItemId
-      this.dataForm.orderId = result.data.orderId
-      this.dataForm.price = result.data.price
-      this.dataForm.transferPrice = result.data.returnTransferPrice
-      this.dataForm.returnsItem = result.data.skuItem
-      this.goodsStateName = ''
-      this.reasonTypeName = ''
-    } else {
-      wx.showToast({
-        title: result.result.message,
-        icon: 'none'
-      })
-    }
-  }
-}
+      this.dataForm.orderItemId = this.$mp.query.itemId;
+      this.dataForm.num = this.$mp.query.num;
+      this.dataForm.returnsType = this.$mp.query.type;
+      this.returnsType = parseInt(this.$mp.query.type);
+      this.dataForm.orderId = this.$mp.query.orderId;
+      this.status = this.$mp.query.status;
+      const title = '售后申请';
+      switch (this.returnsType) {
+        case 1:
+          this.returnsTypeLabel = '仅退款';
+          break;
+        case 2:
+          this.returnsTypeLabel = '退货退款';
+          break;
+        case 3:
+          this.returnsTypeLabel = '换货';
+          break;
+      }
+      wx.setNavigationBarTitle({
+        title: title,
+      });
+      const result = await Axios.get('/aftersale/returns/apply', {
+        params: {
+          orderItemId: this.dataForm.orderItemId,
+          orderId: this.dataForm.orderId,
+          num: this.dataForm.num,
+          returnsType: this.dataForm.returnsType,
+        },
+      });
+      wx.hideLoading();
+      if (result.code == 200) {
+        Object.keys(result.data.reasonType).forEach((key) => {
+          this.reasonTypeList.push({
+            id: key,
+            name: result.data.reasonType[key],
+          });
+        });
+        this.reasonList = this.reasonTypeList;
+        this.dataForm.orderItemId = result.data.orderItemId;
+        this.dataForm.orderId = result.data.orderId;
+        this.dataForm.price = result.data.price;
+        this.dataForm.transferPrice = result.data.returnTransferPrice;
+        this.dataForm.returnsItem = result.data.skuItem;
+        this.goodsStateName = '';
+        this.reasonTypeName = '';
+      } else {
+        wx.showToast({
+          title: result.result.message,
+          icon: 'none',
+        });
+      }
+    },
+  };
 </script>
 
 <style lang="scss">

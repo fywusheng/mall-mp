@@ -13,12 +13,7 @@
       z-index: 1;
       width: 100vw;
       height: 338rpx;
-      background: linear-gradient(
-        180deg,
-        #ffd1bb 0%,
-        rgba(255, 229, 216, 0.93) 51%,
-        rgba(255, 255, 255, 0) 100%
-      );
+      background: linear-gradient(180deg, #ffd1bb 0%, rgba(255, 229, 216, 0.93) 51%, rgba(255, 255, 255, 0) 100%);
     }
     .order-header-status {
       height: 192rpx;
@@ -354,12 +349,7 @@
             <span class="phone">{{ order.receivePhone }}</span>
           </div>
           <div class="address">
-            {{
-              order.receiveProvinceName +
-              order.receiveCityName +
-              order.receiveAreaName +
-              order.receiveAddress
-            }}
+            {{ order.receiveProvinceName + order.receiveCityName + order.receiveAreaName + order.receiveAddress }}
           </div>
         </div>
       </div>
@@ -371,23 +361,13 @@
         <image class="icon-right" :src="icon.right" mode="scaleToFill" />
       </div>
       <ul class="item-list">
-        <li
-          class="item"
-          @click="toItem(item)"
-          :key="itemIndex"
-          v-for="(item, itemIndex) in orderItemModel.items"
-        >
+        <li class="item" @click="toItem(item)" :key="itemIndex" v-for="(item, itemIndex) in orderItemModel.items">
           <img class="item-logo" mode="aspectFit" :lazy-load="true" :src="item.imgUrl" />
           <div class="item-name">{{ item.productName }}</div>
           <div class="sku-name">
             {{ item.skuName }}
             <div class="item-state" v-if="[30, 40, 50, 110, 120].includes(order.orderStatus)">
-              <button
-                v-if="item.itemStatus == 1 && !order.hzhH5"
-                type="button"
-                class="btn-link"
-                @click.stop="toService(order, item)"
-              >
+              <button v-if="item.itemStatus == 1 && !order.hzhH5" type="button" class="btn-link" @click.stop="toService(order, item)">
                 申请售后
               </button>
               <div v-else @click.stop="toService(order, item)" class="item-state-label">
@@ -510,14 +490,8 @@
     </div>
 
     <div class="line"></div>
-    <ul
-      v-if="[10, 20, 30].includes(order.orderStatus)"
-      class="footer-btn-list"
-      :class="{ isIphoneHair: isIphoneHair }"
-    >
-      <li class="btn" @click="remove" v-if="order.orderStatus === 10 || order.orderStatus === 20">
-        取消订单
-      </li>
+    <ul v-if="[10, 20, 30].includes(order.orderStatus)" class="footer-btn-list" :class="{ isIphoneHair: isIphoneHair }">
+      <li class="btn" @click="remove" v-if="order.orderStatus === 10 || order.orderStatus === 20">取消订单</li>
       <li class="btn" @click="toLogistics" v-if="order.orderStatus === 30">查看物流</li>
       <li class="btn" @click="confirm" v-if="order.orderStatus === 30">确认收货</li>
       <li class="btn" v-if="order.orderStatus === 10" @click="toPay">付款</li>
@@ -527,246 +501,246 @@
 </template>
 
 <script>
-// import dayjs from 'dayjs'
-import wx from 'utils/wx'
-import PointPop from './get-point-pop.vue'
+  // import dayjs from 'dayjs'
+  import wx from 'utils/wx';
+  import PointPop from './get-point-pop.vue';
 
-export default {
-  data() {
-    return {
-      loading: true,
-      order: {},
-      day: 0,
-      hours: 0,
-      minutes: 0,
-      seconds: 0,
-      countDown: 0,
-      isIphoneHair: App.isIphoneHair,
-      icon: {
-        address: 'http://192.168.1.187:10088/static/images/common/icon-address.png',
-        right: 'http://192.168.1.187:10088/static/images/common/icon-right.png'
-      }
-    }
-  },
-  computed: {
-    isMulti() {
-      return this.order && this.order.orderItemModels && this.order.orderItemModels.length > 1
+  export default {
+    data() {
+      return {
+        loading: true,
+        order: {},
+        day: 0,
+        hours: 0,
+        minutes: 0,
+        seconds: 0,
+        countDown: 0,
+        isIphoneHair: App.isIphoneHair,
+        icon: {
+          address: 'http://192.168.1.187:10088/static/images/common/icon-address.png',
+          right: 'http://192.168.1.187:10088/static/images/common/icon-right.png',
+        },
+      };
     },
-    statusUrl() {
-      // 10：创建、待付款 20：已支付、待发货 30：已发货、待收货 40：已收货、交易完成、待评价
-      // 50:已评价 90：订单取消、手动取消、系统自动取消 100：交易取消
-      const statusMap = {
-        10: 'http://192.168.1.187:10088/static/images/order/wait-fukuan.png',
-        20: 'http://192.168.1.187:10088/static/images/order/wait-fahuo.png',
-        30: 'http://192.168.1.187:10088/static/images/order/wait-shouhuo.png',
-        40: 'http://192.168.1.187:10088/static/images/order/completed.png',
-        50: 'http://192.168.1.187:10088/static/images/order/completed.png',
-        90: 'http://192.168.1.187:10088/static/images/order/canceled.png',
-        100: 'http://192.168.1.187:10088/static/images/order/canceled.png'
-      }
-      return statusMap[this.order.orderStatus]
-    }
-  },
-  components: { PointPop },
-  filters: {
-    formatNum(price) {
-      return Number(price).toFixed(2)
-    }
-  },
-  methods: {
-    goStoreDetail(store) {
-      uni.navigateTo({
-        url: '/sub-pages/index/store/main?supplierId=' + store.storeId
-      })
+    computed: {
+      isMulti() {
+        return this.order && this.order.orderItemModels && this.order.orderItemModels.length > 1;
+      },
+      statusUrl() {
+        // 10：创建、待付款 20：已支付、待发货 30：已发货、待收货 40：已收货、交易完成、待评价
+        // 50:已评价 90：订单取消、手动取消、系统自动取消 100：交易取消
+        const statusMap = {
+          10: 'http://192.168.1.187:10088/static/images/order/wait-fukuan.png',
+          20: 'http://192.168.1.187:10088/static/images/order/wait-fahuo.png',
+          30: 'http://192.168.1.187:10088/static/images/order/wait-shouhuo.png',
+          40: 'http://192.168.1.187:10088/static/images/order/completed.png',
+          50: 'http://192.168.1.187:10088/static/images/order/completed.png',
+          90: 'http://192.168.1.187:10088/static/images/order/canceled.png',
+          100: 'http://192.168.1.187:10088/static/images/order/canceled.png',
+        };
+        return statusMap[this.order.orderStatus];
+      },
     },
-    toService(order, item) {
-      if (order.orderStatus == 20 || item.itemStatus > 1) {
-        wx.navigateTo({
-          url: `../refund-detail/main?type=1&productId=${item.productId}&skuId=${item.skuId}&orderId=${order.id}`
-        })
-      } else {
-        wx.navigateTo({
-          url: `../service-type/main?itemId=${item.id}&num=${item.skuQuantity}&orderId=${order.id}&skuId=${item.skuId}&productId=${item.productId}`
-        })
-      }
+    components: { PointPop },
+    filters: {
+      formatNum(price) {
+        return Number(price).toFixed(2);
+      },
     },
-    async toPay() {
-      wx.showLoading({ title: '正在获取...', mask: true })
-      const result = await Axios.post('/payment/sign', {
-        orderId: this.order.orderId,
-        paymentMethodCode: 'nepsp_pay',
-        code: new Date().getTime()
-      })
-      wx.hideLoading()
-      if (result.code == 200) {
-        // 去收银台支付
-        uni.reLaunch({
-          url: '/pages/common/webpage?url=' + encodeURIComponent(result.data.payUrl)
-        })
-      } else {
-        wx.showToast({
-          title: result.msg || '获取失败',
-          icon: 'none'
-        })
-      }
-    },
-    toLogistics() {
-      uni.navigateTo({
-        url: '/sub-pages/me/logistics/main?id=' + this.order.orderId
-      })
-    },
-    async cancelOrder() {
-      const delResult = await Axios.post('/order/cancel', {
-        orderId: this.order.orderId
-      })
-      if (delResult.code == 200) {
-        console.log(delResult)
-        this.loadData()
-        // 触发订单刷新事件
-        uni.$emit('reloadOrderList')
-      } else {
-        wx.showToast(delResult.msg || '取消失败')
-      }
-    },
-    async remove() {
-      const result = await wx.showModal({
-        title: '',
-        content: '确定要取消?'
-      })
-      if (result.confirm) {
-        wx.showLoading('正在提交...')
+    methods: {
+      goStoreDetail(store) {
+        uni.navigateTo({
+          url: '/sub-pages/index/store/main?supplierId=' + store.storeId,
+        });
+      },
+      toService(order, item) {
+        if (order.orderStatus == 20 || item.itemStatus > 1) {
+          wx.navigateTo({
+            url: `../refund-detail/main?type=1&productId=${item.productId}&skuId=${item.skuId}&orderId=${order.id}`,
+          });
+        } else {
+          wx.navigateTo({
+            url: `../service-type/main?itemId=${item.id}&num=${item.skuQuantity}&orderId=${order.id}&skuId=${item.skuId}&productId=${item.productId}`,
+          });
+        }
+      },
+      async toPay() {
+        wx.showLoading({ title: '正在获取...', mask: true });
+        const result = await Axios.post('/payment/sign', {
+          orderId: this.order.orderId,
+          paymentMethodCode: 'nepsp_pay',
+          code: new Date().getTime(),
+        });
+        wx.hideLoading();
+        if (result.code == 200) {
+          // 去收银台支付
+          uni.reLaunch({
+            url: '/pages/common/webpage?url=' + encodeURIComponent(result.data.payUrl),
+          });
+        } else {
+          wx.showToast({
+            title: result.msg || '获取失败',
+            icon: 'none',
+          });
+        }
+      },
+      toLogistics() {
+        uni.navigateTo({
+          url: '/sub-pages/me/logistics/main?id=' + this.order.orderId,
+        });
+      },
+      async cancelOrder() {
         const delResult = await Axios.post('/order/cancel', {
-          orderId: this.order.orderId
-        })
-        wx.hideLoading()
+          orderId: this.order.orderId,
+        });
         if (delResult.code == 200) {
-          wx.showToast(delResult.msg || '取消成功')
-          this.loadData()
+          console.log(delResult);
+          this.loadData();
           // 触发订单刷新事件
-          uni.$emit('reloadOrderList')
+          uni.$emit('reloadOrderList');
         } else {
-          wx.showToast(delResult.msg || '取消失败')
+          wx.showToast(delResult.msg || '取消失败');
         }
-      }
-    },
-    async confirm() {
-      const result = await wx.showModal({
-        title: '',
-        content: '确定已收货?'
-      })
-      if (result.confirm) {
-        wx.showLoading('正在提交...')
-        const delResult = await Axios.post('/order/confirm', {
-          orderId: this.order.orderId
-        })
-        wx.hideLoading()
-        if (delResult.code == 200) {
-          wx.showToast(delResult.msg || '确认成功')
-          this.loadData()
-          // 触发订单刷新事件
-          uni.$emit('reloadOrderList')
+      },
+      async remove() {
+        const result = await wx.showModal({
+          title: '',
+          content: '确定要取消?',
+        });
+        if (result.confirm) {
+          wx.showLoading('正在提交...');
+          const delResult = await Axios.post('/order/cancel', {
+            orderId: this.order.orderId,
+          });
+          wx.hideLoading();
+          if (delResult.code == 200) {
+            wx.showToast(delResult.msg || '取消成功');
+            this.loadData();
+            // 触发订单刷新事件
+            uni.$emit('reloadOrderList');
+          } else {
+            wx.showToast(delResult.msg || '取消失败');
+          }
+        }
+      },
+      async confirm() {
+        const result = await wx.showModal({
+          title: '',
+          content: '确定已收货?',
+        });
+        if (result.confirm) {
+          wx.showLoading('正在提交...');
+          const delResult = await Axios.post('/order/confirm', {
+            orderId: this.order.orderId,
+          });
+          wx.hideLoading();
+          if (delResult.code == 200) {
+            wx.showToast(delResult.msg || '确认成功');
+            this.loadData();
+            // 触发订单刷新事件
+            uni.$emit('reloadOrderList');
+          } else {
+            wx.showToast(delResult.msg || '确认失败');
+          }
+        }
+      },
+      invoiceContent(type) {
+        switch (parseInt(type || 0)) {
+          case 1:
+            return '服装、鞋帽';
+          case 2:
+            return '箱包';
+          case 3:
+            return '礼品、办公用品';
+          case 4:
+            return '订单商品明细';
+          default:
+            return '';
+        }
+      },
+      async loadData() {
+        this.loading = true;
+        uni.showLoading();
+        const result = await Axios.post('/order/get', { orderId: this.id });
+        uni.hideLoading();
+        this.loading = false;
+        if (result.code == 200) {
+          // result.data.createTime = dayjs(result.data.createTime).format('{YYYY}-{MM}-{DD} {HH}:{mm}:{ss}')
+          // if (result.data.completionTime) {
+          //   result.data.completionTime = dayjs(result.data.completionTime).format('{YYYY}-{MM}-{DD} {HH}:{mm}:{ss}')
+          // }
+          result.data.invoiceContent = this.invoiceContent(result.data.invoiceContent);
+          this.order = result.data;
+          if (this.order.orderStatus === 10) {
+            this.countDown = this.order.payCountDown;
+            this.initCountDown();
+          }
+          if (this.order.orderStatus === 30) {
+            this.countDown = this.order.completionCountDown;
+            this.initCountDown();
+          }
         } else {
-          wx.showToast(delResult.msg || '确认失败')
+          wx.showToast(result.result.message);
         }
-      }
-    },
-    invoiceContent(type) {
-      switch (parseInt(type || 0)) {
-        case 1:
-          return '服装、鞋帽'
-        case 2:
-          return '箱包'
-        case 3:
-          return '礼品、办公用品'
-        case 4:
-          return '订单商品明细'
-        default:
-          return ''
-      }
-    },
-    async loadData() {
-      this.loading = true
-      uni.showLoading()
-      const result = await Axios.post('/order/get', { orderId: this.id })
-      uni.hideLoading()
-      this.loading = false
-      if (result.code == 200) {
-        // result.data.createTime = dayjs(result.data.createTime).format('{YYYY}-{MM}-{DD} {HH}:{mm}:{ss}')
-        // if (result.data.completionTime) {
-        //   result.data.completionTime = dayjs(result.data.completionTime).format('{YYYY}-{MM}-{DD} {HH}:{mm}:{ss}')
-        // }
-        result.data.invoiceContent = this.invoiceContent(result.data.invoiceContent)
-        this.order = result.data
-        if (this.order.orderStatus === 10) {
-          this.countDown = this.order.payCountDown
-          this.initCountDown()
-        }
-        if (this.order.orderStatus === 30) {
-          this.countDown = this.order.completionCountDown
-          this.initCountDown()
-        }
-      } else {
-        wx.showToast(result.result.message)
-      }
-    },
-    initCountDown() {
-      this.countDownTask = setInterval(() => {
-        if (this.countDown <= 0) {
-          clearInterval(this.countDownTask)
-          this.cancelOrder()
-          return
-        }
+      },
+      initCountDown() {
+        this.countDownTask = setInterval(() => {
+          if (this.countDown <= 0) {
+            clearInterval(this.countDownTask);
+            this.cancelOrder();
+            return;
+          }
 
-        this.seconds = Math.floor((this.countDown / 1000) % 60)
-        this.minutes = Math.floor((this.countDown / (1000 * 60)) % 60)
-        this.hours = Math.floor((this.countDown / (1000 * 60 * 60)) % 24)
-        this.day = Math.floor(this.countDown / (1000 * 60 * 60 * 24))
+          this.seconds = Math.floor((this.countDown / 1000) % 60);
+          this.minutes = Math.floor((this.countDown / (1000 * 60)) % 60);
+          this.hours = Math.floor((this.countDown / (1000 * 60 * 60)) % 24);
+          this.day = Math.floor(this.countDown / (1000 * 60 * 60 * 24));
 
-        this.countDown -= 1000
-      }, 1000)
-    },
-    toItem(data) {
-      uni.navigateTo({
-        url: `/sub-pages/index/item/main?id=${data.productId}&sceneType=${this.order.sceneType}`
-      })
-    },
-    async checkNeedPopUp(popUpType) {
-      const params = {
-        orderId: this.order.orderId,
-        popUpType
-      }
-      const { code, data } = await Axios.post('/order/checkNeedPopUp', params)
-      if (code === '200') {
-        if (data.needPopUp === 1) {
-          this.$refs.pointPop.open(data)
+          this.countDown -= 1000;
+        }, 1000);
+      },
+      toItem(data) {
+        uni.navigateTo({
+          url: `/sub-pages/index/item/main?id=${data.productId}&sceneType=${this.order.sceneType}`,
+        });
+      },
+      async checkNeedPopUp(popUpType) {
+        const params = {
+          orderId: this.order.orderId,
+          popUpType,
+        };
+        const { code, data } = await Axios.post('/order/checkNeedPopUp', params);
+        if (code === '200') {
+          if (data.needPopUp === 1) {
+            this.$refs.pointPop.open(data);
+          }
+        } else {
+          console.log('失败');
         }
-      } else {
-        console.log('失败')
+      },
+    },
+    async onShow() {
+      // if (this.id) this.loadData()
+      this.id = this.$mp.query.id;
+      // this.popUpType = this.$mp.query.popUpType;
+      if (!Store.getters.isLogin) {
+        await Store.dispatch('login');
       }
-    }
-  },
-  async onShow() {
-    // if (this.id) this.loadData()
-    this.id = this.$mp.query.id
-    // this.popUpType = this.$mp.query.popUpType;
-    if (!Store.getters.isLogin) {
-      await Store.dispatch('login')
-    }
-    await this.loadData()
-    // await this.checkNeedPopUp(this.popUpType);
-  },
-  async onLoad(e) {
-    // this.id = e.id
-    // this.popUpType = e.popUpType
-    // if (!Store.getters.isLogin) {
-    //   await Store.dispatch('login')
-    // }
-    // await this.loadData()
-    // await this.checkNeedPopUp(this.popUpType)
-  },
-  onUnload() {
-    clearInterval(this.countDownTask)
-    this.order = {}
-  }
-}
+      await this.loadData();
+      // await this.checkNeedPopUp(this.popUpType);
+    },
+    async onLoad(e) {
+      // this.id = e.id
+      // this.popUpType = e.popUpType
+      // if (!Store.getters.isLogin) {
+      //   await Store.dispatch('login')
+      // }
+      // await this.loadData()
+      // await this.checkNeedPopUp(this.popUpType)
+    },
+    onUnload() {
+      clearInterval(this.countDownTask);
+      this.order = {};
+    },
+  };
 </script>
