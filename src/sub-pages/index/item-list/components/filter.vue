@@ -146,14 +146,7 @@
     <scroll-view scroll-y class="filter-modal">
       <view class="title">所在区域：{{ city }}</view>
       <div v-if="categoryList.length > 0" class="condition-list-wrap">
-        <div class="condition-title">
-          商品类型
-          <!-- <div class="more-wrap" @click="showMoreCate = !showMoreCate">
-            全部
-            <i v-if="showMoreCate" class="iconfont icon-xiangshangjiantou"></i>
-            <i v-else class="iconfont icon-xiangxia1"></i>
-          </div> -->
-        </div>
+        <div class="condition-title">商品类型</div>
         <ul class="condition-list">
           <li
             class="condition"
@@ -164,19 +157,11 @@
             @click="changeCate(subAttr)"
           >
             <view class="txt">{{ subAttr.name }}</view>
-            <!-- {{ subAttr.name }} -->
           </li>
         </ul>
       </div>
       <div v-if="brandList.length > 0" class="condition-list-wrap">
-        <div class="condition-title">
-          商品品牌
-          <!-- <div class="more-wrap" @click="showMoreBrand = !showMoreBrand">
-            全部
-            <i v-if="showMoreBrand" class="iconfont icon-xiangshangjiantou"></i>
-            <i v-else class="iconfont icon-xiangxia1"></i>
-          </div> -->
-        </div>
+        <div class="condition-title">商品品牌</div>
         <ul class="condition-list">
           <li
             class="condition"
@@ -191,14 +176,7 @@
         </ul>
       </div>
       <div class="condition-list-wrap">
-        <div class="condition-title">
-          适用人群
-          <!-- <div class="more-wrap" @click="showMoreCate = !showMoreCate">
-            全部
-            <i v-if="showMoreCate" class="iconfont icon-xiangshangjiantou"></i>
-            <i v-else class="iconfont icon-xiangxia1"></i>
-          </div> -->
-        </div>
+        <div class="condition-title">适用人群</div>
         <ul class="condition-list">
           <li
             class="condition"
@@ -208,19 +186,11 @@
             @click="changeTargetAudience(subAttr)"
           >
             <view class="txt">{{ subAttr.name }}</view>
-            <!-- {{ subAttr.name }} -->
           </li>
         </ul>
       </div>
       <div v-if="priceList.length > 0" class="condition-list-wrap">
-        <div class="condition-title">
-          商品价区间
-          <!-- <div class="more-wrap" @click="showMorePrice = !showMorePrice">
-            全部
-            <i v-if="showMoreCate" class="iconfont icon-xiangshangjiantou"></i>
-            <i v-else class="iconfont icon-xiangxia1"></i>
-          </div> -->
-        </div>
+        <div class="condition-title">商品价区间</div>
         <ul class="condition-list">
           <li
             class="condition"
@@ -235,7 +205,7 @@
         </ul>
       </div>
 
-      <div class="condition-list-wrap" v-for="(attr, index) in attrList" v-if="attr.dataList.length" :key="index">
+      <!-- <div class="condition-list-wrap" v-for="(attr, index) in attrList" v-if="attr.dataList.length" :key="index">
         <div class="condition-title">
           {{ attr.name }}
           <div class="more-wrap" @click="showMoreBrand = !showMoreBrand">
@@ -254,10 +224,9 @@
             :key="subIndex"
           >
             <view class="txt">{{ subAttr.name }}</view>
-            <!-- {{ subAttr.name }} -->
           </li>
         </ul>
-      </div>
+      </div> -->
       <ul class="filter-fb">
         <li class="li" @click="reset">重置</li>
         <li class="li" @click="search">确定</li>

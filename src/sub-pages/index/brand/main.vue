@@ -1,12 +1,6 @@
 <template>
   <div class="page-brand">
-    <img
-      mode="aspectFit"
-      :style="{ height: height + 'rpx' }"
-      @load="onLoad"
-      class="brand-cover"
-      :src="brandInfo.brandPictUrl"
-    />
+    <img mode="aspectFit" :style="{ height: height + 'rpx' }" @load="onLoad" class="brand-cover" :src="brandInfo.brandPictUrl" />
     <div class="brand-info">
       <img mode="aspectFit" class="brand-logo" :src="brandInfo.brandLogo" />
       <div class="brand-name">{{ brandInfo.brandName }}</div>
@@ -22,24 +16,10 @@
       <li class="filter" @click="changeFilter({ id: 0 })" :class="activeId === 0 ? 'active' : ''">
         <div class="title">默认</div>
       </li>
-      <li
-        class="filter"
-        @click="changeFilter(sort)"
-        :key="sort.id"
-        v-for="sort in sortList"
-        :class="activeId === sort.id ? 'active' : ''"
-      >
+      <li class="filter" @click="changeFilter(sort)" :key="sort.id" v-for="sort in sortList" :class="activeId === sort.id ? 'active' : ''">
         <div class="title">{{ sort.name }}</div>
-        <img
-          v-if="sort.sort === 1"
-          class="filter-status"
-          src="http://192.168.1.187:10088/static/images/common/down.png"
-        />
-        <img
-          v-else
-          class="filter-status"
-          src="http://192.168.1.187:10088/static/images/common/up.png"
-        />
+        <img v-if="sort.sort === 1" class="filter-status" src="http://192.168.1.187:10088/static/images/common/down.png" />
+        <img v-else class="filter-status" src="http://192.168.1.187:10088/static/images/common/up.png" />
       </li>
     </ul>
     <ul class="item-list">
@@ -50,10 +30,7 @@
         <div class="price-layout">
           <div class="sale-price">¥{{ item.cuPrice }}</div>
           <div class="market-price">¥{{ item.originalPrice }}</div>
-          <img
-            class="icon-cart"
-            src="http://192.168.1.187:10088/static/images/common/icon-cart.png"
-          />
+          <img class="icon-cart" src="http://192.168.1.187:10088/static/images/common/icon-cart.png" />
         </div>
       </li>
     </ul>
@@ -63,151 +40,151 @@
 </template>
 
 <script>
-import Top from '@/sub-pages/index/components/top.vue'
+  import Top from '@/sub-pages/index/components/top.vue';
 
-export default {
-  data() {
-    return {
-      sortList: [
-        {
-          id: 1,
-          sort: 0,
-          name: '按时间'
-        },
-        {
-          id: 2,
-          sort: 0,
-          name: '按销量'
-        },
-        {
-          id: 3,
-          sort: 0,
-          name: '按价格'
+  export default {
+    data() {
+      return {
+        sortList: [
+          {
+            id: 1,
+            sort: 0,
+            name: '按时间',
+          },
+          {
+            id: 2,
+            sort: 0,
+            name: '按销量',
+          },
+          {
+            id: 3,
+            sort: 0,
+            name: '按价格',
+          },
+        ],
+        activeId: 0,
+        itemList: [],
+        scrollTop: 0,
+        height: 750,
+        brandInfo: {},
+      };
+    },
+    components: {
+      Top,
+    },
+    methods: {
+      goHome() {
+        wx.navigateTo({
+          url: '/sub-pages/index/index/main',
+        });
+      },
+      onUnload() {
+        this.brandInfo = {};
+        this.itemList = [];
+      },
+      onLoad(e) {
+        this.height = parseInt((e.mp.detail.height / e.mp.detail.width) * 750);
+      },
+      changeFilter(sort) {
+        if (this.activeId === sort.id) {
+          sort.sort = sort.sort === 1 ? 0 : 1;
         }
-      ],
-      activeId: 0,
-      itemList: [],
-      scrollTop: 0,
-      height: 750,
-      brandInfo: {}
-    }
-  },
-  components: {
-    Top
-  },
-  methods: {
-    goHome() {
-      wx.navigateTo({
-        url: '/sub-pages/index/index/main'
-      })
+        this.activeId = sort.id;
+        let sortType;
+        switch (this.activeId) {
+          case 1:
+            sortType = sort.sort === 1 ? 12 : 11;
+            break;
+          case 2:
+            sortType = sort.sort === 1 ? 32 : 31;
+            break;
+          case 3:
+            sortType = sort.sort === 1 ? 22 : 21;
+            break;
+        }
+        this.sortType = sortType;
+        this.loadItem();
+      },
+      async changeAttention() {
+        wx.showLoading({
+          title: '正在提交...',
+        });
+        const result = await wx.request({
+          data: {
+            method: this.brandInfo.isAttention == 0 ? 'brand.addconcern' : 'brand.delconcern',
+            brandId: this.id,
+          },
+        });
+        wx.hideLoading();
+        if (result.result.result == 1) {
+          wx.showToast({
+            title: this.brandInfo.isAttention == 0 ? '关注成功' : '取消成功',
+            icon: 'none',
+          });
+          this.brandInfo.isAttention = this.brandInfo.isAttention == 0 ? 1 : 0;
+        } else {
+          wx.showToast({
+            title: result.result.message,
+            icon: 'none',
+          });
+        }
+      },
+      toDetail(data) {
+        wx.navigateTo({
+          url: `/pages/item/main?id=` + data.productSid,
+        });
+      },
+      async loadItem() {
+        const params = {
+          pageSize: 100,
+          pageNum: 1,
+          brandId: this.id,
+        };
+        if (this.sortType) {
+          params.sortType = this.sortType;
+        }
+        // const itemResult = await wx.request({
+        //   url: BASE_SEARCH_URL,
+        //   data: params
+        // })
+        // if (itemResult.result.result == 1) {
+        //   this.itemList = itemResult.data.esProducts;
+        // } else {
+        //   wx.showToast({
+        //     title: itemResult.result.message,
+        //     icon: 'none'
+        //   })
+        // }
+      },
     },
-    onUnload() {
-      this.brandInfo = {}
-      this.itemList = []
+    onPageScroll(e) {
+      this.$refs.toTop.show(e.scrollTop > App.systemInfo.screenHeight);
     },
-    onLoad(e) {
-      this.height = parseInt((e.mp.detail.height / e.mp.detail.width) * 750)
-    },
-    changeFilter(sort) {
-      if (this.activeId === sort.id) {
-        sort.sort = sort.sort === 1 ? 0 : 1
-      }
-      this.activeId = sort.id
-      let sortType
-      switch (this.activeId) {
-        case 1:
-          sortType = sort.sort === 1 ? 12 : 11
-          break
-        case 2:
-          sortType = sort.sort === 1 ? 32 : 31
-          break
-        case 3:
-          sortType = sort.sort === 1 ? 22 : 21
-          break
-      }
-      this.sortType = sortType
-      this.loadItem()
-    },
-    async changeAttention() {
-      wx.showLoading({
-        title: '正在提交...'
-      })
+    async mounted() {
+      this.id = this.$root.$mp.query.id;
+      console.info(this.id);
+      wx.showLoading({ title: '正在获取数据...', mask: true });
       const result = await wx.request({
         data: {
-          method: this.brandInfo.isAttention == 0 ? 'brand.addconcern' : 'brand.delconcern',
-          brandId: this.id
-        }
-      })
-      wx.hideLoading()
+          method: 'product.brandInfo',
+          brandId: this.id,
+        },
+      });
+      wx.hideLoading();
       if (result.result.result == 1) {
-        wx.showToast({
-          title: this.brandInfo.isAttention == 0 ? '关注成功' : '取消成功',
-          icon: 'none'
-        })
-        this.brandInfo.isAttention = this.brandInfo.isAttention == 0 ? 1 : 0
+        this.brandInfo = result.data;
       } else {
         wx.showToast({
           title: result.result.message,
-          icon: 'none'
-        })
+          icon: 'none',
+        });
       }
+      wx.setNavigationBarTitle({
+        title: '品牌详情',
+      });
+      this.loadItem();
     },
-    toDetail(data) {
-      wx.navigateTo({
-        url: `/pages/item/main?id=` + data.productSid
-      })
-    },
-    async loadItem() {
-      const params = {
-        pageSize: 100,
-        pageNum: 1,
-        brandId: this.id
-      }
-      if (this.sortType) {
-        params.sortType = this.sortType
-      }
-      // const itemResult = await wx.request({
-      //   url: BASE_SEARCH_URL,
-      //   data: params
-      // })
-      // if (itemResult.result.result == 1) {
-      //   this.itemList = itemResult.data.esProducts;
-      // } else {
-      //   wx.showToast({
-      //     title: itemResult.result.message,
-      //     icon: 'none'
-      //   })
-      // }
-    }
-  },
-  onPageScroll(e) {
-    this.$refs.toTop.show(e.scrollTop > App.systemInfo.screenHeight)
-  },
-  async mounted() {
-    this.id = this.$root.$mp.query.id
-    console.info(this.id)
-    wx.showLoading({ title: '正在获取数据...', mask: true })
-    const result = await wx.request({
-      data: {
-        method: 'product.brandInfo',
-        brandId: this.id
-      }
-    })
-    wx.hideLoading()
-    if (result.result.result == 1) {
-      this.brandInfo = result.data
-    } else {
-      wx.showToast({
-        title: result.result.message,
-        icon: 'none'
-      })
-    }
-    wx.setNavigationBarTitle({
-      title: '品牌详情'
-    })
-    this.loadItem()
-  }
-}
+  };
 </script>
 
 <style lang="scss">
