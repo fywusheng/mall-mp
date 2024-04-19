@@ -193,21 +193,21 @@
               encoding: 'base64',
               success: (rs) => {
                 // 线上环境
-                uni.request({
-                  url: 'https://api.hpgjzlinfo.com/nepsp-api/cms/iep/web/cms/imgUpload',
-                  data: {
-                    base64String: rs.data,
-                    imageName,
-                    imageExt,
-                  },
-                  method: 'POST',
-                  success: (imgres) => {
-                    const fileData = imgres.data.data;
-                    this.previewList.push(fileData.absoluteUrl);
-                    this.imgList.push(fileData.absoluteUrl);
-                  },
-                });
-                return;
+                // uni.request({
+                //   url: 'https://api.hpgjzlinfo.com/nepsp-api/cms/iep/web/cms/imgUpload',
+                //   data: {
+                //     base64String: rs.data,
+                //     imageName,
+                //     imageExt,
+                //   },
+                //   method: 'POST',
+                //   success: (imgres) => {
+                //     const fileData = imgres.data.data;
+                //     this.previewList.push(fileData.absoluteUrl);
+                //     this.imgList.push(fileData.absoluteUrl);
+                //   },
+                // });
+                // return;
                 api.imgUpload({
                   data: {
                     base64String: rs.data,
