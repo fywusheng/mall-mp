@@ -397,6 +397,7 @@
     },
     methods: {
       goStoreDetail(store) {
+        return;
         uni.navigateTo({
           url: '/sub-pages/index/store/main?supplierId=' + store.storeId,
         });
@@ -433,10 +434,7 @@
         // this.changeNumber(params)
       },
       toHome() {
-        uni.navigateBack();
-        // uni.redirectTo({
-        //   url: '/sub-pages/point/index'
-        // })
+        uni.switchTab({ url: '/pages/index/index' });
       },
       toLogin() {
         wx.navigateTo({

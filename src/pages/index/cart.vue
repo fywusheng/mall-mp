@@ -249,19 +249,10 @@
               mode="scaleToFill"
             ></image>
             <view class="header-title" @click="goStoreDetail(el)">{{ el.storeName }}</view>
-            <image
-              class="icon-right"
-              src="http://192.168.1.187:10088/static/images/cart/icon-right.png"
-              mode="scaleToFill"
-            ></image>
+            <image class="icon-right" src="http://192.168.1.187:10088/static/images/cart/icon-right.png" mode="scaleToFill"></image>
           </view>
           <view class="panel-body">
-            <view
-              class="product-list"
-              :class="{ disabled: el.soldOut }"
-              v-for="(product, subIndex) in el.carts"
-              :key="product.id"
-            >
+            <view class="product-list" :class="{ disabled: el.soldOut }" v-for="(product, subIndex) in el.carts" :key="product.id">
               <view v-if="product.soldOut">
                 <image
                   v-if="product.checked"
@@ -287,13 +278,7 @@
                 mode="scaleToFill"
                 @click="tolDetail(product)"
               ></image>
-              <image
-                v-else
-                class="product-img"
-                :src="product.imgUrl"
-                mode="scaleToFill"
-                @click="tolDetail(product)"
-              ></image>
+              <image v-else class="product-img" :src="product.imgUrl" mode="scaleToFill" @click="tolDetail(product)"></image>
 
               <view class="product-item-right">
                 <view class="product-name" @click="tolDetail(product)">
@@ -326,18 +311,8 @@
         <div class="cart-footer-block"></div>
         <div v-if="itemList.length" class="cart-footer">
           <div class="checkbox" @click="changeSelectAll">
-            <img
-              class="icon-img"
-              v-if="selectAll"
-              mode="scaleToFill"
-              src="http://192.168.1.187:10088/static/pay/icon-radio-checked.png"
-            />
-            <img
-              class="icon-img"
-              v-else
-              mode="scaleToFill"
-              src="http://192.168.1.187:10088/static/pay/icon-radio-default.png"
-            />
+            <img class="icon-img" v-if="selectAll" mode="scaleToFill" src="http://192.168.1.187:10088/static/pay/icon-radio-checked.png" />
+            <img class="icon-img" v-else mode="scaleToFill" src="http://192.168.1.187:10088/static/pay/icon-radio-default.png" />
             全选
           </div>
           <div class="total">
@@ -358,21 +333,13 @@
         </div>
       </template>
       <div v-if="loading && isLogin && !itemList.length" class="empty-wrap">
-        <img
-          class="icon-img"
-          src="http://192.168.1.187:10088/static/images/cart/empty.png"
-          mode="scaleToFill"
-        />
+        <img class="icon-img" src="http://192.168.1.187:10088/static/images/cart/empty.png" mode="scaleToFill" />
         <div class="desc">您还没有选购商品</div>
-        <!-- <button type="button" @click="toHome" class="btn-home">去挑选</button> -->
+        <button type="button" @click="toHome" class="btn-home">去挑选</button>
       </div>
     </template>
     <div v-else class="empty-wrap">
-      <image
-        class="l_empt"
-        src="http://192.168.1.187:10088/static/life/emp.png"
-        mode="scaleToFill"
-      />
+      <image class="l_empt" src="http://192.168.1.187:10088/static/life/emp.png" mode="scaleToFill" />
       <div class="desc">您还没有登录</div>
       <button type="button" @click="toLogin" class="btn-home">去登录</button>
     </div>
@@ -380,337 +347,337 @@
 </template>
 
 <script>
-import UniNumberBox from './component/uni-number-box.vue'
-import apis from '@/apis/index.js'
-export default {
-  name: 'CART',
-  components: { UniNumberBox },
-  data() {
-    return {
-      num: 1,
-      selectAll: false,
-      sceneType: '积分兑换',
-      itemList: [],
-      loading: false,
-      totalAmountPrice: 0,
-      isEdit: false,
-      totalNum: 0,
-      discountAmount: 0,
-      discountCreditPoints: 0,
-      totalPayablePrice: 0
-    }
-  },
-  computed: {
-    // 选中商品集合
-    selectList() {
-      const result = []
-      if (this.itemList.length) {
+  import UniNumberBox from './component/uni-number-box.vue';
+  import apis from '@/apis/index.js';
+  export default {
+    name: 'CART',
+    components: { UniNumberBox },
+    data() {
+      return {
+        num: 1,
+        selectAll: false,
+        sceneType: '积分兑换',
+        itemList: [],
+        loading: false,
+        totalAmountPrice: 0,
+        isEdit: false,
+        totalNum: 0,
+        discountAmount: 0,
+        discountCreditPoints: 0,
+        totalPayablePrice: 0,
+      };
+    },
+    computed: {
+      // 选中商品集合
+      selectList() {
+        const result = [];
+        if (this.itemList.length) {
+          this.itemList.forEach((item) => {
+            item.carts.forEach((el) => {
+              if (el.checked) {
+                result.push(el);
+              }
+            });
+          });
+          return result;
+        }
+
+        return [];
+      },
+      // 是否登录
+      isLogin() {
+        return Store.getters.isLogin;
+      },
+    },
+    methods: {
+      formatNumber(num) {
+        if (Number.isNaN(parseInt(num))) {
+          return '0.00';
+        }
+        return num.toFixed(2);
+      },
+      goStoreDetail(store) {
+        return;
+        uni.navigateTo({
+          url: '/sub-pages/index/store/main?supplierId=' + store.storeId,
+        });
+      },
+      // 商品数量改变
+      async changeCarNum(childParams, product, index, subIndex) {
+        // 原始num
+        const type = childParams.type;
+        const num = childParams.value;
+        this.itemList[index].carts[subIndex].num = num;
+
+        uni.showLoading();
+        const result = await Axios.post('/cart/updateNum', {
+          skuId: product.skuId,
+          num: num,
+          sceneType: this.sceneType,
+        });
+        uni.hideLoading();
+        if (result.code == 200) {
+          this.loadData();
+          // this.itemList[index].carts[subIndex].num = num
+        } else {
+          // if (type === 'plus') {
+          //   num--;
+          // } else {
+          //   num++;
+          // }
+          this.itemList[index].carts[subIndex].num = num;
+          this.$uni.showToast(result.msg || result.data);
+        }
+
+        // const params = Object.assign({}, product, { num })
+        // return
+        // this.changeNumber(params)
+      },
+      toHome() {
+        uni.switchTab({ url: '/pages/index/index' });
+      },
+      toLogin() {
+        uni.navigateTo({
+          url: '/pages/user-center/login',
+        });
+      },
+      clickRight() {
+        this.isEdit = !this.isEdit;
+      },
+      async changeCheck(item) {
+        const result = await Axios.post('/cart/check', {
+          checked: item.checked ? 0 : 1,
+          skuIds: [item.skuId],
+          sceneType: this.sceneType,
+        });
+        if (result.code == 200) {
+          item.checked = !item.checked;
+          this.recountCheck();
+        }
+        this.loadData();
+      },
+      addNum(item) {
+        console.log('选中', item);
+        item.num++;
+        this.changeNumber(item);
+      },
+      reduceNum(item) {
+        if (item.num > 1) {
+          item.num--;
+          this.changeNumber(item);
+        }
+      },
+      async changeNumber(item) {
+        uni.showLoading('正在提交...');
+        const result = await Axios.post('/cart/updateNum', {
+          skuId: item.skuId,
+          num: item.num,
+          sceneType: this.sceneType,
+        });
+        uni.hideLoading();
+        if (result.code == 200) {
+          this.loadData();
+        } else {
+          item.num--;
+          this.loadData();
+          this.$uni.showToast(result.msg || result.data);
+        }
+      },
+      async loadData() {
+        this.loading = false;
+        this.itemList = [];
+        uni.showLoading();
+
+        uni.request({
+          url: ENV.API + '/cart/list',
+          data: {
+            deviceNumber: uni.getStorageSync('deviceNumber'),
+            sessionId: uni.getStorageSync('sessionId'),
+            sceneType: this.sceneType,
+          },
+          header: {
+            'content-type': 'application/json;charset=utf-8',
+            accessToken: uni.getStorageSync('token'),
+            channel: uni.getSystemInfoSync().host.env,
+          },
+          method: 'POST',
+          success: (res) => {
+            uni.hideLoading();
+            const result = res.data;
+            if (result.code == 200) {
+              if (!result.data.carts) {
+                this.itemList = [];
+              } else {
+                this.itemList = result.data.carts;
+              }
+              this.totalAmountPrice = result.data.totalAmountPrice;
+              this.discountAmount = result.data.discountAmount;
+              this.discountCreditPoints = result.data.discountCreditPoints;
+              this.totalPayablePrice = result.data.totalPayablePrice;
+              this.totalNum = result.data.totalNum;
+              this.recountCheck();
+            } else if (result.code === '1001') {
+            } else {
+              this.$uni.showToast(result.msg || '获取购物车信息失败');
+            }
+            this.loading = true;
+          },
+          fail(error) {
+            uni.hideLoading();
+            console.log('error: ', error);
+          },
+        });
+        return;
+        const result = await Axios.post('/cart/list', {
+          sceneType: this.sceneType,
+        });
+        uni.hideLoading();
+
+        if (result.code == 200) {
+          if (!result.data.carts) {
+            this.itemList = [];
+          } else {
+            this.itemList = result.data.carts;
+          }
+          this.totalAmountPrice = result.data.totalAmountPrice;
+          this.discountAmount = result.data.discountAmount;
+          this.discountCreditPoints = result.data.discountCreditPoints;
+          this.totalPayablePrice = result.data.totalPayablePrice;
+          this.totalNum = result.data.totalNum;
+          this.recountCheck();
+        } else if (result.code === '1001') {
+        } else {
+          this.$uni.showToast(result.msg || '获取购物车信息失败');
+        }
+        this.loading = true;
+      },
+      // 店铺全选
+      async selectAllStore(item) {
+        const skuIds = [];
+        item.carts.forEach((el) => {
+          if (el.soldOut) {
+            skuIds.push(el.skuId);
+          }
+        });
+        const params = {
+          checked: item.checked ? 0 : 1,
+          skuIds: skuIds,
+          sceneType: this.sceneType,
+        };
+
+        const result = await Axios.post('/cart/check', JSON.stringify(params));
+        if (result.code != 200) {
+          this.$uni.showToast(result.msg || result.data);
+        }
+        this.loadData();
+      },
+      // 所有全选
+      async changeSelectAll() {
+        const skuIds = [];
         this.itemList.forEach((item) => {
           item.carts.forEach((el) => {
-            if (el.checked) {
-              result.push(el)
+            if (el.soldOut) {
+              skuIds.push(el.skuId);
             }
-          })
-        })
-        return result
-      }
+          });
+        });
+        const params = {
+          checked: this.selectAll ? 0 : 1,
+          skuIds: skuIds,
+          sceneType: this.sceneType,
+        };
 
-      return []
-    },
-    // 是否登录
-    isLogin() {
-      return Store.getters.isLogin
-    }
-  },
-  methods: {
-    formatNumber(num) {
-      if (Number.isNaN(parseInt(num))) {
-        return '0.00'
-      }
-      return num.toFixed(2)
-    },
-    goStoreDetail(store) {
-      uni.navigateTo({
-        url: '/sub-pages/index/store/main?supplierId=' + store.storeId
-      })
-    },
-    // 商品数量改变
-    async changeCarNum(childParams, product, index, subIndex) {
-      // 原始num
-      const type = childParams.type
-      const num = childParams.value
-      this.itemList[index].carts[subIndex].num = num
-
-      uni.showLoading()
-      const result = await Axios.post('/cart/updateNum', {
-        skuId: product.skuId,
-        num: num,
-        sceneType: this.sceneType
-      })
-      uni.hideLoading()
-      if (result.code == 200) {
-        this.loadData()
-        // this.itemList[index].carts[subIndex].num = num
-      } else {
-        // if (type === 'plus') {
-        //   num--;
-        // } else {
-        //   num++;
-        // }
-        this.itemList[index].carts[subIndex].num = num
-        this.$uni.showToast(result.msg || result.data)
-      }
-
-      // const params = Object.assign({}, product, { num })
-      // return
-      // this.changeNumber(params)
-    },
-    toHome() {
-      uni.navigateTo({ url: '/sub-pages/point/index/index' })
-    },
-    toLogin() {
-      uni.navigateTo({
-        url: '/pages/user-center/login'
-      })
-    },
-    clickRight() {
-      this.isEdit = !this.isEdit
-    },
-    async changeCheck(item) {
-      const result = await Axios.post('/cart/check', {
-        checked: item.checked ? 0 : 1,
-        skuIds: [item.skuId],
-        sceneType: this.sceneType
-      })
-      if (result.code == 200) {
-        item.checked = !item.checked
-        this.recountCheck()
-      }
-      this.loadData()
-    },
-    addNum(item) {
-      console.log('选中', item)
-      item.num++
-      this.changeNumber(item)
-    },
-    reduceNum(item) {
-      if (item.num > 1) {
-        item.num--
-        this.changeNumber(item)
-      }
-    },
-    async changeNumber(item) {
-      uni.showLoading('正在提交...')
-      const result = await Axios.post('/cart/updateNum', {
-        skuId: item.skuId,
-        num: item.num,
-        sceneType: this.sceneType
-      })
-      uni.hideLoading()
-      if (result.code == 200) {
-        this.loadData()
-      } else {
-        item.num--
-        this.loadData()
-        this.$uni.showToast(result.msg || result.data)
-      }
-    },
-    async loadData() {
-      this.loading = false
-      this.itemList = []
-      uni.showLoading()
-
-      uni.request({
-        url: ENV.API + '/cart/list',
-        data: {
-          deviceNumber: uni.getStorageSync('deviceNumber'),
-          sessionId: uni.getStorageSync('sessionId'),
-          sceneType: this.sceneType
-        },
-        header: {
-          'content-type': 'application/json;charset=utf-8',
-          accessToken: uni.getStorageSync('token'),
-          channel: uni.getSystemInfoSync().host.env
-        },
-        method: 'POST',
-        success: (res) => {
-          uni.hideLoading()
-          const result = res.data
-          if (result.code == 200) {
-            if (!result.data.carts) {
-              this.itemList = []
-            } else {
-              this.itemList = result.data.carts
-            }
-            this.totalAmountPrice = result.data.totalAmountPrice
-            this.discountAmount = result.data.discountAmount
-            this.discountCreditPoints = result.data.discountCreditPoints
-            this.totalPayablePrice = result.data.totalPayablePrice
-            this.totalNum = result.data.totalNum
-            this.recountCheck()
-          } else if (result.code === '1001') {
-          } else {
-            this.$uni.showToast(result.msg || '获取购物车信息失败')
-          }
-          this.loading = true
-        },
-        fail(error) {
-          uni.hideLoading()
-          console.log('error: ', error)
+        const result = await Axios.post('/cart/check', JSON.stringify(params));
+        if (result.code != 200) {
+          this.$uni.showToast(result.msg || result.data);
         }
-      })
-      return
-      const result = await Axios.post('/cart/list', {
-        sceneType: this.sceneType
-      })
-      uni.hideLoading()
-
-      if (result.code == 200) {
-        if (!result.data.carts) {
-          this.itemList = []
-        } else {
-          this.itemList = result.data.carts
-        }
-        this.totalAmountPrice = result.data.totalAmountPrice
-        this.discountAmount = result.data.discountAmount
-        this.discountCreditPoints = result.data.discountCreditPoints
-        this.totalPayablePrice = result.data.totalPayablePrice
-        this.totalNum = result.data.totalNum
-        this.recountCheck()
-      } else if (result.code === '1001') {
-      } else {
-        this.$uni.showToast(result.msg || '获取购物车信息失败')
-      }
-      this.loading = true
-    },
-    // 店铺全选
-    async selectAllStore(item) {
-      const skuIds = []
-      item.carts.forEach((el) => {
-        if (el.soldOut) {
-          skuIds.push(el.skuId)
-        }
-      })
-      const params = {
-        checked: item.checked ? 0 : 1,
-        skuIds: skuIds,
-        sceneType: this.sceneType
-      }
-
-      const result = await Axios.post('/cart/check', JSON.stringify(params))
-      if (result.code != 200) {
-        this.$uni.showToast(result.msg || result.data)
-      }
-      this.loadData()
-    },
-    // 所有全选
-    async changeSelectAll() {
-      const skuIds = []
-      this.itemList.forEach((item) => {
-        item.carts.forEach((el) => {
-          if (el.soldOut) {
-            skuIds.push(el.skuId)
-          }
-        })
-      })
-      const params = {
-        checked: this.selectAll ? 0 : 1,
-        skuIds: skuIds,
-        sceneType: this.sceneType
-      }
-
-      const result = await Axios.post('/cart/check', JSON.stringify(params))
-      if (result.code != 200) {
-        this.$uni.showToast(result.msg || result.data)
-      }
-      this.loadData()
-    },
-    recountCheck() {
-      this.selectAll =
+        this.loadData();
+      },
+      recountCheck() {
+        this.selectAll =
           this.itemList.length > 0 &&
           this.itemList.every((item) => {
-            return item.checked
-          })
-    },
-    tolDetail(product) {
-      uni.navigateTo({
-        url:
-            '/sub-pages/index/item/main?id=' + product.productId + '&sceneType=' + this.sceneType
-      })
-    },
-    deleteItem(product) {
-      uni.showModal({
-        content: '确定删除?',
-        success: async (res) => {
-          if (res.confirm) {
-            const result = await Axios.post('/cart/delete', {
-              skuId: product.skuId,
-              sceneType: this.sceneType
-            })
-            if (result.code == 200) {
-              this.$uni.showToast('删除成功')
-              this.loadData()
-            } else {
-              this.$uni.showToast(result.msg || '删除失败')
+            return item.checked;
+          });
+      },
+      tolDetail(product) {
+        uni.navigateTo({
+          url: '/sub-pages/index/item/main?id=' + product.productId + '&sceneType=' + this.sceneType,
+        });
+      },
+      deleteItem(product) {
+        uni.showModal({
+          content: '确定删除?',
+          success: async (res) => {
+            if (res.confirm) {
+              const result = await Axios.post('/cart/delete', {
+                skuId: product.skuId,
+                sceneType: this.sceneType,
+              });
+              if (result.code == 200) {
+                this.$uni.showToast('删除成功');
+                this.loadData();
+              } else {
+                this.$uni.showToast(result.msg || '删除失败');
+              }
             }
-          }
+          },
+        });
+      },
+      // 结算
+      async checkout() {
+        if (!this.selectList.length) {
+          this.$uni.showToast('请选择商品！');
+          return;
         }
-      })
+
+        uni.navigateTo({
+          url: `/sub-pages/index/checkout/main?type=1&sceneType=${this.sceneType}`,
+        });
+        return;
+        const skuIds = [];
+        this.itemList.forEach((item) => {
+          item.carts.forEach((el) => {
+            if (el.soldOut) {
+              skuIds.push(el.skuId);
+            }
+          });
+        });
+        console.log('apis: ', apis);
+
+        apis.checkOrderSettlementFromCart({
+          data: {
+            phone: uni.getStorageSync('userInfo').tel,
+            checkSkuIds: skuIds,
+            sceneType: this.sceneType,
+          },
+          showsLoading: true,
+          success: (res) => {
+            if (res) {
+              uni.navigateTo({
+                url: `/sub-pages/index/checkout/main?type=1&sceneType=${this.sceneType}`,
+              });
+            } else {
+              this.$uni.showToast('当前购物车中商品状态有变化');
+              this.loadData();
+            }
+          },
+        });
+      },
     },
-    // 结算
-    async checkout() {
-      if (!this.selectList.length) {
-        this.$uni.showToast('请选择商品！')
-        return
+    async onShow() {
+      const curPages = getCurrentPages()[0];
+      if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
+        curPages.getTabBar().setData({
+          tabIndex: 4, // 表示当前菜单的索引，该值在不同的页面表示不同
+        });
       }
-
-      uni.navigateTo({
-        url: `/sub-pages/index/checkout/main?type=1&sceneType=${this.sceneType}`
-      })
-      return
-      const skuIds = []
-      this.itemList.forEach((item) => {
-        item.carts.forEach((el) => {
-          if (el.soldOut) {
-            skuIds.push(el.skuId)
-          }
-        })
-      })
-      console.log('apis: ', apis)
-
-      apis.checkOrderSettlementFromCart({
-        data: {
-          phone: uni.getStorageSync('userInfo').tel,
-          checkSkuIds: skuIds,
-          sceneType: this.sceneType
-        },
-        showsLoading: true,
-        success: (res) => {
-          if (res) {
-            uni.navigateTo({
-              url: `/sub-pages/index/checkout/main?type=1&sceneType=${this.sceneType}`
-            })
-          } else {
-            this.$uni.showToast('当前购物车中商品状态有变化')
-            this.loadData()
-          }
-        }
-      })
-    }
-  },
-  async onShow() {
-    const curPages = getCurrentPages()[0]
-    if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
-      curPages.getTabBar().setData({
-        tabIndex: 4 // 表示当前菜单的索引，该值在不同的页面表示不同
-      })
-    }
-    if (!Store.getters.isLogin) {
-      // Store.dispatch('logout');
-      // await Store.dispatch('login')
-      return false
-    }
-    this.loadData()
-  }
-}
+      if (!Store.getters.isLogin) {
+        // Store.dispatch('logout');
+        // await Store.dispatch('login')
+        return false;
+      }
+      this.loadData();
+    },
+  };
 </script>
