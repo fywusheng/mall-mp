@@ -779,7 +779,7 @@
     background: #fff;
     position: relative;
     .search-view {
-      width: calc(100vw - 64rpx);
+      // width: calc(100vw - 64rpx);
       height: 112rpx;
       .search-bar {
         height: 80rpx;
