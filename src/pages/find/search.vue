@@ -14,7 +14,7 @@
         <image
           v-if="keyword"
           mode="scaleToFill"
-          class="search-bar__icon ml-8"
+          class="search-bar__icon ml-8 mr-8"
           src="http://192.168.1.187:10088/static/common/icon-common-input-clear.png"
           @click="keyword = ''"
         />
