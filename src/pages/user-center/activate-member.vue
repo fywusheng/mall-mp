@@ -97,6 +97,15 @@
         },
       };
     },
+    onShow() {
+      // if (this.userInfo && this.userInfo.memberId === '') {
+      //   setTimeout(() => {
+      //     uni.navigateTo({
+      //       url: '/pages/user-center/applicant-info',
+      //     });
+      //   }, 500);
+      // }
+    },
     onLoad() {
       uni.$on('didSelectHeader', this.handleSelectInvoce);
     },
@@ -187,9 +196,6 @@
       handleBackToHomeClick() {
         uni.navigateBack({ delta: 9 });
       },
-    },
-    mounted() {
-      //  this.$refs.popup.open()
     },
   };
 </script>

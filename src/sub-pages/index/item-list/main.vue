@@ -7,8 +7,6 @@
     min-height: 100vh;
   }
   .search-header {
-    // @include middle-center-x(fixed);
-    // top: 0;
     width: 686rpx;
     height: rpx(88);
     padding-left: rpx(32);
@@ -157,76 +155,6 @@
     }
   }
 
-  // .item-list-wrap {
-  //   padding-top: rpx(200);
-  //   box-sizing: border-box;
-  //   height: 100vh;
-  // }
-
-  // .item-list {
-  //   display: flex;
-  //   align-items: center;
-  //   flex-wrap: wrap;
-
-  //   .item {
-  //     position: relative;
-  //     padding-left: rpx(30);
-  //     padding-right: rpx(30);
-  //     padding-bottom: rpx(30);
-  //     margin-bottom: rpx(30);
-  //     border-radius: rpx(8);
-  //     background-color: #fff;
-  //     width: rpx(375);
-  //     box-sizing: border-box;
-
-  //     .item-logo {
-  //       position: relative;
-  //       width: rpx(315);
-  //       height: rpx(315);
-  //       margin-bottom: rpx(30);
-  //       background: center no-repeat;
-  //       background-size: contain;
-
-  //       .sale-out-wrap {
-  //         position: absolute;
-  //         left: 0;
-  //         right: 0;
-  //         top: 0;
-  //         bottom: 0;
-  //         background-color: rgba(0, 0, 0, 0.3);
-
-  //         .sale-out {
-  //           @include middle-center();
-  //           width: rpx(151);
-  //           height: rpx(151);
-  //         }
-  //       }
-  //     }
-
-  //     .brand-name {
-  //       font-size: rpx(36);
-  //       color: $black;
-  //       @include ellipsis();
-  //       line-height: rpx(42);
-  //     }
-
-  //     .item-name {
-  //       padding-top: rpx(10);
-  //       font-size: rpx(36);
-  //       line-height: rpx(42);
-  //       color: $light-black;
-  //       @include ellipsis();
-  //     }
-
-  //     .item-price {
-  //       padding-top: rpx(10);
-  //       line-height: rpx(42);
-  //       font-size: rpx(36);
-  //       color: $black;
-  //     }
-  //   }
-  // }
-
   .empty {
     padding-top: rpx(360);
     font-size: rpx(26);
@@ -257,7 +185,6 @@
   }
 
   .shop_list {
-    // position: fixed;
     flex: 1;
     background: #f2f2f2;
     .scroll-container {
@@ -382,7 +309,11 @@
           @include ellipsis();
           line-height: rpx(42);
         }
-
+        .coupon-wrapper {
+          margin-left: 16rpx;
+          margin-top: 22rpx;
+          height: 48rpx;
+        }
         .coupon {
           display: flex;
           align-items: center;
@@ -390,8 +321,6 @@
           width: fit-content;
           border-radius: 4rpx;
           border: 2rpx solid #ff2600;
-          margin-left: 16rpx;
-          margin-top: 22rpx;
           font-family: PingFangSC, PingFang SC;
           font-weight: 400;
           font-size: 32rpx;
@@ -417,6 +346,7 @@
         .item-name {
           font-family: PingFangSC-Regular, PingFang SC;
           font-weight: 400;
+          height: 110rpx;
           padding-top: rpx(10);
           font-size: rpx(36);
           color: $color-grey;
@@ -500,74 +430,39 @@
   <div class="app">
     <div class="search-header">
       <img class="icon" src="http://192.168.1.187:10088/static/images/common/icon-search.png" />
-      <input
-        confirm-type="search"
-        @confirm="search"
-        :placeholder="key || '输入关键字搜索商品...'"
-        v-model="key"
-      />
-      <img
-        class="btn-clear"
-        src="http://192.168.1.187:10088/static/images/item-list/clear.png"
-        @click="clear"
-      />
+      <input confirm-type="search" @confirm="search" :placeholder="key || '输入关键字搜索商品...'" v-model="key" />
+      <img class="btn-clear" src="http://192.168.1.187:10088/static/images/item-list/clear.png" @click="clear" />
     </div>
     <ul class="sort-list">
       <li class="sort" :class="{ active: !sortType }" @click="changeSortType('')">综合</li>
-      <li
-        class="sort"
-        :class="{ active: [11, 12].includes(sortType) }"
-        @click="changeSortType(sortType === 11 ? 12 : 11)"
-      >
+      <li class="sort" :class="{ active: [11, 12].includes(sortType) }" @click="changeSortType(sortType === 11 ? 12 : 11)">
         时间
         <div class="img-wrap" v-if="sortType !== 11 && sortType !== 12">
           <img class="image" src="http://192.168.1.187:10088/static/images/item-list/up_n@2x.png" />
-          <img
-            class="image"
-            src="http://192.168.1.187:10088/static/images/item-list/down_n@2x.png"
-          />
+          <img class="image" src="http://192.168.1.187:10088/static/images/item-list/down_n@2x.png" />
         </div>
         <div class="img-wrap" v-if="sortType === 11">
           <img class="image" src="http://192.168.1.187:10088/static/images/item-list/up_h@2x.png" />
-          <img
-            class="image"
-            src="http://192.168.1.187:10088/static/images/item-list/down_n@2x.png"
-          />
+          <img class="image" src="http://192.168.1.187:10088/static/images/item-list/down_n@2x.png" />
         </div>
         <div class="img-wrap" v-if="sortType === 12">
           <img class="image" src="http://192.168.1.187:10088/static/images/item-list/up_n@2x.png" />
-          <img
-            class="image"
-            src="http://192.168.1.187:10088/static/images/item-list/down_h@2x.png"
-          />
+          <img class="image" src="http://192.168.1.187:10088/static/images/item-list/down_h@2x.png" />
         </div>
       </li>
-      <li
-        class="sort"
-        :class="{ active: [21, 22].includes(sortType) }"
-        @click="changeSortType(sortType === 21 ? 22 : 21)"
-      >
+      <li class="sort" :class="{ active: [21, 22].includes(sortType) }" @click="changeSortType(sortType === 21 ? 22 : 21)">
         价格
         <div class="img-wrap" v-if="sortType !== 21 && sortType !== 22">
           <img class="image" src="http://192.168.1.187:10088/static/images/item-list/up_n@2x.png" />
-          <img
-            class="image"
-            src="http://192.168.1.187:10088/static/images/item-list/down_n@2x.png"
-          />
+          <img class="image" src="http://192.168.1.187:10088/static/images/item-list/down_n@2x.png" />
         </div>
         <div class="img-wrap" v-if="sortType === 21">
           <img class="image" src="http://192.168.1.187:10088/static/images/item-list/up_h@2x.png" />
-          <img
-            class="image"
-            src="http://192.168.1.187:10088/static/images/item-list/down_n@2x.png"
-          />
+          <img class="image" src="http://192.168.1.187:10088/static/images/item-list/down_n@2x.png" />
         </div>
         <div class="img-wrap" v-if="sortType === 22">
           <img class="image" src="http://192.168.1.187:10088/static/images/item-list/up_n@2x.png" />
-          <img
-            class="image"
-            src="http://192.168.1.187:10088/static/images/item-list/down_h@2x.png"
-          />
+          <img class="image" src="http://192.168.1.187:10088/static/images/item-list/down_h@2x.png" />
         </div>
       </li>
       <li class="sort" @click="showFilter">
@@ -575,16 +470,8 @@
         <img class="filter" src="http://192.168.1.187:10088/static/images/item-list/filter.png" />
       </li>
       <li class="sort" @click="changeListType">
-        <img
-          class="filter"
-          v-if="listType === 0"
-          src="http://192.168.1.187:10088/static/images/common/card-type.png"
-        />
-        <img
-          class="filter"
-          v-if="listType === 1"
-          src="http://192.168.1.187:10088/static/images/common/list-type.png"
-        />
+        <img class="filter" v-if="listType === 0" src="http://192.168.1.187:10088/static/images/common/card-type.png" />
+        <img class="filter" v-if="listType === 1" src="http://192.168.1.187:10088/static/images/common/list-type.png" />
       </li>
     </ul>
 
@@ -592,12 +479,7 @@
       <scroll-view scroll-y class="item-list-wrap" :lower-threshold="400">
         <ul class="item-list">
           <template v-if="listType === 0">
-            <li
-              class="item"
-              @click="goItem(item)"
-              v-for="(item, subIndex) in itemList"
-              :key="subIndex"
-            >
+            <li class="item" @click="goItem(item)" v-for="(item, subIndex) in itemList" :key="subIndex">
               <div class="item-logo" :style="{ backgroundImage: 'url(' + item.proPictDir + ')' }">
                 <div class="sale-out-wrap" v-if="item.soldOut === 0">
                   <img class="sale-out" src="http://192.168.1.187:10088/static/home/empt.png" />
@@ -605,32 +487,23 @@
               </div>
               <div class="item-name">{{ item.name }}</div>
               <!-- 优惠券 -->
-              <view v-if="item.denomination" class="coupon">
-                <view class="label">券</view>
-                <view class="coupon-price">¥{{ item.denomination }}</view>
+              <view class="coupon-wrapper">
+                <view v-if="item.denomination" class="coupon">
+                  <view class="label">券</view>
+                  <view class="coupon-price">¥{{ item.denomination }}</view>
+                </view>
               </view>
 
+              <div class="item-price">{{ member ? '会员到手价' : '到手价' }}:&yen;{{ member ? item.memberPrice : item.finalPrice }}</div>
               <div class="item-price">
-                {{ member ? '会员到手价' : '到手价' }}:&yen;{{
-                  member ? item.memberPrice : item.finalPrice
-                }}
-              </div>
-              <div class="item-price">
-                <view class="jf" v-if="item.isCreditPoints == 1">
-                  积分抵扣￥{{ item.pointDiscountPoint }}
-                </view>
+                <view class="jf" v-if="item.isCreditPoints == 1">积分抵扣￥{{ item.pointDiscountPoint }}</view>
                 <view v-else class="_line_height"></view>
                 <!-- &yen;{{item.costPriceStr}} -->
               </div>
             </li>
           </template>
           <template v-if="listType === 1">
-            <li
-              class="item list"
-              @click="goItem(item)"
-              v-for="(item, subIndex) in itemList"
-              :key="subIndex"
-            >
+            <li class="item list" @click="goItem(item)" v-for="(item, subIndex) in itemList" :key="subIndex">
               <div class="item-logo" :style="{ backgroundImage: 'url(' + item.proPictDir + ')' }">
                 <div class="sale-out-wrap" v-if="item.soldOut === 0">
                   <img class="sale-out" src="http://192.168.1.187:10088/static/home/empt.png" />
@@ -641,20 +514,14 @@
                   {{ item.brandName }}
                 </div>
                 <div class="item-name">{{ item.name }}</div>
-                <div class="item-price">
-                  {{ member ? '会员到手价' : '到手价' }}:&yen;{{
-                    member ? item.memberPrice : item.finalPrice
-                  }}
-                </div>
+                <div class="item-price">{{ member ? '会员到手价' : '到手价' }}:&yen;{{ member ? item.memberPrice : item.finalPrice }}</div>
                 <!-- 优惠券 -->
                 <view v-if="item.denomination" class="coupon">
                   <view class="label">券</view>
                   <view class="coupon-price">¥{{ item.denomination }}</view>
                 </view>
                 <div class="item-price">
-                  <view class="jf" v-if="item.isCreditPoints == 1">
-                    积分抵扣￥{{ item.pointDiscountPoint }}
-                  </view>
+                  <view class="jf" v-if="item.isCreditPoints == 1">积分抵扣￥{{ item.pointDiscountPoint }}</view>
                   <view v-else class="_line_height"></view>
                 </div>
               </view>
@@ -686,506 +553,509 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-import Top from '@/sub-pages/index/components/top.vue'
-import SearchFilter from './components/filter'
-import wx from 'utils/wx'
-export default {
-  name: 'SEARCH',
-  data() {
-    return {
-      loading: true,
-      filterType: 0,
-      pageNo: 1,
-      pageSize: 20,
-      disabled: false,
-      empty: false,
-      listType: 0,
-      itemList: [],
-      brandList: [],
-      brandId: '',
-      dispId: '',
-      level: '',
-      cateId: '',
-      sortType: '',
-      key: '',
-      name: '',
-      attrList: [],
-      categoryList: [],
-      targetAudienceList: [],
-      priceList: []
-    }
-  },
-  computed: {
-    title() {
-      if (this.key) {
-        return this.key
-      }
-      if (this.name) {
-        return this.name
-      }
-      return '搜索'
-    }
-  },
-  components: {
-    Top,
-    SearchFilter
-  },
-  computed: {
-    ...mapState({
-      userInfo: (state) => state.user.userInfo
-    }),
-    // 是否会员
-    member() {
-      return this.userInfo && this.userInfo.memberStatus === '1'
-    }
-  },
-  methods: {
-    toHome() {
-      uni.navigateTo({
-        url: '/sub-pages/index/index/main'
-      })
+  import { mapState } from 'vuex';
+  import Top from '@/sub-pages/index/components/top.vue';
+  import SearchFilter from './components/filter';
+  export default {
+    name: 'SEARCH',
+    data() {
+      return {
+        loading: true,
+        filterType: 0,
+        pageNo: 1,
+        pageSize: 20,
+        disabled: false,
+        empty: false,
+        listType: 0,
+        itemList: [],
+        brandList: [],
+        brandId: '',
+        dispId: '',
+        level: '',
+        cateId: '',
+        sortType: '',
+        key: '',
+        name: '',
+        attrList: [],
+        categoryList: [],
+        targetAudienceList: [],
+        priceList: [],
+      };
     },
-    changeListType() {
-      this.listType = this.listType === 0 ? 1 : 0
-    },
-    goItem(item) {
-      const sceneType = item.isCreditPoints === 1 ? '积分兑换' : '商品购买'
-      uni.navigateTo({
-        url: `/sub-pages/index/item/main?id=${item.id}&sceneType=${sceneType}`
-      })
-    },
-    back() {
-      history.go(-1)
-    },
-    reset() {
-      this.priceList.forEach((data) => {
-        data.check = false
-      })
-      this.categoryList.forEach((data) => {
-        data.check = false
-      })
-      this.brandList.forEach((data) => {
-        data.check = false
-      })
-      this.targetAudienceList.forEach((data) => {
-        data.check = false
-      })
-      this.attrList.forEach((data) => {
-        data.dataList.forEach((child) => {
-          child.check = false
-        })
-      })
-      this.search()
-    },
-    changeSortType(type) {
-      this.sortType = type
-      this.search()
-    },
-    clear() {
-      this.key = ''
-      this.search()
-    },
-    search() {
-      this.pageNo = 1
-      this.itemList = []
-      this.disabled = false
-      this.searchData()
-    },
-    changePrice(priceRange) {
-      this.priceList.forEach((e) => {
-        e.check = false
-      })
-      priceRange.check = !priceRange.check
-      this.$set(this.priceList, priceRange.id, priceRange)
-    },
-    changeTargetAudience(list) {
-      this.targetAudienceList = list
-    },
-    changeBrand(brand) {
-      brand.check = !brand.check
-      const index = this.brandList.findIndex((item) => {
-        return item.brandId == brand.brandId
-      })
-      this.$set(this.brandList, index, brand)
-    },
-    changeCate(cate) {
-      cate.check = !cate.check
-      const index = this.categoryList.findIndex((item) => {
-        return item.id == cate.id
-      })
-      this.$set(this.categoryList, index, cate)
-    },
-    showFilter() {
-      this.$refs.filter.show(true)
-    },
-    async loadData() {
-      if (this.disabled) {
-        return false
-      }
-      const params = {
-        pageSize: this.pageSize,
-        pageNum: this.pageNo++
-        // isCreditPoints: 0,
-      }
-      if (this.sortType) {
-        params.sortType = this.sortType
-      }
-      if (this.brandId) {
-        params.brandIds = this.brandId.join(',')
-      }
-      if (this.planId) {
-        params.planId = this.planId
-      }
-      if (this.dispId) {
-        params.categoryCodes = this.dispId
-      }
-      if (this.level) {
-        const s = ['firstCategoryId', 'twoCategoryId', 'threeCategoryId']
-        params[s[this.level - 1]] = this.cateId
-      }
-      if (this.key) {
-        params.name = this.key
-      }
-      const attrList = []
-      this.attrList.forEach((attr) => {
-        attr.dataList.forEach((condition) => {
-          if (condition.check) {
-            attrList.push(condition.value)
-          }
-        })
-      })
-      if (attrList.length) {
-        params.attrValIds = attrList.join(',')
-      }
-      const dispIds = []
-      this.categoryList.forEach((cate) => {
-        if (cate.check) {
-          dispIds.push(cate.id)
+    computed: {
+      title() {
+        if (this.key) {
+          return this.key;
         }
-      })
-      if (dispIds.length) {
-        params.categoryCodes = dispIds.join(',')
-      }
-      const brandIds = []
-      this.brandList.forEach((brand) => {
-        if (brand.check) {
-          brandIds.push(brand.brandId)
+        if (this.name) {
+          return this.name;
         }
-      })
-      if (brandIds.length) {
-        params.brandIds = brandIds.join(',')
-      }
-      const priceIds = []
-      this.priceList.forEach((price) => {
-        if (price.check) {
-          priceIds.push(price.name)
+        return '搜索';
+      },
+    },
+    components: {
+      Top,
+      SearchFilter,
+    },
+    computed: {
+      ...mapState({
+        userInfo: (state) => state.user.userInfo,
+      }),
+      // 是否会员
+      member() {
+        return this.userInfo && this.userInfo.memberStatus === '1';
+      },
+    },
+    methods: {
+      toHome() {
+        uni.navigateTo({
+          url: '/sub-pages/index/index/main',
+        });
+      },
+      changeListType() {
+        this.listType = this.listType === 0 ? 1 : 0;
+      },
+      goItem(item) {
+        const sceneType = item.isCreditPoints === 1 ? '积分兑换' : '商品购买';
+        uni.navigateTo({
+          url: `/sub-pages/index/item/main?id=${item.id}&sceneType=${sceneType}`,
+        });
+      },
+      back() {
+        history.go(-1);
+      },
+      reset() {
+        this.priceList.forEach((data) => {
+          data.check = false;
+        });
+        this.categoryList.forEach((data) => {
+          data.check = false;
+        });
+        this.brandList.forEach((data) => {
+          data.check = false;
+        });
+        this.targetAudienceList.forEach((data) => {
+          data.check = false;
+        });
+        this.attrList.forEach((data) => {
+          data.dataList.forEach((child) => {
+            child.check = false;
+          });
+        });
+        this.search();
+      },
+      changeSortType(type) {
+        this.sortType = type;
+        this.search();
+      },
+      clear() {
+        this.key = '';
+        this.search();
+      },
+      search() {
+        this.pageNo = 1;
+        this.itemList = [];
+        this.disabled = false;
+        this.searchData();
+      },
+      changePrice(priceRange) {
+        this.priceList.forEach((e) => {
+          e.check = false;
+        });
+        priceRange.check = !priceRange.check;
+        this.$set(this.priceList, priceRange.id, priceRange);
+      },
+      changeTargetAudience(list) {
+        this.targetAudienceList = list;
+      },
+      changeBrand(brand) {
+        brand.check = !brand.check;
+        const index = this.brandList.findIndex((item) => {
+          return item.brandId == brand.brandId;
+        });
+        this.$set(this.brandList, index, brand);
+      },
+      changeCate(cate) {
+        cate.check = !cate.check;
+        const index = this.categoryList.findIndex((item) => {
+          return item.id == cate.id;
+        });
+        this.$set(this.categoryList, index, cate);
+      },
+      showFilter() {
+        this.$refs.filter.show(true);
+      },
+      async loadData() {
+        if (this.disabled) {
+          return false;
         }
-      })
-      if (priceIds.length) {
-        params.priceRange = priceIds.join(',')
-      }
-      const targetAudiences = []
-      this.targetAudienceList.forEach((target) => {
-        if (target.check) {
-          targetAudiences.push(target.name)
+        const params = {
+          pageSize: this.pageSize,
+          pageNum: this.pageNo++,
+          storeBrandIds: uni.getStorageSync('storeInfo').operatingBrand,
+          businessScopeList: uni.getStorageSync('storeInfo').businessScope,
+          // isCreditPoints: 0,
+        };
+        if (this.sortType) {
+          params.sortType = this.sortType;
         }
-      })
-      if (targetAudiences.length) {
-        params.targetAudience = targetAudiences.join(',')
-      }
-      this.disabled = true
-      uni.showLoading()
-      // console.log("params: " + JSON.stringify(params))
-      let searchResult = await Axios.post('/product/getProductSearchList', {
-        ...Object.assign(params, this.searchParams)
-      })
-      // console.log('searchResult: ', searchResult);
-
-      searchResult = searchResult.data
-      uni.hideLoading()
-      this.loading = false
-      if (searchResult.esProducts) {
-        this.disabled = searchResult.pageNum >= searchResult.totalPage
-        const list = []
-        searchResult.esProducts.forEach((data) => {
-          const tempData = _.pick(data, [
-            'id',
-            'skuList',
-            'mainImgUrl',
-            'brandName',
-            'name',
-            'price',
-            'stockBlance',
-            'saleState',
-            'pointDiscountPoint'
-          ])
-          let availableStock = 0
-          let minMarkOffPrice = 0
-          let maxMarkOffPrice = 0
-          let minCostPrice = 0
-          let maxCostPrice = 0
-          tempData.skuList &&
-              tempData.skuList.forEach((sku) => {
-                availableStock += sku.availableStock
-                if (minMarkOffPrice === 0 || minMarkOffPrice > sku.markOffPrice) {
-                  minMarkOffPrice = sku.markOffPrice
-                }
-                if (maxMarkOffPrice === 0 || maxMarkOffPrice < sku.markOffPrice) {
-                  maxMarkOffPrice = sku.markOffPrice
-                }
-                if (minCostPrice === 0 || minCostPrice > sku.sellingPrice) {
-                  minCostPrice = sku.sellingPrice
-                }
-                if (maxCostPrice === 0 || maxCostPrice < sku.sellingPrice) {
-                  maxCostPrice = sku.sellingPrice
-                }
-              })
-          if (minMarkOffPrice !== maxMarkOffPrice) {
-            tempData.markOffPriceStr = `${minMarkOffPrice}-${maxMarkOffPrice}`
-          } else {
-            tempData.markOffPriceStr = minMarkOffPrice
-          }
-          if (minCostPrice !== maxCostPrice) {
-            tempData.costPriceStr = `${minCostPrice}-${maxCostPrice}`
-          } else {
-            tempData.costPriceStr = minCostPrice
-          }
-          tempData.availableStock = availableStock
-          tempData.proPictDir = XIU.getImgFormat(tempData.mainImgUrl, '/resize,w_750')
-          Object.assign(tempData, data)
-          list.push(tempData)
-        })
-        this.itemList = this.itemList.concat(list)
-        this.brandList = []
-        console.log('searchResult: ', searchResult)
-        Object.keys(searchResult.brands).forEach((key) => {
-          searchResult.brands[key].forEach((brand) => {
-            this.brandList.push({
-              brandId: brand.brandId,
-              brandName: brand.brandName,
-              check: false
-            })
-          })
-        })
-        this.categoryList = []
-        searchResult.categorys.forEach((category) => {
-          this.categoryList.push({
-            id: category.code,
-            name: category.name,
-            check: false
-          })
-        })
-        this.priceList = []
-        searchResult.prices.forEach((data, index) => {
-          this.priceList.push({
-            id: index,
-            name: data,
-            check: false
-          })
-        })
-        if (this.attrList.length) {
-          return false
+        if (this.brandId) {
+          params.brandIds = this.brandId.join(',');
         }
-        const attrs = []
-        Object.keys(searchResult.attrs).forEach((key) => {
-          const dataList = []
-          const attr = key.split('@@@')
-          searchResult.attrs[key].forEach((data) => {
-            if (!data) {
-              return false
+        if (this.planId) {
+          params.planId = this.planId;
+        }
+        if (this.dispId) {
+          params.categoryCodes = this.dispId;
+        }
+        if (this.level) {
+          const s = ['firstCategoryId', 'twoCategoryId', 'threeCategoryId'];
+          params[s[this.level - 1]] = this.cateId;
+        }
+        if (this.key) {
+          params.name = this.key;
+        }
+        const attrList = [];
+        this.attrList.forEach((attr) => {
+          attr.dataList.forEach((condition) => {
+            if (condition.check) {
+              attrList.push(condition.value);
             }
-            const subAttr = data.split('@@@')
-            dataList.push({
-              id: subAttr[0],
-              name: subAttr[1],
-              value: data,
-              check: false
-            })
-          })
-          attrs.push({
-            id: attr[0],
-            name: attr[1],
-            showMore: false,
-            dataList: dataList
-          })
-        })
-        this.attrList = attrs
-        this.empty = !this.itemList
-        // if(!this.itemList){
-        //   this.empty = true
-        // }else{
-        //   this.empty = false
-        // }
-        // console.log("页面商品：" + JSON.stringify(this.itemList))
-      } else {
-        // wx.showToast(searchResult.result.message);
-        this.empty = true
-      }
-    },
-    async searchData() {
-      if (this.disabled) {
-        return false
-      }
-      const params = {
-        pageSize: this.pageSize,
-        pageNum: this.pageNo++
-        // isCreditPoints: 0,
-      }
-      if (this.sortType) {
-        params.sortType = this.sortType
-      }
-      if (this.brandId) {
-        params.brandIds = this.brandId.join(',')
-      }
-      if (this.planId) {
-        params.planId = this.planId
-      }
-      if (this.dispId) {
-        params.categoryCodes = this.dispId
-      }
-      if (this.level) {
-        const s = ['firstCategoryId', 'twoCategoryId', 'threeCategoryId']
-        params[s[this.level - 1]] = this.cateId
-      }
-      if (this.key) {
-        params.name = this.key
-      }
-      const attrList = []
-      this.attrList.forEach((attr) => {
-        attr.dataList.forEach((condition) => {
-          if (condition.check) {
-            attrList.push(condition.value)
+          });
+        });
+        if (attrList.length) {
+          params.attrValIds = attrList.join(',');
+        }
+        const dispIds = [];
+        this.categoryList.forEach((cate) => {
+          if (cate.check) {
+            dispIds.push(cate.id);
           }
-        })
-      })
-      if (attrList.length) {
-        params.attrValIds = attrList.join(',')
-      }
-      const dispIds = []
-      this.categoryList.forEach((cate) => {
-        if (cate.check) {
-          dispIds.push(cate.id)
+        });
+        if (dispIds.length) {
+          params.categoryCodes = dispIds.join(',');
         }
-      })
-      if (dispIds.length) {
-        params.categoryCodes = dispIds.join(',')
-      }
-      const brandIds = []
-      this.brandList.forEach((brand) => {
-        if (brand.check) {
-          brandIds.push(brand.brandId)
+        const brandIds = [];
+        this.brandList.forEach((brand) => {
+          if (brand.check) {
+            brandIds.push(brand.brandId);
+          }
+        });
+        if (brandIds.length) {
+          params.brandIds = brandIds.join(',');
         }
-      })
-      if (brandIds.length) {
-        params.brandIds = brandIds.join(',')
-      }
-      const priceIds = []
-      this.priceList.forEach((price) => {
-        if (price.check) {
-          priceIds.push(price.name)
+        const priceIds = [];
+        this.priceList.forEach((price) => {
+          if (price.check) {
+            priceIds.push(price.name);
+          }
+        });
+        if (priceIds.length) {
+          params.priceRange = priceIds.join(',');
         }
-      })
-      if (priceIds.length) {
-        params.priceRange = priceIds.join(',')
-      }
-      const targetAudiences = []
-      this.targetAudienceList.forEach((target) => {
-        if (target.check) {
-          targetAudiences.push(target.name)
+        const targetAudiences = [];
+        this.targetAudienceList.forEach((target) => {
+          if (target.check) {
+            targetAudiences.push(target.name);
+          }
+        });
+        if (targetAudiences.length) {
+          params.targetAudience = targetAudiences.join(',');
         }
-      })
-      if (targetAudiences.length) {
-        params.targetAudience = targetAudiences.join(',')
-      }
-      this.disabled = true
-      uni.showLoading()
-      // console.log("params: " + JSON.stringify(params))
-      let searchResult = await Axios.post('/product/getProductSearchList', {
-        ...Object.assign(params, this.searchParams)
-      })
-      // console.log('searchResult: ', searchResult);
+        this.disabled = true;
+        uni.showLoading();
+        // console.log("params: " + JSON.stringify(params))
+        let searchResult = await Axios.post('/product/getProductSearchList', {
+          ...Object.assign(params, this.searchParams),
+        });
+        // console.log('searchResult: ', searchResult);
 
-      searchResult = searchResult.data
-      uni.hideLoading()
-      this.loading = false
-      if (searchResult.esProducts) {
-        this.disabled = searchResult.pageNum >= searchResult.totalPage
-        const list = []
-        searchResult.esProducts.forEach((data) => {
-          const tempData = _.pick(data, [
-            'id',
-            'skuList',
-            'mainImgUrl',
-            'brandName',
-            'name',
-            'price',
-            'stockBlance',
-            'saleState',
-            'pointDiscountPoint'
-          ])
-          let availableStock = 0
-          let minMarkOffPrice = 0
-          let maxMarkOffPrice = 0
-          let minCostPrice = 0
-          let maxCostPrice = 0
-          tempData.skuList &&
+        searchResult = searchResult.data;
+        uni.hideLoading();
+        this.loading = false;
+        if (searchResult.esProducts) {
+          this.disabled = searchResult.pageNum >= searchResult.totalPage;
+          const list = [];
+          searchResult.esProducts.forEach((data) => {
+            const tempData = _.pick(data, [
+              'id',
+              'skuList',
+              'mainImgUrl',
+              'brandName',
+              'name',
+              'price',
+              'stockBlance',
+              'saleState',
+              'pointDiscountPoint',
+            ]);
+            let availableStock = 0;
+            let minMarkOffPrice = 0;
+            let maxMarkOffPrice = 0;
+            let minCostPrice = 0;
+            let maxCostPrice = 0;
+            tempData.skuList &&
               tempData.skuList.forEach((sku) => {
-                availableStock += sku.availableStock
+                availableStock += sku.availableStock;
                 if (minMarkOffPrice === 0 || minMarkOffPrice > sku.markOffPrice) {
-                  minMarkOffPrice = sku.markOffPrice
+                  minMarkOffPrice = sku.markOffPrice;
                 }
                 if (maxMarkOffPrice === 0 || maxMarkOffPrice < sku.markOffPrice) {
-                  maxMarkOffPrice = sku.markOffPrice
+                  maxMarkOffPrice = sku.markOffPrice;
                 }
                 if (minCostPrice === 0 || minCostPrice > sku.sellingPrice) {
-                  minCostPrice = sku.sellingPrice
+                  minCostPrice = sku.sellingPrice;
                 }
                 if (maxCostPrice === 0 || maxCostPrice < sku.sellingPrice) {
-                  maxCostPrice = sku.sellingPrice
+                  maxCostPrice = sku.sellingPrice;
                 }
-              })
-          if (minMarkOffPrice !== maxMarkOffPrice) {
-            tempData.markOffPriceStr = `${minMarkOffPrice}-${maxMarkOffPrice}`
-          } else {
-            tempData.markOffPriceStr = minMarkOffPrice
+              });
+            if (minMarkOffPrice !== maxMarkOffPrice) {
+              tempData.markOffPriceStr = `${minMarkOffPrice}-${maxMarkOffPrice}`;
+            } else {
+              tempData.markOffPriceStr = minMarkOffPrice;
+            }
+            if (minCostPrice !== maxCostPrice) {
+              tempData.costPriceStr = `${minCostPrice}-${maxCostPrice}`;
+            } else {
+              tempData.costPriceStr = minCostPrice;
+            }
+            tempData.availableStock = availableStock;
+            tempData.proPictDir = XIU.getImgFormat(tempData.mainImgUrl, '/resize,w_750');
+            Object.assign(tempData, data);
+            list.push(tempData);
+          });
+          this.itemList = this.itemList.concat(list);
+          this.brandList = [];
+          console.log('searchResult: ', searchResult);
+          Object.keys(searchResult.brands).forEach((key) => {
+            searchResult.brands[key].forEach((brand) => {
+              this.brandList.push({
+                brandId: brand.brandId,
+                brandName: brand.brandName,
+                check: false,
+              });
+            });
+          });
+          this.categoryList = [];
+          searchResult.categorys.forEach((category) => {
+            this.categoryList.push({
+              id: category.code,
+              name: category.name,
+              check: false,
+            });
+          });
+          this.priceList = [];
+          searchResult.prices.forEach((data, index) => {
+            this.priceList.push({
+              id: index,
+              name: data,
+              check: false,
+            });
+          });
+          if (this.attrList.length) {
+            return false;
           }
-          if (minCostPrice !== maxCostPrice) {
-            tempData.costPriceStr = `${minCostPrice}-${maxCostPrice}`
-          } else {
-            tempData.costPriceStr = minCostPrice
+          const attrs = [];
+          Object.keys(searchResult.attrs).forEach((key) => {
+            const dataList = [];
+            const attr = key.split('@@@');
+            searchResult.attrs[key].forEach((data) => {
+              if (!data) {
+                return false;
+              }
+              const subAttr = data.split('@@@');
+              dataList.push({
+                id: subAttr[0],
+                name: subAttr[1],
+                value: data,
+                check: false,
+              });
+            });
+            attrs.push({
+              id: attr[0],
+              name: attr[1],
+              showMore: false,
+              dataList: dataList,
+            });
+          });
+          this.attrList = attrs;
+          this.empty = !this.itemList;
+          // if(!this.itemList){
+          //   this.empty = true
+          // }else{
+          //   this.empty = false
+          // }
+          // console.log("页面商品：" + JSON.stringify(this.itemList))
+        } else {
+          // wx.showToast(searchResult.result.message);
+          this.empty = true;
+        }
+      },
+      async searchData() {
+        if (this.disabled) {
+          return false;
+        }
+        const params = {
+          pageSize: this.pageSize,
+          pageNum: this.pageNo++,
+          storeBrandIds: uni.getStorageSync('storeInfo').operatingBrand,
+          businessScopeList: uni.getStorageSync('storeInfo').businessScope,
+          // isCreditPoints: 0,
+        };
+        if (this.sortType) {
+          params.sortType = this.sortType;
+        }
+        if (this.brandId) {
+          params.brandIds = this.brandId.join(',');
+        }
+        if (this.planId) {
+          params.planId = this.planId;
+        }
+        if (this.dispId) {
+          params.categoryCodes = this.dispId;
+        }
+        if (this.level) {
+          const s = ['firstCategoryId', 'twoCategoryId', 'threeCategoryId'];
+          params[s[this.level - 1]] = this.cateId;
+        }
+        if (this.key) {
+          params.name = this.key;
+        }
+        const attrList = [];
+        this.attrList.forEach((attr) => {
+          attr.dataList.forEach((condition) => {
+            if (condition.check) {
+              attrList.push(condition.value);
+            }
+          });
+        });
+        if (attrList.length) {
+          params.attrValIds = attrList.join(',');
+        }
+        const dispIds = [];
+        this.categoryList.forEach((cate) => {
+          if (cate.check) {
+            dispIds.push(cate.id);
           }
-          tempData.availableStock = availableStock
-          tempData.proPictDir = XIU.getImgFormat(tempData.mainImgUrl, '/resize,w_750')
-          Object.assign(tempData, data)
-          list.push(tempData)
-        })
-        this.itemList = this.itemList.concat(list)
-        this.empty = !this.itemList
-      } else {
-        this.empty = true
-      }
-    }
-  },
-  onReachBottom() {
-    this.searchData()
-  },
-  onPageScroll(e) {
-    // this.$refs.toTop.show(e.scrollTop > App.systemInfo.screenHeight);
-    this.$refs.toTop.show(true)
-  },
-  async mounted() {
-    this.brandId = this.$root.$mp.query.brandId
-    this.planId = this.$root.$mp.query.planId
-    this.dispId = this.$root.$mp.query.dispId
-    this.cateId = this.$root.$mp.query.cateId
-    this.level = this.$root.$mp.query.level
-    this.key = this.$root.$mp.query.key
-    this.$refs.filter.show(false)
-    this.pageNo = 1
-    this.disabled = false
-    this.itemList = []
-    await this.loadData()
-  }
-}
+        });
+        if (dispIds.length) {
+          params.categoryCodes = dispIds.join(',');
+        }
+        const brandIds = [];
+        this.brandList.forEach((brand) => {
+          if (brand.check) {
+            brandIds.push(brand.brandId);
+          }
+        });
+        if (brandIds.length) {
+          params.brandIds = brandIds.join(',');
+        }
+        const priceIds = [];
+        this.priceList.forEach((price) => {
+          if (price.check) {
+            priceIds.push(price.name);
+          }
+        });
+        if (priceIds.length) {
+          params.priceRange = priceIds.join(',');
+        }
+        const targetAudiences = [];
+        this.targetAudienceList.forEach((target) => {
+          if (target.check) {
+            targetAudiences.push(target.name);
+          }
+        });
+        if (targetAudiences.length) {
+          params.targetAudience = targetAudiences.join(',');
+        }
+        this.disabled = true;
+        uni.showLoading();
+        // console.log("params: " + JSON.stringify(params))
+        let searchResult = await Axios.post('/product/getProductSearchList', {
+          ...Object.assign(params, this.searchParams),
+        });
+        // console.log('searchResult: ', searchResult);
+
+        searchResult = searchResult.data;
+        uni.hideLoading();
+        this.loading = false;
+        if (searchResult.esProducts) {
+          this.disabled = searchResult.pageNum >= searchResult.totalPage;
+          const list = [];
+          searchResult.esProducts.forEach((data) => {
+            const tempData = _.pick(data, [
+              'id',
+              'skuList',
+              'mainImgUrl',
+              'brandName',
+              'name',
+              'price',
+              'stockBlance',
+              'saleState',
+              'pointDiscountPoint',
+            ]);
+            let availableStock = 0;
+            let minMarkOffPrice = 0;
+            let maxMarkOffPrice = 0;
+            let minCostPrice = 0;
+            let maxCostPrice = 0;
+            tempData.skuList &&
+              tempData.skuList.forEach((sku) => {
+                availableStock += sku.availableStock;
+                if (minMarkOffPrice === 0 || minMarkOffPrice > sku.markOffPrice) {
+                  minMarkOffPrice = sku.markOffPrice;
+                }
+                if (maxMarkOffPrice === 0 || maxMarkOffPrice < sku.markOffPrice) {
+                  maxMarkOffPrice = sku.markOffPrice;
+                }
+                if (minCostPrice === 0 || minCostPrice > sku.sellingPrice) {
+                  minCostPrice = sku.sellingPrice;
+                }
+                if (maxCostPrice === 0 || maxCostPrice < sku.sellingPrice) {
+                  maxCostPrice = sku.sellingPrice;
+                }
+              });
+            if (minMarkOffPrice !== maxMarkOffPrice) {
+              tempData.markOffPriceStr = `${minMarkOffPrice}-${maxMarkOffPrice}`;
+            } else {
+              tempData.markOffPriceStr = minMarkOffPrice;
+            }
+            if (minCostPrice !== maxCostPrice) {
+              tempData.costPriceStr = `${minCostPrice}-${maxCostPrice}`;
+            } else {
+              tempData.costPriceStr = minCostPrice;
+            }
+            tempData.availableStock = availableStock;
+            tempData.proPictDir = XIU.getImgFormat(tempData.mainImgUrl, '/resize,w_750');
+            Object.assign(tempData, data);
+            list.push(tempData);
+          });
+          this.itemList = this.itemList.concat(list);
+          this.empty = !this.itemList;
+        } else {
+          this.empty = true;
+        }
+      },
+    },
+    onReachBottom() {
+      this.searchData();
+    },
+    onPageScroll(e) {
+      // this.$refs.toTop.show(e.scrollTop > App.systemInfo.screenHeight);
+      this.$refs.toTop.show(true);
+    },
+    async mounted() {
+      this.brandId = this.$root.$mp.query.brandId;
+      this.planId = this.$root.$mp.query.planId;
+      this.dispId = this.$root.$mp.query.dispId;
+      this.cateId = this.$root.$mp.query.cateId;
+      this.level = this.$root.$mp.query.level;
+      this.key = this.$root.$mp.query.key;
+      this.$refs.filter.show(false);
+      this.pageNo = 1;
+      this.disabled = false;
+      this.itemList = [];
+      await this.loadData();
+    },
+  };
 </script>

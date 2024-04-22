@@ -48,9 +48,6 @@
         <text class="fs-32 has-certi">已实名</text>
       </view> -->
     </view>
-    <!-- <view @click="setting" class="iconSet">
-      <image class="icon_set" src="http://192.168.1.187:10088/static/life/shezhi.png" />
-    </view> -->
 
     <view v-if="userInfo.memberStatus === '1'" class="statistics">
       <view class="row">

@@ -5,19 +5,22 @@
     position: relative;
     display: block;
     width: rpx(750);
-    background-color: #fff;
+    min-height: 100vh;
+    padding-top: 24rpx;
+    background-color: #f5f5f5;
 
     .search-header {
-      @include middle-center-x(fixed);
-      top: 0;
-      width: rpx(750);
-      height: rpx(88);
-      padding-left: rpx(32);
-      padding-right: rpx(118);
+      position: relative;
+      width: 686rpx;
+      height: 88rpx;
+      background: #ffffff;
+      border-radius: 44px;
+      border: 2rpx solid #ff5500;
       display: flex;
       align-items: center;
       background-color: #fff;
       z-index: 100;
+      margin: 0 auto;
 
       form {
         display: block;
@@ -28,10 +31,9 @@
         display: block;
         position: relative;
         width: 100%;
-        padding-left: rpx(65);
+        padding-left: rpx(40);
         padding-right: rpx(30);
         height: rpx(88);
-        background-color: $extra-gray;
         font-size: rpx(36);
         color: $black;
         border-radius: 16rpx;
@@ -49,17 +51,17 @@
         @include middle-center-y();
         right: rpx(30);
         font-size: rpx(36);
-        font-weight: 500;
+        font-weight: 400;
       }
     }
 
     .label-list-wrap {
-      padding: rpx(128) rpx(30) rpx(30);
-      background-color: #fff;
+      margin-top: 32rpx;
+      padding: 0 32rpx;
 
       .title {
         position: relative;
-        font-size: rpx(32);
+        font-size: rpx(40);
         color: $black;
         font-weight: bold;
         display: flex;
@@ -69,6 +71,10 @@
         .del {
           display: flex;
           align-items: center;
+          font-family: PingFangSC, PingFang SC;
+          font-weight: 400;
+          font-size: 36rpx;
+          color: #999999;
           img {
             margin-right: 20rpx;
             right: rpx(30);
@@ -85,11 +91,10 @@
 
         .label {
           position: relative;
-          margin-top: rpx(40);
+          margin-top: rpx(24);
           margin-right: rpx(30);
           height: rpx(68);
           line-height: rpx(68);
-          // width: rpx(110);
           padding: 0 10rpx;
           font-size: rpx(36);
           text-align: center;
@@ -101,8 +106,9 @@
     }
     .hot-list {
       padding: 0 30rpx;
+      margin-top: 32rpx;
       .title {
-        font-size: 32rpx;
+        font-size: 40rpx;
         font-weight: bold;
       }
       .list {
@@ -111,7 +117,7 @@
         flex-wrap: wrap;
         .label {
           position: relative;
-          margin-top: rpx(40);
+          margin-top: rpx(24);
           margin-right: rpx(30);
           height: rpx(68);
           line-height: rpx(68);
@@ -130,38 +136,20 @@
 <template>
   <div class="page-search">
     <div class="search-header">
-      <img
-        class="icon-search"
-        src="http://192.168.1.187:10088/static/images/common/icon-search.png"
-      />
-      <input
-        ref="searchInput"
-        confirm-type="search"
-        :adjust-position="false"
-        @confirm="search('')"
-        :placeholder="key"
-        v-model="key"
-      />
+      <!-- <img class="icon-search" src="http://192.168.1.187:10088/static/images/common/icon-search.png" /> -->
+      <input ref="searchInput" placeholder="搜索商品" confirm-type="search" :adjust-position="false" @confirm="search('')" v-model="key" />
       <div class="btn-clear" @click="search('')">搜索</div>
     </div>
     <div class="label-list-wrap" v-if="showHistory">
       <div class="title">
         最近搜索
-        <view class="del">
-          <img
-            src="http://192.168.1.187:10088/static/images/icon-delete.png"
-            @click="clearHistory"
-          />
-          <view>删除</view>
+        <view class="del" @click="clearHistory">
+          <img src="http://192.168.1.187:10088/static/images/icon-delete.png" />
+          <view>清空</view>
         </view>
       </div>
       <ul class="label-list">
-        <li
-          class="label"
-          @click="search(history)"
-          v-for="(history, index) in historyList"
-          :key="index"
-        >
+        <li class="label" @click="search(history)" v-for="(history, index) in historyList" :key="index">
           {{ history }}
         </li>
       </ul>
@@ -178,43 +166,43 @@
 </template>
 
 <script>
-export default {
-  name: 'SEARCH',
-  data() {
-    return {
-      key: '搜索你想找的商品',
-      historyList: uni.getStorageSync('SEARCH_HISTORY_LIST') || [],
-      resultList: [],
-      hotList: ['洗衣液', '奶粉', '拖鞋', '睡衣']
-    }
-  },
-  loadDefaultData: true,
-  computed: {
-    showHistory() {
-      return this.historyList && this.historyList.length
-    }
-  },
-  methods: {
-    cancel() {
-      uni.navigateBack()
+  export default {
+    name: 'SEARCH',
+    data() {
+      return {
+        key: '搜索你想找的商品',
+        historyList: uni.getStorageSync('SEARCH_HISTORY_LIST') || [],
+        resultList: [],
+        hotList: ['洗衣液', '奶粉', '拖鞋', '睡衣'],
+      };
     },
-    clearHistory() {
-      uni.removeStorageSync('SEARCH_HISTORY_LIST')
-      this.historyList = []
+    loadDefaultData: true,
+    computed: {
+      showHistory() {
+        return this.historyList && this.historyList.length;
+      },
     },
-    async search(hot) {
-      if (hot) {
-        this.key = hot
-      }
-      this.key && this.historyList.indexOf(this.key) === -1 && this.historyList.push(this.key)
-      uni.setStorageSync('SEARCH_HISTORY_LIST', this.historyList)
-      uni.navigateTo({
-        url: '/sub-pages/index/item-list/main?key=' + this.key
-      })
-    }
-  },
-  async onShow() {
-    this.key = ''
-  }
-}
+    methods: {
+      cancel() {
+        uni.navigateBack();
+      },
+      clearHistory() {
+        uni.removeStorageSync('SEARCH_HISTORY_LIST');
+        this.historyList = [];
+      },
+      async search(hot) {
+        if (hot) {
+          this.key = hot;
+        }
+        this.key && this.historyList.indexOf(this.key) === -1 && this.historyList.push(this.key);
+        uni.setStorageSync('SEARCH_HISTORY_LIST', this.historyList);
+        uni.navigateTo({
+          url: '/sub-pages/index/item-list/main?key=' + this.key,
+        });
+      },
+    },
+    async onShow() {
+      this.key = '';
+    },
+  };
 </script>

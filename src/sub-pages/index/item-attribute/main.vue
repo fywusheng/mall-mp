@@ -11,12 +11,15 @@
         padding-bottom: rpx(33);
         border-bottom: rpx(1) solid #e4e4e4;
         .name {
-          font-size: rpx(30);
-          font-weight: bold;
+          font-size: rpx(36);
+          font-family: PingFangSC, PingFang SC;
+          font-weight: 400;
+          color: #999999;
+          font-style: normal;
         }
         .content {
           padding-top: rpx(25);
-          font-size: rpx(26);
+          font-size: rpx(36);
           color: #333333;
         }
       }
@@ -39,12 +42,12 @@
 
 <template>
   <div class="page-views">
-    <ul class="attribute-list">
-      <li class="attribute" v-if="data.value" v-for="(data, index) in dataList" :key="index">
-        <div class="name">{{ data.name }}:</div>
-        <div class="content">{{ data.value || '无' }}</div>
-      </li>
-    </ul>
+    <view class="attribute-list">
+      <view class="attribute" v-if="data.value" v-for="(data, index) in dataList" :key="index">
+        <view class="name">{{ data.name }}:</view>
+        <view class="content">{{ data.value || '无' }}</view>
+      </view>
+    </view>
     <div class="empty" v-if="!dataList.length">
       <img src="http://192.168.1.187:10088/static/images/no-comment.png" />
       <div class="desc">暂无属性</div>
@@ -53,17 +56,17 @@
 </template>
 
 <script>
-export default {
-  name: 'ATTRIBUTE_LIST',
-  data() {
-    return {
-      dataList: []
-    }
-  },
+  export default {
+    name: 'ATTRIBUTE_LIST',
+    data() {
+      return {
+        dataList: [],
+      };
+    },
 
-  methods: {},
-  async mounted() {
-    this.dataList = wx.getStorageSync('attribute')
-  }
-}
+    methods: {},
+    async mounted() {
+      this.dataList = uni.getStorageSync('attribute');
+    },
+  };
 </script>

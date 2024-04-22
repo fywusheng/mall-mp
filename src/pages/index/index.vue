@@ -55,14 +55,14 @@
     </view>
 
     <!-- 商品分类 -->
-    <view v-if="parts.length > 0" class="part-wraper">
+    <scroll-view :scroll-x="true" enhanced :show-scrollbar="false" v-if="parts.length > 0" class="part-wraper">
       <view class="part" :class="{ 'one-line': parts.length < 8 }">
         <view class="item" v-for="(v, i) in parts" :key="i" @click="typeList(v, i)">
           <image class="img" mode="scaleToFill" :src="v.iconUrl" />
           <view class="name">{{ v.name }}</view>
         </view>
       </view>
-    </view>
+    </scroll-view>
 
     <!-- 积分兑换 -->
     <view class="benefit ml-32 mr-32 mt-24 mb-48 br-16" @click="goPath(0)">
@@ -484,6 +484,15 @@
 </script>
 
 <style lang="scss" scoped>
+  ::-webkit-scrollbar {
+    display: none;
+    width: 0 !important;
+    height: 0 !important;
+    -webkit-appearance: none;
+    background: transparent;
+    color: transparent;
+  }
+
   .home {
     min-height: 100vh;
     background: #ffffff;
