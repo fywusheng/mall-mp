@@ -2,10 +2,10 @@
   @import '~@/styles/base';
   ._notice {
     height: 790rpx;
-    background: #ffffff;
+    // background: #ffffff;
     border-radius: 16rpx;
     overflow: auto;
-    padding: 0rpx 64rpx 0rpx 64rpx;
+    // padding: 0rpx 64rpx 0rpx 64rpx;
     font-size: 36rpx;
     font-family: PingFangSC-Regular, PingFang SC;
     font-weight: 400;
@@ -71,10 +71,13 @@
     }
 
     .coupon-list {
-      padding: rpx(30) rpx(40);
-      height: rpx(705);
+      // padding-top: rpx(30);
+      height: rpx(701);
       background-color: #fff;
       overflow: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       .coupon {
         position: relative;
         padding: 14rpx 24rpx 14rpx 216rpx;
@@ -82,12 +85,8 @@
         width: rpx(670);
         min-height: rpx(226);
         box-shadow: 0rpx 8rpx 12rpx 0rpx rgba(0, 0, 0, 0.1);
-        // background: url(http://192.168.1.187:10088/static/images/item-detail/coupon-valid.png)
-        //   left top no-repeat;
-        // background-size: cover;
-
         &.disabled {
-          background-image: url(http://192.168.1.187:10088/static/images/item-detail/coupon-invalid.png);
+          background-image: url('http://192.168.1.187:10088/static/images/item-detail/coupon-invalid.png');
 
           .coupon__name {
             color: #999;
@@ -145,7 +144,6 @@
         }
 
         .coupon__name {
-          padding-right: rpx(120);
           padding-bottom: rpx(10);
           font-size: rpx(32);
           line-height: rpx(45);
@@ -220,11 +218,7 @@
     <div class="coupon-modal">
       <div class="modal-header">
         可领取优惠券
-        <img
-          class="btn-close"
-          src="http://192.168.1.187:10088/static/images/item-detail/close.png"
-          @click="show(false)"
-        />
+        <img class="btn-close" src="http://192.168.1.187:10088/static/images/item-detail/close.png" @click="show(false)" />
       </div>
       <view class="coupon-list" v-if="couponList && couponList.length">
         <li class="coupon" :key="index" v-for="(coupon, index) in couponList">
@@ -240,16 +234,10 @@
             <div class="coupon__name" :class="coupon.receivedState === 1 ? 'actice_name' : ''">
               {{ coupon.name }}
             </div>
-            <div class="coupon__time">
-              {{ coupon.beginTime | replaceDate }}-{{ coupon.endTime | replaceDate }}
-            </div>
+            <div class="coupon__time">{{ coupon.beginTime | replaceDate }}-{{ coupon.endTime | replaceDate }}</div>
             <div class="f_r">
               <div class="show_ruler" @click="showRuler(coupon)">使用规则></div>
-              <div
-                class="btn-status"
-                :class="coupon.receivedState === 1 ? 'actice_btn' : ''"
-                @tap="toCoupon(coupon)"
-              >
+              <div class="btn-status" :class="coupon.receivedState === 1 ? 'actice_btn' : ''" @tap="toCoupon(coupon)">
                 {{ coupon.receivedState === 1 ? '已领取' : '立即领取' }}
               </div>
             </div>
@@ -274,61 +262,61 @@
 </template>
 
 <script>
-import wx from 'utils/wx'
+  import wx from 'utils/wx';
 
-export default {
-  name: 'COUPON_LIST',
-  props: {
-    couponList: {
-      type: Array,
-      default: []
-    }
-  },
-  data() {
-    return {
-      showPopup: false,
-      rulerContent: '',
-      showRulerV: false
-    }
-  },
-  filters: {
-    replaceDate(val) {
-      return val.replace(/-/g, '.')
-    }
-  },
-  methods: {
-    showRuler(val) {
-      this.rulerContent = val.description || '暂无'
-      this.$refs.notice.open()
-      this.showRulerV = true
+  export default {
+    name: 'COUPON_LIST',
+    props: {
+      couponList: {
+        type: Array,
+        default: [],
+      },
     },
-    closed() {
-      this.$refs.notice.close()
-      this.showRulerV = false
+    data() {
+      return {
+        showPopup: false,
+        rulerContent: '',
+        showRulerV: false,
+      };
     },
-    async toCoupon(coupon) {
-      if (coupon.receivedState === 1) {
-        return
-      }
-      if (coupon.isReceived === 1) {
-        return false
-      }
-      wx.showLoading()
-      const result = await Axios.post('/coupon/receive', {
-        couponId: coupon.id
-      })
-      wx.hideLoading()
-      if (result.code == '200') {
-        wx.showToast(result.msg)
-        this.$emit('loadCoupon')
-      } else {
-        wx.showToast(result.msg)
-      }
+    filters: {
+      replaceDate(val) {
+        return val.replace(/-/g, '.');
+      },
     },
-    show(flag) {
-      this.showPopup = flag
-    }
-  },
-  async mounted() {}
-}
+    methods: {
+      showRuler(val) {
+        this.rulerContent = val.description || '暂无';
+        this.$refs.notice.open();
+        this.showRulerV = true;
+      },
+      closed() {
+        this.$refs.notice.close();
+        this.showRulerV = false;
+      },
+      async toCoupon(coupon) {
+        if (coupon.receivedState === 1) {
+          return;
+        }
+        if (coupon.isReceived === 1) {
+          return false;
+        }
+        wx.showLoading();
+        const result = await Axios.post('/coupon/receive', {
+          couponId: coupon.id,
+        });
+        wx.hideLoading();
+        if (result.code == '200') {
+          wx.showToast(result.msg);
+          this.$emit('loadCoupon');
+        } else {
+          wx.showToast(result.msg);
+        }
+      },
+      show(flag) {
+        this.showPopup = flag;
+      },
+    },
+    async mounted() {},
+  };
 </script>
