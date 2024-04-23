@@ -116,13 +116,6 @@
         navHeight: uni.getSystemInfoSync().statusBarHeight + 44,
       };
     },
-    created() {
-      // 判断是否存在定位信息 展示相关城市
-      if (uni.getStorageSync('city')) this.city = uni.getStorageSync('city');
-
-      // 获取栏目分类
-      this.queryColList();
-    },
     onLoad(e) {
       // 判断是否存在定位信息 展示相关城市
       if (uni.getStorageSync('city')) this.city = uni.getStorageSync('city');

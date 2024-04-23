@@ -31,10 +31,8 @@
       display: block;
       position: relative;
       width: 100%;
-      padding-left: rpx(70);
       padding-right: rpx(63);
       height: rpx(88);
-      // background-color: $extra-gray;
       font-size: rpx(36);
       color: $black;
       border-radius: rpx(16);
@@ -48,7 +46,7 @@
 
     .btn-clear {
       @include middle-center-y();
-      right: rpx(52);
+      right: rpx(32);
       width: rpx(36);
       height: rpx(36);
       z-index: 100;
@@ -429,9 +427,8 @@
 <template>
   <div class="app">
     <div class="search-header">
-      <img class="icon" src="http://192.168.1.187:10088/static/images/common/icon-search.png" />
       <input confirm-type="search" @confirm="search" :placeholder="key || '输入关键字搜索商品...'" v-model="key" />
-      <img class="btn-clear" src="http://192.168.1.187:10088/static/images/item-list/clear.png" @click="clear" />
+      <img v-if="key.length > 0" class="btn-clear" src="http://192.168.1.187:10088/static/images/item-list/clear.png" @click="clear" />
     </div>
     <ul class="sort-list">
       <li class="sort" :class="{ active: !sortType }" @click="changeSortType('')">综合</li>

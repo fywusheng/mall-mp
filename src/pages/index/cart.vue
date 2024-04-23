@@ -132,7 +132,7 @@
       display: flex;
       align-items: center;
       padding: 28rpx 16rpx;
-      border: 2rpx solid #f5f5f5;
+      border-bottom: 2rpx solid #f5f5f5;
       .icon-radio {
         width: 36rpx;
         height: 36rpx;
