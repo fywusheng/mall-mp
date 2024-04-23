@@ -247,7 +247,7 @@
       </view>
       <view class="detail-img-list">
         <rich-text class="rich-text" v-if="detailContents.length > 0" :nodes="detailContents"></rich-text>
-        <img mode="widthFix" :src="img" class="img" v-for="(img, index) in detailImageList" :key="index" />
+        <!-- <img mode="widthFix" :src="img" class="img" v-for="(img, index) in detailImageList" :key="index" /> -->
       </view>
 
       <view class="footer">
@@ -576,20 +576,20 @@
             title: result.data.name,
           });
           if (result.data.productDetail) {
-            const imgReg = /<img.*?(?:>|\/>)/gi; // 匹配src属性
-            const srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
-            const detailImageList = [];
-            (result.data.productDetail.match(imgReg) || []).map((imageTag) => {
-              const img = imageTag.match(srcReg)[1];
-              if (/^http/.test(img)) {
-                // 获取图片地址
-                detailImageList.push(imageTag.match(srcReg)[1]);
-              }
-            });
-            this.detailImageList = detailImageList;
-            if (this.detailImageList.length == 0) {
-              this.detailContents = result.data.productDetail;
-            }
+            // const imgReg = /<img.*?(?:>|\/>)/gi; // 匹配src属性
+            // const srcReg = /src=[\'\"]?([^\'\"]*)[\'\"]?/i;
+            // const detailImageList = [];
+            // (result.data.productDetail.match(imgReg) || []).map((imageTag) => {
+            //   const img = imageTag.match(srcReg)[1];
+            //   if (/^http/.test(img)) {
+            //     // 获取图片地址
+            //     detailImageList.push(imageTag.match(srcReg)[1]);
+            //   }
+            // });
+            // this.detailImageList = detailImageList;
+            // if (this.detailImageList.length == 0) {
+            this.detailContents = result.data.productDetail.replace(/<img/g, '<img style="width:100%;" mode="scaleToFill"');
+            // }
           }
           result.data.firstClassName = result.data.firstClassName || '颜色';
           result.data.subClassName = result.data.subClassName || '尺码';

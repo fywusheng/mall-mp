@@ -168,12 +168,15 @@
           disease: '', // 疾病情况
           memberId: '', // 所属会员id
         },
+        // 总部门店
+        superStore: null,
       };
     },
     async onLoad(e) {
       if (e && e.soure) this.soure = e.soure;
       await this.$store.dispatch('getUserInfo');
       this.fillParams(this.params);
+      this.getSuperStore();
     },
     onUnload() {
       // uni.$off('faceRecognitionFinished');
@@ -218,38 +221,25 @@
           this.params.disease = this.userInfo.disease.split(',');
         }
       },
-      /**
-       * 身份证号输入完成事件
-       */
       handleSexChange(e) {
         this.params.sex = e.target.value;
       },
-      // 获取门店信息
+      // 获取其他门店信息
       async handleStoreNoChange(manStore, e) {
         let params = {};
-        if (manStore) {
-          params = { queryObject: { storeType: 2 } };
+        if (manStore || e.target.value === this.superStore.storeNo) {
+          this.params.storeNo = this.superStore.storeNo;
+          this.params.address = this.superStore.address;
+          this.params.districtArea = this.superStore.districtAreaStr;
+          uni.setStorageSync('storeInfo', this.superStore);
         } else {
           params = { queryObject: { storeNo: e.target.value } };
-        }
-
-        const result = await Axios.post('/srm/sh/stores/listByPageNo', params);
-        if (result.code == 200 && result.data.list.length) {
-          this.params.storeNo = result.data.list[0].storeNo;
-          this.params.address = result.data.list[0].address;
-          this.params.districtArea = result.data.list[0].districtAreaStr;
-          uni.setStorageSync('storeInfo', result.data.list[0]);
-        } else {
-          const res = await Axios.post('/srm/sh/stores/listByPageNo', {
-            queryObject: { storeType: 2 },
-          });
-          if (res.code == 200 && res.data.list.length) {
-            if (e.target.value !== res.data.list[0].storeNo) {
-              this.$uni.showToast('输入有误，请重新输入');
-              this.params.storeNo = '';
-              this.params.address = '';
-              this.params.districtArea = '';
-            }
+          const result = await Axios.post('/srm/sh/stores/listByPageNo', params);
+          if (result.code == 200 && result.data.list.length) {
+            this.params.storeNo = result.data.list[0].storeNo;
+            this.params.address = result.data.list[0].address;
+            this.params.districtArea = result.data.list[0].districtAreaStr;
+            uni.setStorageSync('storeInfo', result.data.list[0]);
           } else {
             this.$uni.showToast('输入有误，请重新输入');
             this.params.storeNo = '';
@@ -258,9 +248,16 @@
           }
         }
       },
-      /**
-       * 下一步点击事件
-       */
+      // 获取总部门店信息
+      async getSuperStore() {
+        // const params = { queryObject: { storeType: 2 } };
+        const params = {};
+        const result = await Axios.post('/srm/sh/stores/listByPageNo', params);
+        if (result.code == 200 && result.data.list.length) {
+          this.superStore = result.data.list[0];
+        }
+      },
+      // 保存
       async handleNextStepClick() {
         if (!this.chackInput()) return;
         const params = { ...this.params };
@@ -290,9 +287,7 @@
           this.$uni.showToast('实名认证失败,请重新输入');
         }
       },
-      /**
-       * 输入信息校验
-       */
+      // 输入信息校验
       chackInput() {
         if (!this.params.name) {
           this.$uni.showToast('请输入姓名');

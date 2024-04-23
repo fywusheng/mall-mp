@@ -37,29 +37,18 @@
           <text class="salePrice">&nbsp;¥{{ orderItem.payableAmount | formaterMoney }}</text>
         </view>
         <div class="footer-btn" @click.stop="">
-          <div class="btn-active" @click="confirm(orderItem)" v-if="orderItem.orderStatus === 30">
-            确认收货
-          </div>
-          <div class="btn-active" @click="toPay(orderItem)" v-if="orderItem.orderStatus === 10">
-            付款
-          </div>
+          <div class="btn-active" @click="confirm(orderItem)" v-if="orderItem.orderStatus === 30">确认收货</div>
+          <div class="btn-active" @click="toPay(orderItem)" v-if="orderItem.orderStatus === 10">付款</div>
           <!-- <div class="btn-link" @click="remove(order)" v-if="order.orderStatus < 30">取消订单</div> -->
           <div
             class="btn-link"
             @click="logistics(orderItem)"
-            v-if="
-              orderItem.orderStatus > 20 &&
-              orderItem.orderStatus < 90 &&
-              orderItem.orderStatus !== 60 &&
-              !orderItem.hzhH5
-            "
+            v-if="orderItem.orderStatus > 20 && orderItem.orderStatus < 90 && orderItem.orderStatus !== 60 && !orderItem.hzhH5"
           >
             查看物流
           </div>
           <div class="btn-link" @click="toDetail(orderItem)">查看详情</div>
-          <div v-if="orderItem.hzhH5" class="btn-active" @click="lookQrCode(orderItem.hzhH5)">
-            查看券码
-          </div>
+          <div v-if="orderItem.hzhH5" class="btn-active" @click="lookQrCode(orderItem.hzhH5)">查看券码</div>
         </div>
       </view>
     </view>
@@ -67,160 +56,151 @@
 </template>
 
 <script>
-import dayjs from 'dayjs'
-export default {
-  name: 'shop-order',
-  props: {
-    item: {
-      type: Object,
-      default: () => {}
-    }
-  },
-  data() {
-    return {
-      icon: 'http://192.168.1.187:10088/static/life/warning-circle.png'
-    }
-  },
-  computed: {
-    orderItem() {
-      const itemList = []
-      this.item.storeOrderItems.forEach((orderItemModel) => {
-        orderItemModel.items.forEach((el) => {
-          el.imgUrl = XIU.getImgFormat(el.imgUrl, '/resize,w_400')
-          itemList.push(
-            _.pick(el, [
-              'imgUrl',
-              'productId',
-              'productName',
-              'skuName',
-              'sellingPrice',
-              'skuQuantity',
-              'payableAmount',
-              'orderMallIcon'
-            ])
-          )
-        })
-      })
-      const tempData = _.pick(this.item, [
-        'orderId',
-        'orderStatus',
-        'totalQuantity',
-        'orderType',
-        'orderAmount',
-        'orderStatusLabel',
-        'payableAmount',
-        'storeName',
-        'storeId',
-        'orderMallIcon'
-      ])
-      tempData.itemList = itemList
-      tempData.orderMallIcon = this.item.storeOrderItems[0].orderMallIcon
-      tempData.hzhH5 = this.item.hzhH5
-      return tempData
-    }
-  },
-  created() {},
-  onLoad(e) {},
-  methods: {
-    // 查看券码
-    lookQrCode(hzhH5) {
-      const url = encodeURIComponent(hzhH5)
-      uni.navigateTo({ url: `/pages/common/webpage?url=${url}` })
+  import dayjs from 'dayjs';
+  export default {
+    name: 'shop-order',
+    props: {
+      item: {
+        type: Object,
+        default: () => {},
+      },
     },
-    // 店铺详情
-    goStoreDetail(item) {
-      uni.navigateTo({ url: '/sub-pages/index/store/main?supplierId=' + item.storeId })
+    data() {
+      return {
+        icon: 'http://192.168.1.187:10088/static/life/warning-circle.png',
+      };
     },
-    logistics(order) {
-      wx.navigateTo({
-        url: '/sub-pages/me/logistics/main?id=' + order.orderId
-      })
+    computed: {
+      orderItem() {
+        const itemList = [];
+        this.item.storeOrderItems.forEach((orderItemModel) => {
+          orderItemModel.items.forEach((el) => {
+            // el.imgUrl = XIU.getImgFormat(el.imgUrl, '/resize,w_400')
+            itemList.push(
+              _.pick(el, ['imgUrl', 'productId', 'productName', 'skuName', 'sellingPrice', 'skuQuantity', 'payableAmount', 'orderMallIcon']),
+            );
+          });
+        });
+        const tempData = _.pick(this.item, [
+          'orderId',
+          'orderStatus',
+          'totalQuantity',
+          'orderType',
+          'orderAmount',
+          'orderStatusLabel',
+          'payableAmount',
+          'storeName',
+          'storeId',
+          'orderMallIcon',
+        ]);
+        tempData.itemList = itemList;
+        tempData.orderMallIcon = this.item.storeOrderItems[0].orderMallIcon;
+        tempData.hzhH5 = this.item.hzhH5;
+        return tempData;
+      },
     },
-    async toPay(order) {
-      wx.showLoading({ title: '正在获取...', mask: true })
-      const result = await Axios.post('/payment/sign', {
-        orderId: order.orderId,
-        paymentMethodCode: 'nepsp_pay',
-        code: new Date().getTime()
-      })
-      wx.hideLoading()
-      if (result.code == 200) {
-        // 去收银台支付
-        uni.reLaunch({
-          url: '/pages/common/webpage?url=' + encodeURIComponent(result.data.payUrl)
-        })
-      } else {
-        wx.showToast({
-          title: result.msg || '获取失败',
-          icon: 'none'
-        })
-      }
-    },
-    async confirm(order) {
-      const result = await wx.showModal({
-        title: '',
-        content: '确定已收货?'
-      })
-      if (result.confirm) {
-        wx.showLoading('正在提交...')
-        const delResult = await Axios.post('/order/confirm', {
-          orderId: order.orderId
-        })
-        wx.hideLoading()
-        if (delResult.code == 200) {
-          setTimeout(() => {
-            wx.showToast({
-              title: delResult.msg || '确认成功',
-              icon: 'none'
-            })
-          }, 1500)
-          // 触发订单刷新事件
-          uni.$emit('reloadOrderList')
+    created() {},
+    onLoad(e) {},
+    methods: {
+      // 查看券码
+      lookQrCode(hzhH5) {
+        const url = encodeURIComponent(hzhH5);
+        uni.navigateTo({ url: `/pages/common/webpage?url=${url}` });
+      },
+      // 店铺详情
+      goStoreDetail(item) {
+        uni.navigateTo({ url: '/sub-pages/index/store/main?supplierId=' + item.storeId });
+      },
+      logistics(order) {
+        wx.navigateTo({
+          url: '/sub-pages/me/logistics/main?id=' + order.orderId,
+        });
+      },
+      async toPay(order) {
+        wx.showLoading({ title: '正在获取...', mask: true });
+        const result = await Axios.post('/payment/sign', {
+          orderId: order.orderId,
+          paymentMethodCode: 'nepsp_pay',
+          code: new Date().getTime(),
+        });
+        wx.hideLoading();
+        if (result.code == 200) {
+          // 去收银台支付
+          uni.reLaunch({
+            url: '/pages/common/webpage?url=' + encodeURIComponent(result.data.payUrl),
+          });
         } else {
-          wx.showToast(delResult.msg || '确认失败')
+          wx.showToast({
+            title: result.msg || '获取失败',
+            icon: 'none',
+          });
         }
-      }
+      },
+      async confirm(order) {
+        const result = await wx.showModal({
+          title: '',
+          content: '确定已收货?',
+        });
+        if (result.confirm) {
+          wx.showLoading('正在提交...');
+          const delResult = await Axios.post('/order/confirm', {
+            orderId: order.orderId,
+          });
+          wx.hideLoading();
+          if (delResult.code == 200) {
+            setTimeout(() => {
+              wx.showToast({
+                title: delResult.msg || '确认成功',
+                icon: 'none',
+              });
+            }, 1500);
+            // 触发订单刷新事件
+            uni.$emit('reloadOrderList');
+          } else {
+            wx.showToast(delResult.msg || '确认失败');
+          }
+        }
+      },
+      toDetail(data) {
+        uni.navigateTo({
+          url: `/sub-pages/me/order-detail/main?id=${data.orderId}&popUpType=1`,
+        });
+      },
+      handleItemClick(index, i) {
+        this.activeIndex = index;
+        this.$emit('resetOptions', i.id);
+      },
     },
-    toDetail(data) {
-      uni.navigateTo({
-        url: `/sub-pages/me/order-detail/main?id=${data.orderId}&popUpType=1`
-      })
+    filters: {
+      formateOrderStatus(v) {
+        // 10：创建、待付款
+        // 20：已支付、待发货
+        // 30：已发货、待收货
+        // 40：已收货、交易完成、待评价
+        // 50:已评价
+        // 90：订单取消、手动取消、系统自动取消
+        // 100：交易取消
+        const mapObj = {
+          1: '待付款',
+          2: '待使用',
+          3: '已完成',
+          4: '已关闭',
+          5: '部分退款',
+          6: '已退款',
+          7: '退款中',
+          8: '已过期',
+        };
+        return mapObj[v] || '';
+      },
+      formaterMoney(v) {
+        return Number(v).toFixed(2);
+      },
+      // 日期过滤器, 用于格式化日期
+      dateFilter(value) {
+        return dayjs(value).format('YYYY-MM-DD HH:mm');
+      },
     },
-    handleItemClick(index, i) {
-      this.activeIndex = index
-      this.$emit('resetOptions', i.id)
-    }
-  },
-  filters: {
-    formateOrderStatus(v) {
-      // 10：创建、待付款
-      // 20：已支付、待发货
-      // 30：已发货、待收货
-      // 40：已收货、交易完成、待评价
-      // 50:已评价
-      // 90：订单取消、手动取消、系统自动取消
-      // 100：交易取消
-      const mapObj = {
-        1: '待付款',
-        2: '待使用',
-        3: '已完成',
-        4: '已关闭',
-        5: '部分退款',
-        6: '已退款',
-        7: '退款中',
-        8: '已过期'
-      }
-      return mapObj[v] || ''
-    },
-    formaterMoney(v) {
-      return Number(v).toFixed(2)
-    },
-    // 日期过滤器, 用于格式化日期
-    dateFilter(value) {
-      return dayjs(value).format('YYYY-MM-DD HH:mm')
-    }
-  }
-}
+  };
 </script>
 
 <style lang="scss" scoped>
@@ -400,12 +380,7 @@ export default {
             position: absolute;
             right: 0;
             top: 0;
-            background: linear-gradient(
-              90deg,
-              rgba(255, 255, 255, 0) 0%,
-              rgba(255, 255, 255, 0.76) 61%,
-              #ffffff 100%
-            );
+            background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.76) 61%, #ffffff 100%);
           }
           .img-item {
             // background: #ff5500;

@@ -249,7 +249,7 @@
               mode="scaleToFill"
             ></image>
             <view class="header-title" @click="goStoreDetail(el)">{{ el.storeName }}</view>
-            <image class="icon-right" src="http://192.168.1.187:10088/static/images/cart/icon-right.png" mode="scaleToFill"></image>
+            <!-- <image class="icon-right" src="http://192.168.1.187:10088/static/images/cart/icon-right.png" mode="scaleToFill"></image> -->
           </view>
           <view class="panel-body">
             <view class="product-list" :class="{ disabled: el.soldOut }" v-for="(product, subIndex) in el.carts" :key="product.id">

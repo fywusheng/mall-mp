@@ -817,7 +817,7 @@
               tempData.costPriceStr = minCostPrice;
             }
             tempData.availableStock = availableStock;
-            tempData.proPictDir = XIU.getImgFormat(tempData.mainImgUrl, '/resize,w_750');
+            tempData.proPictDir = tempData.mainImgUrl;
             Object.assign(tempData, data);
             list.push(tempData);
           });

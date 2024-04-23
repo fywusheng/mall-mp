@@ -2,10 +2,7 @@
   <div v-if="!loading" class="page-checkout">
     <div class="checkout-address" @click="selectAddress">
       <template v-if="settlement.addressId">
-        <img
-          class="icon-address"
-          src="http://192.168.1.187:10088/static/images/checkout/address-icon.png"
-        />
+        <img class="icon-address" src="http://192.168.1.187:10088/static/images/checkout/address-icon.png" />
         <view class="userInfo">
           <div class="user-info">
             <div class="name">{{ addressInfo }}</div>
@@ -15,10 +12,7 @@
       </template>
       <template v-else>
         <div class="add-tip" @click.stop="selectAddress">
-          <image
-            class="img"
-            src="http://192.168.1.187:10088/static/images/checkout/icon-plus.png"
-          />
+          <image class="img" src="http://192.168.1.187:10088/static/images/checkout/icon-plus.png" />
           请选择收货地址
         </div>
       </template>
@@ -46,14 +40,17 @@
           </li>
           <div v-if="item.isCreditPoints === 1" class="point-wrap">
             <view class="use-point">
-              <span class="_span">是否积分抵扣</span>
-              <switch
-                class="right"
-                color="#FF5500"
-                :checked="item.usePoint"
-                @change="switchChange($event, index, subIndex)"
-                style="transform: scale(0.8)"
-              />
+              <view>
+                <span class="_span">是否积分抵扣</span>
+                <switch
+                  class="right"
+                  color="#FF5500"
+                  :checked="item.usePoint"
+                  @change="switchChange($event, index, subIndex)"
+                  style="transform: scale(0.8)"
+                />
+              </view>
+
               <div class="use-point">
                 可用积分共
                 <text class="point">{{ settlement.availableScore }}</text>
@@ -66,17 +63,11 @@
       </ul>
       <div class="remark-wrap">
         <span class="span">配送</span>
-        <!-- <span class="right">快递¥{{ store.freightAmount | formateNum }}</span> -->
-        <span class="right">快递¥{{ store.freightAmount }}</span>
+        <span class="right">快递¥{{ formateNum(store.freightAmount) }}</span>
       </div>
       <div class="remark-wrap">
         <span class="span">备注</span>
-        <input
-          type="text"
-          maxlength="32"
-          placeholder="选填，请与商家协商并确认"
-          @input="changeRemark($event, index, store)"
-        />
+        <input type="text" maxlength="32" placeholder="选填，请与商家协商并确认" @input="changeRemark($event, index, store)" />
       </div>
     </div>
     <!-- 无法选购商品 -->
@@ -86,10 +77,7 @@
         <!-- 已下架商品集合 -->
         <view v-for="(item, subIndex) in unSaleProductListForLowerShelf" :key="subIndex">
           <li class="item">
-            <div
-              class="item-logo"
-              :style="{ backgroundImage: 'url(' + item.skuImgUrl + ')' }"
-            ></div>
+            <div class="item-logo" :style="{ backgroundImage: 'url(' + item.skuImgUrl + ')' }"></div>
             <div class="item-name">{{ item.productName }}</div>
             <div class="sku-name">{{ item.productAttributeStr }}</div>
             <div class="item-price">
@@ -104,10 +92,7 @@
         <!-- 不在该地区售卖商品集合 -->
         <view v-for="(item, subIndex) in unSaleProductListForArea" :key="subIndex">
           <li class="item">
-            <div
-              class="item-logo"
-              :style="{ backgroundImage: 'url(' + item.skuImgUrl + ')' }"
-            ></div>
+            <div class="item-logo" :style="{ backgroundImage: 'url(' + item.skuImgUrl + ')' }"></div>
             <div class="item-name">{{ item.productName }}</div>
             <div class="sku-name">{{ item.productAttributeStr }}</div>
             <div class="item-price">
@@ -122,10 +107,7 @@
         <!-- unSaleProductListForStock -->
         <view v-for="(item, subIndex) in unSaleProductListForStock" :key="subIndex">
           <li class="item">
-            <div
-              class="item-logo"
-              :style="{ backgroundImage: 'url(' + item.skuImgUrl + ')' }"
-            ></div>
+            <div class="item-logo" :style="{ backgroundImage: 'url(' + item.skuImgUrl + ')' }"></div>
             <div class="has-sale"></div>
             <div class="item-name">{{ item.productName }}</div>
             <div class="sku-name">{{ item.productAttributeStr }}</div>
@@ -140,10 +122,7 @@
         <!-- 限购商品集合 -->
         <view v-for="(item, subIndex) in unSaleProductListForNum" :key="subIndex">
           <li class="item">
-            <div
-              class="item-logo"
-              :style="{ backgroundImage: 'url(' + item.skuImgUrl + ')' }"
-            ></div>
+            <div class="item-logo" :style="{ backgroundImage: 'url(' + item.skuImgUrl + ')' }"></div>
             <!-- <div class="has-sale">已抢光</div> -->
             <div class="item-name">{{ item.productName }}</div>
             <div class="sku-name">{{ item.productAttributeStr }}</div>
@@ -174,10 +153,7 @@
           <template v-else>
             <span class="content">无可用</span>
           </template>
-          <img
-            class="icon-you"
-            src="http://192.168.1.187:10088/static/images/common/right-gray.png"
-          />
+          <img class="icon-you" src="http://192.168.1.187:10088/static/images/common/right-gray.png" />
         </div>
       </li>
       <li class="price" @click="toInvoice">
@@ -187,10 +163,7 @@
             {{ invoice.showContent }}
           </template>
           <template v-else>不开发票</template>
-          <img
-            class="icon-you"
-            src="http://192.168.1.187:10088/static/images/common/right-gray.png"
-          />
+          <img class="icon-you" src="http://192.168.1.187:10088/static/images/common/right-gray.png" />
         </div>
       </li>
       <li class="price">
@@ -229,13 +202,7 @@
           <span class="total-price">{{ formateNum(settlement.totalPayablePrice) }}</span>
         </div>
       </view>
-      <button
-        type="button"
-        class="btn-account"
-        :class="{ disabled: !storeList.length }"
-        @click="account"
-        :disabled="!storeList.length"
-      >
+      <button type="button" class="btn-account" :class="{ disabled: !storeList.length }" @click="account" :disabled="!storeList.length">
         提交订单
       </button>
     </div>
@@ -243,259 +210,259 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-export default {
-  name: 'CHECKOUT',
-  data() {
-    return {
-      isIphoneHair: App.isIphoneHair,
-      sceneType: '', // 场景
-      loading: true,
-      isInvoice: false,
-      userPoint: false,
-      // userInfo: null,
-      // canuseList: [],
-      // notuseList: [],
-      usePoint: false
-      // type: null,
-    }
-  },
-
-  computed: {
-    ...mapState({
-      userInfo: (state) => state.user.userInfo
-    }),
-    // 是否会员
-    member() {
-      return this.userInfo && this.userInfo.memberStatus === '1'
+  import { mapState } from 'vuex';
+  export default {
+    name: 'CHECKOUT',
+    data() {
+      return {
+        isIphoneHair: App.isIphoneHair,
+        sceneType: '', // 场景
+        loading: true,
+        isInvoice: false,
+        userPoint: false,
+        // userInfo: null,
+        // canuseList: [],
+        // notuseList: [],
+        usePoint: false,
+        // type: null,
+      };
     },
-    addressInfo() {
-      const settlement = this.settlement
-      return (
-        (settlement.receiveProvinceName || '') +
+
+    computed: {
+      ...mapState({
+        userInfo: (state) => state.user.userInfo,
+      }),
+      // 是否会员
+      member() {
+        return this.userInfo && this.userInfo.memberStatus === '1';
+      },
+      addressInfo() {
+        const settlement = this.settlement;
+        return (
+          (settlement.receiveProvinceName || '') +
           (settlement.receiveCityName || '') +
           (settlement.receiveAreaName || '') +
           (settlement.receiveDistrictName || '') +
           settlement.receiveAddress
-      )
-    },
-    notuseList() {
-      if (Store.state.checkout.couponData) {
-        return Store.state.checkout.couponData.cannotUsedList || []
-      }
-      return []
-    },
-    canuseList() {
-      if (Store.state.checkout.couponData) {
-        return Store.state.checkout.couponData.canUsedList || []
-      }
-      return []
-    },
-    isDefault() {
-      return Store.state.checkout.isDefault
-    },
-    showUnBuyProductList() {
-      const settlement = Store.state.checkout.settlement
-      if (!settlement) return false
-      const unSaleProductListForStock = settlement.unSaleProductListForStock
-      const unSaleProductListForArea = settlement.unSaleProductListForArea
-      const unSaleProductListForNum = settlement.unSaleProductListForNum
-      const unSaleProductListForLowerShelf = settlement.unSaleProductListForLowerShelf
-      if (
-        unSaleProductListForStock.length > 0 ||
+        );
+      },
+      notuseList() {
+        if (Store.state.checkout.couponData) {
+          return Store.state.checkout.couponData.cannotUsedList || [];
+        }
+        return [];
+      },
+      canuseList() {
+        if (Store.state.checkout.couponData) {
+          return Store.state.checkout.couponData.canUsedList || [];
+        }
+        return [];
+      },
+      isDefault() {
+        return Store.state.checkout.isDefault;
+      },
+      showUnBuyProductList() {
+        const settlement = Store.state.checkout.settlement;
+        if (!settlement) return false;
+        const unSaleProductListForStock = settlement.unSaleProductListForStock;
+        const unSaleProductListForArea = settlement.unSaleProductListForArea;
+        const unSaleProductListForNum = settlement.unSaleProductListForNum;
+        const unSaleProductListForLowerShelf = settlement.unSaleProductListForLowerShelf;
+        if (
+          unSaleProductListForStock.length > 0 ||
           unSaleProductListForArea.length > 0 ||
           unSaleProductListForNum.length > 0 ||
           unSaleProductListForLowerShelf.length > 0
-      ) {
-        return true
-      } else {
-        return false
-      }
+        ) {
+          return true;
+        } else {
+          return false;
+        }
+      },
+      unSaleProductListForArea() {
+        if (Store.state.checkout.settlement) {
+          return Store.state.checkout.settlement.unSaleProductListForArea;
+        }
+        return [];
+      },
+      unSaleProductListForStock() {
+        if (Store.state.checkout.settlement) {
+          return Store.state.checkout.settlement.unSaleProductListForStock;
+        }
+        return [];
+      },
+      unSaleProductListForNum() {
+        if (Store.state.checkout.settlement) {
+          return Store.state.checkout.settlement.unSaleProductListForNum;
+        }
+        return [];
+      },
+      unSaleProductListForLowerShelf() {
+        if (Store.state.checkout.settlement) {
+          return Store.state.checkout.settlement.unSaleProductListForLowerShelf;
+        }
+        return [];
+      },
+      coupon() {
+        return Store.state.checkout.coupon;
+      },
+      type() {
+        return Store.state.checkout.type;
+      },
+      invoice() {
+        return Store.state.checkout.invoice;
+      },
+      settlement() {
+        return Store.state.checkout.settlement || {};
+      },
+      storeList() {
+        if (Store.state.checkout.settlement) {
+          return Store.state.checkout.settlement.settleStoreList;
+        }
+        return [];
+      },
     },
-    unSaleProductListForArea() {
-      if (Store.state.checkout.settlement) {
-        return Store.state.checkout.settlement.unSaleProductListForArea
-      }
-      return []
-    },
-    unSaleProductListForStock() {
-      if (Store.state.checkout.settlement) {
-        return Store.state.checkout.settlement.unSaleProductListForStock
-      }
-      return []
-    },
-    unSaleProductListForNum() {
-      if (Store.state.checkout.settlement) {
-        return Store.state.checkout.settlement.unSaleProductListForNum
-      }
-      return []
-    },
-    unSaleProductListForLowerShelf() {
-      if (Store.state.checkout.settlement) {
-        return Store.state.checkout.settlement.unSaleProductListForLowerShelf
-      }
-      return []
-    },
-    coupon() {
-      return Store.state.checkout.coupon
-    },
-    type() {
-      return Store.state.checkout.type
-    },
-    invoice() {
-      return Store.state.checkout.invoice
-    },
-    settlement() {
-      return Store.state.checkout.settlement || {}
-    },
-    storeList() {
-      if (Store.state.checkout.settlement) {
-        return Store.state.checkout.settlement.settleStoreList
-      }
-      return []
-    }
-  },
-  components: {},
-  methods: {
-    formateNum(num) {
-      return num ? num.toFixed(2) : '0.00'
-    },
-    // 使用积分
-    async switchChange(e, index, subIndex) {
-      // 设置是否使用积分
-      Store.commit('CHECKOUT_SET_USEPOINT', {
-        usePoint: e.detail.value,
-        index,
-        subIndex
-      })
-      // 设置sku集合列表
-      const checkScoreSkuIds = []
-      this.storeList.forEach((element) => {
-        element.settlementItems.forEach((item) => {
-          if (item.usePoint) {
-            checkScoreSkuIds.push(item.skuId)
-          }
-        })
-      })
-      Store.commit('CHECKOUT_SET_SCORESKUIDS', checkScoreSkuIds)
-      Store.commit('CHECKOUT_RESET_COUPON')
-      // 重新结算
-      const result = await Store.dispatch('getCheckoutData', false)
-      console.log(result)
-      if (result.code !== '200') {
-        this.$uni.showToast(result.data)
+    components: {},
+    methods: {
+      formateNum(num) {
+        return num ? num.toFixed(2) : '0.00';
+      },
+      // 使用积分
+      async switchChange(e, index, subIndex) {
         // 设置是否使用积分
         Store.commit('CHECKOUT_SET_USEPOINT', {
-          usePoint: !e.detail.value,
+          usePoint: e.detail.value,
           index,
-          subIndex
-        })
+          subIndex,
+        });
         // 设置sku集合列表
-        const checkScoreSkuIds = []
+        const checkScoreSkuIds = [];
         this.storeList.forEach((element) => {
           element.settlementItems.forEach((item) => {
             if (item.usePoint) {
-              checkScoreSkuIds.push(item.skuId)
+              checkScoreSkuIds.push(item.skuId);
             }
-          })
-        })
-        Store.commit('CHECKOUT_SET_SCORESKUIDS', checkScoreSkuIds)
+          });
+        });
+        Store.commit('CHECKOUT_SET_SCORESKUIDS', checkScoreSkuIds);
+        Store.commit('CHECKOUT_RESET_COUPON');
+        // 重新结算
+        const result = await Store.dispatch('getCheckoutData', false);
+        console.log(result);
+        if (result.code !== '200') {
+          this.$uni.showToast(result.data);
+          // 设置是否使用积分
+          Store.commit('CHECKOUT_SET_USEPOINT', {
+            usePoint: !e.detail.value,
+            index,
+            subIndex,
+          });
+          // 设置sku集合列表
+          const checkScoreSkuIds = [];
+          this.storeList.forEach((element) => {
+            element.settlementItems.forEach((item) => {
+              if (item.usePoint) {
+                checkScoreSkuIds.push(item.skuId);
+              }
+            });
+          });
+          Store.commit('CHECKOUT_SET_SCORESKUIDS', checkScoreSkuIds);
+        }
+      },
+      // async useBalanceSettlement(e) {
+      //   this.isUseBalanceState = e.target.value
+      //   Store.commit(VUEX.CHECKOUT.SET_BALANCE, e.target.value)
+      // },
+      setCoupon(data) {
+        Store.commit(VUEX.CHECKOUT.SET_COUPON, data);
+      },
+      // changeBalance(){
+      //   if(!this.useBalance && this.balance > 0){
+      //     this.useBalance = true;
+      //   }else{
+      //     this.useBalance = false;
+      //   }
+      // },
+      toCoupon() {
+        if (this.canuseList.length === 0) return;
+        uni.navigateTo({
+          url: '/sub-pages/index/checkout-coupon/main',
+        });
+      },
+      toInvoice() {
+        uni.navigateTo({ url: '/pages/supermarket/company-list' });
+      },
+      toAddAddress() {
+        uni.navigateTo({
+          url: '/sub-pages/me/address-add/main?type=1',
+        });
+      },
+      selectAddress() {
+        uni.navigateTo({
+          url: '/sub-pages/me/address-list/main?type=1',
+        });
+      },
+      changeRemark(e, index, store) {
+        Store.commit(VUEX.CHECKOUT.CHANGE_REMARK, {
+          index,
+          remarks: {
+            remarks: e.mp.detail.value,
+            storeId: store.storeId,
+          },
+        });
+      },
+      account() {
+        Store.dispatch('toPay');
+      },
+    },
+    onUnload() {
+      Store.commit(VUEX.CHECKOUT.RESET_STATE);
+    },
+    async onShow() {
+      setTimeout(async () => {
+        if (this.hasInit) return;
+        this.loading = true;
+        await Store.dispatch('getCheckoutData', true);
+        this.loading = false;
+      }, 500);
+    },
+    async mounted() {
+      this.hasInit = true;
+      if (!Store.getters.isLogin) {
+        Store.dispatch('logout');
+        uni.navigateTo({ url: '/pages/user-center/login' });
+        // await Store.dispatch('login')
+      }
+      const type = this.$scope.options.type;
+      this.sceneType = this.$scope.options.sceneType;
+      Store.commit(VUEX.CHECKOUT.SET_TYPE, type - 0);
+      Store.commit(VUEX.CHECKOUT.SET_SCENETYPE, this.sceneType);
+      if (Store.state.checkout.type === 2) {
+        Store.commit(VUEX.CHECKOUT.SET_DIRECT_DATA, {
+          num: this.$scope.options.num,
+          skuId: this.$scope.options.skuId,
+        });
+      }
+      if (Store.state.checkout.coupon) {
+        Store.state.checkout.coupon = {};
+      }
+      this.loading = true;
+      await Store.dispatch('getCheckoutData', true);
+      this.loading = false;
+      if (!Store.state.checkout.addressId) {
+        uni.showModal({
+          content: '您没有设置收货地址，请选择...',
+          success: (res) => {
+            if (res.confirm) {
+              uni.navigateTo({
+                url: '/sub-pages/me/address-list/main?type=1',
+              });
+            }
+          },
+        });
       }
     },
-    // async useBalanceSettlement(e) {
-    //   this.isUseBalanceState = e.target.value
-    //   Store.commit(VUEX.CHECKOUT.SET_BALANCE, e.target.value)
-    // },
-    setCoupon(data) {
-      Store.commit(VUEX.CHECKOUT.SET_COUPON, data)
-    },
-    // changeBalance(){
-    //   if(!this.useBalance && this.balance > 0){
-    //     this.useBalance = true;
-    //   }else{
-    //     this.useBalance = false;
-    //   }
-    // },
-    toCoupon() {
-      if (this.canuseList.length === 0) return
-      uni.navigateTo({
-        url: '/sub-pages/index/checkout-coupon/main'
-      })
-    },
-    toInvoice() {
-      uni.navigateTo({ url: '/pages/supermarket/company-list' })
-    },
-    toAddAddress() {
-      uni.navigateTo({
-        url: '/sub-pages/me/address-add/main?type=1'
-      })
-    },
-    selectAddress() {
-      uni.navigateTo({
-        url: '/sub-pages/me/address-list/main?type=1'
-      })
-    },
-    changeRemark(e, index, store) {
-      Store.commit(VUEX.CHECKOUT.CHANGE_REMARK, {
-        index,
-        remarks: {
-          remarks: e.mp.detail.value,
-          storeId: store.storeId
-        }
-      })
-    },
-    account() {
-      Store.dispatch('toPay')
-    }
-  },
-  onUnload() {
-    Store.commit(VUEX.CHECKOUT.RESET_STATE)
-  },
-  async onShow() {
-    setTimeout(async () => {
-      if (this.hasInit) return
-      this.loading = true
-      await Store.dispatch('getCheckoutData', true)
-      this.loading = false
-    }, 500)
-  },
-  async mounted() {
-    this.hasInit = true
-    if (!Store.getters.isLogin) {
-      Store.dispatch('logout')
-      uni.navigateTo({ url: '/pages/user-center/login' })
-      // await Store.dispatch('login')
-    }
-    const type = this.$scope.options.type
-    this.sceneType = this.$scope.options.sceneType
-    Store.commit(VUEX.CHECKOUT.SET_TYPE, type - 0)
-    Store.commit(VUEX.CHECKOUT.SET_SCENETYPE, this.sceneType)
-    if (Store.state.checkout.type === 2) {
-      Store.commit(VUEX.CHECKOUT.SET_DIRECT_DATA, {
-        num: this.$scope.options.num,
-        skuId: this.$scope.options.skuId
-      })
-    }
-    if (Store.state.checkout.coupon) {
-      Store.state.checkout.coupon = {}
-    }
-    this.loading = true
-    await Store.dispatch('getCheckoutData', true)
-    this.loading = false
-    if (!Store.state.checkout.addressId) {
-      uni.showModal({
-        content: '您没有设置收货地址，请选择...',
-        success: (res) => {
-          if (res.confirm) {
-            uni.navigateTo({
-              url: '/sub-pages/me/address-list/main?type=1'
-            })
-          }
-        }
-      })
-    }
-  }
-}
+  };
 </script>
 
 <style lang="scss">
@@ -640,7 +607,7 @@ export default {
     }
 
     .store-name {
-      padding: rpx(20) rpx(30);
+      padding: rpx(20);
       font-size: rpx(40);
       color: $color-black;
       border-bottom: rpx(1) solid #eeeeee;
@@ -648,7 +615,7 @@ export default {
     }
 
     .item-list {
-      padding: 0 rpx(30);
+      padding: 0 rpx(20);
 
       .item {
         position: relative;
@@ -790,7 +757,7 @@ export default {
   .price-list {
     margin: 0 32rpx;
     margin-top: 32rpx;
-    padding: rpx(35) rpx(30);
+    padding: rpx(20);
     background-color: #fff;
     font-size: 36rpx;
     border-radius: 16rpx;
