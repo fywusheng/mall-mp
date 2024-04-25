@@ -1,7 +1,7 @@
 <template>
   <view class="find">
     <!-- 头部导航栏 -->
-    <navigation-bar :alpha="0" statusBackGround="#ff5d28">
+    <navigation-bar :alpha="0" statusBackGround="linear-gradient(270deg, #FF5121 0%, #FF692D 60%, #FF7936 100%)">
       <view slot="title1">
         <view class="navigation-bar flex-h flex-c-s">
           <image class="image" src="http://192.168.1.187:10088/static/songhui/common/logo.jpg" mode="scaleToFill" />
@@ -140,14 +140,10 @@
       handleArticleImageLoadFail(tab, index, imgIndex, type) {
         if (type == 1) {
           // 视频或者单张图片
-          this.$set(this.list[tab].content[index].imgs, imgIndex, '/static/find/video-bg2x.png');
-
-          //  this.list[tab].content[index].imgs[imgIndex] = "/static/find/video-bg2x.png"
+          this.$set(this.list[tab].content[index].imgs, imgIndex, 'http://192.168.1.187:10088/static/find/video-bg2x.png');
         } else {
           // 多张图片
-          this.$set(this.list[tab].content[index].imgs, imgIndex, '/static/find/video-bg2x.png');
-          console.log('this.list[tab].content[index].imgs:', this.list[tab].content[index].imgs);
-          //  this.list[tab].content[index].imgs[imgIndex] =  "/static/find/video-bg2x.png"
+          this.$set(this.list[tab].content[index].imgs, imgIndex, 'http://192.168.1.187:10088/static/find/video-bg2x.png');
         }
       },
       /**
@@ -804,7 +800,7 @@
   .navigation-bar {
     width: 100%;
     height: 100%;
-    background-color: #ff5d28;
+    background: linear-gradient(270deg, #ff5121 0%, #ff692d 60%, #ff7936 100%);
     .image {
       @include size(48, 48);
       margin: 0 14rpx 0 30rpx;

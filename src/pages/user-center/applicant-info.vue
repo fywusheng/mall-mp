@@ -186,9 +186,6 @@
       this.fillParams(this.params);
       this.getSuperStore();
     },
-    onUnload() {
-      // uni.$off('faceRecognitionFinished');
-    },
     computed: {
       ...mapState({
         userInfo: (state) => state.user.userInfo,
@@ -262,7 +259,7 @@
         const params = {};
         const result = await Axios.post('/srm/sh/stores/listByPageNo', params);
         if (result.code == 200 && result.data.list.length) {
-          this.superStore = result.data.list[0];
+          this.superStore = result.data.list.find((item) => item.id === '1');
         }
       },
       // 保存
@@ -422,7 +419,7 @@
     }
     .disease {
       width: 750rpx;
-      height: 658rpx;
+      height: 786rpx;
       background: #ffffff;
       border-radius: 24rpx 24rpx 0rpx 0rpx;
       padding: 60rpx 52rpx;
@@ -451,6 +448,7 @@
         row-gap: 24rpx;
         column-gap: 24rpx;
         .label {
+          height: 64rpx;
           background: #f5f5f5;
           border-radius: 8rpx;
           font-size: 28rpx;

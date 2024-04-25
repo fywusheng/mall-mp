@@ -77,7 +77,7 @@ export default {
     },
     // 获取用户信息
     async getUserInfo({ commit, state }) {
-      if (!state.token) return
+      if (!state.token || state.userInfo) return
       const params = { token: state.token }
       const result = await Axios.post('/member/sh/memberInformation/getMemberInfoById', params)
       if (result && result.code == 200) {

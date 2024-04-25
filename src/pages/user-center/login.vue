@@ -1,10 +1,7 @@
 <template>
   <view class="login">
-    <image
-      class="image"
-      mode="widthFix"
-      src="http://192.168.1.187:10088/static/songhui/common/logo.jpg"
-    />
+    <image class="image" mode="widthFix" src="http://192.168.1.187:10088/static/songhui/common/logo.jpg" />
+    <view class="header-title">松辉云康｜国家老龄服务平台</view>
     <view class="row flex-h flex-c-s m-0-60 b-b-line">
       <!-- <text class="row__label fs-40 c-black">账&nbsp;&nbsp;&nbsp;号：</text> -->
       <input
@@ -56,39 +53,18 @@
         placeholder="请输入密码"
         placeholder-class="placeholder"
       />
-      <image
-        class="row__icon"
-        mode="scaleToFill"
-        :src="passwordIconURL"
-        @click="showsPasswordText = !showsPasswordText"
-      />
+      <image class="row__icon" mode="scaleToFill" :src="passwordIconURL" @click="showsPasswordText = !showsPasswordText" />
     </view>
-    <button class="button button-1 fs-44 c-white m-32" hover-class="none" @click="handleLoginClick">
-      登录
-    </button>
-    <button
-      class="button button-2 fs-44 c-primary m-32"
-      hover-class="none"
-      @click="handleRegisterClick"
-    >
-      注册
-    </button>
+    <button class="button button-1 fs-44 c-white m-32" hover-class="none" @click="handleLoginClick">登录</button>
+    <button class="button button-2 fs-44 c-primary m-32" hover-class="none" @click="handleRegisterClick">注册</button>
     <view class="actions flex-h flex-c-b p-0-40">
-      <button class="action fs-40 c-primary" hover-class="none" @click="handleSwitchTypeClick">
-        切换登录方式
-      </button>
-      <button class="action fs-40 c-black" hover-class="none" @click="handleForgetPasswordClick">
-        忘记密码
-      </button>
+      <button class="action fs-40 c-primary" hover-class="none" @click="handleSwitchTypeClick">切换登录方式</button>
+      <button class="action fs-40 c-black" hover-class="none" @click="handleForgetPasswordClick">忘记密码</button>
     </view>
 
     <view class="footer">
       <view class="radio">
-        <image
-          @click="handleCheckXieyi"
-          :class="checked ? 'icon-check' : 'icon-noCheck'"
-          :src="checked ? icon.checked : icon.noChecked"
-        />
+        <image @click="handleCheckXieyi" :class="checked ? 'icon-check' : 'icon-noCheck'" :src="checked ? icon.checked : icon.noChecked" />
       </view>
 
       <view class="fs-36">
@@ -100,13 +76,7 @@
       </view>
     </view>
     <!--人脸识别未通过提示 -->
-    <modal
-      ref="tipModal"
-      cancelText="不同意"
-      confirmText="同意"
-      @cancel="handleCancel"
-      @confirm="handleLoginConfirm"
-    >
+    <modal ref="tipModal" cancelText="不同意" confirmText="同意" @cancel="handleCancel" @confirm="handleLoginConfirm">
       <view slot="text">
         <view class="confirm-main" style="height: auto; line-height: 1.5">
           <view class="content">
@@ -123,314 +93,314 @@
 </template>
 
 <script>
-import Modal from '@/components/common/modal.vue'
-import api from '@/apis/index.js'
-import { sendSMSCode } from '@/api/modules/sms.js'
-import sha256 from 'crypto-js/sha256'
-import { validatePhoneNumber, validateIDCardNumber } from '@/utils/validation.js'
-export default {
-  components: { Modal },
-  data() {
-    return {
-      focus: false,
-      // 登录方式
-      loginType: 'smsCode',
-      checked: false,
-      icon: {
-        checked: 'http://192.168.1.187:10088/static/pay/icon-radio-checked.png',
-        noChecked: 'http://192.168.1.187:10088/static/pay/icon-radio-default.png'
-      },
-      // 是否明文显示密码
-      showsPasswordText: false,
-      // 发送验证码倒计时
-      seconds: 0,
-      // 表单数据
-      params: {
-        account: '',
-        smsCode: '',
-        password: ''
-      },
-      // 输入框是否聚焦(0不聚焦，大于0聚焦)
-      fouceTime: 0,
-      goUrl: ''
-    }
-  },
-  computed: {
-    // 账号输入框提示内容
-    placeholder() {
-      const placeholders = {
-        smsCode: '请输入注册手机号',
-        password: '请输入手机号'
-      }
-      return placeholders[this.loginType]
+  import Modal from '@/components/common/modal.vue';
+  import api from '@/apis/index.js';
+  import { sendSMSCode } from '@/api/modules/sms.js';
+  import sha256 from 'crypto-js/sha256';
+  import { validatePhoneNumber, validateIDCardNumber } from '@/utils/validation.js';
+  export default {
+    components: { Modal },
+    data() {
+      return {
+        focus: false,
+        // 登录方式
+        loginType: 'smsCode',
+        checked: false,
+        icon: {
+          checked: 'http://192.168.1.187:10088/static/pay/icon-radio-checked.png',
+          noChecked: 'http://192.168.1.187:10088/static/pay/icon-radio-default.png',
+        },
+        // 是否明文显示密码
+        showsPasswordText: false,
+        // 发送验证码倒计时
+        seconds: 0,
+        // 表单数据
+        params: {
+          account: '',
+          smsCode: '',
+          password: '',
+        },
+        // 输入框是否聚焦(0不聚焦，大于0聚焦)
+        fouceTime: 0,
+        goUrl: '',
+      };
     },
-    // 密码图标地址
-    passwordIconURL() {
-      return this.showsPasswordText
-        ? 'http://192.168.1.187:10088/static/user-center/icon-user-center-show-password.png'
-        : 'http://192.168.1.187:10088/static/user-center/icon-user-center-hide-password.png'
-    }
-  },
-  onLoad(e) {
-    if (e.goUrl) {
-      this.goUrl = e.goUrl
-    }
-  },
-  events: {
+    computed: {
+      // 账号输入框提示内容
+      placeholder() {
+        const placeholders = {
+          smsCode: '请输入注册手机号',
+          password: '请输入手机号',
+        };
+        return placeholders[this.loginType];
+      },
+      // 密码图标地址
+      passwordIconURL() {
+        return this.showsPasswordText
+          ? 'http://192.168.1.187:10088/static/user-center/icon-user-center-show-password.png'
+          : 'http://192.168.1.187:10088/static/user-center/icon-user-center-hide-password.png';
+      },
+    },
+    onLoad(e) {
+      if (e.goUrl) {
+        this.goUrl = e.goUrl;
+      }
+    },
+    events: {
+      onKeyboardHeight(e) {
+        // 键盘高度变化时触发
+        console.log('键盘高度：', e.height);
+      },
+    },
     onKeyboardHeight(e) {
       // 键盘高度变化时触发
-      console.log('键盘高度：', e.height)
-    }
-  },
-  onKeyboardHeight(e) {
-    // 键盘高度变化时触发
-    console.log('键盘高度22222：', e.height)
-  },
-  methods: {
-    handleCheckXieyi() {
-      this.checked = !this.checked
+      console.log('键盘高度22222：', e.height);
     },
-    reduceFocus() {
-      this.fouceTime = this.fouceTime - 1
-    },
-    addFocus() {
-      this.fouceTime = this.fouceTime + 1
-      this.reduceFocusHandle()
-    },
-    handleCancel() {
-      this.$refs.tipModal.close()
-    },
-    reduceFocusHandle() {
-      //  this.fouceTime = this.fouceTime - 1;
-      return
+    methods: {
+      handleCheckXieyi() {
+        this.checked = !this.checked;
+      },
+      reduceFocus() {
+        this.fouceTime = this.fouceTime - 1;
+      },
+      addFocus() {
+        this.fouceTime = this.fouceTime + 1;
+        this.reduceFocusHandle();
+      },
+      handleCancel() {
+        this.$refs.tipModal.close();
+      },
+      reduceFocusHandle() {
+        //  this.fouceTime = this.fouceTime - 1;
+        return;
 
-      if (this.params.account.length !== 11) return
-      api.registerVerify({
-        showsLoading: false,
-        data: {
-          mobile: this.params.account
-        },
-        success: (res) => {
-          if (!res) {
-            // 如果用户未注册则弹窗引导用户注册
-            this.$uni.showConfirm({
-              content: '该账号尚未注册，是否立即注册',
-              confirmText: '立即注册',
-              confirm: () => {
-                uni.navigateTo({
-                  url: `/pages/user-center/register?phoneNumber=${this.params.account}`
-                })
-              }
-            })
-          }
-        }
-      })
-    },
-    /**
+        if (this.params.account.length !== 11) return;
+        api.registerVerify({
+          showsLoading: false,
+          data: {
+            mobile: this.params.account,
+          },
+          success: (res) => {
+            if (!res) {
+              // 如果用户未注册则弹窗引导用户注册
+              this.$uni.showConfirm({
+                content: '该账号尚未注册，是否立即注册',
+                confirmText: '立即注册',
+                confirm: () => {
+                  uni.navigateTo({
+                    url: `/pages/user-center/register?phoneNumber=${this.params.account}`,
+                  });
+                },
+              });
+            }
+          },
+        });
+      },
+      /**
        * 发送验证码点击事件
        */
-    async handleSencSMSCodeClick() {
-      if (this.params.account.length !== 11) {
-        this.$uni.showToast('请输入正确的手机号')
-        return
-      }
-
-      sendSMSCode({
-        data: {
-          mobile: this.params.account,
-          sceneFlag: 4,
-          // source: '',
-          // source: 'source',
-          tmplId: ''
-          // tmplId: '340701587045712968',
-        },
-        header: {
-          channel: 'msg'
-        },
-        success: (data) => {
-          this.$uni.showToast('发送成功')
-          this.seconds = 60
-          this.timer = setInterval(() => {
-            this.seconds -= 1
-            if (this.seconds < 0) clearInterval(this.timer)
-          }, 1000)
+      async handleSencSMSCodeClick() {
+        if (this.params.account.length !== 11) {
+          this.$uni.showToast('请输入正确的手机号');
+          return;
         }
-      })
-    },
-    /**
+
+        sendSMSCode({
+          data: {
+            mobile: this.params.account,
+            sceneFlag: 4,
+            // source: '',
+            // source: 'source',
+            tmplId: '',
+            // tmplId: '340701587045712968',
+          },
+          header: {
+            channel: 'msg',
+          },
+          success: (data) => {
+            this.$uni.showToast('发送成功');
+            this.seconds = 60;
+            this.timer = setInterval(() => {
+              this.seconds -= 1;
+              if (this.seconds < 0) clearInterval(this.timer);
+            }, 1000);
+          },
+        });
+      },
+      /**
        * 登录点击事件
        */
-    handleLoginClick() {
-      if (!this.checked) {
-        this.$refs.tipModal.open()
-        return false
-      }
-      if (this.loginType === 'smsCode') {
-        this.loginByPhoneNumber()
-      } else if (this.loginType === 'password') {
-        this.loginByAccount()
-      }
-    },
-    handleLoginConfirm() {
-      this.$refs.tipModal.close()
-      if (this.loginType === 'smsCode') {
-        this.loginByPhoneNumber()
-      } else if (this.loginType === 'password') {
-        this.loginByAccount()
-      }
-    },
-    /**
+      handleLoginClick() {
+        if (!this.checked) {
+          this.$refs.tipModal.open();
+          return false;
+        }
+        if (this.loginType === 'smsCode') {
+          this.loginByPhoneNumber();
+        } else if (this.loginType === 'password') {
+          this.loginByAccount();
+        }
+      },
+      handleLoginConfirm() {
+        this.$refs.tipModal.close();
+        if (this.loginType === 'smsCode') {
+          this.loginByPhoneNumber();
+        } else if (this.loginType === 'password') {
+          this.loginByAccount();
+        }
+      },
+      /**
        * 注册点击事件
        */
-    handleRegisterClick() {
-      uni.navigateTo({
-        url: `/pages/user-center/register?phoneNumber=${this.params.account}`
-      })
-    },
-    /**
+      handleRegisterClick() {
+        uni.navigateTo({
+          url: `/pages/user-center/register?phoneNumber=${this.params.account}`,
+        });
+      },
+      /**
        * 切换登录方式点击事件
        */
-    handleSwitchTypeClick() {
-      uni.showActionSheet({
-        itemList: this.loginType !== 'smsCode' ? ['验证码登录'] : ['密码登录'],
-        success: (res) => {
-          this.loginType = this.loginType !== 'smsCode' ? 'smsCode' : 'password'
-          this.checked = false
-        },
-        fail: function (res) {
-          console.log(res.errMsg)
-        }
-      })
-    },
-    /**
+      handleSwitchTypeClick() {
+        uni.showActionSheet({
+          itemList: this.loginType !== 'smsCode' ? ['验证码登录'] : ['密码登录'],
+          success: (res) => {
+            this.loginType = this.loginType !== 'smsCode' ? 'smsCode' : 'password';
+            this.checked = false;
+          },
+          fail: function (res) {
+            console.log(res.errMsg);
+          },
+        });
+      },
+      /**
        * 忘记密码点击事件
        */
-    handleForgetPasswordClick() {
-      uni.navigateTo({
-        url: `/pages/user-center/reset-password-by-phone-number?phoneNumber=${this.params.account}`
-      })
-    },
-    /**
+      handleForgetPasswordClick() {
+        uni.navigateTo({
+          url: `/pages/user-center/reset-password-by-phone-number?phoneNumber=${this.params.account}`,
+        });
+      },
+      /**
        * 用户协议点击事件
        */
-    handleUserAgreementClick() {
-      const url = `${ENV.H5}/#/agreement?type=0`
-      uni.navigateTo({
-        url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
-      })
-    },
-    /**
+      handleUserAgreementClick() {
+        const url = `${ENV.H5}/#/agreement?type=0`;
+        uni.navigateTo({
+          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
+        });
+      },
+      /**
        * 隐私协议点击事件
        */
-    handlePrivacyPolicyClick() {
-      const url = `${ENV.H5}/#/agreement?type=1`
-      uni.navigateTo({
-        url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
-      })
-    },
-    /**
+      handlePrivacyPolicyClick() {
+        const url = `${ENV.H5}/#/agreement?type=1`;
+        uni.navigateTo({
+          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
+        });
+      },
+      /**
        * 通过手机号及验证码登录
        */
-    loginByPhoneNumber() {
-      if (!this.params.account) {
-        this.$uni.showToast('请输入手机号')
-        return
-      }
-      if (!validatePhoneNumber(this.params.account)) {
-        this.$uni.showToast('手机号格式错误，请重新输入')
-        return
-      }
-      if (this.params.smsCode.length !== 6) {
-        this.$uni.showToast('请输入正确的验证码')
-        return
-      }
-      api.loginByPhoneNumber({
-        data: {
-          mobile: this.params.account,
-          vcode: this.params.smsCode
-        },
-        success: (data) => {
-          uni.setStorageSync('token', data.accessToken)
-          Store.dispatch('setToken', data.accessToken)
-          Store.dispatch('login').then((result) => {
-            // console.log('result: ', result);
-            uni.$emit('didLogin')
-            if (this.goUrl != '') {
-              uni.reLaunch({
-                url: this.goUrl
-              })
-            } else {
-              uni.navigateBack()
-            }
-          })
+      loginByPhoneNumber() {
+        if (!this.params.account) {
+          this.$uni.showToast('请输入手机号');
+          return;
         }
-      })
-    },
-    /**
+        if (!validatePhoneNumber(this.params.account)) {
+          this.$uni.showToast('手机号格式错误，请重新输入');
+          return;
+        }
+        if (this.params.smsCode.length !== 6) {
+          this.$uni.showToast('请输入正确的验证码');
+          return;
+        }
+        api.loginByPhoneNumber({
+          data: {
+            mobile: this.params.account,
+            vcode: this.params.smsCode,
+          },
+          success: (data) => {
+            uni.setStorageSync('token', data.accessToken);
+            Store.dispatch('setToken', data.accessToken);
+            Store.dispatch('login').then((result) => {
+              // console.log('result: ', result);
+              uni.$emit('didLogin');
+              if (this.goUrl != '') {
+                uni.reLaunch({
+                  url: this.goUrl,
+                });
+              } else {
+                uni.navigateBack();
+              }
+            });
+          },
+        });
+      },
+      /**
        * 通过手机号或身份证号及密码登录
        */
-    loginByAccount() {
-      const { account } = this.params
-      if (!validatePhoneNumber(account) && !validateIDCardNumber(account)) {
-        this.$uni.showToast('请输入正确的手机号或身份证号')
-        return
-      }
-      if (!this.params.password) {
-        this.$uni.showToast('请输入密码')
-        return
-      }
-      api.loginByAccount({
-        data: {
-          acct: this.params.account,
-          password: sha256(this.params.password).toString()
-        },
-        success: (data) => {
-          uni.setStorageSync('token', data.accessToken)
-          Store.dispatch('setToken', data.accessToken)
-          Store.dispatch('login').then((result) => {
-            // console.log('result: ', result);
-            uni.$emit('didLogin')
-            if (this.goUrl != '') {
-              uni.reLaunch({
-                url: this.goUrl
-              })
-            } else {
-              uni.navigateBack()
-            }
-          })
-
-          // uni.navigateBack();
-        },
-        fail: (error) => {
-          if (error.code === 600020) {
-            // 如果用户未注册则弹窗引导用户注册
-            this.$uni.showConfirm({
-              content: '该账号尚未注册，是否立即注册',
-              confirmText: '立即注册',
-              confirm: () => {
-                uni.navigateTo({
-                  url: `/pages/user-center/register?phoneNumber=${this.params.account}`
-                })
-              }
-            })
-          } else if (error.code === 600120) {
-            this.$uni.showConfirm({
-              content: error.message,
-              confirmText: '去设置',
-              confirm: () => {
-                uni.navigateTo({
-                  url: `/pages/user-center/reset-password-by-phone-number?phoneNumber=${this.params.account}&title=设置密码`
-                })
-              }
-            })
-          } else {
-            this.$uni.showToast(error.message)
-          }
+      loginByAccount() {
+        const { account } = this.params;
+        if (!validatePhoneNumber(account) && !validateIDCardNumber(account)) {
+          this.$uni.showToast('请输入正确的手机号或身份证号');
+          return;
         }
-      })
-    }
-  }
-}
+        if (!this.params.password) {
+          this.$uni.showToast('请输入密码');
+          return;
+        }
+        api.loginByAccount({
+          data: {
+            acct: this.params.account,
+            password: sha256(this.params.password).toString(),
+          },
+          success: (data) => {
+            uni.setStorageSync('token', data.accessToken);
+            Store.dispatch('setToken', data.accessToken);
+            Store.dispatch('login').then((result) => {
+              // console.log('result: ', result);
+              uni.$emit('didLogin');
+              if (this.goUrl != '') {
+                uni.reLaunch({
+                  url: this.goUrl,
+                });
+              } else {
+                uni.navigateBack();
+              }
+            });
+
+            // uni.navigateBack();
+          },
+          fail: (error) => {
+            if (error.code === 600020) {
+              // 如果用户未注册则弹窗引导用户注册
+              this.$uni.showConfirm({
+                content: '该账号尚未注册，是否立即注册',
+                confirmText: '立即注册',
+                confirm: () => {
+                  uni.navigateTo({
+                    url: `/pages/user-center/register?phoneNumber=${this.params.account}`,
+                  });
+                },
+              });
+            } else if (error.code === 600120) {
+              this.$uni.showConfirm({
+                content: error.message,
+                confirmText: '去设置',
+                confirm: () => {
+                  uni.navigateTo({
+                    url: `/pages/user-center/reset-password-by-phone-number?phoneNumber=${this.params.account}&title=设置密码`,
+                  });
+                },
+              });
+            } else {
+              this.$uni.showToast(error.message);
+            }
+          },
+        });
+      },
+    },
+  };
 </script>
 
 <style lang="scss" scoped>
@@ -462,13 +432,20 @@ export default {
     height: 100vh;
     padding-top: 32rpx;
     box-sizing: border-box;
+
     .image {
       // @include size(354, 262);
-      width: 328rpx;
-      height: 328rpx;
+      width: 208rpx;
+      height: 208rpx;
       margin: 32rpx auto;
       display: block;
-      margin-bottom: 32rpx;
+      margin-bottom: 0rpx;
+    }
+    .header-title {
+      font-size: 42rpx;
+      // font-weight: 500;
+      text-align: center;
+      margin-bottom: 90rpx;
     }
     .row {
       height: 120rpx;

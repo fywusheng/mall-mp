@@ -2,11 +2,7 @@
 <template>
   <view class="my-points">
     <!-- #ifdef MP-ALIPAY -->
-    <navigation-bars
-      title="我的积分"
-      title-color="#ffffff"
-      background-color="linear-gradient(to right, #ff8800, #ff5000)"
-    />
+    <navigation-bars title="我的积分" title-color="#ffffff" background-color="linear-gradient(to right, #ff8800, #ff5000)" />
     <!-- #endif -->
     <!-- #ifdef MP-WEIXIN -->
     <navigation-bars
@@ -41,43 +37,19 @@
         <text class="fs-36 c-lightgrey">800</text>
         <text class="fs-36 c-lightgrey">1000</text>
       </view>
-      <image
-        class="watermark"
-        mode="scaleToFill"
-        src="http://192.168.1.187:10088/static/common/icon-common-logo-watermark.png"
-      />
+      <image class="watermark" mode="scaleToFill" src="http://192.168.1.187:10088/static/common/icon-common-logo-watermark.png" />
     </view>
     <view class="points-detail bg-white">
       <view class="tab-bar flex-h flex-c-s">
-        <view style="font-size: 44rpx; color: #333333; font-weight: bold">赚积分</view>
+        <view class="left">
+          <view class="text" style="font-size: 44rpx; color: #ff5500; font-weight: bold">赚积分</view>
+          <image @click="openRulePop" class="icon-tip" src="http://192.168.1.187:10088/static/songhui/common/tip.png" mode="scaleToFill" />
+        </view>
+
         <view class="right" @click="goShop">
           <text>积分兑换</text>
-          <image
-            class="icon-right"
-            src="http://192.168.1.187:10088/static/images/cart/icon-right.png"
-            mode="scaleToFill"
-          />
+          <image class="icon-right" src="http://192.168.1.187:10088/static/images/cart/icon-right.png" mode="scaleToFill" />
         </view>
-        <!-- <button
-          class="tab animated"
-          hover-class="none"
-          :class="{ 'tab--selected': selectedIndex === 0 }"
-          @click="handleTabClick(0)"
-        >
-          赚积分
-        </button> -->
-        <!-- <button
-          class="tab animated"
-          hover-class="none"
-          :class="{ 'tab--selected': selectedIndex === 1 }"
-          @click="handleTabClick(1)"
-        >
-          积分兑换
-        </button> -->
-        <!-- <view
-          class="indicator bg-primary br-6 animated"
-          :class="indicatorClass"
-        /> -->
       </view>
       <view class="list" v-if="selectedIndex === 0">
         <view
@@ -87,11 +59,7 @@
           :key="index"
           :class="{ 'item--finished': item.hasComplete === '1' }"
         >
-          <image
-            class="icon"
-            :src="item.hasComplete === '1' ? item.doneIcon : item.taskIcon"
-            mode="scaleToFill"
-          />
+          <image class="icon" :src="item.hasComplete === '1' ? item.doneIcon : item.taskIcon" mode="scaleToFill" />
           <view class="info flex-v m-0-24 flex-1">
             <text class="fs-40 fw-500 c-black">{{ item.taskDscr }}</text>
             <text class="fs-36 c-primary mt-12">+{{ item.taskScore }} 积分</text>
@@ -105,227 +73,146 @@
         <text class="fs-44 c-grey mt-64">项目建设中，敬请期待！</text>
       </view>
     </view>
-    <real-name-pop ref="realpop" @succFlag="succFlag" :headImg="headImg"></real-name-pop>
+    <point-rule ref="pointPop" />
+    <!-- <real-name-pop ref="realpop" @succFlag="succFlag" :headImg="headImg"></real-name-pop> -->
   </view>
 </template>
 
 <script>
-import NavigationBars from '../../components/common/navigation-bar.vue'
-import api from '@/apis/index.js'
-import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue'
-import { mapState } from 'vuex'
-export default {
-  components: { NavigationBars, RealNamePop },
-  data() {
-    return {
-      headImg: '',
-      clickId: '',
-      // 导航栏高度
-      // #ifdef MP-WEIXIN
-      navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
-      // #endif
-      // #ifdef MP-ALIPAY
-      navigationBarHeight:
-          uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
-      // #endif
-      // // 当前可用积分进度条宽度
-      progressBarWidth: 0,
-      // 选中的下标
-      selectedIndex: 0,
-      // 赚积分任务列表
-      list: [],
-      // 可用积分
-      score: '0',
-      // 最高积分
-      fixScore: '0'
-    }
-  },
-  computed: {
-    indicatorClass() {
-      return ['indicator--left', 'indicator--right'][this.selectedIndex]
-    }
-    // progressBarWidth() {
-    //   console.log('12312');
-    //   if (this.score > 1000) {
-    //     return 636;
-    //   }
+  import NavigationBars from '../../components/common/navigation-bar.vue';
+  import api from '@/apis/index.js';
+  import PointRule from './common/get-point-pop';
+  import { mapState } from 'vuex';
+  export default {
+    components: { NavigationBars, PointRule },
+    data() {
+      return {
+        headImg: '',
+        clickId: '',
+        // 导航栏高度
+        // #ifdef MP-WEIXIN
+        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
+        // #endif
+        // #ifdef MP-ALIPAY
+        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
+        // #endif
+        // // 当前可用积分进度条宽度
+        progressBarWidth: 0,
+        // 选中的下标
+        selectedIndex: 0,
+        // 赚积分任务列表
+        list: [],
+        // 可用积分
+        score: '0',
+        // 最高积分
+        fixScore: '0',
+      };
+    },
+    computed: {
+      indicatorClass() {
+        return ['indicator--left', 'indicator--right'][this.selectedIndex];
+      },
+    },
+    onLoad() {},
+    onShow() {
+      if (this.userInfo.phone) {
+        this.handleScoreInfo();
+      }
+      this.getUserTaskInfoByPage();
+    },
+    computed: {
+      ...mapState({
+        userInfo: (state) => state.user.userInfo,
+      }),
+    },
+    methods: {
+      openRulePop() {
+        this.$refs.pointPop.open();
+      },
+      goShop() {
+        uni.navigateTo({ url: '/sub-pages/point/index' });
+      },
+      handleNavigationBack() {
+        // 导航返回处理
+        uni.reLaunch({
+          url: `/pages/index/index?index=4`,
+        });
+      },
 
-    //   // 当前可用积分进度条宽度
-    //   return Math.ceil((this.score / 1000) * 636);
-    // },
-  },
-  onLoad() {
-    // this.userInfo = uni.getStorageSync('userInfo');
-    // this.setData();
-  },
-  onShow() {
-    // this.userInfo = uni.getStorageSync('userInfo');
-    if (this.userInfo.phone) {
-      this.handleScoreInfo()
-    }
-    this.getUserTaskInfoByPage()
-  },
-  computed: {
-    ...mapState({
-      userInfo: (state) => state.user.userInfo
-    })
-  },
-  methods: {
-    goShop() {
-      uni.navigateTo({ url: '/sub-pages/point/index' })
-    },
-    handleNavigationBack() {
-      // 导航返回处理
-      uni.reLaunch({
-        url: `/pages/index/index?index=4`
-      })
-    },
-    /**
-       * 获取用户信息 getUserAccount
-       */
-    getUserInfo() {
-      return new Promise((resolve, reject) => {
-        api.getUserInfo({
-          data: {
-            accessToken: uni.getStorageSync('token')
-          },
-          success: (data) => {
-            resolve(data)
-          },
-          fail: (error) => {
-            reject(error)
-          }
-        })
-      })
-    },
-    async succFlag(flag) {
-      if (flag == 1) {
-        const userinfor = await this.getUserInfo()
-        uni.setStorageSync('userInfo', userinfor)
-        this.userInfo = userinfor
-        console.log('=====实名后的信息---', userinfor)
-        this.$refs.realpop.close()
+      selectUrl(item) {
+        const tastId = item.taskInfoId || '';
+        this.clickId = tastId;
+
+        // if (tastId == '1') {
+        //   this.$uni.showToast('当前所在地区功能开通中')
+        //   return
+        // }
+        console.log('====点击的下标---', item);
+        if (item.hasComplete == 1) return;
+        // 1-申领老年人证  2-亲情账号 3-添加赡养抚养关系 6-实名认证
+        // const urls = { '1': '/pages/certificate/electronic-card?index=0', '2': '/pages/family-account/select-type', '3': '/pages/support/index', '6': 'pages/user-center/my-points' }
         const urls = {
-          1: '/pages/certificate/electronic-card?index=0',
+          1: '/pages/user-center/licence',
           2: '/pages/family-account/select-type',
           3: '/pages/support/index',
-          6: '/pages/user-center/my-points'
-        }
-        if (!urls[this.clickId]) return
-        console.log('====实名后要去的页面--', urls[this.clickId])
-        // uni.navigateTo({url: urls[this.clickId]})
-
-        uni.navigateTo({
-          url: `/pages/user-center/real-name-result2?back=${urls[this.clickId]}`
-        })
-      }
-    },
-    selectUrl(item) {
-      const tastId = item.taskInfoId || ''
-      this.clickId = tastId
-
-      // if (tastId == '1') {
-      //   this.$uni.showToast('当前所在地区功能开通中')
-      //   return
-      // }
-      console.log('====点击的下标---', item)
-      if (item.hasComplete == 1) return
-      // 1-申领老年人证  2-亲情账号 3-添加赡养抚养关系 6-实名认证
-      // const urls = { '1': '/pages/certificate/electronic-card?index=0', '2': '/pages/family-account/select-type', '3': '/pages/support/index', '6': 'pages/user-center/my-points' }
-      const urls = {
-        1: '/pages/user-center/licence',
-        2: '/pages/family-account/select-type',
-        3: '/pages/support/index',
-        6: 'pages/user-center/my-points'
-      }
-      if (this.userInfo.crtfStas !== '2') {
-        // 未实名
-        if (tastId == '6') {
-          this.headImg = 'http://192.168.1.187:10088/static/common/loginAttest.png'
-        } else {
-          this.headImg = 'http://192.168.1.187:10088/static/common/img-real-name.png'
-        }
-        this.$refs.realpop.open()
-        return
-      }
-      if (this.userInfo.crtfStas !== '0') {
-        // 已实名
-        uni.navigateTo({ url: urls[tastId] })
-      }
-    },
-    /**
-       * tab 点击事件
-       */
-    handleTabClick(index) {
-      if (index === this.selectedIndex) return
-      this.selectedIndex = index
-    },
-    // 获取用户积分
-    handleScoreInfo() {
-      api.scoreInfo({
-        data: {
-          userId: this.userInfo.memberId
-        },
-        success: (res) => {
-          console.log('用户积分：', res)
-          this.score = res.score
-          this.fixScore = res.fixScore
-          // 当前可用积分进度条宽度
-          if (this.score > 1000) {
-            this.progressBarWidth = 636
+          6: 'pages/user-center/my-points',
+        };
+        if (this.userInfo.crtfStas !== '2') {
+          // 未实名
+          if (tastId == '6') {
+            this.headImg = 'http://192.168.1.187:10088/static/common/loginAttest.png';
+          } else {
+            this.headImg = 'http://192.168.1.187:10088/static/common/img-real-name.png';
           }
-          this.progressBarWidth = Math.ceil((this.score / 1000) * 636)
+          this.$refs.realpop.open();
+          return;
         }
-      })
-    },
-    // 获取用户积分任务列表
-    getUserTaskInfoByPage() {
-      api.getUserTaskInfoByPage({
-        data: {
-          userId: this.userInfo.memberId,
-          pageNum: 1,
-          pageSize: 100
-        },
-        success: (res) => {
-          console.log('用户积分任务列表：', res.list)
-          this.list = res.list
+        if (this.userInfo.crtfStas !== '0') {
+          // 已实名
+          uni.navigateTo({ url: urls[tastId] });
         }
-      })
-    },
-    /**
-       * 设置数据
-       */
-    setData() {
-      this.list = [
-        {
-          title: '添加亲情账号',
-          points: 300,
-          icon: 'http://192.168.1.187:10088/static/user-center/icon-user-center-task-2.png',
-          isFinished: false
-        },
-        {
-          title: '完善赡养扶养关系',
-          points: 200,
-          icon: 'http://192.168.1.187:10088/static/user-center/icon-user-center-task-1.png',
-          isFinished: false
-        },
-        {
-          title: '申领电子证照老年人证',
-          points: 500,
-          icon: 'http://192.168.1.187:10088/static/user-center/icon-user-center-task-0-finished.png',
-          isFinished: true
-        }
-      ]
-    },
+      },
+      // 获取用户积分
+      handleScoreInfo() {
+        api.scoreInfo({
+          data: {
+            userId: this.userInfo.memberId,
+          },
+          success: (res) => {
+            console.log('用户积分：', res);
+            this.score = res.score;
+            this.fixScore = res.fixScore;
+            // 当前可用积分进度条宽度
+            if (this.score > 1000) {
+              this.progressBarWidth = 636;
+            }
+            this.progressBarWidth = Math.ceil((this.score / 1000) * 636);
+          },
+        });
+      },
+      // 获取用户积分任务列表
+      getUserTaskInfoByPage() {
+        api.getUserTaskInfoByPage({
+          data: {
+            userId: this.userInfo.memberId,
+            pageNum: 1,
+            pageSize: 100,
+          },
+          success: (res) => {
+            console.log('用户积分任务列表：', res.list);
+            this.list = res.list;
+          },
+        });
+      },
 
-    // 点击查看
-    handleScoreList() {
-      uni.navigateTo({
-        url: '/pages/user-center/points-list'
-      })
-    }
-  }
-}
+      // 点击查看
+      handleScoreList() {
+        uni.navigateTo({
+          url: '/pages/user-center/points-list',
+        });
+      },
+    },
+  };
 </script>
 
 <style lang="scss" scoped>
@@ -373,6 +260,31 @@ export default {
         display: flex;
         align-items: center;
         justify-content: space-between;
+        .left {
+          display: flex;
+          align-items: center;
+          .text {
+            position: relative;
+            height: 88rpx;
+            line-height: 88rpx;
+            &::after {
+              content: '';
+              display: block;
+              width: 70rpx;
+              height: 10rpx;
+              background: #ff711a;
+              border-radius: 5rpx;
+              position: absolute;
+              bottom: 0;
+              left: 30rpx;
+            }
+          }
+          .icon-tip {
+            width: 36rpx;
+            height: 36rpx;
+            margin-left: 18rpx;
+          }
+        }
         .right {
           display: flex;
           align-items: center;
@@ -423,14 +335,17 @@ export default {
             line-height: 64rpx;
             border: 2rpx solid $color-primary;
             box-sizing: border-box;
+            color: #ffffff;
+            background: linear-gradient(135deg, #ff8800 0%, #ff5000 100%);
           }
           &--finished {
             text {
               color: $color-lightgrey;
             }
             .button {
-              color: $color-lightgrey;
-              border: 2rpx solid $color-lightgrey;
+              opacity: 0.5;
+              // color: $color-lightgrey;
+              // border: 2rpx solid $color-lightgrey;
             }
           }
         }
