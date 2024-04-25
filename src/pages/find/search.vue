@@ -115,13 +115,13 @@
 
 <script>
   import api from '@/apis/index.js';
-  import uniPopup from '@/components/uni-popup/uni-popup.vue';
+  // import uniPopup from '@/components/uni-popup/uni-popup.vue';
   import hotSearch from '@/pages/find/components/hot-search';
   import result from '@/pages/find/components/result';
   import Yaudio from './components/audio';
 
   export default {
-    components: { uniPopup, result, hotSearch, Yaudio },
+    components: { result, hotSearch, Yaudio },
     data() {
       return {
         // 搜索关键字
@@ -211,7 +211,7 @@
       this.getHot();
       // #ifdef MP-WEIXIN
       if (option.voice == 1) {
-        this.$refs.popup.open('top');
+        this.$refs.popup.open('bottom');
         this.initRecordRecognitionManager();
       }
       if (uni.getStorageSync('histroySearch')) {
@@ -222,7 +222,7 @@
     mounted() {
       // #ifdef MP-ALIPAY
       if (this.voice == 1) {
-        this.$refs.popup.open('top');
+        this.$refs.popup.open('bottom');
         this.initAlipay();
       }
       if (uni.getStorageSync('histroySearch')) {
@@ -371,7 +371,7 @@
        * 语音输入图标点击事件
        */
       handleVoiceInputClick() {
-        this.$refs.popup.open('top');
+        this.$refs.popup.open('bottom');
       },
 
       /**
@@ -924,12 +924,16 @@
     height: 200rpx;
     font-size: 25rpx;
     margin-top: 100rpx;
+    background: #fff;
   }
   .popup-text {
     font-size: 25rpx;
     text-align: center;
     margin-top: 15rpx;
     color: rgb(209, 204, 204);
+  }
+  .bottom-view {
+    background: #fff;
   }
   .bottom-view__image {
     width: 150rpx;

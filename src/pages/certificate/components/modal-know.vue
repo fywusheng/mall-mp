@@ -3,11 +3,7 @@
     <uni-popup type="center" ref="popupM">
       <view class="notice">
         <view class="_center">
-          <image
-            class="_img"
-            mode="scaleToFill"
-            src="http://192.168.1.187:10088/static/rights/modalTop.png"
-          />
+          <image class="_img" mode="scaleToFill" src="http://192.168.1.187:10088/static/rights/modalTop.png" />
         </view>
         <view class="_t">当前所在地区功能开通中</view>
         <view class="_subt">您将进入示例页面</view>
@@ -18,22 +14,22 @@
   </view>
 </template>
 <script>
-import uniPopup from '@/components/uni-popup/uni-popup.vue'
-export default {
-  components: { uniPopup },
-  data() {
-    return {}
-  },
-  methods: {
-    close() {
-      this.$refs.popupM.close()
-      this.$emit('close', 1)
+  // import uniPopup from '@/components/uni-popup/uni-popup.vue'
+  export default {
+    // components: { uniPopup },
+    data() {
+      return {};
     },
-    open() {
-      this.$refs.popupM.open()
-    }
-  }
-}
+    methods: {
+      close() {
+        this.$refs.popupM.close();
+        this.$emit('close', 1);
+      },
+      open() {
+        this.$refs.popupM.open();
+      },
+    },
+  };
 </script>
 <style lang="scss" scoped>
   .notice {

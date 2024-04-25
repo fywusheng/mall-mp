@@ -28,11 +28,7 @@
                 <text class="left-number">{{ artItem.clikCnt }}人在看</text>
               </view>
               <view class="right" @click.native.stop="handleNoimg(artItem, artIndex)">
-                <image
-                  v-if="playIndex != artItem.contId"
-                  src="http://192.168.1.187:10088/static/find/horn2x.png"
-                  mode="scaleToFill"
-                ></image>
+                <image v-if="playIndex != artItem.contId" src="http://192.168.1.187:10088/static/find/horn2x.png" mode="scaleToFill"></image>
                 <template v-else>
                   <image
                     v-if="mapState[artItem.contId]"
@@ -78,11 +74,7 @@
                 <text class="left-number">{{ artItem.clikCnt }}人在看</text>
               </view>
               <view class="right" @click.native.stop="handleNoimg(artItem, artIndex)">
-                <image
-                  v-if="playIndex != artItem.contId"
-                  src="http://192.168.1.187:10088/static/find/horn2x.png"
-                  mode="scaleToFill"
-                ></image>
+                <image v-if="playIndex != artItem.contId" src="http://192.168.1.187:10088/static/find/horn2x.png" mode="scaleToFill"></image>
                 <template v-else>
                   <image
                     v-if="mapState[artItem.contId]"
@@ -130,11 +122,7 @@
                 <text class="left-number">{{ artItem.clikCnt }}人在看</text>
               </view>
               <view class="right" @click.native.stop="handleNoimg(artItem, artIndex)">
-                <image
-                  v-if="playIndex != artItem.contId"
-                  src="http://192.168.1.187:10088/static/find/horn2x.png"
-                  mode="scaleToFill"
-                ></image>
+                <image v-if="playIndex != artItem.contId" src="http://192.168.1.187:10088/static/find/horn2x.png" mode="scaleToFill"></image>
                 <template v-else>
                   <image
                     v-if="mapState[artItem.contId]"
@@ -159,12 +147,7 @@
             </view>
           </view>
           <!-- 视频模块-->
-          <view
-            @click="goVedio()"
-            :data-id="artItem.contId"
-            class="content-noimg"
-            v-else-if="artItem.artiType === '1'"
-          >
+          <view @click="goVedio()" :data-id="artItem.contId" class="content-noimg" v-else-if="artItem.artiType === '1'">
             <view class="audio-title text-2">{{ artItem.ttl }}</view>
             <view class="audio-center">
               <image
@@ -175,11 +158,7 @@
                 :key="imgIndex"
                 mode="scaleToFill"
               />
-              <image
-                class="play"
-                mode="scaleToFill"
-                src="http://192.168.1.187:10088/static/find/audio2x.png"
-              ></image>
+              <image class="play" mode="scaleToFill" src="http://192.168.1.187:10088/static/find/audio2x.png"></image>
             </view>
             <view class="noimg-bottom">
               <view class="left">
@@ -191,13 +170,7 @@
         </swiper-item>
       </swiper>
 
-      <uni-swiper-dot
-        :info="list"
-        :current="index"
-        field="content"
-        mode="round"
-        :dotsStyles="dotsStyles"
-      >
+      <uni-swiper-dot :info="list" :current="index" field="content" mode="round" :dotsStyles="dotsStyles">
         <view class="uni-dot"></view>
       </uni-swiper-dot>
     </view>
@@ -235,220 +208,219 @@
   </view>
 </template>
 <script>
-import api from '@/apis/index.js'
-import uniPopup from '@/components/uni-popup/uni-popup.vue'
-import { uniSwiperDot } from '@dcloudio/uni-ui'
-import Yaudio from './audio.vue'
-export default {
-  components: { uniPopup, Yaudio, uniSwiperDot },
-  props: {
-    // list: {
-    //   type: Array,
-    //   default: () => []
-    // },
-    colName: {
-      type: String,
-      default: '养老金'
+  import api from '@/apis/index.js';
+  // import uniPopup from '@/components/uni-popup/uni-popup.vue'
+  import { uniSwiperDot } from '@dcloudio/uni-ui';
+  import Yaudio from './audio.vue';
+  export default {
+    components: { Yaudio, uniSwiperDot },
+    props: {
+      // list: {
+      //   type: Array,
+      //   default: () => []
+      // },
+      colName: {
+        type: String,
+        default: '养老金',
+      },
+      type: {
+        type: String,
+        default: '1',
+      },
     },
-    type: {
-      type: String,
-      default: '1'
-    }
-  },
-  data() {
-    return {
-      index: 0,
-      list: [],
-      stopPlay: false,
-      playIndex: '',
-      isPlay: false,
-      innerAudioContext: null,
-      mapState: {},
-      pageNum: 1,
-      loading: 1,
-      title: '',
-      arrayIndex: 0,
-      player: '',
-      videoBg: '',
-      closeAudio: true,
-      showAudio: false,
-      dotsStyles: {
-        width: 6,
-        height: 6,
-        bottom: 0,
-        backgroundColor: '#E0E0E0',
-        border: 'none',
-        selectedBackgroundColor: '#FF5500',
-        selectedBorder: 'none'
-      }
-    }
-  },
-  created() {
-    this.selectArtiListByColId()
-  },
-  mounted() {
-    this.innerAudioContext = uni.createInnerAudioContext()
-  },
-  methods: {
-    hanldeBannerChange(e) {
-      this.index = e.detail.current
-    },
-    triggleBg(data) {
-      this.closeAudio = data
-    },
-    handleSwitchPlay() {
-      this.mapState[this.playIndex] = !this.mapState[this.playIndex]
-      if (this.mapState[this.playIndex]) {
-        this.stopPlay = true
-        this.innerAudioContext.play()
-      } else {
-        this.stopPlay = false
-        this.innerAudioContext.pause()
-      }
-    },
-    nextPlay() {
-      const index = this.arrayIndex + 1
-      const item = this.list[index]
-      if (!item) {
-        this.arrayIndex = this.list.length - 1
-        return
-      }
-      this.handleNoimg(this.list[index], index)
-      this.title = item.ttl
-      this.videoBg = item.imgs[0] ? item.imgs[0] : ''
-    },
-    prePlay() {
-      const index = this.arrayIndex - 1
-      const item = this.list[index]
-      if (!item) {
-        this.arrayIndex = 0
-        return
-      }
-      this.handleNoimg(this.list[index], index)
-      this.title = item.ttl
-      this.videoBg = item.imgs[0] ? item.imgs[0] : ''
-    },
-    handleClose() {
-      this.destoryInstance()
-      this.playIndex = false
-      this.showAudio = false
-      // this.innerAudioContext.pause()
-      // this.$set(this.mapState, this.playIndex, false)
-    },
-    goVedio() {
-      this.$refs.confirmpop.open()
-    },
-    close() {
-      this.$refs.confirmpop.close()
-    },
-    destoryInstance() {
-      if (this.innerAudioContext) {
-        this.innerAudioContext.destroy()
-        this.$set(this.mapState, this.playIndex, false)
-      }
-    },
-    initRadio() {
-      this.innerAudioContext = uni.createInnerAudioContext()
-    },
-    handleNoimg(item, index) {
-      const token = uni.getStorageSync('token')
-      if (!token) {
-        uni.navigateTo({ url: '/pages/user-center/login' })
-        return
-      }
-      if (this.innerAudioContext) {
-        this.innerAudioContext.destroy()
-      }
-      this.initRadio()
-      this.showAudio = true
-      this.playIndex = item.contId
-      this.arrayIndex = index
-      this.title = item.ttl
-      this.videoBg = item.imgs[0] ? item.imgs[0] : ''
-      if (this.mapState[item.contId]) {
-        const state = !this.mapState[item.contId]
-        this.$set(this.mapState, item.contId, state)
-      } else {
-        this.mapState = {}
-        this.$set(this.mapState, item.contId, true)
-      }
-      // #ifdef MP-WEIXIN
-      this.innerAudioContext.src = item.mediaUrl
-      // #endif
-      // #ifdef MP-ALIPAY
-      this.innerAudioContext.src = item.youkuUrl || item.mediaUrl
-      // #endif
-      if (this.mapState[item.contId]) {
-        if (this.player) {
-          this.player = null
-        }
-        this.player = setTimeout(() => {
-          this.innerAudioContext.play()
-          this.stopPlay = true
-        }, 500)
-      } else {
-        this.innerAudioContext.pause()
-        this.stopPlay = false
-      }
-      this.innerAudioContext.onTimeUpdate(() => {
-        this.$refs.yaudio.process =
-            (this.innerAudioContext.currentTime / this.innerAudioContext.duration) * 100
-      })
-      // 监听自然播放结束事件
-      this.innerAudioContext.onEnded((res) => {
-        console.log('监听自然播放结束事件')
-        this.nextPlay()
-      })
-      this.$emit('play', 'bCase')
-    },
-    goDetail(e, tab, index) {
-      const token = uni.getStorageSync('token')
-      if (!token) {
-        uni.navigateTo({ url: '/pages/user-center/login' })
-        return
-      }
-      this.innerAudioContext.pause()
-      uni.navigateTo({
-        url: `/pages/find/article-detail?contId=` + e.currentTarget.dataset.id
-      })
-    },
-    // colId 后端要求任意值  维权服务推荐: 12,13
-    selectArtiListByColId() {
-      const wq_Param = {
-        colId: '12,13',
-        recomFlag: '1',
-        pageNum: this.pageNum,
-        pageSize: 3
-      }
-      const data = {
-        colId: '1',
-        recomFlag: '1',
-        colName: this.colName,
-        pageNum: this.pageNum,
-        pageSize: 3
-      }
-
-      api.selectArtiListByColId({
-        data: this.type == 2 ? wq_Param : data,
-        success: (res) => {
-          if (res.list && res.list.length == 0) {
-            this.loading = 3
-          } else if (res.list && res.list.length > 0) {
-            this.loading = 2
-            this.list = this.list.concat(res.list)
-            res.list.map((element) => {
-              element.play = false
-            })
-            this.pageNum = this.pageNum + 1
-          }
+    data() {
+      return {
+        index: 0,
+        list: [],
+        stopPlay: false,
+        playIndex: '',
+        isPlay: false,
+        innerAudioContext: null,
+        mapState: {},
+        pageNum: 1,
+        loading: 1,
+        title: '',
+        arrayIndex: 0,
+        player: '',
+        videoBg: '',
+        closeAudio: true,
+        showAudio: false,
+        dotsStyles: {
+          width: 6,
+          height: 6,
+          bottom: 0,
+          backgroundColor: '#E0E0E0',
+          border: 'none',
+          selectedBackgroundColor: '#FF5500',
+          selectedBorder: 'none',
         },
-        fail: () => {
-          this.loading = 3
+      };
+    },
+    created() {
+      this.selectArtiListByColId();
+    },
+    mounted() {
+      this.innerAudioContext = uni.createInnerAudioContext();
+    },
+    methods: {
+      hanldeBannerChange(e) {
+        this.index = e.detail.current;
+      },
+      triggleBg(data) {
+        this.closeAudio = data;
+      },
+      handleSwitchPlay() {
+        this.mapState[this.playIndex] = !this.mapState[this.playIndex];
+        if (this.mapState[this.playIndex]) {
+          this.stopPlay = true;
+          this.innerAudioContext.play();
+        } else {
+          this.stopPlay = false;
+          this.innerAudioContext.pause();
         }
-      })
-    }
-  }
-}
+      },
+      nextPlay() {
+        const index = this.arrayIndex + 1;
+        const item = this.list[index];
+        if (!item) {
+          this.arrayIndex = this.list.length - 1;
+          return;
+        }
+        this.handleNoimg(this.list[index], index);
+        this.title = item.ttl;
+        this.videoBg = item.imgs[0] ? item.imgs[0] : '';
+      },
+      prePlay() {
+        const index = this.arrayIndex - 1;
+        const item = this.list[index];
+        if (!item) {
+          this.arrayIndex = 0;
+          return;
+        }
+        this.handleNoimg(this.list[index], index);
+        this.title = item.ttl;
+        this.videoBg = item.imgs[0] ? item.imgs[0] : '';
+      },
+      handleClose() {
+        this.destoryInstance();
+        this.playIndex = false;
+        this.showAudio = false;
+        // this.innerAudioContext.pause()
+        // this.$set(this.mapState, this.playIndex, false)
+      },
+      goVedio() {
+        this.$refs.confirmpop.open();
+      },
+      close() {
+        this.$refs.confirmpop.close();
+      },
+      destoryInstance() {
+        if (this.innerAudioContext) {
+          this.innerAudioContext.destroy();
+          this.$set(this.mapState, this.playIndex, false);
+        }
+      },
+      initRadio() {
+        this.innerAudioContext = uni.createInnerAudioContext();
+      },
+      handleNoimg(item, index) {
+        const token = uni.getStorageSync('token');
+        if (!token) {
+          uni.navigateTo({ url: '/pages/user-center/login' });
+          return;
+        }
+        if (this.innerAudioContext) {
+          this.innerAudioContext.destroy();
+        }
+        this.initRadio();
+        this.showAudio = true;
+        this.playIndex = item.contId;
+        this.arrayIndex = index;
+        this.title = item.ttl;
+        this.videoBg = item.imgs[0] ? item.imgs[0] : '';
+        if (this.mapState[item.contId]) {
+          const state = !this.mapState[item.contId];
+          this.$set(this.mapState, item.contId, state);
+        } else {
+          this.mapState = {};
+          this.$set(this.mapState, item.contId, true);
+        }
+        // #ifdef MP-WEIXIN
+        this.innerAudioContext.src = item.mediaUrl;
+        // #endif
+        // #ifdef MP-ALIPAY
+        this.innerAudioContext.src = item.youkuUrl || item.mediaUrl;
+        // #endif
+        if (this.mapState[item.contId]) {
+          if (this.player) {
+            this.player = null;
+          }
+          this.player = setTimeout(() => {
+            this.innerAudioContext.play();
+            this.stopPlay = true;
+          }, 500);
+        } else {
+          this.innerAudioContext.pause();
+          this.stopPlay = false;
+        }
+        this.innerAudioContext.onTimeUpdate(() => {
+          this.$refs.yaudio.process = (this.innerAudioContext.currentTime / this.innerAudioContext.duration) * 100;
+        });
+        // 监听自然播放结束事件
+        this.innerAudioContext.onEnded((res) => {
+          console.log('监听自然播放结束事件');
+          this.nextPlay();
+        });
+        this.$emit('play', 'bCase');
+      },
+      goDetail(e, tab, index) {
+        const token = uni.getStorageSync('token');
+        if (!token) {
+          uni.navigateTo({ url: '/pages/user-center/login' });
+          return;
+        }
+        this.innerAudioContext.pause();
+        uni.navigateTo({
+          url: `/pages/find/article-detail?contId=` + e.currentTarget.dataset.id,
+        });
+      },
+      // colId 后端要求任意值  维权服务推荐: 12,13
+      selectArtiListByColId() {
+        const wq_Param = {
+          colId: '12,13',
+          recomFlag: '1',
+          pageNum: this.pageNum,
+          pageSize: 3,
+        };
+        const data = {
+          colId: '1',
+          recomFlag: '1',
+          colName: this.colName,
+          pageNum: this.pageNum,
+          pageSize: 3,
+        };
+
+        api.selectArtiListByColId({
+          data: this.type == 2 ? wq_Param : data,
+          success: (res) => {
+            if (res.list && res.list.length == 0) {
+              this.loading = 3;
+            } else if (res.list && res.list.length > 0) {
+              this.loading = 2;
+              this.list = this.list.concat(res.list);
+              res.list.map((element) => {
+                element.play = false;
+              });
+              this.pageNum = this.pageNum + 1;
+            }
+          },
+          fail: () => {
+            this.loading = 3;
+          },
+        });
+      },
+    },
+  };
 </script>
 <style lang="scss" scoped>
   .audio {

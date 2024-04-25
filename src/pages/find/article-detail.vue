@@ -86,10 +86,10 @@
   import api from '@/apis/index.js';
   import cuProgress from './components/cu-progress.vue';
   import parse from 'mini-html-parser2';
-  import { UniPopup } from '@dcloudio/uni-ui';
+  // import { UniPopup } from '@dcloudio/uni-ui';
 
   export default {
-    components: { cuProgress, UniPopup },
+    components: { cuProgress },
     data() {
       return {
         isShare: 'true',

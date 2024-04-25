@@ -4,11 +4,7 @@
     <navigation-bar :alpha="0">
       <view slot="title1">
         <view class="navigation-bar flex-h flex-c-s">
-          <image
-            class="image"
-            src="http://192.168.1.187:10088/static/home/home-logo.png"
-            mode="scaleToFill"
-          />
+          <image class="image" src="http://192.168.1.187:10088/static/home/home-logo.png" mode="scaleToFill" />
           <text class="navigation-bar__title fs-40 c-white flex-1">国家老龄服务平台</text>
         </view>
       </view>
@@ -21,16 +17,10 @@
           <text class="city-name fs-36 c-white">
             {{ city.name || '定位中' }}
           </text>
-          <image
-            class="city-icon ml-8"
-            mode="scaleToFill"
-            src="http://192.168.1.187:10088/static/common/icon-common-triangle-downward-white.png"
-          />
+          <image class="city-icon ml-8" mode="scaleToFill" src="http://192.168.1.187:10088/static/common/icon-common-triangle-downward-white.png" />
         </view>
         <view class="search-bar flex-h flex-c-b flex-1 p-0-32 bg-white">
-          <text class="search-bar__text fs-36 flex-1 c-lightgrey" @click="handleVoiceSearchClick">
-            搜索养老服务
-          </text>
+          <text class="search-bar__text fs-36 flex-1 c-lightgrey" @click="handleVoiceSearchClick">搜索养老服务</text>
           <template>
             <view class="search-bar__line" />
             <image
@@ -64,29 +54,10 @@
     </view>
     <!-- 领证扫码 -->
     <view class="banner-wrapper">
-      <uni-swiper-dot
-        :info="banners"
-        :current="currentIn"
-        field="content"
-        mode="round"
-        :dotsStyles="dotsStyles"
-      >
-        <swiper
-          class="banner-swiper"
-          :indicator-dots="false"
-          :autoplay="true"
-          :interval="4000"
-          :duration="500"
-          @change="hanldeBannerChange"
-        >
+      <uni-swiper-dot :info="banners" :current="currentIn" field="content" mode="round" :dotsStyles="dotsStyles">
+        <swiper class="banner-swiper" :indicator-dots="false" :autoplay="true" :interval="4000" :duration="500" @change="hanldeBannerChange">
           <swiper-item class="item" v-for="(item, index) in banners" :key="index">
-            <image
-              class="image"
-              mode="scaleToFill"
-              :src="item.bannerUrl"
-              @click="handleBannerClick(index)"
-              @error="handleBannerLoadFail(index)"
-            />
+            <image class="image" mode="scaleToFill" :src="item.bannerUrl" @click="handleBannerClick(index)" @error="handleBannerLoadFail(index)" />
           </swiper-item>
         </swiper>
       </uni-swiper-dot>
@@ -106,40 +77,15 @@
           <view class="wq">
             <view class="inline">
               <view class="contain">
-                <image
-                  class="image"
-                  @click="goTab(0)"
-                  src="http://192.168.1.187:10088/static/home/pf2.png"
-                  mode="scaleToFill"
-                />
-                <image
-                  class="image"
-                  @click="goTab(1)"
-                  src="http://192.168.1.187:10088/static/home/sf.png"
-                  mode="scaleToFill"
-                />
-                <image
-                  class="image"
-                  @click="goTab(2)"
-                  src="http://192.168.1.187:10088/static/home/wq.png"
-                  mode="scaleToFill"
-                />
+                <image class="image" @click="goTab(0)" src="http://192.168.1.187:10088/static/home/pf2.png" mode="scaleToFill" />
+                <image class="image" @click="goTab(1)" src="http://192.168.1.187:10088/static/home/sf.png" mode="scaleToFill" />
+                <image class="image" @click="goTab(2)" src="http://192.168.1.187:10088/static/home/wq.png" mode="scaleToFill" />
               </view>
               <!-- TODO 后期看接口情况进行兼容处理-->
               <view class="_h">
-                <older-persion
-                  :type="type"
-                  ref="olderPersion"
-                  class="swiper"
-                  @play="hanldePlay"
-                ></older-persion>
+                <older-persion :type="type" ref="olderPersion" class="swiper" @play="hanldePlay"></older-persion>
               </view>
-              <image
-                class="zx_image"
-                src="http://192.168.1.187:10088/static/home/zx.png"
-                mode="scaleToFill"
-                @click="goConsult"
-              />
+              <image class="zx_image" src="http://192.168.1.187:10088/static/home/zx.png" mode="scaleToFill" @click="goConsult" />
             </view>
           </view>
           <view class="line_space _H">
@@ -151,25 +97,10 @@
             <view class="inline">
               <view class="left_name">传承服务</view>
               <view class="contain">
-                <image
-                  class="left_image"
-                  @click="goWill(0)"
-                  src="http://192.168.1.187:10088/static/home/will-left-1.png"
-                  mode="scaleToFill"
-                />
+                <image class="left_image" @click="goWill(0)" src="http://192.168.1.187:10088/static/home/will-left-1.png" mode="scaleToFill" />
                 <view class="right-block">
-                  <image
-                    class="right_image"
-                    @click="goWill(1)"
-                    src="http://192.168.1.187:10088/static/home/will-right-2.png"
-                    mode="scaleToFill"
-                  />
-                  <image
-                    class="right_image"
-                    @click="goWill(2)"
-                    src="http://192.168.1.187:10088/static/home/will-right-1.png"
-                    mode="scaleToFill"
-                  />
+                  <image class="right_image" @click="goWill(1)" src="http://192.168.1.187:10088/static/home/will-right-2.png" mode="scaleToFill" />
+                  <image class="right_image" @click="goWill(2)" src="http://192.168.1.187:10088/static/home/will-right-1.png" mode="scaleToFill" />
                 </view>
               </view>
             </view>
@@ -193,24 +124,9 @@
                 <view class="left_name">老年补贴</view>
               </view>
               <view class="contain">
-                <image
-                  class="image"
-                  @click="goOlder(0)"
-                  src="http://192.168.1.187:10088/static/home/subsidy-1.png"
-                  mode="widthFix"
-                />
-                <image
-                  class="image"
-                  @click="goOlder(1)"
-                  src="http://192.168.1.187:10088/static/home/subsidy-2.png"
-                  mode="widthFix"
-                />
-                <image
-                  class="image"
-                  @click="goOlder(2)"
-                  src="http://192.168.1.187:10088/static/home/subsidy-3.png"
-                  mode="widthFix"
-                />
+                <image class="image" @click="goOlder(0)" src="http://192.168.1.187:10088/static/home/subsidy-1.png" mode="widthFix" />
+                <image class="image" @click="goOlder(1)" src="http://192.168.1.187:10088/static/home/subsidy-2.png" mode="widthFix" />
+                <image class="image" @click="goOlder(2)" src="http://192.168.1.187:10088/static/home/subsidy-3.png" mode="widthFix" />
               </view>
             </view>
           </view>
@@ -231,32 +147,14 @@
                 <view class="more">更多</view>
               </view>
               <view class="contain" @click="seeDoctorTip">
-                <image
-                  class="image"
-                  src="http://192.168.1.187:10088/static/home/see-doctor-1.png"
-                  mode="scaleToFill"
-                />
-                <image
-                  class="image"
-                  src="http://192.168.1.187:10088/static/home/see-doctor-2.png"
-                  mode="scaleToFill"
-                />
+                <image class="image" src="http://192.168.1.187:10088/static/home/see-doctor-1.png" mode="scaleToFill" />
+                <image class="image" src="http://192.168.1.187:10088/static/home/see-doctor-2.png" mode="scaleToFill" />
               </view>
-              <image
-                class="bottom-image"
-                @click="seeDoctorTip"
-                src="http://192.168.1.187:10088/static/home/see-doctor-3.png"
-                mode="scaleToFill"
-              />
+              <image class="bottom-image" @click="seeDoctorTip" src="http://192.168.1.187:10088/static/home/see-doctor-3.png" mode="scaleToFill" />
             </view>
           </view>
           <!-- 在线中医 -->
-          <image
-            class="zy_image"
-            src="http://192.168.1.187:10088/static/home/line_zy.png"
-            mode="widthFix"
-            @click="goShop(2)"
-          />
+          <image class="zy_image" src="http://192.168.1.187:10088/static/home/line_zy.png" mode="widthFix" @click="goShop(2)" />
           <!-- 医保服务 -->
           <view class="wq insurance">
             <view class="inline">
@@ -279,34 +177,12 @@
           <view class="zh_zy">
             <view class="t">智慧中医</view>
             <view class="center">
-              <image
-                class="zy_image"
-                v-for="(v, i) in zyImages"
-                :key="i"
-                :src="v.src"
-                mode="widthFix"
-                @click="onlineSeeDocotor(v.flag)"
-              />
+              <image class="zy_image" v-for="(v, i) in zyImages" :key="i" :src="v.src" mode="widthFix" @click="onlineSeeDocotor(v.flag)" />
             </view>
-            <image
-              class="widthImg"
-              src="http://192.168.1.187:10088/static/home/jk_shop.png"
-              mode="widthFix"
-              @click="goShop(1)"
-            />
+            <image class="widthImg" src="http://192.168.1.187:10088/static/home/jk_shop.png" mode="widthFix" @click="goShop(1)" />
           </view>
-          <image
-            class="sw_image"
-            src="http://192.168.1.187:10088/static/home/wj.png"
-            mode="scaleToFill"
-            @click="goQuestions"
-          />
-          <image
-            class="sw_image"
-            src="http://192.168.1.187:10088/static/home/xl.png"
-            mode="scaleToFill"
-            @click="goOlderTrain"
-          />
+          <image class="sw_image" src="http://192.168.1.187:10088/static/home/wj.png" mode="scaleToFill" @click="goQuestions" />
+          <image class="sw_image" src="http://192.168.1.187:10088/static/home/xl.png" mode="scaleToFill" @click="goOlderTrain" />
         </view>
       </view>
       <!-- 老有所为 -->
@@ -315,31 +191,11 @@
           <view class="_leftLine"></view>
           <view class="left_name">老有所为</view>
         </view>
-        <image
-          class="zhao_ping"
-          src="http://192.168.1.187:10088/static/home/zhao_p.png"
-          mode="widthFix"
-          @click="fingWork"
-        />
+        <image class="zhao_ping" src="http://192.168.1.187:10088/static/home/zhao_p.png" mode="widthFix" @click="fingWork" />
         <view class="tabs">
-          <image
-            class="img"
-            src="http://192.168.1.187:10088/static/home/sx-1.png"
-            mode="scaleToFill"
-            @click="handleOlder(0)"
-          />
-          <image
-            class="img"
-            src="http://192.168.1.187:10088/static/home/sx-3.png"
-            mode="scaleToFill"
-            @click="handleOlder(1)"
-          />
-          <image
-            class="img"
-            src="http://192.168.1.187:10088/static/home/sx-2.png"
-            mode="scaleToFill"
-            @click="handleOlder(2)"
-          />
+          <image class="img" src="http://192.168.1.187:10088/static/home/sx-1.png" mode="scaleToFill" @click="handleOlder(0)" />
+          <image class="img" src="http://192.168.1.187:10088/static/home/sx-3.png" mode="scaleToFill" @click="handleOlder(1)" />
+          <image class="img" src="http://192.168.1.187:10088/static/home/sx-2.png" mode="scaleToFill" @click="handleOlder(2)" />
         </view>
         <!-- <view class="sy" @click="handleOlder">
           <image class="sw_image" src="http://192.168.1.187:10088/static/home/sw.png"
@@ -360,57 +216,32 @@
         </view>
       </view> -->
       <view class="into">
-        <swiper
-          :vertical="true"
-          :current="current"
-          :disable-touch="true"
-          :circular="false"
-          @change="changeItem"
-        >
+        <swiper :vertical="true" :current="current" :disable-touch="true" :circular="false" @change="changeItem">
           <swiper-item>
-            <image
-              class="_icon"
-              mode="scaleToFill"
-              src="http://192.168.1.187:10088/static/home/upIcon.png"
-            />
+            <image class="_icon" mode="scaleToFill" src="http://192.168.1.187:10088/static/home/upIcon.png" />
             <view>继续上滑进入优惠</view>
           </swiper-item>
           <swiper-item>
-            <image
-              class="_icon"
-              mode="scaleToFill"
-              src="http://192.168.1.187:10088/static/home/upIcon.png"
-            />
+            <image class="_icon" mode="scaleToFill" src="http://192.168.1.187:10088/static/home/upIcon.png" />
             <view>继续上滑进入优惠</view>
           </swiper-item>
         </swiper>
       </view>
     </view>
 
-    <view
-      class="share-page-box"
-      :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }"
-    >
+    <view class="share-page-box" :style="{ width: canvasWidth + 'px', height: canvasHeight + 'px' }">
       <wxml-to-canvas class="widget" :width="canvasWidth" :height="canvasHeight"></wxml-to-canvas>
     </view>
 
     <uni-popup ref="tipPopup" background="none">
-      <image
-        class="img-bg"
-        src="http://192.168.1.187:10088/static/life/icon-kanbing.png"
-        @click="closeTipPop"
-      />
+      <image class="img-bg" src="http://192.168.1.187:10088/static/life/icon-kanbing.png" @click="closeTipPop" />
     </uni-popup>
 
     <!-- 到店提示弹窗 -->
     <uni-popup ref="memberPopup" background="none">
       <view class="pop-content">
         <view class="content">
-          <image
-            class="get-point-bg"
-            src="http://192.168.1.187:10088/static/home/member-card.png"
-            mode="scaleToFill"
-          />
+          <image class="get-point-bg" src="http://192.168.1.187:10088/static/home/member-card.png" mode="scaleToFill" />
           <view class="card-btn" @click="showMemberCard">查看会员卡</view>
           <!-- <image
             class="card-btn"
@@ -420,12 +251,7 @@
           /> -->
         </view>
 
-        <image
-          class="icon-close"
-          @click="memberPopclose"
-          src="http://192.168.1.187:10088/static/common/icon-close.png"
-          mode="scaleToFill"
-        />
+        <image class="icon-close" @click="memberPopclose" src="http://192.168.1.187:10088/static/common/icon-close.png" mode="scaleToFill" />
       </view>
     </uni-popup>
 
@@ -433,11 +259,7 @@
     <uni-popup ref="memberCardPopup" background="none">
       <view class="member-content">
         <view class="content" @click="getPoint">
-          <image
-            class="get-point-bg"
-            src="http://192.168.1.187:10088/static/home/member-card-bg.png"
-            mode="scaleToFill"
-          />
+          <image class="get-point-bg" src="http://192.168.1.187:10088/static/home/member-card-bg.png" mode="scaleToFill" />
           <view class="info">持卡人：{{ name }} &nbsp; &nbsp;&nbsp;&nbsp;年龄：{{ age }}</view>
           <view class="footer">
             <text class="label">NO.</text>
@@ -445,19 +267,9 @@
           </view>
         </view>
 
-        <image
-          class="save-btn"
-          @click="extraImage"
-          src="http://192.168.1.187:10088/static/home/save-btn.png"
-          mode="scaleToFill"
-        />
+        <image class="save-btn" @click="extraImage" src="http://192.168.1.187:10088/static/home/save-btn.png" mode="scaleToFill" />
 
-        <image
-          class="icon-close"
-          @click="memberCardPopclose"
-          src="http://192.168.1.187:10088/static/common/icon-close.png"
-          mode="scaleToFill"
-        />
+        <image class="icon-close" @click="memberCardPopclose" src="http://192.168.1.187:10088/static/common/icon-close.png" mode="scaleToFill" />
         <view class="line"></view>
       </view>
     </uni-popup>
@@ -487,7 +299,7 @@
   import VideoList from './component/video-list.vue';
   import { desensitizeName, desensitizeInfo } from '@/utils/desensitization.js';
   import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
-  import { uniSwiperDot } from '@dcloudio/uni-ui';
+  // import { uniSwiperDot } from '@dcloudio/uni-ui';
   const { wxml, style } = require('@/utils/DomData.js');
   export default {
     components: {
@@ -495,7 +307,6 @@
       ServicePop,
       ScanOrInputPopup,
       RealNamePop,
-      uniSwiperDot,
       BCase,
       OlderPersion,
       VideoList,
@@ -549,8 +360,7 @@
         navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
         // #endif
         // #ifdef MP-ALIPAY
-        navigationBarHeight:
-          uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
+        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
         // #endif
         // 城市信息
         city: uni.getStorageSync('city'),
@@ -650,8 +460,7 @@
       // this.requestData()
 
       // #ifdef MP-ALIPAY
-      const navigationBarHeight =
-        uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight;
+      const navigationBarHeight = uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight;
       this.navigationBarHeight = Math.ceil(navigationBarHeight);
       // #endif
 
@@ -784,10 +593,7 @@
           wx.getSetting({
             success: (res) => {
               // 非初始化且未授权的情况，需要再次弹窗提示授权
-              if (
-                res.authSetting['scope.writePhotosAlbum'] != undefined &&
-                res.authSetting['scope.writePhotosAlbum'] != true
-              ) {
+              if (res.authSetting['scope.writePhotosAlbum'] != undefined && res.authSetting['scope.writePhotosAlbum'] != true) {
                 wx.showModal({
                   title: '是否授权相册权限',
                   content: '需要获取相册权限，请确认授权，否则无法使用相关功能',
@@ -1271,8 +1077,7 @@
        */
       handleBannerLoadFail(index) {
         // 图片加载失败时显示默认图片
-        this.banners[index].bannerUrl =
-          'http://192.168.1.187:10088/static/home/banner-home-default.png';
+        this.banners[index].bannerUrl = 'http://192.168.1.187:10088/static/home/banner-home-default.png';
       },
       /**
        * 轮播图 banner 点击事件

@@ -5,6 +5,7 @@ const webpack = require('webpack')
 // }
 
 module.exports = {
+  transpileDependencies:['@dcloudio/uni-ui'],
   configureWebpack: {
     resolve: {
       alias: {

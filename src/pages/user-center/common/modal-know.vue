@@ -3,11 +3,7 @@
     <uni-popup type="center" ref="popupM">
       <view class="notice">
         <view class="_center">
-          <image
-            class="_img"
-            mode="scaleToFill"
-            src="http://192.168.1.187:10088/static/rights/modalTop.png"
-          />
+          <image class="_img" mode="scaleToFill" src="http://192.168.1.187:10088/static/rights/modalTop.png" />
         </view>
         <view class="_t">{{ title }}</view>
         <view class="_subt">{{ content }}</view>
@@ -18,31 +14,31 @@
   </view>
 </template>
 <script>
-import uniPopup from '@/components/uni-popup/uni-popup.vue'
-export default {
-  components: { uniPopup },
-  props: {
-    title: {
-      type: String,
-      default: '当前所在地区功能开通中'
+  // import uniPopup from '@/components/uni-popup/uni-popup.vue'
+  export default {
+    // components: { uniPopup },
+    props: {
+      title: {
+        type: String,
+        default: '当前所在地区功能开通中',
+      },
+      content: {
+        type: String,
+        default: '当前所在地区功能开通中',
+      },
     },
-    content: {
-      type: String,
-      default: '当前所在地区功能开通中'
-    }
-  },
-  data() {
-    return {}
-  },
-  methods: {
-    close() {
-      this.$refs.popupM.close()
+    data() {
+      return {};
     },
-    open() {
-      this.$refs.popupM.open()
-    }
-  }
-}
+    methods: {
+      close() {
+        this.$refs.popupM.close();
+      },
+      open() {
+        this.$refs.popupM.open();
+      },
+    },
+  };
 </script>
 <style lang="scss" scoped>
   .notice {

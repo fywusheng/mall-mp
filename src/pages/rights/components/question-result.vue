@@ -4,11 +4,7 @@
     <uni-popup type="center" ref="popupM">
       <view class="notice">
         <view class="_center">
-          <image
-            class="_img"
-            mode="scaleToFill"
-            src="http://192.168.1.187:10088/static/rights/icon-result.png"
-          />
+          <image class="_img" mode="scaleToFill" src="http://192.168.1.187:10088/static/rights/icon-result.png" />
           <view class="score">
             <text>{{ score }}</text>
             <text class="txt">分</text>
@@ -19,26 +15,26 @@
   </view>
 </template>
 <script>
-import uniPopup from '@/components/uni-popup/uni-popup.vue'
-export default {
-  components: { uniPopup },
-  data() {
-    return {
-      str: '<',
-      score: 0
-    }
-  },
-  methods: {
-    close() {
-      this.$refs.popupM.close()
-      this.$emit('close', 1)
+  // import uniPopup from '@/components/uni-popup/uni-popup.vue'
+  export default {
+    // components: { uniPopup },
+    data() {
+      return {
+        str: '<',
+        score: 0,
+      };
     },
-    open(score) {
-      this.score = score || 0
-      this.$refs.popupM.open()
-    }
-  }
-}
+    methods: {
+      close() {
+        this.$refs.popupM.close();
+        this.$emit('close', 1);
+      },
+      open(score) {
+        this.score = score || 0;
+        this.$refs.popupM.open();
+      },
+    },
+  };
 </script>
 <style lang="scss" scoped>
   .notice {

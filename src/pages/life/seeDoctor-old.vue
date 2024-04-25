@@ -14,20 +14,11 @@
       <!-- v-if="type == 1" -->
       <view>
         <view class="bg">
-          <image
-            class="topIcon"
-            src="http://192.168.1.187:10088/static/life/doc_bg_top4.png"
-            mode="scaleToFill"
-          />
+          <image class="topIcon" src="http://192.168.1.187:10088/static/life/doc_bg_top4.png" mode="scaleToFill" />
         </view>
         <view class="_position">
           <view class="_top">
-            <view
-              class="top_item"
-              v-for="(item, index) in items"
-              :key="index"
-              @click="handlerClick(item)"
-            >
+            <view class="top_item" v-for="(item, index) in items" :key="index" @click="handlerClick(item)">
               <image mode="scaleToFill" class="icon" :src="item.icon" />
               <text class="des">{{ item.name }}</text>
             </view>
@@ -59,95 +50,95 @@
   </view>
 </template>
 <script>
-import uniPopup from '@/components/uni-popup/uni-popup.vue'
-import modalKnow from '@/pages/life/components/modal-know.vue'
-import api from '@/apis/index.js'
-import parse from 'mini-html-parser2'
-export default {
-  components: { modalKnow, uniPopup },
-  data() {
-    return {
-      type: 1,
-      items: [
-        {
-          name: '门诊挂号',
-          type: '1',
-          src: 'http://192.168.1.187:10088/static/home/home-quanyi-item1.png'
-        },
-        {
-          name: '在线问诊',
-          type: '2',
-          src: 'http://192.168.1.187:10088/static/home/home-quanyi-item1.png'
-        },
-        {
-          name: '医院介绍',
-          type: '3',
-          src: 'http://192.168.1.187:10088/static/home/home-quanyi-item1.png'
+  // import uniPopup from '@/components/uni-popup/uni-popup.vue'
+  import modalKnow from '@/pages/life/components/modal-know.vue';
+  import api from '@/apis/index.js';
+  import parse from 'mini-html-parser2';
+  export default {
+    components: { modalKnow },
+    data() {
+      return {
+        type: 1,
+        items: [
+          {
+            name: '门诊挂号',
+            type: '1',
+            src: 'http://192.168.1.187:10088/static/home/home-quanyi-item1.png',
+          },
+          {
+            name: '在线问诊',
+            type: '2',
+            src: 'http://192.168.1.187:10088/static/home/home-quanyi-item1.png',
+          },
+          {
+            name: '医院介绍',
+            type: '3',
+            src: 'http://192.168.1.187:10088/static/home/home-quanyi-item1.png',
+          },
+        ],
+        centerList: [[]],
+        detailData: '',
+      };
+    },
+    created() {
+      this.getHospitialData();
+    },
+    onShareAppMessage() {
+      return {
+        title: '',
+        path: '/pages/index/index?index=0',
+      };
+    },
+    methods: {
+      clickItem(type) {
+        this.type = type;
+        if (type == 2) {
+          this.type = 1;
+          this.$refs.notice.open();
         }
-      ],
-      centerList: [[]],
-      detailData: ''
-    }
-  },
-  created() {
-    this.getHospitialData()
-  },
-  onShareAppMessage() {
-    return {
-      title: '',
-      path: '/pages/index/index?index=0'
-    }
-  },
-  methods: {
-    clickItem(type) {
-      this.type = type
-      if (type == 2) {
-        this.type = 1
-        this.$refs.notice.open()
-      }
-    },
-    goDetail(item) {
-      console.log('====content---', item.content)
-      uni.navigateTo({ url: '/pages/life/seeDocotorDetail?menuName=' + item.menuName })
-      //     uni.navigateTo({
-      //         url: `/pages/common/webpage?url=${encodeURIComponent('https://ggll.e-drink.cn/#/'+`${item.route}`)}`,
-      //    });
-    },
-    handlerClick(item) {
-      if (item.route) {
-        uni.navigateTo({ url: '/pages/life/seeDocotorDetail?menuName=' + item.menuName })
-        //    uni.navigateTo({
-        //     url: `/pages/common/webpage?url=${encodeURIComponent('https://ggll.e-drink.cn/#/'+`${item.route}`)}`,
-        //   });
-        return
-      }
-      this.$refs.notice.open()
-    },
-    getHospitialData() {
-      api.getInfos({
-        data: {},
-        success: (data) => {
-          console.log('---医院数据---', data)
-          this.items = data.hospital_home || []
-          const parsData = data.hospital_departs || []
-          // this.centerList  =  data.hospital_departs || []
-          if (parsData.length > 0) {
-            const arrayList = []
-            for (var i = 0, len = parsData.length; i < len; i += 3) {
-              arrayList.push(parsData.slice(i, i + 3))
+      },
+      goDetail(item) {
+        console.log('====content---', item.content);
+        uni.navigateTo({ url: '/pages/life/seeDocotorDetail?menuName=' + item.menuName });
+        //     uni.navigateTo({
+        //         url: `/pages/common/webpage?url=${encodeURIComponent('https://ggll.e-drink.cn/#/'+`${item.route}`)}`,
+        //    });
+      },
+      handlerClick(item) {
+        if (item.route) {
+          uni.navigateTo({ url: '/pages/life/seeDocotorDetail?menuName=' + item.menuName });
+          //    uni.navigateTo({
+          //     url: `/pages/common/webpage?url=${encodeURIComponent('https://ggll.e-drink.cn/#/'+`${item.route}`)}`,
+          //   });
+          return;
+        }
+        this.$refs.notice.open();
+      },
+      getHospitialData() {
+        api.getInfos({
+          data: {},
+          success: (data) => {
+            console.log('---医院数据---', data);
+            this.items = data.hospital_home || [];
+            const parsData = data.hospital_departs || [];
+            // this.centerList  =  data.hospital_departs || []
+            if (parsData.length > 0) {
+              const arrayList = [];
+              for (var i = 0, len = parsData.length; i < len; i += 3) {
+                arrayList.push(parsData.slice(i, i + 3));
+              }
+              this.centerList = arrayList;
+            } else {
+              this.centerList = [[]];
             }
-            this.centerList = arrayList
-          } else {
-            this.centerList = [[]]
-          }
-          this.centerList[this.centerList.length - 1].push({}, {})
-          console.log('----最后的值---', this.centerList)
-        },
-        fail: (error) => {}
-      })
-    }
-  }
-}
+            this.centerList[this.centerList.length - 1].push({}, {});
+            console.log('----最后的值---', this.centerList);
+          },
+          fail: (error) => {},
+        });
+      },
+    },
+  };
 </script>
 <style lang="scss" scoped>
   .topArea {

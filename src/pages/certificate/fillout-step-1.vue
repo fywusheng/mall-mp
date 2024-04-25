@@ -10,11 +10,7 @@
     <step-progress-bar :step="1" />
     <view class="section">
       <view class="section-header flex-h flex-c-s p-0-32">
-        <image
-          class="section-header__icon"
-          mode="scaleToFill"
-          src="./static/icon-certificate-basic-info.png"
-        />
+        <image class="section-header__icon" mode="scaleToFill" src="./static/icon-certificate-basic-info.png" />
         <text class="fs-44 c-black ml-16">基本信息</text>
       </view>
       <view class="form m-0-32">
@@ -26,28 +22,17 @@
               {{ params.nation || '请选择民族' }}
             </text>
           </picker>
-          <image
-            class="row__accessory"
-            mode="scaleToFill"
-            src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png"
-          />
+          <image class="row__accessory" mode="scaleToFill" src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png" />
         </view>
         <view class="row flex-h flex-c-s p-20-0">
           <text class="row__indicator"></text>
           <text class="row__label fs-40 c-black">血型</text>
           <picker class="flex-1" :range="bloodTypes" @change="handleBloodTypeChange">
-            <text
-              class="fs-40 c-black flex-1 ml-48"
-              :class="{ 'c-lightgrey': params.bloodType === '' }"
-            >
+            <text class="fs-40 c-black flex-1 ml-48" :class="{ 'c-lightgrey': params.bloodType === '' }">
               {{ params.bloodType || '请选择血型' }}
             </text>
           </picker>
-          <image
-            class="row__accessory"
-            mode="scaleToFill"
-            src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png"
-          />
+          <image class="row__accessory" mode="scaleToFill" src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png" />
         </view>
         <view class="row flex-h flex-c-s p-20-0">
           <text class="row__indicator">*</text>
@@ -68,21 +53,11 @@
             <view v-if="data.length > 0" class="selectValue">
               <text v-for="(item, index) in data" :key="index">{{ item.text }}</text>
             </view>
-            <text
-              v-if="data.length == 0"
-              class="city fs-40 c-black flex-1 ml-48"
-              :class="{ 'c-lightgrey': data.length == 0 }"
-            >
-              请选择省、市、区
-            </text>
+            <text v-if="data.length == 0" class="city fs-40 c-black flex-1 ml-48" :class="{ 'c-lightgrey': data.length == 0 }">请选择省、市、区</text>
           </uni-data-picker>
           <!-- #endif -->
 
-          <image
-            class="row__accessory"
-            mode="scaleToFill"
-            src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png"
-          />
+          <image class="row__accessory" mode="scaleToFill" src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png" />
         </view>
         <view class="row flex-h flex-c-s p-20-0">
           <text class="row__indicator"></text>
@@ -99,18 +74,11 @@
           <!-- <image class="row__illustration ml-12"
                  src="./static/icon-certificate-illustration.png" /> -->
           <picker class="flex-1" :range="institutions" @change="handleInstitutionChange">
-            <text
-              class="fs-40 c-black flex-1 ml-36"
-              :class="{ 'c-lightgrey': params.institution === '' }"
-            >
+            <text class="fs-40 c-black flex-1 ml-36" :class="{ 'c-lightgrey': params.institution === '' }">
               {{ params.institution || '请选择办证机构' }}
             </text>
           </picker>
-          <image
-            class="row__accessory"
-            mode="scaleToFill"
-            src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png"
-          />
+          <image class="row__accessory" mode="scaleToFill" src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png" />
         </view>
         <view class="row flex-h flex-c-s p-20-0" v-if="type === 'input'">
           <text class="row__indicator">*</text>
@@ -137,20 +105,10 @@
             <view v-if="data.length > 0" class="selectValue">
               <text v-for="(item, index) in data" :key="index">{{ item.text }}</text>
             </view>
-            <text
-              v-if="data.length == 0"
-              class="city fs-40 c-black flex-1 ml-48"
-              :class="{ 'c-lightgrey': data.length == 0 }"
-            >
-              请选择省、市、区
-            </text>
+            <text v-if="data.length == 0" class="city fs-40 c-black flex-1 ml-48" :class="{ 'c-lightgrey': data.length == 0 }">请选择省、市、区</text>
           </uni-data-picker>
           <!-- #endif -->
-          <image
-            class="row__accessory"
-            mode="scaleToFill"
-            src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png"
-          />
+          <image class="row__accessory" mode="scaleToFill" src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png" />
         </view>
         <view class="row flex-h flex-c-s p-20-0" v-if="type === 'input'">
           <text class="row__indicator"></text>
@@ -174,11 +132,11 @@
   import api from '@/apis/index.js';
   import staticData from '@/utils/dataBase64.js';
   import StepProgressBar from './components/step-progress-bar.vue';
-  import { UniDataPicker } from '@dcloudio/uni-ui';
+  // import { UniDataPicker } from '@dcloudio/uni-ui';
   import NavigationBar from '../../components/common/navigation-bar.vue';
   import { alipayCityChoose } from '@/utils/utils.js';
   export default {
-    components: { StepProgressBar, UniDataPicker, NavigationBar },
+    components: { StepProgressBar, NavigationBar },
     data() {
       return {
         alipayCitys: [],
@@ -187,8 +145,7 @@
         navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + 44,
         //#endif
         //#ifdef MP-ALIPAY
-        navigationBarHeight:
-          uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
+        navigationBarHeight: uni.getSystemInfoSync().statusBarHeight + uni.getSystemInfoSync().titleBarHeight,
         //#endif
         // 录入方式  scan: 扫描  input: 输入
         type: '',

@@ -25,39 +25,22 @@
           <view class="modal-main modImg">
             <view class="main" v-if="modImg === '0'">
               <text>您尚未申领电子老年人证，</text>
-              <text class="warn">
-                这将会影响您在本平台享有的权益和服务，现在申领还可领500积分！
-              </text>
+              <text class="warn">这将会影响您在本平台享有的权益和服务，现在申领还可领500积分！</text>
             </view>
             <view class="main" v-if="modImg == '2'">
               <text>您尚未添加赡养抚养人，</text>
-              <text class="warn">
-                这将会影响您在本平台享有的权益和服务，现在添加还可领100积分！
-              </text>
+              <text class="warn">这将会影响您在本平台享有的权益和服务，现在添加还可领100积分！</text>
             </view>
             <view class="main" v-if="modImg == '1'">
               <text>您尚未绑定亲情账号，</text>
-              <text class="warn">
-                这将会影响您在本平台享有的权益和服务，现在绑定还可领300积分！
-              </text>
+              <text class="warn">这将会影响您在本平台享有的权益和服务，现在绑定还可领300积分！</text>
             </view>
           </view>
           <view class="modal-row">
-            <view
-              class="modal-col"
-              :style="cancelStyle"
-              hover-class="modal-hover"
-              v-if="!noCancel"
-              @click="cancel(1)"
-            >
+            <view class="modal-col" :style="cancelStyle" hover-class="modal-hover" v-if="!noCancel" @click="cancel(1)">
               {{ cancelText }}
             </view>
-            <view
-              class="modal-col modal-confirm"
-              :style="confirmStyle"
-              hover-class="modal-hover"
-              @click="confirm"
-            >
+            <view class="modal-col modal-confirm" :style="confirmStyle" hover-class="modal-hover" @click="confirm">
               {{ confirmText }}
             </view>
           </view>
@@ -68,55 +51,55 @@
 </template>
 
 <script>
-import uniPopup from '@/components/uni-popup/uni-popup.vue'
-export default {
-  components: { uniPopup },
-  props: {
-    modImg: {
-      type: String,
-      default: '0' // ''0':领证；'2':赡养抚养'1':亲情 ；'4'：不展示图片
+  // import uniPopup from '@/components/uni-popup/uni-popup.vue'
+  export default {
+    // components: { uniPopup },
+    props: {
+      modImg: {
+        type: String,
+        default: '0', // ''0':领证；'2':赡养抚养'1':亲情 ；'4'：不展示图片
+      },
+      cancelText: {
+        type: String,
+        default: '放弃添加',
+      },
+      confirmText: {
+        type: String,
+        default: '立刻添加',
+      },
     },
-    cancelText: {
-      type: String,
-      default: '放弃添加'
+    data() {
+      return {};
     },
-    confirmText: {
-      type: String,
-      default: '立刻添加'
-    }
-  },
-  data() {
-    return {}
-  },
-  computed: {},
-  methods: {
-    confirm() {
-      // this.showValue = false
-      const msg = { from: 'confirm', confirm: true }
-      this.$emit('confirm', msg)
-      // this.$emit('event', msg)
+    computed: {},
+    methods: {
+      confirm() {
+        // this.showValue = false
+        const msg = { from: 'confirm', confirm: true };
+        this.$emit('confirm', msg);
+        // this.$emit('event', msg)
+      },
+      cancel(type) {
+        this.$refs.popup.close();
+        // if (this.prevent && type === 2) {
+        //   return
+        // }
+        // this.showValue = false
+        // let msg = { from: type === 1 ? 'cancel' : 'mask' }
+        // type === 1 ? (msg.cancel = true) : (msg.mask = true)
+        // this.$emit('cancel', msg)
+        // this.$emit('event', msg)
+      },
+      // 关闭弹框
+      close() {
+        this.$refs.popup.close();
+      },
+      // 打开弹框
+      open() {
+        this.$refs.popup.open();
+      },
     },
-    cancel(type) {
-      this.$refs.popup.close()
-      // if (this.prevent && type === 2) {
-      //   return
-      // }
-      // this.showValue = false
-      // let msg = { from: type === 1 ? 'cancel' : 'mask' }
-      // type === 1 ? (msg.cancel = true) : (msg.mask = true)
-      // this.$emit('cancel', msg)
-      // this.$emit('event', msg)
-    },
-    // 关闭弹框
-    close() {
-      this.$refs.popup.close()
-    },
-    // 打开弹框
-    open() {
-      this.$refs.popup.open()
-    }
-  }
-}
+  };
 </script>
 
 <style lang="scss" scoped>

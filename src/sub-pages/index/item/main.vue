@@ -588,7 +588,7 @@
             // });
             // this.detailImageList = detailImageList;
             // if (this.detailImageList.length == 0) {
-            this.detailContents = result.data.productDetail.replace(/<img/g, '<img style="width:100%;" mode="scaleToFill"');
+            this.detailContents = result.data.productDetail.replace(/<img/g, '<img style="width:100%;margin-left:0" mode="scaleToFill"');
             // }
           }
           result.data.firstClassName = result.data.firstClassName || '颜色';
@@ -1411,6 +1411,8 @@
     .detail-img-list {
       margin-top: rpx(20);
       background-color: #fff;
+      padding: rpx(32);
+      font-size: rpx(36);
 
       .title {
         display: block;
@@ -1427,11 +1429,6 @@
       }
 
       .rich-text {
-        line-height: 1.5;
-        padding: rpx(30);
-        font-size: rpx(26);
-        text-indent: 30rpx;
-
         .img {
           display: block;
           width: 100%;

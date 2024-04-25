@@ -3,49 +3,31 @@
   <view>
     <uni-popup ref="popup" type="center">
       <view class="popup">
-        <image
-          class="img-real"
-          v-if="showImg"
-          src="http://192.168.1.187:10088/static/common/img-real-name.png"
-          mode="scaleToFill"
-        />
+        <image class="img-real" v-if="showImg" src="http://192.168.1.187:10088/static/common/img-real-name.png" mode="scaleToFill" />
         <canvas class="canvas" canvas-id="canvas" id="canvas"></canvas>
         <view class="popup-top fs-40 mt-56">选择信息录入方式</view>
         <view class="popup-content flex-v flex-c-s mt-48">
           <view class="popup-button ocr-btn flex-h flex-c-c" @click="handleIdCode">
-            <image
-              class="ocr mr-20"
-              src="http://192.168.1.187:10088/static/common/icon-ocr.png"
-              mode="scaleToFill"
-            />
+            <image class="ocr mr-20" src="http://192.168.1.187:10088/static/common/icon-ocr.png" mode="scaleToFill" />
             <text>扫描身份证</text>
           </view>
           <view class="popup-button flex-h flex-c-c mb-48" @click="handleIdNumber">
-            <image
-              class="hand mr-20"
-              src="http://192.168.1.187:10088/static/common/icon-des.png"
-              mode="scaleToFill"
-            />
+            <image class="hand mr-20" src="http://192.168.1.187:10088/static/common/icon-des.png" mode="scaleToFill" />
             <text>手动输入</text>
           </view>
         </view>
-        <image
-          class="close"
-          @click="handleCloseHandle"
-          src="http://192.168.1.187:10088/static/common/icon-close.png"
-          mode="scaleToFill"
-        />
+        <image class="close" @click="handleCloseHandle" src="http://192.168.1.187:10088/static/common/icon-close.png" mode="scaleToFill" />
       </view>
     </uni-popup>
   </view>
 </template>
 
 <script>
-  import uniPopup from '@/components/uni-popup/uni-popup.vue';
+  // import uniPopup from '@/components/uni-popup/uni-popup.vue';
   import api from '@/apis/index.js';
   import { startFacialRecognitionVerify, getLessLimitSizeImage } from '@/utils/utils.js';
   export default {
-    components: { uniPopup },
+    // components: { uniPopup },
     props: {
       // 导航栏透明度, 取值范围为 0 ~ 1, 默认为 0
       showImg: {

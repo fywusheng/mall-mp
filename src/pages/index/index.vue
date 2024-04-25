@@ -45,13 +45,11 @@
 
     <!-- 领证扫码 -->
     <view class="banner-wrapper">
-      <uni-swiper-dot :info="banners" :current="currentIn" field="content" mode="round" :dotsStyles="dotsStyles">
-        <swiper class="banner-swiper" :indicator-dots="true" :autoplay="true" :interval="4000" :duration="500" @change="hanldeBannerChange">
-          <swiper-item class="item" v-for="(item, index) in banners" :key="index">
-            <image class="image" mode="scaleToFill" :src="item.bannerUrl" @click="handleBannerClick(index)" @error="handleBannerLoadFail(index)" />
-          </swiper-item>
-        </swiper>
-      </uni-swiper-dot>
+      <swiper class="banner-swiper" :indicator-dots="true" :autoplay="true" :interval="4000" :duration="500" @change="hanldeBannerChange">
+        <swiper-item class="item" v-for="(item, index) in banners" :key="index">
+          <image class="image" mode="scaleToFill" :src="item.bannerUrl" @click="handleBannerClick(index)" @error="handleBannerLoadFail(index)" />
+        </swiper-item>
+      </swiper>
     </view>
 
     <!-- 商品分类 -->

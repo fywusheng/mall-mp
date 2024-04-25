@@ -1,14 +1,6 @@
 <template>
   <view class="map">
-    <map
-      ref="map"
-      id="map"
-      :show-scale="true"
-      class="map-view"
-      :latitude="latitude"
-      :longitude="longitude"
-      :markers="markers"
-    />
+    <map ref="map" id="map" :show-scale="true" class="map-view" :latitude="latitude" :longitude="longitude" :markers="markers" />
     <view class="_bottom">
       <view class="swiper-item">
         <!-- <view class="map-icon" @click="handleAnimation">
@@ -29,19 +21,11 @@
         </view>
         <view class="functions">
           <view class="item" @click.stop="makeToCar">
-            <image
-              class="icon"
-              mode="scaleToFill"
-              src="http://192.168.1.187:10088/static/map/icon-map-take-taxi.png"
-            />
+            <image class="icon" mode="scaleToFill" src="http://192.168.1.187:10088/static/map/icon-map-take-taxi.png" />
             <text class="fs-36 c-black mt-8">打车</text>
           </view>
           <view class="direction flex-h flex-c-c ml-12" @click.stop="handleDirectionClick()">
-            <image
-              class="icon"
-              mode="scaleToFill"
-              src="http://192.168.1.187:10088/static/map/icon-map-direction.png"
-            />
+            <image class="icon" mode="scaleToFill" src="http://192.168.1.187:10088/static/map/icon-map-direction.png" />
             <text class="fs-40 c-white ml-12">路 线</text>
           </view>
         </view>
@@ -51,126 +35,122 @@
 </template>
 
 <script>
-import api from '@/apis/index.js'
-import uniPopup from '@/components/uni-popup/uni-popup.vue'
-import { showToast } from '@/utils/uni'
-export default {
-  components: { uniPopup },
-  data() {
-    return {
-      id: '1',
-      transformData: {},
-      latitude: 30.305864,
-      longitude: 120.128179,
-      markers: []
-    }
-  },
-  beforeCreate() {},
-  onLoad(e) {
-    const params = e.params
-    if (params) {
-      this.transformData = JSON.parse(decodeURIComponent(params))
-      this.latitude = this.transformData.latitude
-      this.longitude = this.transformData.longitude
-      // #ifdef MP-ALIPAY
-      this.markers = [
-        {
-          width: '60',
-          height: '60',
-          label: {
-            content: this.transformData.name,
-            bgColor: '#fff',
-            color: '#333',
-            padding: 12,
-            fontSize: 16,
-            borderRadius: 8
-          },
-          latitude: this.transformData.latitude,
-          longitude: this.transformData.longitude,
-          iconPath: 'http://192.168.1.187:10088/static/life/marker-icon8.png'
-        }
-      ]
-      // #endif
-      // #ifdef MP-WEIXIN
-      this.markers = [
-        {
-          width: '60',
-          height: '60',
-          callout: {
-            bgColor: '#fff',
-            color: '#333',
-            padding: '8',
-            fontSize: '16',
-            borderRadius: '8',
-            content: this.transformData.name,
-            display: 'ALWAYS'
-          },
-          latitude: this.transformData.latitude,
-          longitude: this.transformData.longitude,
-          iconPath: 'http://192.168.1.187:10088/static/life/marker-icon8.png'
-        }
-      ]
-      // #endif
-    }
-  },
-  onReady() {
-    this.$uni.setTitle(
-      this.transformData.name.length > 12
-        ? this.transformData.name.substring(0, 12) + '...'
-        : this.transformData.name
-    )
-  },
-  onShow() {},
-  onUnload() {},
-  watch: {},
-  onShareAppMessage() {
-    return {
-      title: '',
-      path: '/pages/index/index?index=0'
-    }
-    // return {
-    //   title:'',
-    //   path:
-    //     "/pages/map/map",
-    // };
-  },
-  methods: {
-    // 导航点击事件
-    handleDirectionClick() {
-      const data = {
-        name: this.transformData.name,
-        longitude: this.transformData.longitude,
-        latitude: this.transformData.latitude,
-        distance: this.transformData.distance,
-        address: this.transformData.address
-      }
-      uni.navigateTo({
-        url: '/pages/map/direction?data=' + encodeURIComponent(JSON.stringify(data)),
-        success: (res) => {
-          res.eventChannel.emit('didOpenPageFinish', data)
-        }
-      })
+  // import api from '@/apis/index.js'
+  // import uniPopup from '@/components/uni-popup/uni-popup.vue'
+  import { showToast } from '@/utils/uni';
+  export default {
+    // components: { uniPopup },
+    data() {
+      return {
+        id: '1',
+        transformData: {},
+        latitude: 30.305864,
+        longitude: 120.128179,
+        markers: [],
+      };
     },
-    /**
+    beforeCreate() {},
+    onLoad(e) {
+      const params = e.params;
+      if (params) {
+        this.transformData = JSON.parse(decodeURIComponent(params));
+        this.latitude = this.transformData.latitude;
+        this.longitude = this.transformData.longitude;
+        // #ifdef MP-ALIPAY
+        this.markers = [
+          {
+            width: '60',
+            height: '60',
+            label: {
+              content: this.transformData.name,
+              bgColor: '#fff',
+              color: '#333',
+              padding: 12,
+              fontSize: 16,
+              borderRadius: 8,
+            },
+            latitude: this.transformData.latitude,
+            longitude: this.transformData.longitude,
+            iconPath: 'http://192.168.1.187:10088/static/life/marker-icon8.png',
+          },
+        ];
+        // #endif
+        // #ifdef MP-WEIXIN
+        this.markers = [
+          {
+            width: '60',
+            height: '60',
+            callout: {
+              bgColor: '#fff',
+              color: '#333',
+              padding: '8',
+              fontSize: '16',
+              borderRadius: '8',
+              content: this.transformData.name,
+              display: 'ALWAYS',
+            },
+            latitude: this.transformData.latitude,
+            longitude: this.transformData.longitude,
+            iconPath: 'http://192.168.1.187:10088/static/life/marker-icon8.png',
+          },
+        ];
+        // #endif
+      }
+    },
+    onReady() {
+      this.$uni.setTitle(this.transformData.name.length > 12 ? this.transformData.name.substring(0, 12) + '...' : this.transformData.name);
+    },
+    onShow() {},
+    onUnload() {},
+    watch: {},
+    onShareAppMessage() {
+      return {
+        title: '',
+        path: '/pages/index/index?index=0',
+      };
+      // return {
+      //   title:'',
+      //   path:
+      //     "/pages/map/map",
+      // };
+    },
+    methods: {
+      // 导航点击事件
+      handleDirectionClick() {
+        const data = {
+          name: this.transformData.name,
+          longitude: this.transformData.longitude,
+          latitude: this.transformData.latitude,
+          distance: this.transformData.distance,
+          address: this.transformData.address,
+        };
+        uni.navigateTo({
+          url: '/pages/map/direction?data=' + encodeURIComponent(JSON.stringify(data)),
+          success: (res) => {
+            res.eventChannel.emit('didOpenPageFinish', data);
+          },
+        });
+      },
+      /**
        * 打车
        */
-    makeToCar() {
-      showToast({
-        title: '功能建设中，尽情期待'
-      })
-    }
-  },
-  filters: {
-    setDistance(s) {
-      s = Number(s / 1000)
-      if (s.toFixed(2) < 1) {
-        return s.toFixed(2) * 1000 + '米'
-      } else {
-        return s.toFixed(2) + '公里'
-      }
-    }
-  }
-}
+      makeToCar() {
+        showToast({
+          title: '功能建设中，尽情期待',
+        });
+      },
+    },
+    filters: {
+      setDistance(s) {
+        s = Number(s / 1000);
+        if (s.toFixed(2) < 1) {
+          return s.toFixed(2) * 1000 + '米';
+        } else {
+          return s.toFixed(2) + '公里';
+        }
+      },
+    },
+  };
 </script>
 
 <style lang="scss" scoped>
