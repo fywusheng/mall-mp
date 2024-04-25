@@ -923,7 +923,7 @@
     width: 100%;
     height: 200rpx;
     font-size: 25rpx;
-    margin-top: 100rpx;
+    // margin-top: 100rpx;
     background: #fff;
   }
   .popup-text {

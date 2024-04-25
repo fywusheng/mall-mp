@@ -32,17 +32,9 @@
           <!-- 全部订单 -->
           <all-order v-if="currentIndex === 0" :list="tablist[currentIndex]" />
           <!-- 商品购买 -->
-          <shop-order
-            v-if="orderSource === '8'"
-            :list="tablist[currentIndex]"
-            @resetOptions="resetOptions"
-          />
+          <shop-order v-if="orderSource === '8'" :list="tablist[currentIndex]" @resetOptions="resetOptions" />
           <!-- 积分兑换 -->
-          <shop-order
-            v-if="orderSource === '9'"
-            :list="tablist[currentIndex]"
-            @resetOptions="resetOptions"
-          />
+          <shop-order v-if="orderSource === '9'" :list="tablist[currentIndex]" @resetOptions="resetOptions" />
 
           <!-- 其余订单 -->
 
@@ -73,271 +65,254 @@
   </view>
 </template>
 <script>
-import api from '@/apis/index.js'
-import tabs from '@/pages/order/component/v-tabs-center.vue'
-import hrPullLoad from '@/components/hr-pull-load/hr-pull-load.vue'
-import MyOrder from './component/my-order.vue'
-import HotelOrder from './component/hotel-order.vue'
-import AllOrder from './component/all-order.vue'
-import ShopOrder from './component/shop-order.vue'
-import InsuranceOrder from './component/insurance-order.vue'
-import { mapState } from 'vuex'
-export default {
-  components: { tabs, hrPullLoad, MyOrder, HotelOrder, AllOrder, ShopOrder, InsuranceOrder },
+  import api from '@/apis/index.js';
+  import tabs from '@/pages/order/component/v-tabs-center.vue';
+  import hrPullLoad from '@/components/hr-pull-load/hr-pull-load.vue';
+  // import MyOrder from './component/my-order.vue'
+  // import HotelOrder from './component/hotel-order.vue'
+  import AllOrder from './component/all-order.vue';
+  import ShopOrder from './component/shop-order.vue';
+  // import InsuranceOrder from './component/insurance-order.vue'
+  import { mapState } from 'vuex';
+  export default {
+    components: { tabs, hrPullLoad, AllOrder, ShopOrder },
 
-  data() {
-    return {
-      bottomTips: '',
-      tabName: '',
-      loading: 0,
-      currentIndex: 0,
-      orderSource: '',
-      items: [],
-      tablist: [[], [], [], [], [], [], [], []],
-      pageOption: {
-        0: {
-          pageNum: 1,
-          pageSize: 20
-        }
-      }
-    }
-  },
-  async onLoad() {
-    await this.getOrderDictList()
-    if (this.userInfo) {
-      this.loading = 2
-      this.getOrderList(1)
-    } else {
-      this.loading = 3
-    }
-
-    // 监听订单刷新事件
-    uni.$on('reloadOrderList', this.resetOptions)
-  },
-  onReachBottom() {
-    // 上拉加载
-    console.log('---上拉属性---')
-  },
-  onPullDownRefresh() {
-    // 下拉刷新
-    console.log('---下拉属性---')
-  },
-  computed: {
-    ...mapState({
-      userInfo: (state) => state.user.userInfo
-    })
-  },
-  methods: {
-    //  订单状态重置
-    resetOptions(orderStatus) {
-      this.pageOption[this.currentIndex].orderStatus = orderStatus
-      this.pageOption[this.currentIndex]['pageNum'] = 1
-      //  this.tablist[this.currentIndex] = []
-      this.$set(this.tablist, this.currentIndex, [])
-      this.getOrderList()
-    },
-    goLogin() {
-      uni.navigateTo({ url: '/pages/user-center/login?goUrl=' + '/pages/index/index?index=3' })
-    },
-    //  订单列表
-    getOrderList(loadmore) {
-      const token = uni.getStorageSync('token')
-      if (!token) return
-      uni.showLoading({ title: '加载中' })
-      const pageParams = this.pageOption[this.currentIndex]
-      if (!pageParams) {
-        this.pageOption[this.currentIndex] = {
-          pageNum: 1,
-          pageSize: 20
-        }
-      }
-      // if (this.orderSource === '3') {
-      //   this.getInsuranceOrderList(loadmore);
-      //   return;
-      // }
-
-      // if (this.orderSource === '8' || this.orderSource === '9') {
-      this.getShopOrderList(loadmore)
-      //   return;
-      // }
-      return
-      api.getOrderList({
-        data: {
-          // transactionStatus: '1',
-          pageNum: this.pageOption[this.currentIndex]['pageNum'],
-          pageSize: this.pageOption[this.currentIndex]['pageSize'],
-          orderSource: this.orderSource,
-          orderStatus:
-              this.currentIndex == 1 ? 3 : this.pageOption[this.currentIndex]['orderStatus']
-        },
-        success: (data) => {
-          uni.stopPullDownRefresh()
-          uni.hideLoading()
-          const list = data.list || []
-          if (list.length > 0) {
-            if (loadmore) {
-              this.$set(
-                this.tablist,
-                this.currentIndex,
-                this.tablist[this.currentIndex].concat(list)
-              )
-            } else {
-              this.$set(this.tablist, this.currentIndex, list)
-            }
-            this.pageOption[this.currentIndex]['pageNum'] =
-                this.pageOption[this.currentIndex]['pageNum'] + 1
-          }
-          if (data.total > 5) {
-            this.bottomTips = data.hasNextPage ? 'more' : 'nomore'
-          } else {
-            this.bottomTips = ''
-          }
-        },
-        fail: (err) => {
-          uni.showToast(err.message)
-          uni.stopPullDownRefresh()
-          uni.hideLoading()
-        }
-      })
-    },
-    async getInsuranceOrderList(loadmore) {
-      if (loadmore && !this.pageOption[this.currentIndex]['hasNextPage']) {
-        uni.hideLoading()
-        uni.stopPullDownRefresh()
-        this.bottomTips = 'nomore'
-        return
-      }
-      const params = {
-        pageNum: this.pageOption[this.currentIndex]['pageNum'],
-        pageSize: 10,
-        status: this.currentIndex == 1 ? 3 : this.pageOption[this.currentIndex]['orderStatus']
-      }
-      api.getInsuranceOrderList({
-        data: params,
-        success: (result) => {
-          uni.hideLoading()
-          uni.stopPullDownRefresh()
-
-          if (result.list && result.list.length > 0) {
-            const list = result.list || []
-            if (list.length > 0) {
-              if (loadmore) {
-                this.$set(
-                  this.tablist,
-                  this.currentIndex,
-                  this.tablist[this.currentIndex].concat(list)
-                )
-              } else {
-                this.$set(this.tablist, this.currentIndex, list)
-              }
-              this.pageOption[this.currentIndex]['pageNum'] =
-                  this.pageOption[this.currentIndex]['pageNum'] + 1
-            }
-            this.pageOption[this.currentIndex]['hasNextPage'] = result.hasNextPage
-          }
-          if (result.total > 5) {
-            this.bottomTips = result.hasNextPage ? 'more' : 'nomore'
-          } else {
-            this.bottomTips = ''
-          }
-        },
-        fail: (result) => {
-          uni.showToast(result.msg)
-        }
-      })
-    },
-    async getShopOrderList(loadmore) {
-      const params = {
-        pageNum: this.pageOption[this.currentIndex]['pageNum'],
-        numPerPage: 20,
-        sceneType:
-            this.items[this.currentIndex].name === '全部' ? '' : this.items[this.currentIndex].name,
-        // status: this.currentIndex == 1 ? 3 : this.pageOption[this.currentIndex]['orderStatus'],
-        status: this.pageOption[this.currentIndex]['orderStatus']
-      }
-      const result = await Axios.post('/order/list', params)
-      uni.hideLoading()
-      uni.stopPullDownRefresh()
-      if (result.code == 200) {
-        const list = result.data.list || []
-        if (list.length > 0) {
-          if (loadmore) {
-            this.$set(
-              this.tablist,
-              this.currentIndex,
-              this.tablist[this.currentIndex].concat(list)
-            )
-          } else {
-            this.$set(this.tablist, this.currentIndex, list)
-          }
-          this.pageOption[this.currentIndex]['pageNum'] =
-              this.pageOption[this.currentIndex]['pageNum'] + 1
-        }
-      } else {
-        uni.showToast(result.msg)
-      }
-      if (result.total > 5) {
-        this.bottomTips = result.hasNextPage ? 'more' : 'nomore'
-      } else {
-        this.bottomTips = ''
-      }
-    },
-    // 获取订单分类
-    getOrderDictList() {
-      return new Promise((resolve, reject) => {
-        api.getOrderDictList({
-          data: {},
-          success: (res) => {
-            res.unshift({ name: '全部', value: '' })
-            this.items = res
-            resolve(res)
+    data() {
+      return {
+        bottomTips: '',
+        tabName: '',
+        loading: 0,
+        currentIndex: 0,
+        orderSource: '',
+        items: [],
+        tablist: [[], [], [], [], [], [], [], []],
+        pageOption: {
+          0: {
+            pageNum: 1,
+            pageSize: 20,
           },
-          fail: (error) => {
-            reject(error)
-          }
-        })
-      })
+        },
+      };
     },
-    /**
-       * 获取用户信息
-       */
-    getUserInfo() {
-      return new Promise((resolve, reject) => {
-        api.getUserInfo({
+    async onLoad() {
+      await this.getOrderDictList();
+      if (this.userInfo) {
+        this.loading = 2;
+        this.getOrderList(1);
+      } else {
+        this.loading = 3;
+      }
+
+      // 监听订单刷新事件
+      uni.$on('reloadOrderList', this.resetOptions);
+    },
+    onReachBottom() {
+      // 上拉加载
+      console.log('---上拉属性---');
+    },
+    onPullDownRefresh() {
+      // 下拉刷新
+      console.log('---下拉属性---');
+    },
+    computed: {
+      ...mapState({
+        userInfo: (state) => state.user.userInfo,
+      }),
+    },
+    methods: {
+      //  订单状态重置
+      resetOptions(orderStatus) {
+        this.pageOption[this.currentIndex].orderStatus = orderStatus;
+        this.pageOption[this.currentIndex]['pageNum'] = 1;
+        //  this.tablist[this.currentIndex] = []
+        this.$set(this.tablist, this.currentIndex, []);
+        this.getOrderList();
+      },
+      goLogin() {
+        uni.navigateTo({ url: '/pages/user-center/login?goUrl=' + '/pages/index/index?index=3' });
+      },
+      //  订单列表
+      getOrderList(loadmore) {
+        const token = uni.getStorageSync('token');
+        if (!token) return;
+        uni.showLoading({ title: '加载中' });
+        const pageParams = this.pageOption[this.currentIndex];
+        if (!pageParams) {
+          this.pageOption[this.currentIndex] = {
+            pageNum: 1,
+            pageSize: 20,
+          };
+        }
+        // if (this.orderSource === '3') {
+        //   this.getInsuranceOrderList(loadmore);
+        //   return;
+        // }
+
+        // if (this.orderSource === '8' || this.orderSource === '9') {
+        this.getShopOrderList(loadmore);
+        //   return;
+        // }
+        return;
+        api.getOrderList({
           data: {
-            accessToken: uni.getStorageSync('token')
+            // transactionStatus: '1',
+            pageNum: this.pageOption[this.currentIndex]['pageNum'],
+            pageSize: this.pageOption[this.currentIndex]['pageSize'],
+            orderSource: this.orderSource,
+            orderStatus: this.currentIndex == 1 ? 3 : this.pageOption[this.currentIndex]['orderStatus'],
           },
           success: (data) => {
-            resolve(data)
+            uni.stopPullDownRefresh();
+            uni.hideLoading();
+            const list = data.list || [];
+            if (list.length > 0) {
+              if (loadmore) {
+                this.$set(this.tablist, this.currentIndex, this.tablist[this.currentIndex].concat(list));
+              } else {
+                this.$set(this.tablist, this.currentIndex, list);
+              }
+              this.pageOption[this.currentIndex]['pageNum'] = this.pageOption[this.currentIndex]['pageNum'] + 1;
+            }
+            if (data.total > 5) {
+              this.bottomTips = data.hasNextPage ? 'more' : 'nomore';
+            } else {
+              this.bottomTips = '';
+            }
           },
-          fail: (error) => {
-            reject(error)
-          }
-        })
-      })
-    },
-    refresh() {},
-    loadMore() {
-      console.log('加载更多')
-      this.getOrderList(1)
-    },
-    clickItem(v, index) {
-      console.log('===下标--', v.name, index)
-      this.currentIndex = index
-      this.tabName = v.name
-      const type = this.items[index].value + '' || ''
-      this.orderSource = type
-      this.pageOption = {
-        [index]: {
-          orderStatus: null,
-          pageNum: 1,
-          pageSize: 20
+          fail: (err) => {
+            uni.showToast(err.message);
+            uni.stopPullDownRefresh();
+            uni.hideLoading();
+          },
+        });
+      },
+      async getInsuranceOrderList(loadmore) {
+        if (loadmore && !this.pageOption[this.currentIndex]['hasNextPage']) {
+          uni.hideLoading();
+          uni.stopPullDownRefresh();
+          this.bottomTips = 'nomore';
+          return;
         }
-      }
-      this.getOrderList()
-    }
-  }
-}
+        const params = {
+          pageNum: this.pageOption[this.currentIndex]['pageNum'],
+          pageSize: 10,
+          status: this.currentIndex == 1 ? 3 : this.pageOption[this.currentIndex]['orderStatus'],
+        };
+        api.getInsuranceOrderList({
+          data: params,
+          success: (result) => {
+            uni.hideLoading();
+            uni.stopPullDownRefresh();
+
+            if (result.list && result.list.length > 0) {
+              const list = result.list || [];
+              if (list.length > 0) {
+                if (loadmore) {
+                  this.$set(this.tablist, this.currentIndex, this.tablist[this.currentIndex].concat(list));
+                } else {
+                  this.$set(this.tablist, this.currentIndex, list);
+                }
+                this.pageOption[this.currentIndex]['pageNum'] = this.pageOption[this.currentIndex]['pageNum'] + 1;
+              }
+              this.pageOption[this.currentIndex]['hasNextPage'] = result.hasNextPage;
+            }
+            if (result.total > 5) {
+              this.bottomTips = result.hasNextPage ? 'more' : 'nomore';
+            } else {
+              this.bottomTips = '';
+            }
+          },
+          fail: (result) => {
+            uni.showToast(result.msg);
+          },
+        });
+      },
+      async getShopOrderList(loadmore) {
+        const params = {
+          pageNum: this.pageOption[this.currentIndex]['pageNum'],
+          numPerPage: 20,
+          sceneType: this.items[this.currentIndex].name === '全部' ? '' : this.items[this.currentIndex].name,
+          // status: this.currentIndex == 1 ? 3 : this.pageOption[this.currentIndex]['orderStatus'],
+          status: this.pageOption[this.currentIndex]['orderStatus'],
+        };
+        const result = await Axios.post('/order/list', params);
+        uni.hideLoading();
+        uni.stopPullDownRefresh();
+        if (result.code == 200) {
+          const list = result.data.list || [];
+          if (list.length > 0) {
+            if (loadmore) {
+              this.$set(this.tablist, this.currentIndex, this.tablist[this.currentIndex].concat(list));
+            } else {
+              this.$set(this.tablist, this.currentIndex, list);
+            }
+            this.pageOption[this.currentIndex]['pageNum'] = this.pageOption[this.currentIndex]['pageNum'] + 1;
+          }
+        } else {
+          uni.showToast(result.msg);
+        }
+        if (result.total > 5) {
+          this.bottomTips = result.hasNextPage ? 'more' : 'nomore';
+        } else {
+          this.bottomTips = '';
+        }
+      },
+      // 获取订单分类
+      getOrderDictList() {
+        return new Promise((resolve, reject) => {
+          api.getOrderDictList({
+            data: {},
+            success: (res) => {
+              res.unshift({ name: '全部', value: '' });
+              this.items = res;
+              resolve(res);
+            },
+            fail: (error) => {
+              reject(error);
+            },
+          });
+        });
+      },
+      /**
+       * 获取用户信息
+       */
+      getUserInfo() {
+        return new Promise((resolve, reject) => {
+          api.getUserInfo({
+            data: {
+              accessToken: uni.getStorageSync('token'),
+            },
+            success: (data) => {
+              resolve(data);
+            },
+            fail: (error) => {
+              reject(error);
+            },
+          });
+        });
+      },
+      refresh() {},
+      loadMore() {
+        console.log('加载更多');
+        this.getOrderList(1);
+      },
+      clickItem(v, index) {
+        console.log('===下标--', v.name, index);
+        this.currentIndex = index;
+        this.tabName = v.name;
+        const type = this.items[index].value + '' || '';
+        this.orderSource = type;
+        this.pageOption = {
+          [index]: {
+            orderStatus: null,
+            pageNum: 1,
+            pageSize: 20,
+          },
+        };
+        this.getOrderList();
+      },
+    },
+  };
 </script>
 <style lang="scss" scoped>
   .cont {

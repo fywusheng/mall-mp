@@ -45,7 +45,15 @@
 
     <!-- 领证扫码 -->
     <view class="banner-wrapper">
-      <swiper class="banner-swiper" :indicator-dots="true" :autoplay="true" :interval="4000" :duration="500" @change="hanldeBannerChange">
+      <swiper
+        class="banner-swiper"
+        indicator-active-color="#ffffff"
+        :indicator-dots="true"
+        :autoplay="true"
+        :interval="4000"
+        :duration="500"
+        @change="hanldeBannerChange"
+      >
         <swiper-item class="item" v-for="(item, index) in banners" :key="index">
           <image class="image" mode="scaleToFill" :src="item.bannerUrl" @click="handleBannerClick(index)" @error="handleBannerLoadFail(index)" />
         </swiper-item>
@@ -110,24 +118,10 @@
       <!-- <uni-load-more :status="status" /> -->
       <!-- top -->
       <view class="top-layout">
-        <!-- <button class="menu" @click="goBuy">
-          <image
-            class="icon icon-service"
-            src="http://192.168.1.187:10088/static/images/common/bug.png"
-          />
-        </button> -->
         <div class="menu" @click="toTop">
           <image class="icon icon-top" src="http://192.168.1.187:10088/static/images/common/top.png" />
         </div>
       </view>
-      <!-- <view class="top-layout">
-        <view class="menu" @click="toTop">
-          <image
-            class="icon-top"
-            src="http://192.168.1.187:10088/static/common/top.png"
-          />
-        </view>
-      </view> -->
     </view>
 
     <!-- <service-pop
@@ -145,15 +139,12 @@
   import { mapState } from 'vuex';
   import api from '@/apis/index.js';
   import NavigationBars from '../../components/common/navigation-bar.vue';
-  import ServicePop from '@/components/common/service-pop.vue';
-  import ScanOrInputPopup from '@/components/pop-entry-method/pop-entry-method.vue';
-  import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
+  // import ServicePop from '@/components/common/service-pop.vue';
+  // import ScanOrInputPopup from '@/components/pop-entry-method/pop-entry-method.vue';
+  // import RealNamePop from '@/pages/real-name-pop/real-name-pop.vue';
   export default {
     components: {
       NavigationBars,
-      ServicePop,
-      ScanOrInputPopup,
-      RealNamePop,
     },
     data() {
       return {
@@ -422,7 +413,6 @@
           data: { bannerType: '21', status: '1' },
           success: (data) => {
             this.banners = data;
-            this.info = data;
           },
         });
         this.recommend(11);

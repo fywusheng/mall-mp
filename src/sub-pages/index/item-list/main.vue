@@ -13,7 +13,7 @@
     padding-right: rpx(32);
     display: flex;
     align-items: center;
-    z-index: 100;
+    z-index: 10;
     margin: 0 auto;
     position: relative;
 
@@ -54,15 +54,13 @@
   }
 
   .sort-list {
-    // @include middle-center-x(fixed);
-    // top: rpx(88);
     position: relative;
     width: rpx(750);
     padding: 0 32rpx;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    z-index: 100;
+    z-index: 10;
     background-color: #fff;
 
     .sort {
@@ -680,7 +678,7 @@
         this.$set(this.categoryList, index, cate);
       },
       showFilter() {
-        this.$refs.filter.show(true);
+        this.$refs.filter.show();
       },
       async loadData() {
         if (this.disabled) {
@@ -1048,7 +1046,6 @@
       this.cateId = this.$root.$mp.query.cateId;
       this.level = this.$root.$mp.query.level;
       this.key = this.$root.$mp.query.key;
-      this.$refs.filter.show(false);
       this.pageNo = 1;
       this.disabled = false;
       this.itemList = [];

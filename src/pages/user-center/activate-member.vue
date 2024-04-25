@@ -81,11 +81,11 @@
 </template>
 
 <script>
-  import ScanOrInputPopup from './common/scan-or-input-popup.vue';
+  // import ScanOrInputPopup from './common/scan-or-input-popup.vue';
   import { putHotelOrder } from '@/api/life.js';
   import { mapState } from 'vuex';
   export default {
-    components: { ScanOrInputPopup },
+    // components: { ScanOrInputPopup },
     data() {
       return {
         cardType: 0, // 卡类型 0 年卡，1 半年卡

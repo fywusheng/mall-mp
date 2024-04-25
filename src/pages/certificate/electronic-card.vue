@@ -36,45 +36,17 @@
     <show-points ref="showPoints" @success_flag="success_flag"></show-points>
     <view v-if="selectedIndex === 0">
       <view class="demo_card_bg">
-        <image
-          mode="scaleToFill"
-          class="illustration2"
-          src="http://192.168.1.187:10088/static/certificate/card_bg.png"
-        />
-        <image
-          mode="scaleToFill"
-          class="illustration"
-          v-if="showImg"
-          src="http://192.168.1.187:10088/static/certificate/qcode_zm-new.png"
-        />
-        <image
-          mode="scaleToFill"
-          class="illustration"
-          v-if="!showImg"
-          src="http://192.168.1.187:10088/static/certificate/card_bm3-new.png"
-        />
-        <image
-          mode="scaleToFill"
-          class="illustration3"
-          src="http://192.168.1.187:10088/static/certificate/trans_icon.png"
-        />
+        <image mode="scaleToFill" class="illustration2" src="http://192.168.1.187:10088/static/certificate/card_bg.png" />
+        <image mode="scaleToFill" class="illustration" v-if="showImg" src="http://192.168.1.187:10088/static/certificate/qcode_zm-new.png" />
+        <image mode="scaleToFill" class="illustration" v-if="!showImg" src="http://192.168.1.187:10088/static/certificate/card_bm3-new.png" />
+        <image mode="scaleToFill" class="illustration3" src="http://192.168.1.187:10088/static/certificate/trans_icon.png" />
         <text class="watch_button" @click="watchBg">{{ showImg ? '查看背面' : '查看正面' }}</text>
       </view>
       <view class="item_block">
-        <image
-          @click="notice"
-          class="illustration"
-          mode="scaleToFill"
-          src="http://192.168.1.187:10088/static/certificate/icon-yibao.png"
-        />
+        <image @click="notice" class="illustration" mode="scaleToFill" src="http://192.168.1.187:10088/static/certificate/icon-yibao.png" />
       </view>
       <view class="item_block">
-        <image
-          @click="notice"
-          class="illustration"
-          mode="scaleToFill"
-          src="http://192.168.1.187:10088/static/certificate/icon-shebao.png"
-        />
+        <image @click="notice" class="illustration" mode="scaleToFill" src="http://192.168.1.187:10088/static/certificate/icon-shebao.png" />
       </view>
       <view class="item_block">
         <image
@@ -85,250 +57,245 @@
         />
       </view>
     </view>
-    <spreading-code
-      v-if="selectedIndex === 2"
-      ref="SpreadingCode"
-      @getLicense="handleGetButtonClick"
-      @handlePopShow="handlePopShow"
-    />
+    <spreading-code v-if="selectedIndex === 2" ref="SpreadingCode" @getLicense="handleGetButtonClick" @handlePopShow="handlePopShow" />
     <!-- <view v-if="selectedIndex === 2">亮码</view> -->
     <modal-know ref="noticeModal"></modal-know>
   </view>
 </template>
 
 <script>
-// import ElectronicCertificate from "./electronic-certificate.vue";
-// import QrCode from "./qr-code.vue";
-import Certificates from './components/certificates.vue' // 暂时不用，先不做引入
-import SpreadingCode from './components/spreading-code.vue'
-import ScanOrInputPopup from '@/components/pop-entry-method/pop-entry-method.vue'
-import api from '@/apis/index.js'
-import { showPoints } from './components/showPoints.vue'
-import ModalKnow from '@/pages/certificate/components/modal-know.vue'
-export default {
-  components: { Certificates, SpreadingCode, ScanOrInputPopup, showPoints, ModalKnow },
-  data() {
-    return {
-      showImg: true,
-      // 卡状态1：已授权已激活 2：未授权已激活 3：未激活 4.审核中 5.审核失败 6.其它渠道已经领取，在老龄委使用，需要进行用户授权
-      cardStatus: 0,
-      // 实名状态 0:未认证 1:实名、实人认证 2：实名认证
-      crtfStas: 0,
-      // 选中的下标
-      selectedIndex: 0,
-      // 是否已领卡
-      hasCard: false,
-      // 用户信息
-      userInfo: uni.getStorageSync('userInfo')
-    }
-  },
-  computed: {
-    backgroundClass() {
-      const classes = ['background--left', 'background--mid', 'background--right']
-      return classes[this.selectedIndex]
+  // import ElectronicCertificate from "./electronic-certificate.vue";
+  // import QrCode from "./qr-code.vue";
+  // import Certificates from './components/certificates.vue' // 暂时不用，先不做引入
+  import SpreadingCode from './components/spreading-code.vue';
+  import ScanOrInputPopup from '@/components/pop-entry-method/pop-entry-method.vue';
+  import api from '@/apis/index.js';
+  import { showPoints } from './components/showPoints.vue';
+  import ModalKnow from '@/pages/certificate/components/modal-know.vue';
+  export default {
+    components: { SpreadingCode, ScanOrInputPopup, showPoints, ModalKnow },
+    data() {
+      return {
+        showImg: true,
+        // 卡状态1：已授权已激活 2：未授权已激活 3：未激活 4.审核中 5.审核失败 6.其它渠道已经领取，在老龄委使用，需要进行用户授权
+        cardStatus: 0,
+        // 实名状态 0:未认证 1:实名、实人认证 2：实名认证
+        crtfStas: 0,
+        // 选中的下标
+        selectedIndex: 0,
+        // 是否已领卡
+        hasCard: false,
+        // 用户信息
+        userInfo: uni.getStorageSync('userInfo'),
+      };
     },
-    showsElectronicCertificate() {
-      // 用户已领卡，且选择第一项
-      return this.selectedIndex === 0 && this.hasCard
+    computed: {
+      backgroundClass() {
+        const classes = ['background--left', 'background--mid', 'background--right'];
+        return classes[this.selectedIndex];
+      },
+      showsElectronicCertificate() {
+        // 用户已领卡，且选择第一项
+        return this.selectedIndex === 0 && this.hasCard;
+      },
+      showsQRCode() {
+        // 用户已领卡，且选择第三项
+        return this.selectedIndex === 2 || !this.hasCard;
+      },
     },
-    showsQRCode() {
-      // 用户已领卡，且选择第三项
-      return this.selectedIndex === 2 || !this.hasCard
-    }
-  },
-  onLoad(e) {
-    this.selectedIndex = Number(e.index) || 0
-    this.initData()
-    if (this.selectedIndex === 0) {
-      this.$refs.noticeModal.open()
-    }
-  },
-  onShareAppMessage() {
-    return {
-      title: '',
-      path: '/pages/index/index?index=0'
-    }
-  },
-  mounted() {
-    if (this.selectedIndex === 0) {
-      this.$refs.noticeModal.open()
-    } else if (this.selectedIndex === 1) {
-      // 解耦版本说明：登录-扫一扫
-      if (!this.userInfo) {
-        // 未登录, 跳转到登录页面
-        uni.navigateTo({
-          url: '/pages/user-center/login'
-        })
-        return
+    onLoad(e) {
+      this.selectedIndex = Number(e.index) || 0;
+      this.initData();
+      if (this.selectedIndex === 0) {
+        this.$refs.noticeModal.open();
       }
-      uni.scanCode({
-        onlyFromCamera: true,
-        scanType: ['qrCode'],
-        success: (res) => {
-          this.getScanResult(res.result)
-        }
-      })
-    }
-  },
-  methods: {
-    watchBg() {
-      this.showImg = !this.showImg
     },
-    notice() {
-      this.$uni.showToast('当前所在地区功能开通中')
+    onShareAppMessage() {
+      return {
+        title: '',
+        path: '/pages/index/index?index=0',
+      };
     },
-    success_flag(successFlag) {
-      // this.$emit("success_flag",successFlag)
-    },
-    // 切换tab
-    handleTabClick(index) {
-      if (index === 0) {
-        // 亮证每次点击都显示一下
-        this.$refs.noticeModal.open()
-      }
-      if (index === 1) {
+    mounted() {
+      if (this.selectedIndex === 0) {
+        this.$refs.noticeModal.open();
+      } else if (this.selectedIndex === 1) {
         // 解耦版本说明：登录-扫一扫
         if (!this.userInfo) {
           // 未登录, 跳转到登录页面
           uni.navigateTo({
-            url: '/pages/user-center/login'
-          })
-          return
+            url: '/pages/user-center/login',
+          });
+          return;
         }
         uni.scanCode({
           onlyFromCamera: true,
           scanType: ['qrCode'],
           success: (res) => {
-            this.getScanResult(res.result)
-          }
-        })
-        // if (this.hasCard) {
-        //   uni.scanCode({
-        //     onlyFromCamera: true,
-        //     scanType: ["qrCode"],
-        //     success: (res) => {
-        //       this.getScanResult(res.result);
-        //     },
-        //   });
-        // } else {
-        //   this.handleGetButtonClick()
-        // }
-      } else {
-        // if(this.$refs.qrcode.timer){
-        //     console.log("执行onUnload")
-        //     clearInterval(this.$refs.qrcode.timer)
-        //     this.$refs.qrcode.timer = null;
-        // }
-        // this.$refs.qrcode.timer
-        console.log('====老年码点击---')
-        this.selectedIndex = index
+            this.getScanResult(res.result);
+          },
+        });
       }
     },
-    /**
+    methods: {
+      watchBg() {
+        this.showImg = !this.showImg;
+      },
+      notice() {
+        this.$uni.showToast('当前所在地区功能开通中');
+      },
+      success_flag(successFlag) {
+        // this.$emit("success_flag",successFlag)
+      },
+      // 切换tab
+      handleTabClick(index) {
+        if (index === 0) {
+          // 亮证每次点击都显示一下
+          this.$refs.noticeModal.open();
+        }
+        if (index === 1) {
+          // 解耦版本说明：登录-扫一扫
+          if (!this.userInfo) {
+            // 未登录, 跳转到登录页面
+            uni.navigateTo({
+              url: '/pages/user-center/login',
+            });
+            return;
+          }
+          uni.scanCode({
+            onlyFromCamera: true,
+            scanType: ['qrCode'],
+            success: (res) => {
+              this.getScanResult(res.result);
+            },
+          });
+          // if (this.hasCard) {
+          //   uni.scanCode({
+          //     onlyFromCamera: true,
+          //     scanType: ["qrCode"],
+          //     success: (res) => {
+          //       this.getScanResult(res.result);
+          //     },
+          //   });
+          // } else {
+          //   this.handleGetButtonClick()
+          // }
+        } else {
+          // if(this.$refs.qrcode.timer){
+          //     console.log("执行onUnload")
+          //     clearInterval(this.$refs.qrcode.timer)
+          //     this.$refs.qrcode.timer = null;
+          // }
+          // this.$refs.qrcode.timer
+          console.log('====老年码点击---');
+          this.selectedIndex = index;
+        }
+      },
+      /**
        * 获取用户信息
        */
-    getUserInfo() {
-      return new Promise((resolve, reject) => {
-        api.getUserInfo({
-          data: {
-            accessToken: uni.getStorageSync('token')
-          },
-          success: (data) => {
-            resolve(data)
-          },
-          fail: (error) => {
-            reject(error)
-          }
-        })
-      })
-    },
-    // 初始化页面数据
-    async initData() {
-      const userinfor = await this.getUserInfo()
-      uni.setStorageSync('userInfo', userinfor)
-      this.userInfo = userinfor
-      // 检查用户是否实名
-      if (this.userInfo.crtfStas !== '2') {
-        // 未实名, 展示立即领取界面
-        this.hasCard = false
-        return
-      }
-      api.getCertificateState({
-        data: {
-          appId: '53928a083adb4a7dad2eecf05564873f',
-          idType: '身份证',
-          userName: this.userInfo.psnName,
-          idNo: this.userInfo.idCard
-        },
-        success: (data) => {
-          const authState = data.authState
-          // 判断卡状态
-          if (authState === '1') {
-            // 卡状态为 1, 无需操作
-            const aucode = data.authCode
-            const getuserinfor = uni.getStorageSync('userInfo')
-            getuserinfor['authCode'] = aucode
-            uni.setStorageSync('userInfo', getuserinfor)
-            this.hasCard = true
-          } else {
-            this.hasCard = false
-          }
-        }
-      })
-    },
-    // 解析扫一扫结果
-    getScanResult(result) {
-      api.getECToken({
-        data: {
-          appId: '53928a083adb4a7dad2eecf05564873f',
-          orgId: '91350200MA3470MR5D',
-          ecQrCode: result,
-          authCode: this.userInfo.authCode
-        },
-        success: (data) => {
-          api.checkECToken({
+      getUserInfo() {
+        return new Promise((resolve, reject) => {
+          api.getUserInfo({
             data: {
-              appId: '53928a083adb4a7dad2eecf05564873f',
-              ecQrCode: result,
-              authCode: this.userInfo.authCode,
-              ecToken: data.ecToken
+              accessToken: uni.getStorageSync('token'),
             },
             success: (data) => {
-              uni.navigateTo({
-                url: `/pages/certificate/scan-result?info=${data}`
-              })
-            }
-          })
+              resolve(data);
+            },
+            fail: (error) => {
+              reject(error);
+            },
+          });
+        });
+      },
+      // 初始化页面数据
+      async initData() {
+        const userinfor = await this.getUserInfo();
+        uni.setStorageSync('userInfo', userinfor);
+        this.userInfo = userinfor;
+        // 检查用户是否实名
+        if (this.userInfo.crtfStas !== '2') {
+          // 未实名, 展示立即领取界面
+          this.hasCard = false;
+          return;
         }
-      })
-    },
-    /**
+        api.getCertificateState({
+          data: {
+            appId: '53928a083adb4a7dad2eecf05564873f',
+            idType: '身份证',
+            userName: this.userInfo.psnName,
+            idNo: this.userInfo.idCard,
+          },
+          success: (data) => {
+            const authState = data.authState;
+            // 判断卡状态
+            if (authState === '1') {
+              // 卡状态为 1, 无需操作
+              const aucode = data.authCode;
+              const getuserinfor = uni.getStorageSync('userInfo');
+              getuserinfor['authCode'] = aucode;
+              uni.setStorageSync('userInfo', getuserinfor);
+              this.hasCard = true;
+            } else {
+              this.hasCard = false;
+            }
+          },
+        });
+      },
+      // 解析扫一扫结果
+      getScanResult(result) {
+        api.getECToken({
+          data: {
+            appId: '53928a083adb4a7dad2eecf05564873f',
+            orgId: '91350200MA3470MR5D',
+            ecQrCode: result,
+            authCode: this.userInfo.authCode,
+          },
+          success: (data) => {
+            api.checkECToken({
+              data: {
+                appId: '53928a083adb4a7dad2eecf05564873f',
+                ecQrCode: result,
+                authCode: this.userInfo.authCode,
+                ecToken: data.ecToken,
+              },
+              success: (data) => {
+                uni.navigateTo({
+                  url: `/pages/certificate/scan-result?info=${data}`,
+                });
+              },
+            });
+          },
+        });
+      },
+      /**
        * 立即领取点击事件 2已经实名
        */
-    handleGetButtonClick() {
-      // TODO  去掉立即领取 亮证区域
-      const userInfo = uni.getStorageSync('userInfo')
-      if (userInfo.crtfStas !== '2') {
-        this.$refs.popup.open('1')
-        return
-      }
-      this.$refs.popup.open(2)
-    },
-    // 弹出500积分，并且标记已弹出
-    handlePopShow(msgId) {
-      this.$refs.showPoints.showsCreditsPopup = true
-      api.markPopover({
-        data: {
-          msgId: msgId,
-          channel: 'miniprogram'
-        },
-        success: (res) => {
-          console.log('300积分弹出成功')
+      handleGetButtonClick() {
+        // TODO  去掉立即领取 亮证区域
+        const userInfo = uni.getStorageSync('userInfo');
+        if (userInfo.crtfStas !== '2') {
+          this.$refs.popup.open('1');
+          return;
         }
-      })
-    }
-  }
-}
+        this.$refs.popup.open(2);
+      },
+      // 弹出500积分，并且标记已弹出
+      handlePopShow(msgId) {
+        this.$refs.showPoints.showsCreditsPopup = true;
+        api.markPopover({
+          data: {
+            msgId: msgId,
+            channel: 'miniprogram',
+          },
+          success: (res) => {
+            console.log('300积分弹出成功');
+          },
+        });
+      },
+    },
+  };
 </script>
 
 <style lang="scss" scoped>

@@ -62,7 +62,7 @@
           <image class="icon" :src="item.hasComplete === '1' ? item.doneIcon : item.taskIcon" mode="scaleToFill" />
           <view class="info flex-v m-0-24 flex-1">
             <text class="fs-40 fw-500 c-black">{{ item.taskDscr }}</text>
-            <text class="fs-36 c-primary mt-12">+{{ item.taskScore }} 积分</text>
+            <!-- <text class="fs-36 c-primary mt-12">+{{ item.taskScore }} 积分</text> -->
           </view>
           <button class="button fs-40 c-primary br-32" hover-class="none">
             {{ item.hasComplete === '1' ? '已完成' : '去完成' }}
@@ -140,37 +140,60 @@
       },
 
       selectUrl(item) {
-        const tastId = item.taskInfoId || '';
-        this.clickId = tastId;
-
-        // if (tastId == '1') {
-        //   this.$uni.showToast('当前所在地区功能开通中')
-        //   return
-        // }
-        console.log('====点击的下标---', item);
-        if (item.hasComplete == 1) return;
-        // 1-申领老年人证  2-亲情账号 3-添加赡养抚养关系 6-实名认证
-        // const urls = { '1': '/pages/certificate/electronic-card?index=0', '2': '/pages/family-account/select-type', '3': '/pages/support/index', '6': 'pages/user-center/my-points' }
-        const urls = {
-          1: '/pages/user-center/licence',
-          2: '/pages/family-account/select-type',
-          3: '/pages/support/index',
-          6: 'pages/user-center/my-points',
-        };
-        if (this.userInfo.crtfStas !== '2') {
-          // 未实名
-          if (tastId == '6') {
-            this.headImg = 'http://192.168.1.187:10088/static/common/loginAttest.png';
-          } else {
-            this.headImg = 'http://192.168.1.187:10088/static/common/img-real-name.png';
+        if (item.hasComplete) {
+          return false;
+        }
+        switch (item.taskDscr) {
+          case '签到积分':
+            uni.switchTab({ url: '/pages/index/mine' });
+            break;
+          case '商城购物':
+            uni.switchTab({ url: '/pages/index/index' });
+            break;
+          case '商品分享':
+            uni.switchTab({ url: '/pages/index/index' });
+            break;
+          case '生日祝福':
+            if (this.isTodayBirthday(this.extractBirthday(this.userInfo.idCard))) {
+              this.addPoint();
+            }
+            break;
+          default:
+            break;
+        }
+      },
+      // 根据身份证号提取生日
+      extractBirthday(idCard) {
+        var birthday = '';
+        if (idCard != null && idCard != '') {
+          if (idCard.length == 15) {
+            birthday = '19' + idCard.substr(6, 6);
+          } else if (idCard.length == 18) {
+            birthday = idCard.substr(6, 8);
           }
-          this.$refs.realpop.open();
-          return;
+          birthday = birthday.replace(/(.{4})(.{2})/, '$1-$2-');
         }
-        if (this.userInfo.crtfStas !== '0') {
-          // 已实名
-          uni.navigateTo({ url: urls[tastId] });
-        }
+        return birthday;
+      },
+      isTodayBirthday(birthday) {
+        var today = new Date();
+        var birthDate = new Date(birthday.replace(/-/g, '/'));
+        return today.getMonth() === birthDate.getMonth() && today.getDate() === birthDate.getDate();
+      },
+      // 分享增加积分
+      addPoint() {
+        api.addPointByShare({
+          data: {
+            userId: this.userInfo.memberId,
+            chgScore: 10,
+            chgType: 1,
+            taskType: 11,
+            taskInfoId: 11,
+          },
+          success: () => {
+            this.$uni.showToast('您已获得生日积分');
+          },
+        });
       },
       // 获取用户积分
       handleScoreInfo() {
@@ -324,11 +347,15 @@
         .item {
           @include size(686, 216);
           box-shadow: 0 4rpx 24rpx 0 rgba(0, 0, 0, 0.12);
+          padding: 0 40rpx;
           .icon {
             @include square(168);
           }
           .info {
             height: 100%;
+            // align-items: center;
+            justify-content: center;
+            margin: 0 48rpx;
           }
           .button {
             @include size(158, 64);

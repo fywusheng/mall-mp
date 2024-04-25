@@ -95,30 +95,15 @@
         </view> -->
 
         <!-- 商城 -->
-        <shop-order-item
-          v-if="item.orderSource === 8 || item.orderSource === 9"
-          :item="item"
-          :key="item.orderId"
-        ></shop-order-item>
+        <shop-order-item v-if="item.orderSource === 8 || item.orderSource === 9" :item="item" :key="item.orderId"></shop-order-item>
       </template>
     </view>
     <view class="status-box flex-v flex-c-s" v-if="list.length === 0">
-      <image
-        class="icon-img"
-        src="http://192.168.1.187:10088/static/supermarket/no-order.png"
-        mode="scaleToFill"
-      />
+      <image class="icon-img" src="http://192.168.1.187:10088/static/supermarket/no-order.png" mode="scaleToFill" />
       <view>您还没有相关订单</view>
     </view>
 
-    <modal
-      ref="callPhonePop"
-      title=" "
-      cancelText="取消"
-      confirmText="拨打电话"
-      @cancel="marketPopCancel"
-      @confirm="marketPopConfirm"
-    >
+    <modal ref="callPhonePop" title=" " cancelText="取消" confirmText="拨打电话" @cancel="marketPopCancel" @confirm="marketPopConfirm">
       <view slot="text">
         <view class="confirm-main">
           <view class="content">
@@ -131,125 +116,125 @@
 </template>
 
 <script>
-import dayjs from 'dayjs'
-import Modal from '@/components/common/modal.vue'
-import ShopOrderItem from './shop-order-item.vue'
-import InsuranceOrderItem from './insurance-order-item-all.vue'
-export default {
-  components: { Modal, ShopOrderItem, InsuranceOrderItem },
-  props: {
-    list: {
-      type: Array,
-      default: () => []
-    }
-  },
-  data() {
-    return {
-      dialogContent: ''
-    }
-  },
-  created() {},
-  onLoad(data) {},
-  // 下拉刷新
-  onPullDownRefresh() {},
-  // 上拉加载
-  onReachBottom() {},
-  methods: {
-    // 立即支付
-    handlePay(item) {
-      const url = `https://api.hpgjzlinfo.com/#/checkstand?cashId=${item.orderId}`
-      // #ifdef MP-ALIPAY
-      uni.reLaunch({
-        url: `/pages/common/webpage?url=${url}`
-      })
-      // #endif
+  import dayjs from 'dayjs';
+  import Modal from '@/components/common/modal.vue';
+  import ShopOrderItem from './shop-order-item.vue';
+  // import InsuranceOrderItem from './insurance-order-item-all.vue';
+  export default {
+    components: { Modal, ShopOrderItem },
+    props: {
+      list: {
+        type: Array,
+        default: () => [],
+      },
+    },
+    data() {
+      return {
+        dialogContent: '',
+      };
+    },
+    created() {},
+    onLoad(data) {},
+    // 下拉刷新
+    onPullDownRefresh() {},
+    // 上拉加载
+    onReachBottom() {},
+    methods: {
+      // 立即支付
+      handlePay(item) {
+        const url = `https://api.hpgjzlinfo.com/#/checkstand?cashId=${item.orderId}`;
+        // #ifdef MP-ALIPAY
+        uni.reLaunch({
+          url: `/pages/common/webpage?url=${url}`,
+        });
+        // #endif
 
-      // #ifdef MP-WEIXIN
-      uni.reLaunch({
-        url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
-      })
-      // #endif
-    },
-    checkExpirationTime(expTime) {
-      return new Date(expTime).getTime() - new Date().getTime() > 0
-    },
-    // 申请退款
-    handleReturn(item) {
-      uni.navigateTo({
-        url: `/pages/life/applyRefund?orderId=${item.orderId}`
-      })
-    },
-    // 预定
-    handlePre(isPre, item) {
-      if (isPre) {
-        this.dialogContent = '您需要拨打电话预定酒店服务，是否立即拨打'
-      } else {
-        this.dialogContent = '您已预定酒店服务，是否拨打电话取消预定'
-      }
-      this.customerService = item.customerService
-      this.$refs.callPhonePop.open()
-    },
-    // 拨打电话
-    marketPopConfirm() {
-      this.$refs.callPhonePop.close()
-      uni.makePhoneCall({
-        phoneNumber: this.customerService
-      })
-    },
-    // 取消
-    marketPopCancel() {
-      this.$refs.callPhonePop.close()
-    },
-    handleItemClick(index, i) {
-      this.activeIndex = index
-      this.$emit('resetOptions', i.id)
-    },
-    // 点击订单
-    handleOrderInfo({ orderId, orderSource }) {
-      if (orderSource == 4) {
+        // #ifdef MP-WEIXIN
+        uni.reLaunch({
+          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
+        });
+        // #endif
+      },
+      checkExpirationTime(expTime) {
+        return new Date(expTime).getTime() - new Date().getTime() > 0;
+      },
+      // 申请退款
+      handleReturn(item) {
         uni.navigateTo({
-          url: `/pages/life/orderInfo?orderId=${orderId}`
-        })
-      } else {
-        uni.navigateTo({
-          url: '/pages/supermarket/order-info?orderId=' + orderId
-        })
-      }
-    }
-  },
-  filters: {
-    formateOrderStatus(v) {
-      // 1-未支付、2-已支付、3-已完成、5-部分退款、6-已退款、7-退款中
-      // 订单状态 （1-未支付、2-已支付、3-已完成、5-部分退款、6-已退款、7-退款中）
-      const mapObj = {
-        1: '待付款',
-        2: '待使用',
-        3: '已完成',
-        4: '已关闭',
-        5: '部分退款',
-        6: '已退款',
-        7: '退款中',
-        8: '已过期'
-      }
-      return mapObj[v] || ''
+          url: `/pages/life/applyRefund?orderId=${item.orderId}`,
+        });
+      },
+      // 预定
+      handlePre(isPre, item) {
+        if (isPre) {
+          this.dialogContent = '您需要拨打电话预定酒店服务，是否立即拨打';
+        } else {
+          this.dialogContent = '您已预定酒店服务，是否拨打电话取消预定';
+        }
+        this.customerService = item.customerService;
+        this.$refs.callPhonePop.open();
+      },
+      // 拨打电话
+      marketPopConfirm() {
+        this.$refs.callPhonePop.close();
+        uni.makePhoneCall({
+          phoneNumber: this.customerService,
+        });
+      },
+      // 取消
+      marketPopCancel() {
+        this.$refs.callPhonePop.close();
+      },
+      handleItemClick(index, i) {
+        this.activeIndex = index;
+        this.$emit('resetOptions', i.id);
+      },
+      // 点击订单
+      handleOrderInfo({ orderId, orderSource }) {
+        if (orderSource == 4) {
+          uni.navigateTo({
+            url: `/pages/life/orderInfo?orderId=${orderId}`,
+          });
+        } else {
+          uni.navigateTo({
+            url: '/pages/supermarket/order-info?orderId=' + orderId,
+          });
+        }
+      },
     },
-    setDistance(item) {
-      const s = Number(item) / 1000
-      if (s.toFixed(3) < 1) {
-        return parseInt(s * 1000) + 'm'
-      } else {
-        return s.toFixed(1) + 'km'
-      }
+    filters: {
+      formateOrderStatus(v) {
+        // 1-未支付、2-已支付、3-已完成、5-部分退款、6-已退款、7-退款中
+        // 订单状态 （1-未支付、2-已支付、3-已完成、5-部分退款、6-已退款、7-退款中）
+        const mapObj = {
+          1: '待付款',
+          2: '待使用',
+          3: '已完成',
+          4: '已关闭',
+          5: '部分退款',
+          6: '已退款',
+          7: '退款中',
+          8: '已过期',
+        };
+        return mapObj[v] || '';
+      },
+      setDistance(item) {
+        const s = Number(item) / 1000;
+        if (s.toFixed(3) < 1) {
+          return parseInt(s * 1000) + 'm';
+        } else {
+          return s.toFixed(1) + 'km';
+        }
+      },
+      formaterMoney(v) {
+        return (v / 100).toFixed(2);
+      },
+      // 日期过滤器, 用于格式化日期
+      dateFilter(value) {
+        return dayjs(value).format('YYYY-MM-DD HH:mm');
+      },
     },
-    formaterMoney(v) {
-      return (v / 100).toFixed(2)
-    },
-    // 日期过滤器, 用于格式化日期
-    dateFilter(value) {
-      return dayjs(value).format('YYYY-MM-DD HH:mm')
-    }
-  }
-}
+  };
 </script>
 
 <style lang="scss" scoped>

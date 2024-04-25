@@ -282,6 +282,7 @@
 </template>
 
 <script>
+  import api from '@/apis/index.js';
   import { mapState } from 'vuex';
   import Top from '@/sub-pages/index/components/top.vue';
   import SelectSku from './components/select-sku';
@@ -366,6 +367,18 @@
       },
     },
     methods: {
+      // 分享增加积分
+      addPoint() {
+        api.addPointByShare({
+          data: {
+            userId: this.userInfo.memberId,
+            chgScore: 1,
+            chgType: 1,
+            taskType: 10,
+            taskInfoId: 10,
+          },
+        });
+      },
       openMember() {
         uni.navigateTo({ url: '/pages/user-center/activate-member' });
       },
@@ -664,6 +677,7 @@
       this.colorList = [];
     },
     onShareAppMessage() {
+      this.addPoint();
       return {
         path: 'sub-pages/index/item/main?id=' + this.productId + '&sceneType=' + this.sceneType,
         title: this.product.name,

@@ -142,7 +142,7 @@
 </style>
 
 <template>
-  <div class="filter-modal-wrap" v-if="showPopup">
+  <uni-popup ref="showPopup">
     <scroll-view scroll-y class="filter-modal">
       <view class="title">所在区域：{{ city }}</view>
       <div v-if="categoryList.length > 0" class="condition-list-wrap">
@@ -232,7 +232,7 @@
         <li class="li" @click="search">确定</li>
       </ul>
     </scroll-view>
-  </div>
+  </uni-popup>
 </template>
 
 <script>
@@ -290,10 +290,12 @@
         });
         this.$emit('reset');
         this.showPopup = false;
+        this.$refs.showPopup.close('bottom');
       },
       search() {
         this.$emit('search');
         this.showPopup = false;
+        this.$refs.showPopup.close('bottom');
       },
 
       changeTargetAudience(target) {
@@ -320,7 +322,7 @@
         condition.check = !condition.check;
       },
       show(flag) {
-        this.showPopup = flag;
+        this.$refs.showPopup.open('bottom');
       },
     },
     async mounted() {
