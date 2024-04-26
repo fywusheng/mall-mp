@@ -22,17 +22,8 @@
         <view class="list" v-for="(v, i) in explosiveList" :key="i" @click="goItemClick(v)">
           <view class="_n_list">
             <view class="list_l">
-              <image
-                class="img"
-                :class="{ opacityImg: v.soldOut === 0 ? true : false }"
-                :src="v.mainImgUrl"
-                mode="scaleToFill"
-              />
-              <image
-                class="img bgempt"
-                v-if="v.soldOut === 0"
-                src="http://192.168.1.187:10088/static/home/empt.png"
-              />
+              <image class="img" :class="{ opacityImg: v.soldOut === 0 ? true : false }" :src="v.mainImgUrl" mode="scaleToFill" />
+              <image class="img bgempt" v-if="v.soldOut === 0" src="http://192.168.1.187:10088/static/home/empt.png" />
             </view>
             <view class="list_r">
               <view class="_n" :class="{ turnColor: v.soldOut === 0 ? true : false }">
@@ -60,11 +51,7 @@
           <view class="_block" v-for="(v, i) in goodsList" :key="i" @click="goItemClick(v)">
             <view class="box">
               <image class="img" :src="v.mainImgUrl" mode="scaleToFill" />
-              <image
-                class="img bgempt"
-                v-if="v.soldOut === 0"
-                src="http://192.168.1.187:10088/static/home/empt.png"
-              />
+              <image class="img bgempt" v-if="v.soldOut === 0" src="http://192.168.1.187:10088/static/home/empt.png" />
             </view>
             <view class="jf">积分抵扣￥{{ v.pointDiscountPoint }}</view>
             <view class="price">￥{{ member ? v.memberPrice : v.finalPrice }}</view>
@@ -74,187 +61,177 @@
       <!-- 商品推荐 -->
       <view class="recommed">
         <view class="_block" v-for="(v, i) in prodList" :key="i" @click="goItemClick(v)">
-          <image
-            mode="scaleToFill"
-            class="icon"
-            :src="v.mainImgUrl"
-            @error="handleImageLoadFail(i)"
-          />
-          <image
-            class="icon bgempt"
-            v-if="v.soldOut === 0"
-            src="http://192.168.1.187:10088/static/home/empt.png"
-          />
+          <image mode="scaleToFill" class="icon" :src="v.mainImgUrl" @error="handleImageLoadFail(i)" />
+          <image class="icon bgempt" v-if="v.soldOut === 0" src="http://192.168.1.187:10088/static/home/empt.png" />
           <view class="name">{{ v.name }}</view>
           <view class="jf">积分抵扣￥{{ v.pointDiscountPoint }}</view>
-          <!--  isCreditPoints == 1 时显示到手价格-->
           <view class="_p">
             <view class="getPrice">{{ member ? '到手价' : '到手价' }}</view>
             ￥{{ member ? v.memberPrice : v.finalPrice }}
           </view>
+          <!-- 优惠券 -->
+          <!-- <view v-if="v.denomination" class="coupon">
+            <view class="label">券</view>
+            <view class="coupon-price">¥{{ v.denomination }}</view>
+          </view> -->
         </view>
       </view>
     </view>
     <view class="top-layout">
       <button class="menu" @click="goBuy">
-        <image
-          class="icon icon-service"
-          src="http://192.168.1.187:10088/static/images/common/bug.png"
-        />
+        <image class="icon icon-service" src="http://192.168.1.187:10088/static/images/common/bug.png" />
       </button>
       <div class="menu" @click="toTop">
-        <image
-          class="icon icon-top"
-          src="http://192.168.1.187:10088/static/images/common/top.png"
-        />
+        <image class="icon icon-top" src="http://192.168.1.187:10088/static/images/common/top.png" />
       </div>
     </view>
   </view>
 </template>
 <script>
-import api from '@/apis/index.js'
-import { mapState } from 'vuex'
-// import { reportCmPV } from '@/plugins/cloudMonitorHelper';
+  import api from '@/apis/index.js';
+  import { mapState } from 'vuex';
+  // import { reportCmPV } from '@/plugins/cloudMonitorHelper';
 
-export default {
-  data() {
-    return {
-      explosiveList: [],
-      goodsList: [],
-      list: [],
-      prodList: [],
-      pageSize: 20,
-      pageNum: 1,
-      // userInfo: {},
-      score: ''
-    }
-  },
-  created() {
-    this.recommend(1)
-    this.recommend(2)
-    this.getProdList()
-  },
-  onShow() {
-    this.autoScore()
-  },
-
-  async onLoad(e) {
-    // this.autoScore(e)
-    // 监听登录事件，更新用户信息
-    // uni.$on('didLogin', this.autoScore);
-  },
-  // 下拉刷新
-  onPullDownRefresh() {
-    this.getProdList()
-  },
-  // 上拉加载
-  onReachBottom() {
-    this.getProdList()
-  },
-  computed: {
-    ...mapState({
-      userInfo: (state) => state.user.userInfo
-    }),
-    // 是否会员
-    member() {
-      return this.userInfo && this.userInfo.memberStatus === '1'
-    }
-  },
-  methods: {
-    // 图片加载失败
-    handleImageLoadFail(index) {
-      this.prodList[index].mainImgUrl =
-          'http://192.168.1.187:10088/static/home/image-home-article-default.png'
-    },
-    async autoScore(e) {
-      if (this.userInfo && this.userInfo.phone) {
-        this.handleScoreInfo()
-      }
-    },
-
-    toTop() {
-      uni.pageScrollTo({
-        scrollTop: 0
-      })
-    },
-    goBuy() {
-      if (!Store.getters.isLogin) {
-        Store.dispatch('logout')
-        uni.navigateTo({
-          url: '/pages/user-center/login'
-        })
-        return false
-      }
-      uni.navigateTo({
-        url: '/sub-pages/point/cart/main?sceneType=积分兑换'
-      })
-    },
-    goItemClick(v) {
-      if (v.id === '1363804130820747409') {
-        const accessToken = uni.getStorageSync('token')
-        // const url = `https://test.ctc-medicine.com/yst_itcm/advertise?pltCode=64401&pltId=${accessToken}`
-        const url = `https://hzy.ctc-medicine.com/yst_itcm/advertise?pltCode=64401&pltId=${accessToken}`
-        uni.navigateTo({
-          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
-        })
-        return
-      }
-
-      uni.navigateTo({
-        url: `/sub-pages/index/item/main?id=${v.id}&sceneType=积分兑换`
-      })
-    },
-    goHandler() {
-      if (this.userInfo.phone) {
-        uni.navigateTo({ url: '/pages/user-center/my-points' })
-      } else {
-        uni.navigateTo({ url: '/pages/user-center/login' })
-      }
-    },
-    handleScoreInfo() {
-      if (!this.userInfo.memberId) return
-      api.scoreInfo({
-        data: {
-          userId: this.userInfo.memberId
-        },
-        success: (res) => {
-          this.score = res.score
-        }
-      })
-    },
-    async getProdList() {
-      const params = {
+  export default {
+    data() {
+      return {
+        explosiveList: [],
+        goodsList: [],
+        list: [],
+        prodList: [],
         pageSize: 20,
-        pageNum: this.pageNum,
-        isCreditPoints: 1
-      }
-      const res = await Axios.post('/product/getProductSearchList', params)
-      if (res.code == '200') {
-        const data = res.data || {}
-        const esProducts = data.esProducts || []
-        if (esProducts.length > 0) {
-          this.pageNum = this.pageNum + 1
-          this.prodList = this.prodList.concat(esProducts)
-        }
-      }
+        pageNum: 1,
+        // userInfo: {},
+        score: '',
+      };
     },
-    async recommend(flag) {
-      const params = { productType: flag }
-      const list = await Axios.post('/product/getProductListByType', params)
-      let getList = []
-      if (list.code == '200') {
-        getList = list.data || []
-        if (flag == 1) {
-          this.explosiveList = getList
-        } else {
-          this.goodsList = getList
+    created() {
+      this.recommend(1);
+      this.recommend(2);
+      this.getProdList();
+    },
+    onShow() {
+      this.autoScore();
+    },
+
+    async onLoad(e) {
+      // this.autoScore(e)
+      // 监听登录事件，更新用户信息
+      // uni.$on('didLogin', this.autoScore);
+    },
+    // 下拉刷新
+    onPullDownRefresh() {
+      this.getProdList();
+    },
+    // 上拉加载
+    onReachBottom() {
+      this.getProdList();
+    },
+    computed: {
+      ...mapState({
+        userInfo: (state) => state.user.userInfo,
+      }),
+      // 是否会员
+      member() {
+        return this.userInfo && this.userInfo.memberStatus === '1';
+      },
+    },
+    methods: {
+      // 图片加载失败
+      handleImageLoadFail(index) {
+        this.prodList[index].mainImgUrl = 'http://192.168.1.187:10088/static/home/image-home-article-default.png';
+      },
+      async autoScore(e) {
+        if (this.userInfo && this.userInfo.phone) {
+          this.handleScoreInfo();
         }
-      } else {
-        this.$uni.showToast(list.msg)
-      }
-    }
-  }
-}
+      },
+
+      toTop() {
+        uni.pageScrollTo({
+          scrollTop: 0,
+        });
+      },
+      goBuy() {
+        if (!Store.getters.isLogin) {
+          Store.dispatch('logout');
+          uni.navigateTo({
+            url: '/pages/user-center/login',
+          });
+          return false;
+        }
+        uni.navigateTo({
+          url: '/sub-pages/point/cart/main?sceneType=积分兑换',
+        });
+      },
+      goItemClick(v) {
+        if (v.id === '1363804130820747409') {
+          const accessToken = uni.getStorageSync('token');
+          // const url = `https://test.ctc-medicine.com/yst_itcm/advertise?pltCode=64401&pltId=${accessToken}`
+          const url = `https://hzy.ctc-medicine.com/yst_itcm/advertise?pltCode=64401&pltId=${accessToken}`;
+          uni.navigateTo({
+            url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
+          });
+          return;
+        }
+
+        uni.navigateTo({
+          url: `/sub-pages/index/item/main?id=${v.id}&sceneType=积分兑换`,
+        });
+      },
+      goHandler() {
+        if (this.userInfo.phone) {
+          uni.navigateTo({ url: '/pages/user-center/my-points' });
+        } else {
+          uni.navigateTo({ url: '/pages/user-center/login' });
+        }
+      },
+      handleScoreInfo() {
+        if (!this.userInfo.memberId) return;
+        api.scoreInfo({
+          data: {
+            userId: this.userInfo.memberId,
+          },
+          success: (res) => {
+            this.score = res.score;
+          },
+        });
+      },
+      async getProdList() {
+        const params = {
+          pageSize: 20,
+          pageNum: this.pageNum,
+          storeBrandIds: uni.getStorageSync('storeInfo').operatingBrand,
+          businessScopeList: uni.getStorageSync('storeInfo').businessScope,
+          isCreditPoints: '1',
+        };
+        const res = await Axios.post('/product/getProductSearchList', params);
+        if (res.code == '200') {
+          const data = res.data || {};
+          const esProducts = data.esProducts || [];
+          if (esProducts.length > 0) {
+            this.pageNum = this.pageNum + 1;
+            this.prodList = this.prodList.concat(esProducts);
+          }
+        }
+      },
+      async recommend(flag) {
+        const params = { productType: flag };
+        const list = await Axios.post('/product/getProductListByType', params);
+        let getList = [];
+        if (list.code == '200') {
+          getList = list.data || [];
+          if (flag == 1) {
+            this.explosiveList = getList;
+          } else {
+            this.goodsList = getList;
+          }
+        } else {
+          this.$uni.showToast(list.msg);
+        }
+      },
+    },
+  };
 </script>
 <style lang="scss" scoped>
   .point {
