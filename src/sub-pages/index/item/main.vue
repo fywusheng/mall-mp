@@ -361,12 +361,17 @@
       member() {
         return this.userInfo && this.userInfo.memberStatus === '1';
       },
+      // 场景类型：积分兑换、商品购买
       sceneType() {
-        return this.product.isCreditPoints === 1 ? '积分兑换' : '商品购买';
+        return this.product && this.product.isCreditPoints === 1 ? '积分兑换' : '商品购买';
       },
       // 积分抵扣金额
       pointDiscountPoint() {
-        return this.member ? this.product.pointDiscountPoint : this.product.registerPoint;
+        if (this.member) {
+          return this.product ? this.product.pointDiscountPoint : 0;
+        } else {
+          return this.product ? this.product.registerPoint : 0;
+        }
       },
     },
     methods: {

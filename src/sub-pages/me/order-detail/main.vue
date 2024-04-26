@@ -358,7 +358,7 @@
     <div class="store-list" v-for="(orderItemModel, index) in order.storeOrderItems" :key="index">
       <div class="store-name" @click="goStoreDetail(orderItemModel)">
         {{ orderItemModel.storeName }}
-        <image class="icon-right" :src="icon.right" mode="scaleToFill" />
+        <!-- <image class="icon-right" :src="icon.right" mode="scaleToFill" /> -->
       </div>
       <ul class="item-list">
         <li class="item" @click="toItem(item)" :key="itemIndex" v-for="(item, itemIndex) in orderItemModel.items">
@@ -549,6 +549,7 @@
     },
     methods: {
       goStoreDetail(store) {
+        return;
         uni.navigateTo({
           url: '/sub-pages/index/store/main?supplierId=' + store.storeId,
         });
