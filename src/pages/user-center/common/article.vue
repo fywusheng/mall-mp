@@ -6,7 +6,7 @@
         <view
           :data-id="artItem.contId"
           :class="['content-noimg nopadding', artItem.play ? 'play' : '']"
-          v-if="artItem.imgs === undefined && artItem.artiType === '0'"
+          v-if="artItem.imgs.length === 0 && artItem.artiType === '0'"
         >
           <view @click="goDetail(artItem)">
             <view class="_line">
@@ -27,11 +27,7 @@
                            <view class="_text">分享</view>
                       </view> -->
             <view class="_item" @click.stop="optionClick(1, artItem, artIndex)">
-              <image
-                class="icon"
-                src="http://192.168.1.187:10088/static/user-center/del.png"
-                mode="scaleToFill"
-              />
+              <image class="icon" src="http://192.168.1.187:10088/static/user-center/del.png" mode="scaleToFill" />
               <view class="_text">取消收藏</view>
             </view>
           </view>
@@ -70,11 +66,7 @@
                            <view class="_text">分享</view>
                       </view> -->
             <view class="_item" @click.stop="optionClick(1, artItem, artIndex)">
-              <image
-                class="icon"
-                src="http://192.168.1.187:10088/static/user-center/del.png"
-                mode="scaleToFill"
-              />
+              <image class="icon" src="http://192.168.1.187:10088/static/user-center/del.png" mode="scaleToFill" />
               <view class="_text">取消收藏</view>
             </view>
           </view>
@@ -114,21 +106,13 @@
                            <view class="_text">分享</view>
                       </view> -->
             <view class="_item" @click.stop="optionClick(1, artItem, artIndex)">
-              <image
-                class="icon"
-                src="http://192.168.1.187:10088/static/user-center/del.png"
-                mode="scaleToFill"
-              />
+              <image class="icon" src="http://192.168.1.187:10088/static/user-center/del.png" mode="scaleToFill" />
               <view class="_text">取消收藏</view>
             </view>
           </view>
         </view>
         <!-- 视频模块-->
-        <view
-          :data-id="artItem.contId"
-          class="content-noimg nopadding"
-          v-else-if="artItem.artiType === '1'"
-        >
+        <view :data-id="artItem.contId" class="content-noimg nopadding" v-else-if="artItem.artiType === '1'">
           <view>
             <view class="_line">
               <view :class="['top', artItem.topFlag == 1 ? '_color' : '']">
@@ -140,11 +124,7 @@
 
             <view class="audio-center" @click="goVedio()">
               <image class="videoplay" :src="artItem.imgs[0]" mode="scaleToFill" />
-              <image
-                class="play"
-                mode="scaleToFill"
-                src="http://192.168.1.187:10088/static/find/audio2x.png"
-              ></image>
+              <image class="play" mode="scaleToFill" src="http://192.168.1.187:10088/static/find/audio2x.png"></image>
               <!-- <video class="videoplay" @play="saveplay('video'+artItem.contId)"
                 :id="'video'+artItem.contId" :title="artItem.ttl" :src="artItem.mediaUrl"></video> -->
             </view>
@@ -160,11 +140,7 @@
                            <view class="_text">分享</view>
                       </view> -->
             <view class="_item" @click.stop="optionClick(1, artItem, artIndex)">
-              <image
-                class="icon"
-                src="http://192.168.1.187:10088/static/user-center/del.png"
-                mode="scaleToFill"
-              />
+              <image class="icon" src="http://192.168.1.187:10088/static/user-center/del.png" mode="scaleToFill" />
               <view class="_text">取消收藏</view>
             </view>
           </view>
@@ -173,11 +149,7 @@
     </view>
     <block v-if="list.length === 0">
       <view class="pad-top flex-v flex-c-c status-box">
-        <image
-          src="http://192.168.1.187:10088/static/common/status-none2x.png"
-          mode="scaleToFill"
-          class="imgStyle"
-        />
+        <image src="http://192.168.1.187:10088/static/common/status-none2x.png" mode="scaleToFill" class="imgStyle" />
         <view class="flex-c-c status-text">暂无内容</view>
       </view>
     </block>
@@ -191,10 +163,7 @@
         <view class="title fs-36">分享到</view>
         <view class="flex-h list fs-36">
           <button class="item flex-v flex-c-c" open-type="share">
-            <image
-              src="http://192.168.1.187:10088/static/common/icon-wechat.png"
-              mode="scaleToFill"
-            />
+            <image src="http://192.168.1.187:10088/static/common/icon-wechat.png" mode="scaleToFill" />
             <text>微信好友</text>
           </button>
           <!-- #ifdef MP-ALIPAY -->
@@ -203,25 +172,16 @@
             <text>QQ好友</text>
           </button>
           <button class="item flex-v flex-c-c" open-type="share">
-            <image
-              src="http://192.168.1.187:10088/static/common/icon-alipay.png"
-              mode="scaleToFill"
-            />
+            <image src="http://192.168.1.187:10088/static/common/icon-alipay.png" mode="scaleToFill" />
             <text>支付宝好友</text>
           </button>
           <button class="item flex-v flex-c-c" open-type="share">
-            <image
-              src="http://192.168.1.187:10088/static/common/icon-message.png"
-              mode="scaleToFill"
-            />
+            <image src="http://192.168.1.187:10088/static/common/icon-message.png" mode="scaleToFill" />
             <text>短信</text>
           </button>
           <!-- #endif -->
           <button class="item flex-v flex-c-c" @click="handleCopyClick">
-            <image
-              src="http://192.168.1.187:10088/static/common/icon-link.png"
-              mode="scaleToFill"
-            />
+            <image src="http://192.168.1.187:10088/static/common/icon-link.png" mode="scaleToFill" />
             <text>复制链接</text>
           </button>
         </view>
@@ -233,130 +193,130 @@
   </view>
 </template>
 <script>
-import api from '@/apis/index.js'
-import dayjs from 'dayjs'
-export default {
-  props: {
-    list: {
-      type: Array,
-      default: () => []
-    }
-  },
-  data() {
-    return {
-      article_id: '',
-      icons: {
-        0: 'http://192.168.1.187:10088/static/user-center/topicon.png',
-        1: 'http://192.168.1.187:10088/static/user-center/cancel.png'
-      }
-    }
-  },
-  filters: {
-    dateFilter: function (time) {
-      if (!time) return ''
-      return dayjs().format('YYYY-MM-DD')
-    }
-  },
-  onLoad() {},
-  methods: {
-    close() {
-      this.$refs.confirmpop.close()
+  import api from '@/apis/index.js';
+  import dayjs from 'dayjs';
+  export default {
+    props: {
+      list: {
+        type: Array,
+        default: () => [],
+      },
     },
-    // 点击播放
-    saveplay(name) {
-      console.log('点击播放视频：', name)
-      // if (this.current && name != this.current) {
-      //   // console.log('被暂停了')
-      //   this.videoContext = uni.createVideoContext(this.current,this)
-      //    console.log('被暂停了',this.videoContext)
-      //   this.videoContext.pause()
-      // }
+    data() {
+      return {
+        article_id: '',
+        icons: {
+          0: 'http://192.168.1.187:10088/static/user-center/topicon.png',
+          1: 'http://192.168.1.187:10088/static/user-center/cancel.png',
+        },
+      };
     },
-    // 关闭分享
-    handleCloseClick() {
-      this.$refs.popup.close()
+    filters: {
+      dateFilter: function (time) {
+        if (!time) return '';
+        return dayjs().format('YYYY-MM-DD');
+      },
     },
-    // 点击复制链接
-    handleCopyClick() {
-      uni.setClipboardData({
-        data: `/#/discovery/app-detail/` + this.article_id,
-        success: (res) => {
-          console.log(res)
-          uni.getClipboardData({
-            success: (resp) => {
-              this.$refs.popup.close()
-              console.log('resp:', resp)
-              uni.showToast({
-                title: '已复制到剪贴板'
-              })
-            }
-          })
-        }
-      })
-    },
-    /**
+    onLoad() {},
+    methods: {
+      close() {
+        this.$refs.confirmpop.close();
+      },
+      // 点击播放
+      saveplay(name) {
+        console.log('点击播放视频：', name);
+        // if (this.current && name != this.current) {
+        //   // console.log('被暂停了')
+        //   this.videoContext = uni.createVideoContext(this.current,this)
+        //    console.log('被暂停了',this.videoContext)
+        //   this.videoContext.pause()
+        // }
+      },
+      // 关闭分享
+      handleCloseClick() {
+        this.$refs.popup.close();
+      },
+      // 点击复制链接
+      handleCopyClick() {
+        uni.setClipboardData({
+          data: `/#/discovery/app-detail/` + this.article_id,
+          success: (res) => {
+            console.log(res);
+            uni.getClipboardData({
+              success: (resp) => {
+                this.$refs.popup.close();
+                console.log('resp:', resp);
+                uni.showToast({
+                  title: '已复制到剪贴板',
+                });
+              },
+            });
+          },
+        });
+      },
+      /**
        * 文章详情
        */
-    goDetail(item) {
-      const imgs = JSON.stringify(item.imgs)
-      uni.navigateTo({
-        url: `/pages/find/article-detail?contId=` + item.colId + '&imgs=' + imgs
-      })
-    },
-    /**
+      goDetail(item) {
+        const imgs = JSON.stringify(item.imgs);
+        uni.navigateTo({
+          url: `/pages/find/article-detail?contId=` + item.colId + '&imgs=' + imgs,
+        });
+      },
+      /**
        * 视频详情
        */
-    goVedio(item) {
-      this.$refs.confirmpop.open()
-      // uni.navigateTo({ url: `/pages/find/video-list?contId=` + item.colId })
-    },
-    optionClick(type, item, i_id) {
-      this.article_id = item['contId']
-      if (type == 0) {
-        const id = item.contId || ''
-        const topFlag = item.topFlag
-        const flag = { 0: '1', 1: '0' }
-        this.updateByid(id, flag[topFlag], '0', i_id, item, type)
-      } else if (type == 1) {
-        //  取消收藏
-        const id = item['colId'] || ''
-        this.updateByid(id, '0', '1', i_id, item, type)
-      } else {
-        // fengxiang
-        if (!uni.getStorageSync('token')) {
-          uni.navigateTo({
-            url: '/pages/user-center/login'
-          })
-          return
-        }
-        this.$refs.popup.open()
-      }
-    },
-    updateByid(colId, topFlag, delFlag, index, item, type) {
-      const params = {
-        colId: colId,
-        topFlag: topFlag, // 置顶 1 ,0
-        delFlag: delFlag // 取消 1  0
-      }
-      const param = {
-        requestColSingleDTOList: [params]
-      }
-      api.updateCollect({
-        data: param,
-        success: (res) => {
-          console.log('====更新情况--', res)
-          if (res) {
-            this.$emit('fresh', { index: index, item: item, type: type })
-            this.$uni.showToast('操作成功')
+      goVedio(item) {
+        this.$refs.confirmpop.open();
+        // uni.navigateTo({ url: `/pages/find/video-list?contId=` + item.colId })
+      },
+      optionClick(type, item, i_id) {
+        this.article_id = item['contId'];
+        if (type == 0) {
+          const id = item.contId || '';
+          const topFlag = item.topFlag;
+          const flag = { 0: '1', 1: '0' };
+          this.updateByid(id, flag[topFlag], '0', i_id, item, type);
+        } else if (type == 1) {
+          //  取消收藏
+          const id = item['colId'] || '';
+          this.updateByid(id, '0', '1', i_id, item, type);
+        } else {
+          // fengxiang
+          if (!uni.getStorageSync('token')) {
+            uni.navigateTo({
+              url: '/pages/user-center/login',
+            });
+            return;
           }
-        },
-        fail: (erro) => {
-          this.$uni.showToast(erro.message)
+          this.$refs.popup.open();
         }
-      })
-    }
-  }
-}
+      },
+      updateByid(colId, topFlag, delFlag, index, item, type) {
+        const params = {
+          colId: colId,
+          topFlag: topFlag, // 置顶 1 ,0
+          delFlag: delFlag, // 取消 1  0
+        };
+        const param = {
+          requestColSingleDTOList: [params],
+        };
+        api.updateCollect({
+          data: param,
+          success: (res) => {
+            console.log('====更新情况--', res);
+            if (res) {
+              this.$emit('fresh', { index: index, item: item, type: type });
+              this.$uni.showToast('操作成功');
+            }
+          },
+          fail: (erro) => {
+            this.$uni.showToast(erro.message);
+          },
+        });
+      },
+    },
+  };
 </script>
 <style lang="scss" scoped>
   .content {
