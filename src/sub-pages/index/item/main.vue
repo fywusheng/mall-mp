@@ -293,7 +293,7 @@
       return {
         isIphoneHair: App.isIphoneHair,
         showContact: false,
-        sceneType: '', // 场景类型：适老用品、积分兑换
+        // sceneType: '', // 场景类型：适老用品、积分兑换
         productId: '',
         freight: {}, // 运费模版
         product: null,
@@ -361,6 +361,9 @@
       member() {
         return this.userInfo && this.userInfo.memberStatus === '1';
       },
+      sceneType() {
+        return this.product.isCreditPoints === 1 ? '积分兑换' : '商品购买';
+      },
       // 积分抵扣金额
       pointDiscountPoint() {
         return this.member ? this.product.pointDiscountPoint : this.product.registerPoint;
@@ -379,6 +382,7 @@
           },
         });
       },
+
       openMember() {
         uni.navigateTo({ url: '/pages/user-center/activate-member' });
       },
@@ -410,15 +414,7 @@
         });
       },
       toHome() {
-        if (this.sceneType === '适老用品') {
-          uni.navigateTo({
-            url: '/sub-pages/index/index/main',
-          });
-        } else {
-          uni.navigateTo({
-            url: '/sub-pages/point/index/index',
-          });
-        }
+        uni.switchTab({ url: '/pages/index/index' });
       },
       // 门店列表
       async getStoreList() {
@@ -698,7 +694,7 @@
     },
     async onShow() {
       this.productId = this.$scope.options.id;
-      this.sceneType = this.$scope.options.sceneType;
+      // this.sceneType = this.$scope.options.sceneType;
       this.loadData();
     },
   };

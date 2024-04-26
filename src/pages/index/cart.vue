@@ -248,7 +248,7 @@
               src="http://192.168.1.187:10088/static/pay/icon-radio-default.png"
               mode="scaleToFill"
             ></image>
-            <view class="header-title" @click="goStoreDetail(el)">{{ el.storeName }}</view>
+            <view class="header-title" @click="goStoreDetail(el)">{{ showStoreName(el.storeName) }}</view>
             <!-- <image class="icon-right" src="http://192.168.1.187:10088/static/images/cart/icon-right.png" mode="scaleToFill"></image> -->
           </view>
           <view class="panel-body">
@@ -390,6 +390,15 @@
       },
     },
     methods: {
+      showStoreName(name) {
+        if (name === '商品购买') {
+          return uni.getStorageSync('storeInfo').storeName;
+        } else if (name === '积分兑换') {
+          return '积分商城';
+        } else {
+          return name;
+        }
+      },
       formatNumber(num) {
         if (Number.isNaN(parseInt(num))) {
           return '0.00';
@@ -600,9 +609,10 @@
             return item.checked;
           });
       },
-      tolDetail(product) {
+      tolDetail(item) {
+        const sceneType = item.isCreditPoints === 1 ? '积分兑换' : '商品购买';
         uni.navigateTo({
-          url: '/sub-pages/index/item/main?id=' + product.productId + '&sceneType=' + this.sceneType,
+          url: `/sub-pages/index/item/main?id=${item.productId}&sceneType=${sceneType}`,
         });
       },
       deleteItem(product) {
