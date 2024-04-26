@@ -108,11 +108,17 @@
           <image mode="scaleToFill" class="icon" :src="v.mainImgUrl" />
           <image class="icon bgempt" v-if="v.soldOut === 0" src="http://192.168.1.187:10088/static/home/empt.png" />
           <view class="name">{{ v.name }}</view>
-          <!-- <view class="jf">积分抵扣￥{{ v.creditPoints }}</view> -->
+          <!-- 优惠券 -->
+          <view v-if="v.denomination" class="coupon">
+            <view class="label">券</view>
+            <view class="coupon-price">¥{{ v.denomination }}</view>
+          </view>
           <view class="_p">
             <text class="fs-32 label">{{ member ? '会员到手价' : '到手价' }}</text>
             <text>￥{{ member ? v.memberPrice : v.finalPrice }}</text>
           </view>
+
+          <view v-if="v.isCreditPoints == 1" class="jf">积分抵扣￥{{ v.pointDiscountPoint }}</view>
         </view>
       </view>
       <!-- <uni-load-more :status="status" /> -->
@@ -848,6 +854,7 @@
         }
         .name {
           // height: 85rpx;
+          word-break: break-all;
           font-size: 36rpx;
           font-family: PingFangSC-Regular, PingFang SC;
           font-weight: 400;
@@ -874,7 +881,7 @@
           font-family: PingFangSC-Regular, PingFang SC;
           font-weight: 400;
           color: #ff2600;
-          margin-top: 50rpx;
+          margin-top: 12rpx;
           line-height: 48rpx;
           padding-left: 10rpx;
           overflow: hidden;
@@ -895,14 +902,44 @@
           display: flex;
           height: 50rpx;
           line-height: 50rpx;
-          .label {
-            margin-left: 8rpx;
-          }
+          // .label {
+          //   // margin-left: 8rpx;
+          // }
           .getPrice {
             font-size: 28rpx;
             font-family: PingFangSC-Medium, PingFang SC;
             font-weight: 500;
             color: #ff5500;
+          }
+        }
+        .coupon {
+          display: flex;
+          align-items: center;
+          height: 48rpx;
+          width: fit-content;
+          border-radius: 4rpx;
+          border: 2rpx solid #ff2600;
+          font-family: PingFangSC, PingFang SC;
+          font-weight: 400;
+          font-size: 32rpx;
+          margin-left: 18rpx;
+          margin-top: 12rpx;
+          .label {
+            width: 48rpx;
+            height: 48rpx;
+            line-height: 48rpx;
+            text-align: center;
+            background: #ff2600;
+            border-radius: 4rpx 0rpx 0rpx 4rpx;
+            border: 2rpx solid #ff2600;
+            color: #ffffff;
+          }
+          .coupon-price {
+            padding: 0 8rpx;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #ff2600;
           }
         }
       }
