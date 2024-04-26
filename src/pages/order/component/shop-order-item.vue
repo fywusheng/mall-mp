@@ -109,6 +109,7 @@
       },
       // 店铺详情
       goStoreDetail(item) {
+        return;
         uni.navigateTo({ url: '/sub-pages/index/store/main?supplierId=' + item.storeId });
       },
       logistics(order) {

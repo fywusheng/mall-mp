@@ -28,7 +28,7 @@
           <!-- <view v-if="userInfo.memberStatus === '0'">开通商城会员 尊享会员权益</view> -->
         </view>
         <view class="fs-30 time-wrapper">
-          <view v-if="userInfo.memberStatus === '0'" @click="goOpenMember">开通商城会员 尊享会员权益</view>
+          <!-- <view v-if="userInfo.memberStatus === '0'" @click="goOpenMember">开通商城会员 尊享会员权益</view> -->
           <view v-if="userInfo.memberStatus === '1'" class="end-time">
             {{ expirationTime }}
             会员到期
