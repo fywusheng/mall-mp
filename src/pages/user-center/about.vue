@@ -16,39 +16,38 @@
 </template>
 
 <script>
-export default {
-  data() {
-    return {
-      version: ENV.VERSION
-    }
-  },
+  export default {
+    data() {
+      return {
+        version: ENV.VERSION,
+      };
+    },
 
-  methods: {
-    /**
+    methods: {
+      /**
        * 用户协议点击事件
        */
-    handleUserAgreementClick() {
-      const url = `${ENV.H5}/#/agreement?type=0`
-      uni.navigateTo({
-        url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
-      })
-    },
-    /**
+      handleUserAgreementClick() {
+        const url = `${ENV.H5}/#/agreement?type=0`;
+        uni.navigateTo({
+          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
+        });
+      },
+      /**
        * 隐私协议点击事件
        */
-    handlePrivacyPolicyClick() {
-      const url = `${ENV.H5}/#/agreement?type=1`
-      uni.navigateTo({
-        url: `/pages/common/webpage?url=${encodeURIComponent(url)}`
-      })
-    }
-  }
-}
+      handlePrivacyPolicyClick() {
+        const url = `${ENV.H5}/#/agreement?type=1`;
+        uni.navigateTo({
+          url: `/pages/common/webpage?url=${encodeURIComponent(url)}`,
+        });
+      },
+    },
+  };
 </script>
 
 <style lang="scss" scoped>
   .about {
-    width: 59%;
     margin: 0 auto;
     overflow: hidden;
     .logon {
@@ -76,14 +75,15 @@ export default {
       font-weight: 400;
       color: #333333;
       line-height: 56rpx;
-      margin-bottom: 89%;
+      margin-bottom: 545rpx;
       text-align: center;
       margin-top: 44rpx;
     }
     .bottom {
       .xieyi {
         display: flex;
-        justify-content: space-around;
+        justify-content: center;
+        align-items: center;
         .user {
           font-size: 36rpx;
           font-family: PingFangSC-Regular, PingFang SC;
