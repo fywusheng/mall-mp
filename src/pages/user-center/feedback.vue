@@ -36,10 +36,10 @@
     </view>
     <view class="section bg-white">
       <section-header title="联系方式">
-        <input v-model="contact" class="input fs-40 c-black" placeholder="请输入" placeholder-class="placeholder" />
+        <input v-model="contact" :disabled="true" class="input fs-40 c-black" placeholder="请输入" placeholder-class="placeholder" />
       </section-header>
     </view>
-    <view class="tips fs-36 c-lightgrey">请留下您的联系方式(微信号/QQ/邮箱)，反馈的相关问题我们会第一时间为您解答。</view>
+    <!-- <view class="tips fs-36 c-lightgrey">请留下您的联系方式(微信号/QQ/邮箱)，反馈的相关问题我们会第一时间为您解答。</view> -->
     <button class="submit-button fs-44 c-white" @click="handleSubmitClick">提交</button>
   </view>
 </template>
@@ -181,6 +181,8 @@
             prbDscr: this.content,
             img: this.images.join(','),
             crterMob: this.contact,
+            crterName: uni.getStorageSync('userInfo').name,
+            crterId: uni.getStorageSync('userInfo').memberId,
           },
           success: (data) => {
             this.$uni.showToast('提交成功');

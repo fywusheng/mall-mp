@@ -1031,6 +1031,14 @@
           this.empty = true;
         }
       },
+      // 获取门店信息
+      async handleStoreNoChange() {
+        const params = { queryObject: { storeNo: this.userInfo.storeNo } };
+        const result = await Axios.post('/srm/sh/stores/listByPageNo', params);
+        if (result.code == 200 && result.data.list.length) {
+          uni.setStorageSync('storeInfo', result.data.list[0]);
+        }
+      },
     },
     onReachBottom() {
       this.searchData();
@@ -1049,6 +1057,7 @@
       this.pageNo = 1;
       this.disabled = false;
       this.itemList = [];
+      await this.handleStoreNoChange();
       await this.loadData();
     },
   };

@@ -647,21 +647,23 @@
           border-radius: 16rpx;
         }
         .text {
-          height: 100rpx;
+          height: 66rpx;
           font-size: 36rpx;
+          text-align: center;
           font-family: PingFangSC-Regular, PingFang SC;
           font-weight: 400;
           color: #333333;
           line-height: 50rpx;
-          width: 296rpx;
+          width: 310rpx;
           margin: 0 auto;
+          padding-top: 16rpx;
           margin-bottom: 18rpx;
           overflow: hidden;
           text-overflow: ellipsis;
           display: -webkit-box;
           word-wrap: break-word;
           white-space: normal !important;
-          -webkit-line-clamp: 2;
+          -webkit-line-clamp: 1;
           -webkit-box-orient: vertical;
         }
         .play {

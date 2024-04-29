@@ -62,7 +62,7 @@ export default {
     },
     // 退出登录
     logout(ctx) {
-      ['token', 'userInfo', 'sessionId'].forEach((key) => {
+      ['token', 'userInfo', 'sessionId','storeInfo'].forEach((key) => {
         uni.removeStorageSync(key)
       })
       ctx.commit('logout')
