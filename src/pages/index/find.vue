@@ -258,6 +258,7 @@
           cityCodg: this.city.code || null,
           pageNum: item.pageNum,
           pageSize: item.pageSize,
+          userId: uni.getStorageSync('userInfo').memberId,
         };
 
         api.selectArtiListByColId({

@@ -133,7 +133,7 @@
       getContById() {
         let userId = '';
         if (uni.getStorageSync('userInfo')) {
-          userId = uni.getStorageSync('userInfo').uactId;
+          userId = uni.getStorageSync('userInfo').memberId;
         }
         const data = {
           contId: this.contId,

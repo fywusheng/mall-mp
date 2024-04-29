@@ -265,6 +265,7 @@
           cityCodg: this.city.code || null,
           pageNum: item.pageNum,
           pageSize: item.pageSize,
+          userId: '1' || uni.getStorageSync('userInfo').memberId,
         };
 
         api.selectArtiListByColId({
@@ -392,6 +393,7 @@
           cityCodg: this.city.code || null,
           pageNum: this.list[currentIndex].pageNum + 1,
           pageSize: this.list[currentIndex].pageSize,
+          userId: '1' || uni.getStorageSync('userInfo').memberId,
         };
         return new Promise((resolve, reject) => {
           api.selectArtiListByColId({
