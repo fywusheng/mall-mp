@@ -41,9 +41,9 @@
             >
               <!-- 插入自己的数据-->
               <view class="swiper-bg"></view>
-              <view class="content" :class="[item.colName === '小视频' ? 'small-video' : '']">
+              <view class="content" :class="[item.colName === '健康视频' ? 'small-video' : '']">
                 <!-- 置顶模块 -->
-                <view v-if="clickTab_id !== '9' && clickTab_id !== '10'">
+                <view v-if="clickTab_id !== '9' && clickTab_id !== '10' && item.colName !== '健康视频'">
                   <view
                     class="content-top"
                     v-for="(topItem, topIndex) in item.topList"
@@ -177,23 +177,24 @@
                     </view>
                   </view>
                   <!-- 视频模块 小视频-->
-                  <view
+                  <!-- <view
                     class="item"
                     @click="goSmallVedio($event, index, artIndex)"
                     :data-id="artItem.contId"
                     v-if="artItem.artiType === '1' && artItem.contFlag === '1'"
-                  >
+                  > -->
+                  <view class="item" @click="goSmallVedio($event, index, artIndex)" :data-id="artItem.contId" v-if="artItem.artiType === '1'">
                     <image mode="scaleToFill" :src="artItem.imgs[0]" class="top_img" />
                     <view class="text" :class="playIndex == artItem.contId ? 'play' : ''">
                       {{ artItem.ttl }}
                     </view>
-                    <view class="bottom">
+                    <!-- <view class="bottom">
                       <image mode="scaleToFill" class="left_icon" :src="artItem.logoUrl" />
                       <view class="des">{{ artItem.categoryName }}</view>
-                    </view>
+                    </view> -->
                   </view>
                   <!-- 视频模块 怀旧剧场-->
-                  <view
+                  <!-- <view
                     @click="goVedio($event, index, artIndex)"
                     :data-id="artItem.contId"
                     class="content-noimg"
@@ -213,11 +214,11 @@
                     </view>
                     <view class="noimg-bottom">
                       <view class="left">
-                        <!-- <text class="left-time">{{artItem.releasedTime}}</text> -->
+                        <text class="left-time">{{artItem.releasedTime}}</text>
                         <text class="left-number">{{ artItem.clikCnt }}人在看</text>
                       </view>
                     </view>
-                  </view>
+                  </view> -->
                 </block>
                 <block v-if="item.content.length === 0 && item.topList.length === 0">
                   <view class="flex-v flex-c-c status-box">
@@ -654,6 +655,7 @@
           line-height: 50rpx;
           width: 296rpx;
           margin: 0 auto;
+          margin-bottom: 18rpx;
           overflow: hidden;
           text-overflow: ellipsis;
           display: -webkit-box;

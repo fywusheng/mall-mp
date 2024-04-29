@@ -397,9 +397,7 @@
     },
     methods: {
       showStoreName(name) {
-        if (name === '商品购买') {
-          return uni.getStorageSync('storeInfo').storeName;
-        } else if (name === '积分兑换') {
+        if (name === '积分兑换') {
           return '积分商城';
         } else {
           return name;

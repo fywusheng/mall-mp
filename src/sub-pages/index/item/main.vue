@@ -118,7 +118,7 @@
             </view>
           </view>
           <!-- 商品购买计算 -->
-          <view v-if="sceneType === '商品购买'" class="getPrice">
+          <view v-if="sceneType === '商品购买' && ((member && product.discountAmount) || (!member && product.couponAmount))" class="getPrice">
             <img class="collected" src="http://192.168.1.187:10088/static/home/getP.png" />
             <view class="flex_line">
               <view class="item">
@@ -156,7 +156,8 @@
           <view class="wuliu-info">
             <text class="m-r-24">发货地</text>
             <text class="m-r-24">
-              {{ supplierDTO ? supplierDTO.actualCityName : '' }}
+              <text>{{ product.deliveryRegion }}</text>
+              <!-- {{ supplierDTO ? supplierDTO.actualCityName : '' }} -->
               <!-- {{ product.deliveryRegion }} 预计
               <template v-if="product.deliveryMinDays < product.deliveryMaxDays">
                 {{ product.deliveryMinDays }}-{{ product.deliveryMaxDays }}

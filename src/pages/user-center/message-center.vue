@@ -2,11 +2,7 @@
   <view class="message-center">
     <view class="list" v-if="info.systemNotice">
       <view class="item flex-h flex-c-b p-0-32 bg-white" @click="handleItemClick(0)">
-        <image
-          class="icon"
-          mode="scaleToFill"
-          src="http://192.168.1.187:10088/static/user-center/icon-user-center-announcement.png"
-        />
+        <image class="icon" mode="scaleToFill" src="http://192.168.1.187:10088/static/user-center/icon-user-center-announcement.png" />
         <view class="info flex-v m-0-32 flex-1">
           <text class="fs-36 c-black">
             {{ info.systemNotice.msgTypeName }}
@@ -18,18 +14,10 @@
         <text v-if="info.systemNotice.nreadCnt" class="unread fs-32 c-white">
           {{ info.systemNotice.nreadCnt }}
         </text>
-        <image
-          class="accessory"
-          mode="scaleToFill"
-          src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png"
-        />
+        <image class="accessory" mode="scaleToFill" src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png" />
       </view>
-      <view class="item flex-h flex-c-b p-0-32 bg-white" @click="handleItemClick(1)">
-        <image
-          class="icon"
-          mode="scaleToFill"
-          src="http://192.168.1.187:10088/static/user-center/icon-user-center-service-message.png"
-        />
+      <!-- <view class="item flex-h flex-c-b p-0-32 bg-white" @click="handleItemClick(1)">
+        <image class="icon" mode="scaleToFill" src="http://192.168.1.187:10088/static/user-center/icon-user-center-service-message.png" />
         <view class="info flex-v m-0-32 flex-1">
           <text class="fs-36 c-black">
             {{ info.serviceMessage.msgTypeName }}
@@ -41,18 +29,10 @@
         <text v-if="info.serviceMessage.nreadCnt" class="unread fs-32 c-white">
           {{ info.serviceMessage.nreadCnt }}
         </text>
-        <image
-          class="accessory"
-          mode="scaleToFill"
-          src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png"
-        />
-      </view>
+        <image class="accessory" mode="scaleToFill" src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png" />
+      </view> -->
       <view class="item flex-h flex-c-b p-0-32 bg-white" @click="handleItemClick(2)">
-        <image
-          class="icon"
-          mode="scaleToFill"
-          src="http://192.168.1.187:10088/static/user-center/icon-user-center-system-notice.png"
-        />
+        <image class="icon" mode="scaleToFill" src="http://192.168.1.187:10088/static/user-center/icon-user-center-system-notice.png" />
         <view class="info flex-v m-0-32 flex-1">
           <text class="fs-36 c-black">
             {{ info.systemMessage.msgTypeName }}
@@ -64,66 +44,58 @@
         <text v-if="info.systemMessage.nreadCnt" class="unread fs-32 c-white">
           {{ info.systemMessage.nreadCnt }}
         </text>
-        <image
-          class="accessory"
-          mode="scaleToFill"
-          src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png"
-        />
+        <image class="accessory" mode="scaleToFill" src="http://192.168.1.187:10088/static/common/icon-common-arrow-rightward-grey.png" />
       </view>
     </view>
   </view>
 </template>
 
 <script>
-import api from '@/apis/index.js'
-export default {
-  data() {
-    return {
-      // 最新消息
-      info: {}
-    }
-  },
-  onShow() {
-    this.requestData()
-
-    uni.$on('didMessageStateChanged', this.requestData)
-  },
-  onUnload() {
-    uni.$off('didMessageStateChanged')
-  },
-  methods: {
-    handleItemClick(index) {
-      // if (index === 0 && !this.info.systemNotice.latestMsgTime) return;
-      // if (index === 1 && !this.info.serviceMessage.latestMsgTime) return;
-      // if (index === 2 && !this.info.systemMessage.latestMsgTime) return;
-      const titles = [
-        this.info.systemNotice.msgTypeName,
-        this.info.serviceMessage.msgTypeName,
-        this.info.systemMessage.msgTypeName
-      ]
-      const types = [3, 1, 2]
-      uni.navigateTo({
-        url: '/pages/user-center/message-list',
-        success: (res) => {
-          res.eventChannel.emit('didOpenPageFinish', {
-            title: titles[index],
-            type: types[index]
-          })
-        }
-      })
+  import api from '@/apis/index.js';
+  export default {
+    data() {
+      return {
+        // 最新消息
+        info: {},
+      };
     },
-    /**
+    onShow() {
+      this.requestData();
+
+      uni.$on('didMessageStateChanged', this.requestData);
+    },
+    onUnload() {
+      uni.$off('didMessageStateChanged');
+    },
+    methods: {
+      handleItemClick(index) {
+        // if (index === 0 && !this.info.systemNotice.latestMsgTime) return;
+        // if (index === 1 && !this.info.serviceMessage.latestMsgTime) return;
+        // if (index === 2 && !this.info.systemMessage.latestMsgTime) return;
+        const titles = [this.info.systemNotice.msgTypeName, this.info.serviceMessage.msgTypeName, this.info.systemMessage.msgTypeName];
+        const types = [3, 1, 2];
+        uni.navigateTo({
+          url: '/pages/user-center/message-list',
+          success: (res) => {
+            res.eventChannel.emit('didOpenPageFinish', {
+              title: titles[index],
+              type: types[index],
+            });
+          },
+        });
+      },
+      /**
        * 请求数据
        */
-    requestData() {
-      api.getMessageInfo({
-        success: (data) => {
-          this.info = data || {}
-        }
-      })
-    }
-  }
-}
+      requestData() {
+        api.getMessageInfo({
+          success: (data) => {
+            this.info = data || {};
+          },
+        });
+      },
+    },
+  };
 </script>
 
 <style lang="scss" scoped>

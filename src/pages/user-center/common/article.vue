@@ -122,7 +122,7 @@
             </view>
             <view class="audio-title">{{ artItem.ttl }}</view>
 
-            <view class="audio-center" @click="goVedio()">
+            <view class="audio-center" @click="goVedio(artItem)">
               <image class="videoplay" :src="artItem.imgs[0]" mode="scaleToFill" />
               <image class="play" mode="scaleToFill" src="http://192.168.1.187:10088/static/find/audio2x.png"></image>
               <!-- <video class="videoplay" @play="saveplay('video'+artItem.contId)"
@@ -266,8 +266,12 @@
       /**
        * 视频详情
        */
-      goVedio(item) {
-        this.$refs.confirmpop.open();
+      goVedio(data) {
+        console.log(data);
+        // this.$refs.confirmpop.open();
+        uni.navigateTo({
+          url: '/pages/find/video-swiper?transInfor=' + `${encodeURIComponent(JSON.stringify(data))}`,
+        });
         // uni.navigateTo({ url: `/pages/find/video-list?contId=` + item.colId })
       },
       optionClick(type, item, i_id) {

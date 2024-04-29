@@ -4,8 +4,8 @@
     <navigation-bars :alpha="0" :backgroundColor="'linear-gradient(270deg, #FF5121 0%, #FF692D 60%, #FF7936 100%);'">
       <template v-slot:title1>
         <view class="navigation-bar flex-h flex-c-s">
-          <image class="image" src="http://192.168.1.187:10088/static/songhui/common/logo.jpg" mode="scaleToFill" />
-          <text class="navigation-bar__title fs-32 c-white flex-1">松辉云康｜国家老龄服务中心</text>
+          <image class="image" src="http://192.168.1.187:10088/static/songhui/common/logo.png" mode="scaleToFill" />
+          <text class="navigation-bar__title fs-32 c-white flex-1">松辉云康｜国家老龄服务平台</text>
         </view>
       </template>
     </navigation-bars>
@@ -106,6 +106,7 @@
       <view class="recommed">
         <view class="_block" v-for="(v, i) in prodList" :key="i" @click="goItemClick(v)">
           <image mode="scaleToFill" class="icon" :src="v.mainImgUrl" />
+          <view class="icon-block"></view>
           <image class="icon bgempt" v-if="v.soldOut === 0" src="http://192.168.1.187:10088/static/home/empt.png" />
           <view class="name">{{ v.name }}</view>
           <!-- 优惠券 -->
@@ -277,7 +278,6 @@
       async recommend1(flag) {
         const params = { productType: flag };
         const list = await Axios.post('/product/getProductListByType', params);
-        console.log('list: ', list);
         if (list.code == '200') {
           this.prodList = list.data || [];
         } else {
@@ -842,10 +842,19 @@
         width: 332rpx;
         margin-bottom: 25rpx;
         position: relative;
-        .icon {
-          width: 332rpx;
+        border: 4rpx solid #e5d6b6;
+        overflow: hidden;
+        padding-bottom: 24rpx;
+        .icon-block {
+          width: 326rpx;
           height: 340rpx;
-          border-radius: 16rpx;
+        }
+        .icon {
+          width: 326rpx;
+          height: 340rpx;
+          position: absolute;
+          top: 0;
+          left: 0;
           &.bgempt {
             position: absolute;
             top: 0;

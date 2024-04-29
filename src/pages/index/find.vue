@@ -4,7 +4,7 @@
     <navigation-bar :alpha="0" statusBackGround="linear-gradient(270deg, #FF5121 0%, #FF692D 60%, #FF7936 100%)">
       <view slot="title1">
         <view class="navigation-bar flex-h flex-c-s">
-          <image class="image" src="http://192.168.1.187:10088/static/songhui/common/logo.jpg" mode="scaleToFill" />
+          <image class="image" src="http://192.168.1.187:10088/static/songhui/common/logo.png" mode="scaleToFill" />
           <text class="navigation-bar__title fs-32 c-white flex-1">松辉医疗 | 国家老龄服务平台</text>
         </view>
       </view>
