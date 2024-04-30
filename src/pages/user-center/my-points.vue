@@ -173,6 +173,7 @@
           success: () => {
             this.$uni.showToast('您已获得生日积分');
             this.getUserTaskInfoByPage();
+            this.handleScoreInfo();
           },
         });
       },

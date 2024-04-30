@@ -631,20 +631,16 @@
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
-      // margin-top: 22rpx;
       padding: 24rpx;
       .item {
-        // width: 336rpx;
         background: #ffffff;
         border-radius: 16rpx;
         border: 4rpx solid #e5d6b6;
         margin-bottom: 15rpx;
-        // margin-top: 24rpx;
-        // margin-left: 21rpx;
+        overflow: hidden;
         .top_img {
           width: 338rpx;
           height: 336rpx;
-          border-radius: 16rpx;
         }
         .text {
           height: 66rpx;
