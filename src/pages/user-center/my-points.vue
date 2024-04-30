@@ -140,7 +140,7 @@
       },
 
       selectUrl(item) {
-        if (item.hasComplete) {
+        if (item.hasComplete === '1') {
           return false;
         }
         switch (item.taskDscr) {
@@ -154,31 +154,11 @@
             uni.switchTab({ url: '/pages/index/index' });
             break;
           case '生日祝福':
-            if (this.isTodayBirthday(this.extractBirthday(this.userInfo.idCard))) {
-              this.addPoint();
-            }
+            this.addPoint();
             break;
           default:
             break;
         }
-      },
-      // 根据身份证号提取生日
-      extractBirthday(idCard) {
-        var birthday = '';
-        if (idCard != null && idCard != '') {
-          if (idCard.length == 15) {
-            birthday = '19' + idCard.substr(6, 6);
-          } else if (idCard.length == 18) {
-            birthday = idCard.substr(6, 8);
-          }
-          birthday = birthday.replace(/(.{4})(.{2})/, '$1-$2-');
-        }
-        return birthday;
-      },
-      isTodayBirthday(birthday) {
-        var today = new Date();
-        var birthDate = new Date(birthday.replace(/-/g, '/'));
-        return today.getMonth() === birthDate.getMonth() && today.getDate() === birthDate.getDate();
       },
       // 分享增加积分
       addPoint() {
@@ -192,6 +172,7 @@
           },
           success: () => {
             this.$uni.showToast('您已获得生日积分');
+            this.getUserTaskInfoByPage();
           },
         });
       },
