@@ -52,6 +52,7 @@
         right: rpx(30);
         font-size: rpx(36);
         font-weight: 400;
+        z-index: 10;
       }
     }
 
@@ -136,7 +137,6 @@
 <template>
   <div class="page-search">
     <div class="search-header">
-      <!-- <img class="icon-search" src="http://192.168.1.187:10088/static/images/common/icon-search.png" /> -->
       <input ref="searchInput" placeholder="搜索商品" confirm-type="search" :adjust-position="false" @confirm="search('')" v-model="key" />
       <div class="btn-clear" @click="search('')">搜索</div>
     </div>
