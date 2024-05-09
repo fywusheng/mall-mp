@@ -365,12 +365,9 @@
           color: #ff5500;
           margin-left: 16rpx;
           .jf {
-            width: 217rpx;
             margin-top: 10rpx;
             margin-bottom: 18rpx;
-            height: 48rpx;
             font-size: 28rpx;
-            font-family: PingFangSC-Regular, PingFang SC;
             font-weight: 400;
             color: #ff2600;
             border-radius: 4rpx;
@@ -378,7 +375,7 @@
             padding: 4rpx;
             overflow: hidden;
             text-overflow: ellipsis;
-            display: -webkit-box;
+            display: inline-block;
             word-wrap: break-word;
             white-space: normal !important;
             -webkit-line-clamp: 1;
