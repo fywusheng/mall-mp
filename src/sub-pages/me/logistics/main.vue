@@ -1,37 +1,24 @@
 <template>
-  <div class="page-logistics-info">
-    <ul class="info-list" v-for="item in orderExpressModel" :key="item.id">
-      <li class="info">快递公司: {{ item.expressProviderName }}</li>
-      <li class="info">快递单号: {{ item.trackingNumber }}</li>
-    </ul>
-    <ul class="trace-list">
-      <!-- <li class="trace" :key="index" v-for="(senderInfo, index) in logistics.traceList">
-        <div class="line"></div>
-        {{ senderInfo.acceptTime }} {{ senderInfo.acceptStation }}
-      </li> -->
-      <!-- <uni-section title="纵向排列" type="line" padding> -->
-      <log-steps :stepData="logistics.traceList" colors="#007AFF" />
-      <!-- </uni-section> -->
-      <!-- <template v-if="logistics.senderInfoList">
-        <li class="trace" :key="index" v-for="(senderInfo, index) in logistics.senderInfoList">
-          <div class="line"></div>
-          您的包裹正在派件,快递员({{ senderInfo.personName }}),电话({{ senderInfo.personTel }})
-        </li>
-      </template>
-      <template v-if="logistics.traceList">
-        <li class="trace" :key="index" v-for="(trace, index) in logistics.traceList">
-          <div class="line"></div>
-          您的包裹到达({{ trace.acceptStation }}),时间({{ senderInfo.acceptTime }})
-        </li>
-      </template>
-      <template v-if="logistics.pickerInfoList">
-        <li class="trace" :key="index" v-for="(pickerInfo, index) in logistics.pickerInfoList">
-          <div class="line"></div>
-          您的包裹正在等待收件,网点({{ pickerInfo.stationName }}),收件员({{ pickerInfo.personName }}),电话({{ pickerInfo.personTel }})
-        </li>
-      </template> -->
-    </ul>
-  </div>
+  <view class="page-logistics-info">
+    <view class="info-list">
+      <image
+        class="icon"
+        src="http://192.168.1.187:10088/static/songhui/common/logistics-icon.png"
+        mode="scaleToFill"
+      />
+      <view class="right">
+        <view class="info">快递公司: {{ orderExpressModel.expressProviderName }}</view>
+        <view class="r-b">
+          <view class="info">物流单号: {{ orderExpressModel.trackingNumber }} </view>
+          <view class="copy" @click="handleClickCopy">复制</view>
+         </view>
+      </view>
+     
+    </view>
+    <view class="trace-list">
+      <log-steps :stepData="logistics.traceList" colors="#303133" />
+    </view>
+  </view>
 </template>
 
 <script>
@@ -42,69 +29,52 @@
     },
     data() {
       return {
-        active: 0,
-        orderExpressModel: [],
+        orderExpressModel: {
+          expressProviderName: '',
+          trackingNumber: '',
+        },
         logistics: {
-          pickerInfoList: [],
-          senderInfoList: [],
           traceList: [],
         },
       };
     },
     methods: {
-      // async loadData() {
-      //   wx.showLoading({ title: '正在获取数据...', mask: true })
-      //   const orderResult = await wx.request({
-      //     data: {
-      //       method: 'order.show',
-      //       orderId: this.id
-      //     }
-      //   })
-      //   wx.hideLoading()
-      //   if (orderResult.result.result != 1) {
-      //     wx.showToast({
-      //       title: orderResult.result.message,
-      //       icon: 'none'
-      //     })
-      //     return false
-      //   }
-      //   if (orderResult.data.orderExpressModels && orderResult.data.orderExpressModels.length) {
-      //     this.orderExpressModel = orderResult.data.orderExpressModels[0]
-      //     const result = await wx.request({
-      //       method: 'express.query',
-      //       logisticCode: this.orderExpressModel.oddNumber,
-      //       shipperCode: this.orderExpressModel.expressSign,
-      //       orderId: this.id
-      //     })
-      //     if (result.result.result == 1) {
-      //       this.logistics = result.data || {}
-      //     } else {
-      //       wx.showToast({
-      //         title: result.result.message,
-      //         icon: 'none'
-      //       })
-      //     }
-      //   }
-      // }
+      handleClickCopy() {
+        uni.setClipboardData({
+          data: this.orderExpressModel.trackingNumber,
+          success: (res) => {
+            uni.getClipboardData({
+              success: (resp) => {
+                console.log('resp:', resp);
+                uni.showToast({
+                  title: '已复制到剪贴板',
+                });
+              },
+            });
+          },
+        });
+      },
       async loadData() {
         this.loading = true;
         uni.showLoading();
         const result = await Axios.post('/express/getKdnExpress', {
           orderNo: this.id,
-          shipperCode: 'ZTO', // 测试用
-          logisticCode: '78414469979642', // 测试用
+          // shipperCode: 'ZTO', // 测试用
+          // logisticCode: '78414469979642', // 测试用
         });
         uni.hideLoading();
         this.loading = false;
         if (result.code == 200) {
-          result.data.Traces.forEach((e) => {
-            e.isNow = 0;
+          result.data.Traces.reverse()
+          result.data.Traces.forEach((e, index) => {
+            e.isNow = index ===0?1:0;
             e.type = 1;
             e.name = e.acceptStation;
             e.time = e.acceptTime;
           });
-          // this.active = result.data.Traces.length - 1;
-          this.logistics.traceList = result.data.Traces.reverse();
+          this.logistics.traceList = result.data.Traces;
+          this.orderExpressModel.expressProviderName = result.data.companyName
+          this.orderExpressModel.trackingNumber = result.data.LogisticCode
         } else {
           uni.showToast(result.result.message);
         }
@@ -125,43 +95,88 @@
 
 <style lang="scss">
   .page-logistics-info {
+    padding: 16rpx 0;
+    background: #F9F9F9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     .info-list {
-      padding-left: 30rpx;
-      padding-right: 30rpx;
-      border-bottom: 1rpx solid #f2f2f2;
+      width: 702rpx;
+      height: 160rpx;
+      background: #FFFFFF;
+      border-radius: 16rpx;
+      margin-bottom: 24rpx;
+      background-image: url('http://192.168.1.187:10088/static/songhui/common/logistics-bg.png');
+      background-size: 100% 100%;
+      display: flex;
+      align-items: center;
+      // justify-content: space-between;
+      padding: 28rpx 32rpx;
+      .icon {
+        width: 104rpx;
+        height: 104rpx;
+        margin-right: 24rpx;
+      }
+      .right {
+        height: 104rpx;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        .r-b {
+          display: flex;
+          align-items: center;
+          .info {
+            height: 34rpx;
+            font-family: PingFangSC, PingFang SC;
+            font-weight: 400;
+            font-size: 24rpx;
+            color: #939099;
+            line-height: 34rpx;
+            font-style: normal;
+            margin-right: 32rpx;
+          }
+          .copy{
+            width: 80rpx;
+            height: 38rpx;
+            border-radius: 19rpx;
+            border: 1rpx solid #FF5500;
+            font-family: PingFangSC, PingFang SC;
+            font-weight: 400;
+            font-size: 24rpx;
+            color: #FF5500;
+            line-height: 38rpx;
+            text-align: center;
+            font-style: normal;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+      }
       .info {
-        padding-top: 30rpx;
-        padding-bottom: 30rpx;
+        height: 44rpx;
+        font-family: PingFangSC, PingFang SC;
+        font-weight: 500;
+        font-size: 32rpx;
+        color: #303133;
+        line-height: 44rpx;
+        font-style: normal;
         font-size: 36rpx;
         color: #333;
       }
     }
     .trace-list {
+      width: 702rpx;
+      background: #FFFFFF;
+      border-radius: 16rpx;
+      border: 2rpx solid #FFFFFF;
       .trace {
         position: relative;
         padding-left: 30rpx;
         padding-top: 30rpx;
         font-size: 32rpx;
         color: #333;
-        // &:after {
-        //   content: '';
-        //   left: 0;
-        //   bottom: 4rpx;
-        //   position: absolute;
-        //   width: 10rpx;
-        //   height: 10rpx;
-        //   background-color: #a8b2ba;
-        //   border-radius: 50%;
-        // }
-        // &:first-child {
-        //   color: #333;
-        //   &:after {
-        //     background-color: #fff;
-        //   }
-        //   .line {
-        //     top: 38rpx;
-        //   }
-        // }
         .line {
           position: absolute;
           left: 5rpx;
