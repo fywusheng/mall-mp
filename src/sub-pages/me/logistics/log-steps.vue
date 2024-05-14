@@ -8,10 +8,10 @@
         <view class="right_content" v-for="(item, index) in stepData" :key="index">
           <!-- 进度名称 -->
           <block v-if="item.isNow == 0">
-            <p class="title"  :style="{ color: item.type == 1 ? '#909399' : '#999' }">{{ item.name }}</p>
+            <p class="title" :style="{ color: item.type == 1 ? '#909399' : '#999' }">{{ item.name }}</p>
           </block>
           <block v-if="item.isNow == 1">
-            <p class="title" :style="{ color: item.type == 1 ? colors : '#999' ,fontWeight: 'bold', fontSize: '28rpx' }">{{ item.name }}</p>
+            <p class="title" :style="{ color: item.type == 1 ? colors : '#999', fontWeight: 'bold', fontSize: '28rpx' }">{{ item.name }}</p>
           </block>
           <!-- 进度时间 -->
           <p class="times" v-if="item.type == 1" :style="{ color: item.isNow == 1 ? colors : '#909399' }">{{ item.time }}</p>
@@ -20,9 +20,15 @@
             <text style="color: #202020">{{ item.desc }}</text>
           </p>
           <!-- 右侧的进度点 -->
-          <p class="status" :class="item.isNow == 1 ? 'active' : ''" :style="{ background: item.isNow == 1 ? '#FF5500' : '#ccc', borderColor: item.isNow == 1 ? '#FF5500' : '#ccc' }">
+          <p
+            v-if="item.isNow == 0"
+            class="status"
+            :class="item.isNow == 1 ? 'active' : ''"
+            :style="{ background: item.isNow == 1 ? '#FF5500' : '#ccc', borderColor: item.isNow == 1 ? '#FF5500' : '#ccc' }"
+          >
             {{ item.isNow == 1 ? '✓' : '' }}
           </p>
+          <image v-else class="status active" src="http://192.168.1.187:10088/static/pay/icon-radio-checked.png" mode="scaleToFill" />
         </view>
       </view>
     </view>
@@ -69,7 +75,7 @@
     }
 
     .step_right {
-      margin-left: 20upx;
+      margin-left: 30upx;
       margin-top: -10upx;
 
       .right_content {
@@ -99,7 +105,7 @@
           position: absolute;
           top: 10upx;
           background-color: #ccc;
-          left: -26rpx;
+          left: -36rpx;
           color: white;
           line-height: 12px;
           font-size: 10px;
@@ -111,7 +117,11 @@
             justify-content: center;
             align-items: center;
             font-size: 28rpx;
-            left: -37rpx;
+            left: -47rpx;
+            border: none;
+            background-color: unset;
+            border-radius: unset;
+            top: 2rpx;
           }
         }
 

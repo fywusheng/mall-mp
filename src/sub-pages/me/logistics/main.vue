@@ -1,19 +1,14 @@
 <template>
   <view class="page-logistics-info">
     <view class="info-list">
-      <image
-        class="icon"
-        src="http://192.168.1.187:10088/static/songhui/common/logistics-icon.png"
-        mode="scaleToFill"
-      />
+      <image class="icon" src="http://192.168.1.187:10088/static/songhui/common/logistics-icon.png" mode="scaleToFill" />
       <view class="right">
         <view class="info">快递公司: {{ orderExpressModel.expressProviderName }}</view>
         <view class="r-b">
-          <view class="info">物流单号: {{ orderExpressModel.trackingNumber }} </view>
+          <view class="info">物流单号: {{ orderExpressModel.trackingNumber }}</view>
           <view class="copy" @click="handleClickCopy">复制</view>
-         </view>
+        </view>
       </view>
-     
     </view>
     <view class="trace-list">
       <log-steps :stepData="logistics.traceList" colors="#303133" />
@@ -58,23 +53,23 @@
         this.loading = true;
         uni.showLoading();
         const result = await Axios.post('/express/getKdnExpress', {
-          orderNo: this.id,
-          // shipperCode: 'ZTO', // 测试用
-          // logisticCode: '78414469979642', // 测试用
+          // orderNo: this.id,
+          shipperCode: 'ZTO', // 测试用
+          logisticCode: '78414469979642', // 测试用
         });
         uni.hideLoading();
         this.loading = false;
         if (result.code == 200) {
-          result.data.Traces.reverse()
+          result.data.Traces.reverse();
           result.data.Traces.forEach((e, index) => {
-            e.isNow = index ===0?1:0;
+            e.isNow = index === 0 ? 1 : 0;
             e.type = 1;
             e.name = e.acceptStation;
             e.time = e.acceptTime;
           });
           this.logistics.traceList = result.data.Traces;
-          this.orderExpressModel.expressProviderName = result.data.companyName
-          this.orderExpressModel.trackingNumber = result.data.LogisticCode
+          this.orderExpressModel.expressProviderName = result.data.companyName;
+          this.orderExpressModel.trackingNumber = result.data.LogisticCode;
         } else {
           uni.showToast(result.result.message);
         }
@@ -96,7 +91,7 @@
 <style lang="scss">
   .page-logistics-info {
     padding: 16rpx 0;
-    background: #F9F9F9;
+    background: #f9f9f9;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -104,7 +99,7 @@
     .info-list {
       width: 702rpx;
       height: 160rpx;
-      background: #FFFFFF;
+      background: #ffffff;
       border-radius: 16rpx;
       margin-bottom: 24rpx;
       background-image: url('http://192.168.1.187:10088/static/songhui/common/logistics-bg.png');
@@ -136,15 +131,15 @@
             font-style: normal;
             margin-right: 32rpx;
           }
-          .copy{
+          .copy {
             width: 80rpx;
             height: 38rpx;
             border-radius: 19rpx;
-            border: 1rpx solid #FF5500;
+            border: 1rpx solid #ff5500;
             font-family: PingFangSC, PingFang SC;
             font-weight: 400;
             font-size: 24rpx;
-            color: #FF5500;
+            color: #ff5500;
             line-height: 38rpx;
             text-align: center;
             font-style: normal;
@@ -168,9 +163,9 @@
     }
     .trace-list {
       width: 702rpx;
-      background: #FFFFFF;
+      background: #ffffff;
       border-radius: 16rpx;
-      border: 2rpx solid #FFFFFF;
+      border: 2rpx solid #ffffff;
       .trace {
         position: relative;
         padding-left: 30rpx;
