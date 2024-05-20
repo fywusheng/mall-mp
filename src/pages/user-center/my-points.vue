@@ -132,12 +132,12 @@
       goShop() {
         uni.navigateTo({ url: '/sub-pages/point/index' });
       },
-      handleNavigationBack() {
-        // 导航返回处理
-        uni.reLaunch({
-          url: `/pages/index/index?index=4`,
-        });
-      },
+      // handleNavigationBack() {
+      //   // 导航返回处理
+      //   uni.reLaunch({
+      //     url: `/pages/index/index?index=4`,
+      //   });
+      // },
 
       selectUrl(item) {
         if (item.hasComplete === '1') {
