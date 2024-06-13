@@ -13,11 +13,16 @@
 
     <template v-else>
       <swiper class="banner-list" :circular="true" :autoplay="true" :duration="1000" @change="handleBannerChange">
-        <swiper-item v-for="(productImg, index) in productImgList" :key="index">
-          <view class="banner" :style="{ backgroundImage: 'url(' + productImg + ')' }" @click="previewImg(index)"></view>
+        <swiper-item v-for="(productImg, index) in bannerList" :key="index">
+          <view v-if="isVideo(productImg)" class="banner">
+            <video class="banner" :src="productImg" :controls="false" :show-center-play-btn="false"></video>
+            <img class="play" mode="scaleToFill" src="http://192.168.1.187:10088/static/find/audio2x.png" @click="previewImg(index)" />
+          </view>
+
+          <view v-else class="banner" :style="{ backgroundImage: 'url(' + productImg + ')' }" @click="previewImg(index)"></view>
         </swiper-item>
       </swiper>
-      <view class="pointer">{{ currentIndex }}/{{ productImgList.length }}</view>
+      <view class="pointer">{{ currentIndex }}/{{ bannerList.length }}</view>
       <view class="area">
         <view class="product-info" :class="product.creditPoints ? 'margTop1' : ''">
           <view class="product-price">
@@ -300,6 +305,7 @@
         product: null,
         supplierDTO: null, // 供应商
         productImgList: [],
+        bannerList: [],
         skuImg: {},
         colorList: [],
         saleTypeList: [
@@ -376,6 +382,10 @@
       },
     },
     methods: {
+      isVideo(str) {
+        let videoRegex = /(\mp4|\avi|\mkv)$/i;
+        return videoRegex.test(str);
+      },
       // 分享增加积分
       addPoint() {
         api.addPointByShare({
@@ -414,10 +424,17 @@
         });
       },
       previewImg(index) {
-        uni.previewImage({
-          urls: this.productImgList,
-          current: this.productImgList[index],
-        });
+        if (this.isVideo(this.bannerList[index])) {
+          uni.navigateTo({
+            url: '/sub-pages/index/item/video?videoUrl=' + this.bannerList[index],
+          });
+        } else {
+          console.log(this.productImgList[index - 1], '当前情况--');
+          uni.previewImage({
+            urls: this.productImgList,
+            current: this.productImgList[index - 1],
+          });
+        }
       },
       toHome() {
         uni.switchTab({ url: '/pages/index/index' });
@@ -622,6 +639,7 @@
             this.sizeList = this.colorList[0].skuAndPriceList;
             const list = [this.product.mainImgUrl];
             this.productImgList = list.concat(this.colorList[0].imgUrlList || []);
+            this.bannerList = ['http://192.168.1.187:10188/nepsp-static/img/20240429013036673.mp4'].concat(this.productImgList);
           }
           this.sizeList.some((size) => {
             if (size.availableStock) {
@@ -780,6 +798,16 @@
         height: rpx(750);
         @include background-image();
         background-size: cover;
+        position: relative;
+        .play {
+          position: absolute;
+          bottom: 50rpx;
+          left: 50rpx;
+          width: 100rpx;
+          height: 100rpx;
+          border-radius: 50rpx;
+          background-color: #888888;
+        }
       }
     }
 

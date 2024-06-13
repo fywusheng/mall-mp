@@ -1378,6 +1378,12 @@
           }
         },
         {
+          "path": "item/video",
+          "style": {
+            "navigationBarTitleText": ""
+          }
+        },
+        {
           "path": "coupon-center/main",
           "style": {
             "navigationBarTitleText": "领券中心"
