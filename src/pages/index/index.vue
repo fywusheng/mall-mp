@@ -416,7 +416,7 @@
       requestData() {
         // 获取轮播图数据
         api.getBanners({
-          data: { bannerType: '21', status: '1' },
+          data: { status: '1' },
           success: (data) => {
             this.banners = data;
           },

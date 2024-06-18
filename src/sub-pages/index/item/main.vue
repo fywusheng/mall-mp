@@ -429,10 +429,10 @@
             url: '/sub-pages/index/item/video?videoUrl=' + this.bannerList[index],
           });
         } else {
-          console.log(this.productImgList[index - 1], '当前情况--');
+          let previewImageList = this.bannerList.slice(1);
           uni.previewImage({
-            urls: this.productImgList,
-            current: this.productImgList[index - 1],
+            urls: previewImageList,
+            current: previewImageList[index - 1],
           });
         }
       },
@@ -639,8 +639,15 @@
             this.sizeList = this.colorList[0].skuAndPriceList;
             const list = [this.product.mainImgUrl];
             this.productImgList = list.concat(this.colorList[0].imgUrlList || []);
-            this.bannerList = ['http://192.168.1.187:10188/nepsp-static/img/20240429013036673.mp4'].concat(this.productImgList);
           }
+          console.log(result.data);
+          this.bannerList = [];
+          const jsonName = ['mainVideoUrl', 'mainImgUrl', 'imgUrlTwo', 'imgUrlThree', 'imgUrlFour', 'imgUrlFive'];
+          jsonName.forEach((item) => {
+            if (result.data[item]) {
+              this.bannerList.push(result.data[item]);
+            }
+          });
           this.sizeList.some((size) => {
             if (size.availableStock) {
               this.selectSize = size;
