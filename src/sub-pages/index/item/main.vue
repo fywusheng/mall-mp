@@ -424,15 +424,23 @@
         });
       },
       previewImg(index) {
-        if (this.isVideo(this.bannerList[index])) {
-          uni.navigateTo({
-            url: '/sub-pages/index/item/video?videoUrl=' + this.bannerList[index],
-          });
+        console.log('index: ', index);
+        if (this.isVideo(this.bannerList[0])) {
+          if (this.isVideo(this.bannerList[index])) {
+            uni.navigateTo({
+              url: '/sub-pages/index/item/video?videoUrl=' + this.bannerList[index],
+            });
+          } else {
+            let previewImageList = this.bannerList.slice(1);
+            uni.previewImage({
+              urls: previewImageList,
+              current: previewImageList[index - 1],
+            });
+          }
         } else {
-          let previewImageList = this.bannerList.slice(1);
           uni.previewImage({
-            urls: previewImageList,
-            current: previewImageList[index - 1],
+            urls: this.bannerList,
+            current: index,
           });
         }
       },
