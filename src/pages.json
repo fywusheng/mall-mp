@@ -1380,7 +1380,11 @@
         {
           "path": "item/video",
           "style": {
-            "navigationBarTitleText": ""
+            "navigationBarTitleText": "",
+            "navigationStyle": "custom",
+            "mp-alipay": {
+              "transparentTitle": "always"
+            }
           }
         },
         {
