@@ -731,7 +731,7 @@
       });
       this.$refs.toTop.show(e.scrollTop > App.systemInfo.screenHeight);
     },
-    async onShow() {
+    async onLoad() {
       this.productId = this.$scope.options.id;
       // this.sceneType = this.$scope.options.sceneType;
       this.loadData();

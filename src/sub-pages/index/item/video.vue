@@ -1,5 +1,14 @@
 <template>
-  <view>
+  <view class="video">
+    <!-- #ifdef MP-WEIXIN -->
+    <navigation-bar :alpha="0" statusBackGround="">
+      <view slot="title1">
+        <view class="navigation-bar flex-h flex-c-s" :style="{ height: navigationBarHeight + 'px' }">
+          <image class="back-icon" @click="handleNavBack" src="http://192.168.1.187:10088/static/songhui/common/back-white.png" mode="scaleToFill" />
+        </view>
+      </view>
+    </navigation-bar>
+    <!-- #endif -->
     <swiper class="swiper" vertical :interval="interval" :duration="duration" @animationfinish="animationfinish">
       <swiper-item v-for="(item, index) in list" :key="index">
         <view class="swiper-item uni-bg-red" @click="saveplay('video' + index)">
@@ -91,8 +100,10 @@
 
 <script>
   import api from '@/apis/index.js';
+  import NavigationBar from '@/components/common/navigation-bar.vue';
   export default {
     name: 'small-video',
+    components: { NavigationBar },
     props: {
       shareIcon: {
         type: String,
@@ -113,6 +124,7 @@
         categoryName: '',
         logoUrl: '',
         playState: {},
+        navigationBarHeight: 44,
       };
     },
     created() {
@@ -203,6 +215,10 @@
       };
     },
     methods: {
+      // 返回上一页
+      handleNavBack() {
+        uni.navigateBack();
+      },
       collectIcon(status) {
         const icons = {
           1: 'http://192.168.1.187:10088/static/map/icon-map-collected.png',
@@ -380,13 +396,18 @@
 </script>
 
 <style lang="scss">
+  .video {
+    padding-bottom: 30rpx;
+    height: 100vh;
+    background: #000000;
+  }
   .swiper {
     position: relative;
     width: 100%;
     // height:100vh;
     //去除tabbar高度
-    //  height: calc(100vh - 120rpx);
-    height: 100vh;
+    height: calc(100vh - 30rpx);
+    // height: 100vh;
     .swiper-item {
       width: 100%;
       height: 100%;
@@ -662,6 +683,41 @@
         color: #666;
         font-weight: 500;
       }
+    }
+  }
+  // 头部
+  .navigation-bar {
+    box-sizing: border-box;
+    padding-left: 24rpx;
+    width: 100vw;
+    height: 100%;
+    .back-icon {
+      flex-shrink: 0;
+      width: 44rpx;
+      height: 44rpx;
+      margin-right: 20rpx;
+      position: relative;
+      z-index: 10;
+    }
+    .icon-desc {
+      flex-shrink: 0;
+      width: 40rpx;
+      height: 42rpx;
+      margin-right: 12rpx;
+      position: relative;
+      z-index: 10;
+    }
+    .desc {
+      color: #666666;
+    }
+    .navigation-bar__title {
+      position: absolute;
+      left: 0;
+      right: 0;
+      text-align: center;
+      background-color: #fff;
+      top: -40rpx;
+      padding-top: 42rpx;
     }
   }
 </style>
