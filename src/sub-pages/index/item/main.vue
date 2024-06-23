@@ -12,16 +12,23 @@
     </view>
 
     <template v-else>
-      <swiper class="banner-list" :circular="true" :autoplay="true" :duration="1000" @change="handleBannerChange">
+      <swiper class="banner-list" :circular="true" :autoplay="false" :duration="1000" :current="current" @animationfinish="handleBannerChange">
         <swiper-item v-for="(productImg, index) in bannerList" :key="index">
           <view v-if="isVideo(productImg)" class="banner">
             <video class="banner" :src="productImg" :controls="false" :show-center-play-btn="false"></video>
-            <img class="play" mode="scaleToFill" src="http://192.168.1.187:10088/static/find/audio2x.png" @click="previewImg(index)" />
+            <!-- <image class="play" mode="scaleToFill" src="http://192.168.1.187:10088/static/find/audio2x.png" @click="previewImg(index)" /> -->
           </view>
 
           <view v-else class="banner" :style="{ backgroundImage: 'url(' + productImg + ')' }" @click="previewImg(index)"></view>
         </swiper-item>
       </swiper>
+      <image
+        v-if="current === 0 && isVideo(bannerList[0])"
+        class="pointer-play"
+        mode="scaleToFill"
+        src="http://192.168.1.187:10088/static/find/audio2x.png"
+        @click="previewImg(0)"
+      />
       <view class="pointer">{{ currentIndex }}/{{ bannerList.length }}</view>
       <view class="area">
         <view class="product-info" :class="product.creditPoints ? 'margTop1' : ''">
@@ -327,6 +334,7 @@
         fixTop: false,
         actived: 1,
         currentIndex: 1,
+        current: 0,
       };
     },
     components: {
@@ -403,6 +411,7 @@
         uni.navigateTo({ url: '/pages/user-center/activate-member' });
       },
       handleBannerChange(e) {
+        this.current = e.detail.current;
         this.currentIndex = e.detail.current + 1;
       },
       point(flag) {
@@ -803,6 +812,15 @@
       text-align: center;
       font-family: PingFangSC-Regular, PingFang SC;
     }
+    .pointer-play {
+      position: absolute;
+      left: 50rpx;
+      width: 100rpx !important;
+      height: 100rpx !important;
+      border-radius: 50rpx;
+      background-color: #888888;
+      top: 598rpx;
+    }
     .banner-list {
       position: relative;
       height: rpx(750);
@@ -822,6 +840,7 @@
           height: 100rpx;
           border-radius: 50rpx;
           background-color: #888888;
+          z-index: 999;
         }
       }
     }

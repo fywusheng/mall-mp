@@ -395,296 +395,34 @@
   };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
   .video {
-    // padding-bottom: 30rpx;
     height: 100vh;
+    width: 100vw;
     background: #000000;
   }
   .swiper {
     position: relative;
     width: 100%;
-    // height:100vh;
+    height: 100vh;
+    background: #000000;
+    height: 100vh;
     //去除tabbar高度
-    height: calc(100vh - 30rpx);
-    // height: 100vh;
+    // height: calc(100vh - 30rpx);
     .swiper-item {
       width: 100%;
       height: 100%;
-      .info {
-        z-index: 1;
-        position: absolute;
-        // bottom: 80rpx;
-        top: calc(100vh - 120rpx);
-        color: white;
-        // text-indent: 1em;
-        font-size: 30upx;
-        left: 36rpx;
-        .title {
-          width: auto;
-          height: 60rpx;
-          font-size: 44rpx;
-          font-family: PingFangSC-Medium, PingFang SC;
-          font-weight: 500;
-          color: #ffffff;
-          line-height: 60rpx;
-        }
-        ._float {
-          display: flex;
-          .desc {
-            width: 686rpx;
-            // height: 100rpx;
-            font-size: 36rpx;
-            font-family: PingFangSC-Regular, PingFang SC;
-            font-weight: 500;
-            color: #e7e7e7;
-            line-height: 50rpx;
-            // margin-top: 16rpx;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            word-wrap: break-word;
-            white-space: normal !important;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-          }
-          // ._end{
-          // 	flex-direction: column;
-          //     align-self: flex-end;
-          // }
-        }
-      }
-      .audio {
-        position: absolute;
-        bottom: 20upx;
-        z-index: 1;
-        text-indent: 1em;
-        color: white;
-        font-size: 30upx;
-        display: flex;
-        width: 100%;
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: flex-end;
-        @-webkit-keyframes move {
-          0% {
-            left: 100vw;
-          }
 
-          100% {
-            left: -50vw;
-          }
-        }
-
-        @-moz-keyframes move {
-          0% {
-            left: 100vw;
-          }
-
-          100% {
-            left: -50vw;
-          }
-        }
-
-        @-ms-keyframes move {
-          0% {
-            left: 100vw;
-          }
-
-          100% {
-            left: -50vw;
-          }
-        }
-
-        @keyframes move {
-          0% {
-            left: 100vw;
-          }
-
-          100% {
-            left: -50vw;
-          }
-        }
-        .text-group {
-          position: relative;
-          width: 50vw;
-          height: 40upx;
-
-          overflow: hidden;
-          .text {
-            position: absolute;
-            top: 0upx;
-            white-space: nowrap;
-            /*文本不会换行，文本会在在同一行上继续*/
-            -webkit-animation: 10s move infinite;
-            -moz-animation: 10s move infinite;
-            -ms-animation: 10s move infinite;
-            animation: 10s move infinite;
-            width: 50vw;
-            left: 100vw;
-          }
-        }
-
-        .icon {
-          width: 60upx;
-          height: 60upx;
-          border-radius: 60upx;
-          animation: turn 3s linear infinite;
-          margin-right: 5vw;
-          border: 10upx solid white;
-        }
-
-        @keyframes turn {
-          0% {
-            -webkit-transform: rotate(0deg);
-          }
-
-          25% {
-            -webkit-transform: rotate(90deg);
-          }
-
-          50% {
-            -webkit-transform: rotate(180deg);
-          }
-
-          75% {
-            -webkit-transform: rotate(270deg);
-          }
-
-          100% {
-            -webkit-transform: rotate(360deg);
-          }
-        }
-      }
       .video {
         width: 100%;
         z-index: 0;
         height: 100vh;
         background: black;
-        // height: calc(100vh - 120rpx);
-      }
-    }
-    .buttons {
-      display: flex;
-      flex-direction: column;
-      position: absolute;
-      right: 5vw;
-      bottom: 18vh;
-      color: white;
-      text-align: center;
-      justify-content: center;
-      z-index: 1;
-      .header_group {
-        margin-bottom: 44rpx;
-        height: 120rpx;
-        width: 56px;
-        position: relative;
-        .header {
-          // border: 2px solid white;
-          border-radius: 90rpx;
-          height: 120rpx;
-          width: 120rpx;
-        }
-      }
-
-      .button {
-        text-align: center;
-        font-size: 36rpx;
-        margin-bottom: 54rpx;
-
-        .icon {
-          margin: 20rpx;
-          width: 80rpx;
-          margin-bottom: 0;
-          height: 80rpx;
-        }
-      }
-    }
-    .netError {
-      position: absolute;
-      top: 0;
-      width: 750rpx;
-      height: 100vh;
-      color: #fff;
-      background: #000000;
-      .text_center {
-        text-align: center;
-        color: #fff;
-        padding-top: 253rpx;
-        .noData {
-          width: 440rpx;
-          height: 214rpx;
-        }
-        .try {
-          color: #fff;
-          font-size: 36rpx;
-          border-radius: 36rpx;
-          line-height: 108rpx;
-          margin: 0 auto;
-          margin-top: 106rpx;
-          width: 610rpx;
-          height: 108rpx;
-          background: #292828;
-          border-radius: 54rpx;
-        }
-        .err_info {
-          font-size: 36rpx;
-          font-family: PingFangSC-Medium, PingFang SC;
-          font-weight: 500;
-          color: #c7c7c7;
-          margin-top: 42rpx;
-        }
+        height: calc(100vh - 50rpx);
       }
     }
   }
-  .share-pop {
-    background-color: #f2f2f2;
-    border-radius: 16px 16px 0px 0px;
-    color: #333333;
-    .title {
-      text-align: center;
-      line-height: 50rpx;
-    }
-    .list {
-      // #ifdef MP-ALIPAY
-      justify-content: flex-start;
-      // #endif
 
-      // #ifdef MP-WEIXIN
-      justify-content: center;
-      // #endif
-
-      align-items: center;
-
-      padding: 24rpx 74rpx;
-      flex-wrap: wrap;
-      .item {
-        height: 192rpx;
-        flex-shrink: 0;
-        width: 33.3%;
-        margin-bottom: 28rpx;
-        image {
-          flex-shrink: 0;
-          width: 134rpx;
-          height: 134rpx;
-          margin-bottom: 8rpx;
-        }
-        text {
-          line-height: 50rpx;
-        }
-      }
-    }
-    .btn {
-      padding: 24rpx 74rpx;
-      box-sizing: border-box;
-      .cancle {
-        height: 108rpx;
-        border-radius: 54rpx;
-        color: #666;
-        font-weight: 500;
-      }
-    }
-  }
   // 头部
   .navigation-bar {
     box-sizing: border-box;
