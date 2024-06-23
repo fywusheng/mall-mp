@@ -397,7 +397,7 @@
 
 <style lang="scss">
   .video {
-    padding-bottom: 30rpx;
+    // padding-bottom: 30rpx;
     height: 100vh;
     background: #000000;
   }
