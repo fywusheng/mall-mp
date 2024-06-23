@@ -403,10 +403,29 @@
        */
       handleBannerClick(index) {
         const item = this.banners[index];
-        if (item.jumpUrl) {
-          uni.navigateTo({
-            url: item.jumpUrl,
-          });
+
+
+          if (item.jumpUrl.startsWith('/')) {
+            uni.navigateTo({
+              url: item.jumpUrl,
+            });
+            return;
+          }
+          if (item.jumpUrl.startsWith('#appid')) {
+            const activityUrl = item.jumpUrl.substring(6, item.jumpUrl.length);
+            uni.navigateToMiniProgram({
+              appId: 'wxfd6d1a32cce64511',
+              path: activityUrl,
+              extraData: {
+                foo: 'bar',
+              },
+              envVersion: 'develop',
+              success(res) {
+                // 打开成功
+              },
+            });
+            return;
+          }
         }
       },
 
