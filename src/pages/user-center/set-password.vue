@@ -113,7 +113,7 @@
             uni.setStorageSync('token', data.accessToken);
             Store.dispatch('setToken', data.accessToken);
             Store.dispatch('login').then((result) => {
-              uni.navigateTo({ url: '/pages/user-center/register-userInfo-result' });
+              uni.navigateTo({ url: '/pages/user-center/register-userInfo-result?source=login' });
             });
           },
         });

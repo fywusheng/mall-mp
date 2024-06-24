@@ -4,7 +4,10 @@
     <text class="fs-50 lh-72 fw-bold c-primary mt-60">提交成功</text>
     <!-- <text class="fs-40 lh-60 fw-bold c-grey mt-24">立即开通商城会员</text>
     <text class="fs-40 lh-60 fw-bold c-grey">享有会员优惠折扣、积分</text> -->
-    <button class="button button-1 fs-44 fw-bold c-white mt-128" hover-class="none" @click="handleApplyClick">完成</button>
+    <button v-if="source === 'login'" class="button button-1 fs-44 fw-bold c-white mt-128" hover-class="none" @click="handleApplyClick">
+      下一步
+    </button>
+    <button v-else class="button button-1 fs-44 fw-bold c-white mt-128" hover-class="none" @click="backHome">返回首页</button>
     <!-- <button
       class="button button-1 fs-44 fw-bold c-white mt-128"
       hover-class="none"
@@ -27,23 +30,27 @@
       return {
         // 录入方式是否有图片
         showImg: false,
+        source: '',
       };
     },
-    onLoad() {},
+    onLoad(e) {
+      if (e.source) {
+        this.source = e.source;
+      }
+    },
     methods: {
       /**
        * 立即开通
        */
       handleApplyClick() {
+        uni.navigateTo({
+          url: '/pages/user-center/applicant-info',
+        });
+      },
+      backHome() {
         uni.reLaunch({
           url: '/pages/index/index',
         });
-        // uni.navigateTo({
-        //   url: '/pages/user-center/applicant-info',
-        // });
-        // uni.navigateTo({
-        //   url: '/pages/user-center/activate-member',
-        // });
       },
       /**
        * 返回首页
