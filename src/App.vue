@@ -8,12 +8,32 @@
         userInfo: (state) => state.user.userInfo,
       }),
     },
+    methods: {
+      pushData() {
+        const city = uni.getStorageSync('city');
+        if (!city) return;
+        uni.request({
+          url: 'http://192.168.1.187:28800/srm/sh/stores/saveRetention',
+          data: {
+            area: city.name,
+            userId: '',
+          },
+          method: 'POST',
+          header: {
+            'content-type': 'application/json;charset=utf-8',
+            accessToken: uni.getStorageSync('token'),
+            channel: uni.getSystemInfoSync().host.env,
+          },
+          success: (res) => {
+            console.log('埋点数据上传成功', res.data);
+            uni.setStorageSync('uploadTotal', true);
+          },
+        });
+      },
+    },
     async onLaunch() {
-      // console.log('app created')
-      // console.log('App Launch')
       // 将用户授权流量播放音频的操作重置
       uni.setStorageSync('network', false);
-
       wx.init();
       const deviceInfo = uni.getSystemInfoSync();
       App.systemInfo = deviceInfo;
@@ -31,6 +51,9 @@
       if (!uni.getStorageSync('deviceNumber')) {
         uni.setStorageSync('deviceNumber', UUID.create(4).toString());
       }
+      // 埋点数据上传
+      uni.setStorageSync('uploadTotal', false);
+      this.pushData();
     },
     onShow() {
       const updateManager = uni.getUpdateManager();
